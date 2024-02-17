@@ -19,3 +19,10 @@
 
 # Go workspace file
 go.work
+
+.env
+.env.*
+!server/.env.example
+
+.DS_Store
+.idea

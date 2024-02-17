@@ -1,0 +1,102 @@
+package ui 
+
+templ layout(title string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			<link href="/static/style/output.css" rel="stylesheet"/>
+			<script src="https://kit.fontawesome.com/aff606e071.js" crossorigin="anonymous"></script>
+			<title>{ title }</title>
+		</head>
+		<body class="box-border flex flex-col min-h-screen w-full bg-stone-700 text-slate-100">
+			<nav class="flex items-center justify-between bg-stone-900 px-4 py-4">
+				<div class="flex flex-shrink-0 items-center">
+					<span class="text-xl font-bold">PhimTor</span>
+				</div>
+				<ul class="flex">
+					<li class="mr-6 p-2">
+						<a class="hover:text-red-700" to="/">Home</a>
+					</li>
+					<li class="mr-6 border-b-2 border-red-700 p-2">
+						<a class="hover:text-red-700" href="/files">Files</a>
+					</li>
+				</ul>
+			</nav>
+			<main class="box-border flex-grow bg-stone-800 p-4">
+				{ children... }
+			</main>
+		</body>
+	</html>
+}
+
+templ pagination(page, totalPage int, linkFn func(int) string) {
+	<ul class="inline-flex -space-x-px">
+		<li>
+			<a
+				href={ templ.SafeURL(linkFn(max(1, page-1))) }
+				class="ms-0 flex h-8 items-center justify-center rounded-s-lg border border-e-0 border-gray-400 bg-stone-800 px-3 leading-tight hover:bg-stone-600"
+				disabled?={ page == 1 }
+			>
+				<i class="fa fa-angle-left"></i>
+			</a>
+		</li>
+		if start, end := generateArroundPage(page, totalPage); true {
+			if start > 1 {
+				<li>
+					<a
+						href="#"
+						class="flex h-8 items-center justify-center border border-gray-300 bg-stone-800 px-3 leading-tight hover:bg-stone-600"
+						disabled
+					>...</a>
+				</li>
+			}
+			for i := start; i <= end; i++ {
+				<li>
+					<a
+						href={ templ.SafeURL(linkFn(i)) }
+						if i == page {
+							class="flex h-8 items-center justify-center border border-gray-300 bg-red-600 px-3 hover:bg-red-700"
+						} else {
+							class="flex h-8 items-center justify-center border border-gray-300 bg-stone-800 px-3 leading-tight hover:bg-stone-600"
+						}
+						disabled?={ i == page }
+					>{ toString(i) }</a>
+				</li>
+			}
+            if end < totalPage {
+				<li>
+					<a
+						href="#"
+						class="flex h-8 items-center justify-center border border-gray-300 bg-stone-800 px-3 leading-tight hover:bg-stone-600"
+						disabled
+					>...</a>
+				</li>
+			}
+		}
+		<li>
+			<a
+				href={ templ.SafeURL(linkFn(max(totalPage, page+1))) }
+				class="flex h-8 items-center justify-center rounded-e-lg border border-gray-300 bg-stone-800 px-3 leading-tight hover:bg-stone-600"
+				disabled?={ page == totalPage }
+			><i class="fa fa-angle-right"></i></a>
+		</li>
+	</ul>
+}
+
+func generateArroundPage(page, totalPage int) (start, end int) {
+	if totalPage <= 5 {
+		return 1, totalPage
+	}
+
+	if page <= 3 {
+		return 1, 5
+	}
+
+	if page >= totalPage-2 {
+		return totalPage - 4, totalPage
+	}
+
+	return page - 2, page + 2
+}

@@ -1,0 +1,199 @@
+openapi: "3.0.2"
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local server
+info:
+  title: PhimTor
+  description: PhimTor API
+  version: 1.0.0
+  contact:
+    name: Chien Nguyen
+    email: chien.nm196@gmail.com
+
+paths:
+  /shows:
+    get:
+      operationId: listShows
+      summary: List all shows
+      parameters:
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                title: ListShowsResponse
+                type: object
+                properties:
+                  shows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BasicInfo'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                required:
+                  - shows
+                  - pagination
+  /movies/{id}:
+    get:
+      operationId: getMovie
+      summary: Get movie by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                title: GetMovieResponse
+                type: object
+                properties:
+                  movie:
+                    $ref: '#/components/schemas/Movie'
+                required:
+                  - movie
+
+components:
+  schemas:
+    BasicInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        originalTitle:
+          type: string
+        posterLink:
+          type: string
+        showType:
+          type: string
+          enum:
+            - movie
+            - series
+        releaseYear:
+          type: integer
+        score:
+          type: number
+        durationInMinutes:
+          type: integer
+        quantity:
+          type: string
+        totalEpisodes:
+          type: integer
+        currentEpisode:
+          type: integer
+      required:
+        - id
+        - title
+        - originalTitle
+        - posterLink
+        - showType
+        - releaseYear
+        - score
+        - durationInMinutes
+        - quantity
+        - totalEpisodes
+        - currentEpisode
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+        totalPages:
+          type: integer
+        totalResults:
+          type: integer
+          format: int64
+      required:
+        - page
+        - totalPages
+        - totalResults
+
+    Movie:
+      type: object
+      properties:
+        basicInfo:
+          $ref: '#/components/schemas/BasicInfo'
+        description:
+          type: string
+      required:
+        - basicInfo
+        - description
+
+    TVSeries:
+      type: object
+      properties:
+        basicInfo:
+          $ref: '#/components/schemas/BasicInfo'
+        description:
+          type: string
+        episodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Episode'
+      required:
+        - basicInfo
+        - description
+        - episodes
+
+    Episode:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+        - id
+        - name
+
+    TorrentLink:
+      type: object
+      properties:
+        quality:
+          type: string
+        link:
+          type: string
+        magnetLink:
+          type: string
+      required:
+        - quality
+        - link
+        - magnetLink
+
+    Subtitle:
+      type: object
+      properties:
+        language:
+          type: string
+        name:
+          type: string
+        owner:
+          type: string
+        link:
+          type: string
+      required:
+        - language
+        - name
+        - owner
+        - link
+
