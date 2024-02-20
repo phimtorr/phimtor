@@ -91,12 +91,27 @@ type ClientInterface interface {
 	// GetMovie request
 	GetMovie(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetSeries request
+	GetSeries(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListShows request
 	ListShows(ctx context.Context, params *ListShowsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) GetMovie(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetMovieRequest(c.Server, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetSeries(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSeriesRequest(c.Server, id)
 	if err != nil {
 		return nil, err
 	}
@@ -136,6 +151,40 @@ func NewGetMovieRequest(server string, id int64) (*http.Request, error) {
 	}
 
 	operationPath := fmt.Sprintf("/movies/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetSeriesRequest generates requests for GetSeries
+func NewGetSeriesRequest(server string, id int64) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/series/%s", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -264,6 +313,9 @@ type ClientWithResponsesInterface interface {
 	// GetMovieWithResponse request
 	GetMovieWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*GetMovieResponse, error)
 
+	// GetSeriesWithResponse request
+	GetSeriesWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*GetSeriesResponse, error)
+
 	// ListShowsWithResponse request
 	ListShowsWithResponse(ctx context.Context, params *ListShowsParams, reqEditors ...RequestEditorFn) (*ListShowsResponse, error)
 }
@@ -288,6 +340,32 @@ func (r GetMovieResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetMovieResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetSeriesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Series Series `json:"series"`
+	}
+	JSON400 *BadRequest
+	JSON500 *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSeriesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSeriesResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -330,6 +408,15 @@ func (c *ClientWithResponses) GetMovieWithResponse(ctx context.Context, id int64
 	return ParseGetMovieResponse(rsp)
 }
 
+// GetSeriesWithResponse request returning *GetSeriesResponse
+func (c *ClientWithResponses) GetSeriesWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*GetSeriesResponse, error) {
+	rsp, err := c.GetSeries(ctx, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSeriesResponse(rsp)
+}
+
 // ListShowsWithResponse request returning *ListShowsResponse
 func (c *ClientWithResponses) ListShowsWithResponse(ctx context.Context, params *ListShowsParams, reqEditors ...RequestEditorFn) (*ListShowsResponse, error) {
 	rsp, err := c.ListShows(ctx, params, reqEditors...)
@@ -356,6 +443,48 @@ func ParseGetMovieResponse(rsp *http.Response) (*GetMovieResponse, error) {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
 			Movie Movie `json:"movie"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetSeriesResponse parses an HTTP response from a GetSeriesWithResponse call
+func ParseGetSeriesResponse(rsp *http.Response) (*GetSeriesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSeriesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Series Series `json:"series"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err

@@ -9,6 +9,13 @@ const (
 	ShowTypeSeries ShowType = "series"
 )
 
+// Episode defines model for Episode.
+type Episode struct {
+	Id      int64  `json:"id"`
+	Name    string `json:"name"`
+	VideoId int64  `json:"videoId"`
+}
+
 // ErrorResponse defines model for ErrorResponse.
 type ErrorResponse struct {
 	Code    string `json:"code"`
@@ -34,6 +41,21 @@ type Pagination struct {
 	Page         int   `json:"page"`
 	TotalPages   int   `json:"totalPages"`
 	TotalResults int64 `json:"totalResults"`
+}
+
+// Series defines model for Series.
+type Series struct {
+	CurrentEpisode    int       `json:"currentEpisode"`
+	Description       string    `json:"description"`
+	DurationInMinutes int       `json:"durationInMinutes"`
+	Episodes          []Episode `json:"episodes"`
+	Id                int64     `json:"id"`
+	OriginalTitle     string    `json:"originalTitle"`
+	PosterLink        string    `json:"posterLink"`
+	ReleaseYear       int       `json:"releaseYear"`
+	Score             float32   `json:"score"`
+	Title             string    `json:"title"`
+	TotalEpisodes     int       `json:"totalEpisodes"`
 }
 
 // Show defines model for Show.

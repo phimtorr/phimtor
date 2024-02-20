@@ -21,6 +21,7 @@ func main() {
 	hl := handler.New(cl)
 
 	r := chi.NewRouter()
+	r.Use(logs.NewHTTPStructuredLogger(log.Logger))
 
 	r.Handle("/static/style/*", http.StripPrefix("/static/style", http.FileServer(http.FS(style.FS))))
 

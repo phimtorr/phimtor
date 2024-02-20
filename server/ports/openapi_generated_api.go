@@ -16,6 +16,9 @@ type ServerInterface interface {
 	// Get movie by id
 	// (GET /movies/{id})
 	GetMovie(w http.ResponseWriter, r *http.Request, id int64)
+	// Get series by id
+	// (GET /series/{id})
+	GetSeries(w http.ResponseWriter, r *http.Request, id int64)
 	// List all shows
 	// (GET /shows)
 	ListShows(w http.ResponseWriter, r *http.Request, params ListShowsParams)
@@ -28,6 +31,12 @@ type Unimplemented struct{}
 // Get movie by id
 // (GET /movies/{id})
 func (_ Unimplemented) GetMovie(w http.ResponseWriter, r *http.Request, id int64) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// Get series by id
+// (GET /series/{id})
+func (_ Unimplemented) GetSeries(w http.ResponseWriter, r *http.Request, id int64) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -63,6 +72,32 @@ func (siw *ServerInterfaceWrapper) GetMovie(w http.ResponseWriter, r *http.Reque
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetMovie(w, r, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// GetSeries operation middleware
+func (siw *ServerInterfaceWrapper) GetSeries(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "id" -------------
+	var id int64
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "id", runtime.ParamLocationPath, chi.URLParam(r, "id"), &id)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetSeries(w, r, id)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -223,6 +258,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/movies/{id}", wrapper.GetMovie)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/series/{id}", wrapper.GetSeries)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/shows", wrapper.ListShows)

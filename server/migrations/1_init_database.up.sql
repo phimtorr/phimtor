@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `shows`
 CREATE TABLE IF NOT EXISTS episodes
 (
     id         BIGINT PRIMARY KEY AUTO_INCREMENT,
-    show_id    INT          NOT NULL,
+    show_id    BIGINT       NOT NULL REFERENCES shows (id),
     name       VARCHAR(255) NOT NULL,
 
     video_id   BIGINT       NOT NULL REFERENCES videos (id),

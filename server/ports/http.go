@@ -10,6 +10,7 @@ import (
 type Repository interface {
 	ListShows(ctx context.Context, params ListShowsParams) ([]Show, Pagination, error)
 	GetMovie(ctx context.Context, id int64) (Movie, error)
+	GetSeries(ctx context.Context, id int64) (Series, error)
 }
 
 type HttpServer struct {

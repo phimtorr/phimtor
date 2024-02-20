@@ -24,7 +24,7 @@ import (
 // Episode is an object representing the database table.
 type Episode struct {
 	ID        int64     `boil:"id" json:"id" toml:"id" yaml:"id"`
-	ShowID    int       `boil:"show_id" json:"show_id" toml:"show_id" yaml:"show_id"`
+	ShowID    int64     `boil:"show_id" json:"show_id" toml:"show_id" yaml:"show_id"`
 	Name      string    `boil:"name" json:"name" toml:"name" yaml:"name"`
 	VideoID   int64     `boil:"video_id" json:"video_id" toml:"video_id" yaml:"video_id"`
 	CreatedAt time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
@@ -91,29 +91,6 @@ func (w whereHelperint64) NIN(slice []int64) qm.QueryMod {
 	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
 }
 
-type whereHelperint struct{ field string }
-
-func (w whereHelperint) EQ(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperint) NEQ(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
-func (w whereHelperint) LT(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperint) LTE(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
-func (w whereHelperint) GT(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperint) GTE(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
-func (w whereHelperint) IN(slice []int) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
-}
-func (w whereHelperint) NIN(slice []int) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
-}
-
 type whereHelperstring struct{ field string }
 
 func (w whereHelperstring) EQ(x string) qm.QueryMod    { return qmhelper.Where(w.field, qmhelper.EQ, x) }
@@ -162,14 +139,14 @@ func (w whereHelpertime_Time) GTE(x time.Time) qm.QueryMod {
 
 var EpisodeWhere = struct {
 	ID        whereHelperint64
-	ShowID    whereHelperint
+	ShowID    whereHelperint64
 	Name      whereHelperstring
 	VideoID   whereHelperint64
 	CreatedAt whereHelpertime_Time
 	UpdatedAt whereHelpertime_Time
 }{
 	ID:        whereHelperint64{field: "`episodes`.`id`"},
-	ShowID:    whereHelperint{field: "`episodes`.`show_id`"},
+	ShowID:    whereHelperint64{field: "`episodes`.`show_id`"},
 	Name:      whereHelperstring{field: "`episodes`.`name`"},
 	VideoID:   whereHelperint64{field: "`episodes`.`video_id`"},
 	CreatedAt: whereHelpertime_Time{field: "`episodes`.`created_at`"},
@@ -178,15 +155,26 @@ var EpisodeWhere = struct {
 
 // EpisodeRels is where relationship names are stored.
 var EpisodeRels = struct {
-}{}
+	Show string
+}{
+	Show: "Show",
+}
 
 // episodeR is where relationships are stored.
 type episodeR struct {
+	Show *Show `boil:"Show" json:"Show" toml:"Show" yaml:"Show"`
 }
 
 // NewStruct creates a new relationship struct
 func (*episodeR) NewStruct() *episodeR {
 	return &episodeR{}
+}
+
+func (r *episodeR) GetShow() *Show {
+	if r == nil {
+		return nil
+	}
+	return r.Show
 }
 
 // episodeL is where Load methods for each relationship are stored.
@@ -503,6 +491,184 @@ func (q episodeQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bo
 	}
 
 	return count > 0, nil
+}
+
+// Show pointed to by the foreign key.
+func (o *Episode) Show(mods ...qm.QueryMod) showQuery {
+	queryMods := []qm.QueryMod{
+		qm.Where("`id` = ?", o.ShowID),
+	}
+
+	queryMods = append(queryMods, mods...)
+
+	return Shows(queryMods...)
+}
+
+// LoadShow allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for an N-1 relationship.
+func (episodeL) LoadShow(ctx context.Context, e boil.ContextExecutor, singular bool, maybeEpisode interface{}, mods queries.Applicator) error {
+	var slice []*Episode
+	var object *Episode
+
+	if singular {
+		var ok bool
+		object, ok = maybeEpisode.(*Episode)
+		if !ok {
+			object = new(Episode)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeEpisode)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeEpisode))
+			}
+		}
+	} else {
+		s, ok := maybeEpisode.(*[]*Episode)
+		if ok {
+			slice = *s
+		} else {
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeEpisode)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeEpisode))
+			}
+		}
+	}
+
+	args := make(map[interface{}]struct{})
+	if singular {
+		if object.R == nil {
+			object.R = &episodeR{}
+		}
+		args[object.ShowID] = struct{}{}
+
+	} else {
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &episodeR{}
+			}
+
+			args[obj.ShowID] = struct{}{}
+
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	argsSlice := make([]interface{}, len(args))
+	i := 0
+	for arg := range args {
+		argsSlice[i] = arg
+		i++
+	}
+
+	query := NewQuery(
+		qm.From(`shows`),
+		qm.WhereIn(`shows.id in ?`, argsSlice...),
+	)
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load Show")
+	}
+
+	var resultSlice []*Show
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice Show")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results of eager load for shows")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for shows")
+	}
+
+	if len(showAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+
+	if len(resultSlice) == 0 {
+		return nil
+	}
+
+	if singular {
+		foreign := resultSlice[0]
+		object.R.Show = foreign
+		if foreign.R == nil {
+			foreign.R = &showR{}
+		}
+		foreign.R.Episodes = append(foreign.R.Episodes, object)
+		return nil
+	}
+
+	for _, local := range slice {
+		for _, foreign := range resultSlice {
+			if local.ShowID == foreign.ID {
+				local.R.Show = foreign
+				if foreign.R == nil {
+					foreign.R = &showR{}
+				}
+				foreign.R.Episodes = append(foreign.R.Episodes, local)
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// SetShow of the episode to the related item.
+// Sets o.R.Show to related.
+// Adds o to related.R.Episodes.
+func (o *Episode) SetShow(ctx context.Context, exec boil.ContextExecutor, insert bool, related *Show) error {
+	var err error
+	if insert {
+		if err = related.Insert(ctx, exec, boil.Infer()); err != nil {
+			return errors.Wrap(err, "failed to insert into foreign table")
+		}
+	}
+
+	updateQuery := fmt.Sprintf(
+		"UPDATE `episodes` SET %s WHERE %s",
+		strmangle.SetParamNames("`", "`", 0, []string{"show_id"}),
+		strmangle.WhereClause("`", "`", 0, episodePrimaryKeyColumns),
+	)
+	values := []interface{}{related.ID, o.ID}
+
+	if boil.IsDebug(ctx) {
+		writer := boil.DebugWriterFrom(ctx)
+		fmt.Fprintln(writer, updateQuery)
+		fmt.Fprintln(writer, values)
+	}
+	if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+		return errors.Wrap(err, "failed to update local table")
+	}
+
+	o.ShowID = related.ID
+	if o.R == nil {
+		o.R = &episodeR{
+			Show: related,
+		}
+	} else {
+		o.R.Show = related
+	}
+
+	if related.R == nil {
+		related.R = &showR{
+			Episodes: EpisodeSlice{o},
+		}
+	} else {
+		related.R.Episodes = append(related.R.Episodes, o)
+	}
+
+	return nil
 }
 
 // Episodes retrieves all the records using an executor.

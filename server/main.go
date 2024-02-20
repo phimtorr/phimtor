@@ -11,7 +11,6 @@ import (
 
 	"github.com/phimtorr/phimtor/common/logs"
 	"github.com/phimtorr/phimtor/common/strval"
-	serverLogs "github.com/phimtorr/phimtor/server/pkg/server/logs"
 	"github.com/phimtorr/phimtor/server/ports"
 	"github.com/phimtorr/phimtor/server/repository"
 
@@ -41,7 +40,7 @@ func main() {
 func setMiddlewares(router *chi.Mux) {
 	router.Use(middleware.RequestID)
 	router.Use(middleware.RealIP)
-	router.Use(serverLogs.NewHTTPStructuredLogger(log.Logger))
+	router.Use(logs.NewHTTPStructuredLogger(log.Logger))
 	router.Use(middleware.Recoverer)
 
 	router.Use(cors.AllowAll().Handler)
