@@ -71,6 +71,16 @@ func Shows(shows []api.Show, pg api.Pagination) templ.Component {
 	})
 }
 
+func getShowURL(show api.Show) templ.SafeURL {
+	if show.Type == api.ShowTypeMovie {
+		return templ.SafeURL(uri.GetMovie(show.Id))
+	}
+	if show.Type == api.ShowTypeSeries {
+		return templ.SafeURL(uri.GetSeries(show.Id))
+	}
+	return ""
+}
+
 func showBasicInfo(show api.Show) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
@@ -88,7 +98,7 @@ func showBasicInfo(show api.Show) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var4 templ.SafeURL = templ.SafeURL(uri.GetMovie(show.Id))
+		var templ_7745c5c3_Var4 templ.SafeURL = getShowURL(show)
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var4)))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -156,7 +166,7 @@ func showBasicInfo(show api.Show) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(show.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/shows.templ`, Line: 84, Col: 38}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/shows.templ`, Line: 94, Col: 38}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -169,7 +179,7 @@ func showBasicInfo(show api.Show) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(show.OriginalTitle)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/shows.templ`, Line: 85, Col: 46}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/shows.templ`, Line: 95, Col: 46}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -206,7 +216,7 @@ func label(text string) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/shows.templ`, Line: 92, Col: 63}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/shows.templ`, Line: 102, Col: 63}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {

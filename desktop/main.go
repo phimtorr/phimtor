@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/rs/cors"
 	"github.com/rs/zerolog/log"
 
 	"github.com/phimtorr/phimtor/common/logs"
@@ -21,7 +23,7 @@ func main() {
 	hl := handler.New(cl)
 
 	r := chi.NewRouter()
-	r.Use(logs.NewHTTPStructuredLogger(log.Logger))
+	setMiddlewares(r)
 
 	r.Handle("/static/style/*", http.StripPrefix("/static/style", http.FileServer(http.FS(style.FS))))
 
@@ -32,4 +34,13 @@ func main() {
 	if err := http.ListenAndServe(addr, r); err != nil {
 		log.Fatal().Err(err).Msg("Stopped HTTP server")
 	}
+}
+
+func setMiddlewares(router *chi.Mux) {
+	router.Use(middleware.RequestID)
+	router.Use(logs.NewHTTPStructuredLogger(log.Logger))
+	router.Use(middleware.Recoverer)
+
+	router.Use(cors.AllowAll().Handler)
+	router.Use(middleware.NoCache)
 }

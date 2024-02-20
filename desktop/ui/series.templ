@@ -1,0 +1,31 @@
+package ui
+
+import "github.com/phimtorr/phimtor/desktop/client/api"
+
+templ Series( series api.Series) {
+	@layout(series.Title) {
+		<section class="flex bg-stone-700 p-4 rounded-sm h-full">
+			<div class="w-full">
+				<img
+					class="w-full object-cover"
+					src={ series.PosterLink }
+					alt={ series.Title }
+				/>
+			</div>
+			<div class="p-4 flex-grow space-y-4">
+				<div class="space-y-4 mb-4">
+					<h1 class="mb-2 text-2xl font-bold">{ series.Title }</h1>
+					<h2 class="mb-2 italic">{ series.OriginalTitle }</h2>
+					<p class="mb-2">{ series.Description }</p>
+					<p class="mb-2">Release Year: { toString(series.ReleaseYear) }</p>
+					<p class="mb-2">TMBb Score: { toString(series.Score) }</p>
+				</div>
+				<div class="mt-4 box-border space-x-2 space-y-2">
+					for _, e := range series.Episodes {
+						<button class="rounded-sm py-4 px-6 bg-stone-500 hover:bg-red-700 shadow">{ e.Name }</button>
+					}
+				</div>
+			</div>
+		</section>
+	}
+}

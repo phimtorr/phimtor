@@ -47,9 +47,19 @@ templ Shows(shows []api.Show, pg api.Pagination) {
 	}
 }
 
+func getShowURL(show api.Show) templ.SafeURL {
+	if show.Type == api.ShowTypeMovie {
+		return templ.SafeURL(uri.GetMovie(show.Id))
+	}
+	if show.Type == api.ShowTypeSeries {
+		return templ.SafeURL(uri.GetSeries(show.Id))
+	}
+	return ""
+}
+
 templ showBasicInfo(show api.Show) {
 	<figure class="transition-transform hover:scale-105">
-		<a href={ templ.SafeURL(uri.GetMovie(show.Id)) }>
+		<a href={ getShowURL(show) }>
 			<div class="relative">
 				<img
 					class="h-auto w-full object-cover"

@@ -43,6 +43,18 @@ func (h *Handler) Register(r chi.Router) {
 		return
 	})
 
+	r.Get("/series/{id}", func(w http.ResponseWriter, r *http.Request) {
+		idStr := chi.URLParam(r, "id")
+		id, err := strconv.ParseInt(idStr, 10, 64)
+		if err != nil {
+			handleError(w, r, "Parse series id", err, http.StatusBadRequest)
+			return
+		}
+
+		h.GetSeries(w, r, id)
+		return
+	})
+
 }
 
 func handleError(w http.ResponseWriter, r *http.Request, msg string, err error, status int) {

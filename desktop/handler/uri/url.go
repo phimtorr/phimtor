@@ -15,3 +15,7 @@ func ListShows() string {
 func GetMovie(id int64) string {
 	return fmt.Sprintf("/movies/%d", id)
 }
+
+func GetSeries(id int64) string {
+	return fmt.Sprintf("/series/%d", id)
+}

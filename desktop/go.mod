@@ -9,6 +9,7 @@ require (
 	github.com/go-chi/chi/v5 v5.0.12
 	github.com/oapi-codegen/runtime v1.1.1
 	github.com/phimtorr/phimtor/common v0.0.0-00010101000000-000000000000
+	github.com/rs/cors v1.8.3
 	github.com/rs/zerolog v1.32.0
 )
 
