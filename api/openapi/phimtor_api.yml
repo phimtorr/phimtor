@@ -40,12 +40,17 @@ paths:
                   shows:
                     type: array
                     items:
-                      $ref: '#/components/schemas/BasicInfo'
+                      $ref: '#/components/schemas/Show'
                   pagination:
                     $ref: '#/components/schemas/Pagination'
                 required:
                   - shows
                   - pagination
+        400:
+          $ref: "#/components/responses/BadRequest"
+        500:
+          $ref: "#/components/responses/InternalError"
+
   /movies/{id}:
     get:
       operationId: getMovie
@@ -56,6 +61,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         '200':
           description: OK
@@ -69,10 +75,44 @@ paths:
                     $ref: '#/components/schemas/Movie'
                 required:
                   - movie
+        400:
+          $ref: "#/components/responses/BadRequest"
+        500:
+          $ref: "#/components/responses/InternalError"
+
 
 components:
+  responses:
+    BadRequest:
+      description: bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            code: "decode-failed"
+            message: "there is something wrong with your request body"
+    InternalError:
+      description: internal error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            code: "internal-error"
+            message: "internal error"
   schemas:
-    BasicInfo:
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
+    Show:
       type: object
       properties:
         id:
@@ -84,7 +124,7 @@ components:
           type: string
         posterLink:
           type: string
-        showType:
+        type:
           type: string
           enum:
             - movie
@@ -106,13 +146,14 @@ components:
         - title
         - originalTitle
         - posterLink
-        - showType
+        - type
         - releaseYear
         - score
         - durationInMinutes
         - quantity
         - totalEpisodes
         - currentEpisode
+
     Pagination:
       type: object
       properties:
@@ -131,54 +172,75 @@ components:
     Movie:
       type: object
       properties:
-        basicInfo:
-          $ref: '#/components/schemas/BasicInfo'
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        originalTitle:
+          type: string
         description:
           type: string
-      required:
-        - basicInfo
-        - description
-
-    TVSeries:
-      type: object
-      properties:
-        basicInfo:
-          $ref: '#/components/schemas/BasicInfo'
-        description:
+        posterLink:
           type: string
-        episodes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Episode'
+        quantity:
+          type: string
+        releaseYear:
+          type: integer
+        score:
+          type: number
+        durationInMinutes:
+          type: integer
+        videoId:
+          type: integer
+          format: int64
       required:
-        - basicInfo
+        - id
+        - title
+        - originalTitle
         - description
-        - episodes
+        - posterLink
+        - quantity
+        - releaseYear
+        - score
+        - durationInMinutes
+        - videoId
 
-    Episode:
+    Video:
       type: object
       properties:
         id:
           type: integer
-        name:
+          format: int64
+        title:
           type: string
+        torrentLinks:
+          type: array
+          items:
+            $ref: '#/components/schemas/TorrentLink'
+        subtitles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subtitle'
       required:
         - id
-        - name
+        - title
+        - torrentLinks
+        - subtitles
 
     TorrentLink:
       type: object
       properties:
-        quality:
+        name:
           type: string
         link:
           type: string
-        magnetLink:
-          type: string
+        priority:
+          type: integer
       required:
-        - quality
+        - name
         - link
-        - magnetLink
+        - priority
 
     Subtitle:
       type: object

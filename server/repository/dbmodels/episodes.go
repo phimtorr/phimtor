@@ -26,6 +26,7 @@ type Episode struct {
 	ID        int64     `boil:"id" json:"id" toml:"id" yaml:"id"`
 	ShowID    int       `boil:"show_id" json:"show_id" toml:"show_id" yaml:"show_id"`
 	Name      string    `boil:"name" json:"name" toml:"name" yaml:"name"`
+	VideoID   int64     `boil:"video_id" json:"video_id" toml:"video_id" yaml:"video_id"`
 	CreatedAt time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
 
@@ -37,12 +38,14 @@ var EpisodeColumns = struct {
 	ID        string
 	ShowID    string
 	Name      string
+	VideoID   string
 	CreatedAt string
 	UpdatedAt string
 }{
 	ID:        "id",
 	ShowID:    "show_id",
 	Name:      "name",
+	VideoID:   "video_id",
 	CreatedAt: "created_at",
 	UpdatedAt: "updated_at",
 }
@@ -51,12 +54,14 @@ var EpisodeTableColumns = struct {
 	ID        string
 	ShowID    string
 	Name      string
+	VideoID   string
 	CreatedAt string
 	UpdatedAt string
 }{
 	ID:        "episodes.id",
 	ShowID:    "episodes.show_id",
 	Name:      "episodes.name",
+	VideoID:   "episodes.video_id",
 	CreatedAt: "episodes.created_at",
 	UpdatedAt: "episodes.updated_at",
 }
@@ -159,29 +164,24 @@ var EpisodeWhere = struct {
 	ID        whereHelperint64
 	ShowID    whereHelperint
 	Name      whereHelperstring
+	VideoID   whereHelperint64
 	CreatedAt whereHelpertime_Time
 	UpdatedAt whereHelpertime_Time
 }{
-	ID:        whereHelperint64{field: "\"episodes\".\"id\""},
-	ShowID:    whereHelperint{field: "\"episodes\".\"show_id\""},
-	Name:      whereHelperstring{field: "\"episodes\".\"name\""},
-	CreatedAt: whereHelpertime_Time{field: "\"episodes\".\"created_at\""},
-	UpdatedAt: whereHelpertime_Time{field: "\"episodes\".\"updated_at\""},
+	ID:        whereHelperint64{field: "`episodes`.`id`"},
+	ShowID:    whereHelperint{field: "`episodes`.`show_id`"},
+	Name:      whereHelperstring{field: "`episodes`.`name`"},
+	VideoID:   whereHelperint64{field: "`episodes`.`video_id`"},
+	CreatedAt: whereHelpertime_Time{field: "`episodes`.`created_at`"},
+	UpdatedAt: whereHelpertime_Time{field: "`episodes`.`updated_at`"},
 }
 
 // EpisodeRels is where relationship names are stored.
 var EpisodeRels = struct {
-	Subtitles    string
-	TorrentLinks string
-}{
-	Subtitles:    "Subtitles",
-	TorrentLinks: "TorrentLinks",
-}
+}{}
 
 // episodeR is where relationships are stored.
 type episodeR struct {
-	Subtitles    SubtitleSlice    `boil:"Subtitles" json:"Subtitles" toml:"Subtitles" yaml:"Subtitles"`
-	TorrentLinks TorrentLinkSlice `boil:"TorrentLinks" json:"TorrentLinks" toml:"TorrentLinks" yaml:"TorrentLinks"`
 }
 
 // NewStruct creates a new relationship struct
@@ -189,26 +189,12 @@ func (*episodeR) NewStruct() *episodeR {
 	return &episodeR{}
 }
 
-func (r *episodeR) GetSubtitles() SubtitleSlice {
-	if r == nil {
-		return nil
-	}
-	return r.Subtitles
-}
-
-func (r *episodeR) GetTorrentLinks() TorrentLinkSlice {
-	if r == nil {
-		return nil
-	}
-	return r.TorrentLinks
-}
-
 // episodeL is where Load methods for each relationship are stored.
 type episodeL struct{}
 
 var (
-	episodeAllColumns            = []string{"id", "show_id", "name", "created_at", "updated_at"}
-	episodeColumnsWithoutDefault = []string{"show_id", "name"}
+	episodeAllColumns            = []string{"id", "show_id", "name", "video_id", "created_at", "updated_at"}
+	episodeColumnsWithoutDefault = []string{"show_id", "name", "video_id"}
 	episodeColumnsWithDefault    = []string{"id", "created_at", "updated_at"}
 	episodePrimaryKeyColumns     = []string{"id"}
 	episodeGeneratedColumns      = []string{}
@@ -519,520 +505,12 @@ func (q episodeQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bo
 	return count > 0, nil
 }
 
-// Subtitles retrieves all the subtitle's Subtitles with an executor.
-func (o *Episode) Subtitles(mods ...qm.QueryMod) subtitleQuery {
-	var queryMods []qm.QueryMod
-	if len(mods) != 0 {
-		queryMods = append(queryMods, mods...)
-	}
-
-	queryMods = append(queryMods,
-		qm.Where("\"subtitles\".\"episode_id\"=?", o.ID),
-	)
-
-	return Subtitles(queryMods...)
-}
-
-// TorrentLinks retrieves all the torrent_link's TorrentLinks with an executor.
-func (o *Episode) TorrentLinks(mods ...qm.QueryMod) torrentLinkQuery {
-	var queryMods []qm.QueryMod
-	if len(mods) != 0 {
-		queryMods = append(queryMods, mods...)
-	}
-
-	queryMods = append(queryMods,
-		qm.Where("\"torrent_links\".\"episode_id\"=?", o.ID),
-	)
-
-	return TorrentLinks(queryMods...)
-}
-
-// LoadSubtitles allows an eager lookup of values, cached into the
-// loaded structs of the objects. This is for a 1-M or N-M relationship.
-func (episodeL) LoadSubtitles(ctx context.Context, e boil.ContextExecutor, singular bool, maybeEpisode interface{}, mods queries.Applicator) error {
-	var slice []*Episode
-	var object *Episode
-
-	if singular {
-		var ok bool
-		object, ok = maybeEpisode.(*Episode)
-		if !ok {
-			object = new(Episode)
-			ok = queries.SetFromEmbeddedStruct(&object, &maybeEpisode)
-			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeEpisode))
-			}
-		}
-	} else {
-		s, ok := maybeEpisode.(*[]*Episode)
-		if ok {
-			slice = *s
-		} else {
-			ok = queries.SetFromEmbeddedStruct(&slice, maybeEpisode)
-			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeEpisode))
-			}
-		}
-	}
-
-	args := make(map[interface{}]struct{})
-	if singular {
-		if object.R == nil {
-			object.R = &episodeR{}
-		}
-		args[object.ID] = struct{}{}
-	} else {
-		for _, obj := range slice {
-			if obj.R == nil {
-				obj.R = &episodeR{}
-			}
-			args[obj.ID] = struct{}{}
-		}
-	}
-
-	if len(args) == 0 {
-		return nil
-	}
-
-	argsSlice := make([]interface{}, len(args))
-	i := 0
-	for arg := range args {
-		argsSlice[i] = arg
-		i++
-	}
-
-	query := NewQuery(
-		qm.From(`subtitles`),
-		qm.WhereIn(`subtitles.episode_id in ?`, argsSlice...),
-	)
-	if mods != nil {
-		mods.Apply(query)
-	}
-
-	results, err := query.QueryContext(ctx, e)
-	if err != nil {
-		return errors.Wrap(err, "failed to eager load subtitles")
-	}
-
-	var resultSlice []*Subtitle
-	if err = queries.Bind(results, &resultSlice); err != nil {
-		return errors.Wrap(err, "failed to bind eager loaded slice subtitles")
-	}
-
-	if err = results.Close(); err != nil {
-		return errors.Wrap(err, "failed to close results in eager load on subtitles")
-	}
-	if err = results.Err(); err != nil {
-		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for subtitles")
-	}
-
-	if len(subtitleAfterSelectHooks) != 0 {
-		for _, obj := range resultSlice {
-			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
-				return err
-			}
-		}
-	}
-	if singular {
-		object.R.Subtitles = resultSlice
-		for _, foreign := range resultSlice {
-			if foreign.R == nil {
-				foreign.R = &subtitleR{}
-			}
-			foreign.R.Episode = object
-		}
-		return nil
-	}
-
-	for _, foreign := range resultSlice {
-		for _, local := range slice {
-			if queries.Equal(local.ID, foreign.EpisodeID) {
-				local.R.Subtitles = append(local.R.Subtitles, foreign)
-				if foreign.R == nil {
-					foreign.R = &subtitleR{}
-				}
-				foreign.R.Episode = local
-				break
-			}
-		}
-	}
-
-	return nil
-}
-
-// LoadTorrentLinks allows an eager lookup of values, cached into the
-// loaded structs of the objects. This is for a 1-M or N-M relationship.
-func (episodeL) LoadTorrentLinks(ctx context.Context, e boil.ContextExecutor, singular bool, maybeEpisode interface{}, mods queries.Applicator) error {
-	var slice []*Episode
-	var object *Episode
-
-	if singular {
-		var ok bool
-		object, ok = maybeEpisode.(*Episode)
-		if !ok {
-			object = new(Episode)
-			ok = queries.SetFromEmbeddedStruct(&object, &maybeEpisode)
-			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeEpisode))
-			}
-		}
-	} else {
-		s, ok := maybeEpisode.(*[]*Episode)
-		if ok {
-			slice = *s
-		} else {
-			ok = queries.SetFromEmbeddedStruct(&slice, maybeEpisode)
-			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeEpisode))
-			}
-		}
-	}
-
-	args := make(map[interface{}]struct{})
-	if singular {
-		if object.R == nil {
-			object.R = &episodeR{}
-		}
-		args[object.ID] = struct{}{}
-	} else {
-		for _, obj := range slice {
-			if obj.R == nil {
-				obj.R = &episodeR{}
-			}
-			args[obj.ID] = struct{}{}
-		}
-	}
-
-	if len(args) == 0 {
-		return nil
-	}
-
-	argsSlice := make([]interface{}, len(args))
-	i := 0
-	for arg := range args {
-		argsSlice[i] = arg
-		i++
-	}
-
-	query := NewQuery(
-		qm.From(`torrent_links`),
-		qm.WhereIn(`torrent_links.episode_id in ?`, argsSlice...),
-	)
-	if mods != nil {
-		mods.Apply(query)
-	}
-
-	results, err := query.QueryContext(ctx, e)
-	if err != nil {
-		return errors.Wrap(err, "failed to eager load torrent_links")
-	}
-
-	var resultSlice []*TorrentLink
-	if err = queries.Bind(results, &resultSlice); err != nil {
-		return errors.Wrap(err, "failed to bind eager loaded slice torrent_links")
-	}
-
-	if err = results.Close(); err != nil {
-		return errors.Wrap(err, "failed to close results in eager load on torrent_links")
-	}
-	if err = results.Err(); err != nil {
-		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for torrent_links")
-	}
-
-	if len(torrentLinkAfterSelectHooks) != 0 {
-		for _, obj := range resultSlice {
-			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
-				return err
-			}
-		}
-	}
-	if singular {
-		object.R.TorrentLinks = resultSlice
-		for _, foreign := range resultSlice {
-			if foreign.R == nil {
-				foreign.R = &torrentLinkR{}
-			}
-			foreign.R.Episode = object
-		}
-		return nil
-	}
-
-	for _, foreign := range resultSlice {
-		for _, local := range slice {
-			if queries.Equal(local.ID, foreign.EpisodeID) {
-				local.R.TorrentLinks = append(local.R.TorrentLinks, foreign)
-				if foreign.R == nil {
-					foreign.R = &torrentLinkR{}
-				}
-				foreign.R.Episode = local
-				break
-			}
-		}
-	}
-
-	return nil
-}
-
-// AddSubtitles adds the given related objects to the existing relationships
-// of the episode, optionally inserting them as new records.
-// Appends related to o.R.Subtitles.
-// Sets related.R.Episode appropriately.
-func (o *Episode) AddSubtitles(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Subtitle) error {
-	var err error
-	for _, rel := range related {
-		if insert {
-			queries.Assign(&rel.EpisodeID, o.ID)
-			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
-				return errors.Wrap(err, "failed to insert into foreign table")
-			}
-		} else {
-			updateQuery := fmt.Sprintf(
-				"UPDATE \"subtitles\" SET %s WHERE %s",
-				strmangle.SetParamNames("\"", "\"", 1, []string{"episode_id"}),
-				strmangle.WhereClause("\"", "\"", 2, subtitlePrimaryKeyColumns),
-			)
-			values := []interface{}{o.ID, rel.ID}
-
-			if boil.IsDebug(ctx) {
-				writer := boil.DebugWriterFrom(ctx)
-				fmt.Fprintln(writer, updateQuery)
-				fmt.Fprintln(writer, values)
-			}
-			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
-				return errors.Wrap(err, "failed to update foreign table")
-			}
-
-			queries.Assign(&rel.EpisodeID, o.ID)
-		}
-	}
-
-	if o.R == nil {
-		o.R = &episodeR{
-			Subtitles: related,
-		}
-	} else {
-		o.R.Subtitles = append(o.R.Subtitles, related...)
-	}
-
-	for _, rel := range related {
-		if rel.R == nil {
-			rel.R = &subtitleR{
-				Episode: o,
-			}
-		} else {
-			rel.R.Episode = o
-		}
-	}
-	return nil
-}
-
-// SetSubtitles removes all previously related items of the
-// episode replacing them completely with the passed
-// in related items, optionally inserting them as new records.
-// Sets o.R.Episode's Subtitles accordingly.
-// Replaces o.R.Subtitles with related.
-// Sets related.R.Episode's Subtitles accordingly.
-func (o *Episode) SetSubtitles(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Subtitle) error {
-	query := "update \"subtitles\" set \"episode_id\" = null where \"episode_id\" = $1"
-	values := []interface{}{o.ID}
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, query)
-		fmt.Fprintln(writer, values)
-	}
-	_, err := exec.ExecContext(ctx, query, values...)
-	if err != nil {
-		return errors.Wrap(err, "failed to remove relationships before set")
-	}
-
-	if o.R != nil {
-		for _, rel := range o.R.Subtitles {
-			queries.SetScanner(&rel.EpisodeID, nil)
-			if rel.R == nil {
-				continue
-			}
-
-			rel.R.Episode = nil
-		}
-		o.R.Subtitles = nil
-	}
-
-	return o.AddSubtitles(ctx, exec, insert, related...)
-}
-
-// RemoveSubtitles relationships from objects passed in.
-// Removes related items from R.Subtitles (uses pointer comparison, removal does not keep order)
-// Sets related.R.Episode.
-func (o *Episode) RemoveSubtitles(ctx context.Context, exec boil.ContextExecutor, related ...*Subtitle) error {
-	if len(related) == 0 {
-		return nil
-	}
-
-	var err error
-	for _, rel := range related {
-		queries.SetScanner(&rel.EpisodeID, nil)
-		if rel.R != nil {
-			rel.R.Episode = nil
-		}
-		if _, err = rel.Update(ctx, exec, boil.Whitelist("episode_id")); err != nil {
-			return err
-		}
-	}
-	if o.R == nil {
-		return nil
-	}
-
-	for _, rel := range related {
-		for i, ri := range o.R.Subtitles {
-			if rel != ri {
-				continue
-			}
-
-			ln := len(o.R.Subtitles)
-			if ln > 1 && i < ln-1 {
-				o.R.Subtitles[i] = o.R.Subtitles[ln-1]
-			}
-			o.R.Subtitles = o.R.Subtitles[:ln-1]
-			break
-		}
-	}
-
-	return nil
-}
-
-// AddTorrentLinks adds the given related objects to the existing relationships
-// of the episode, optionally inserting them as new records.
-// Appends related to o.R.TorrentLinks.
-// Sets related.R.Episode appropriately.
-func (o *Episode) AddTorrentLinks(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*TorrentLink) error {
-	var err error
-	for _, rel := range related {
-		if insert {
-			queries.Assign(&rel.EpisodeID, o.ID)
-			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
-				return errors.Wrap(err, "failed to insert into foreign table")
-			}
-		} else {
-			updateQuery := fmt.Sprintf(
-				"UPDATE \"torrent_links\" SET %s WHERE %s",
-				strmangle.SetParamNames("\"", "\"", 1, []string{"episode_id"}),
-				strmangle.WhereClause("\"", "\"", 2, torrentLinkPrimaryKeyColumns),
-			)
-			values := []interface{}{o.ID, rel.ID}
-
-			if boil.IsDebug(ctx) {
-				writer := boil.DebugWriterFrom(ctx)
-				fmt.Fprintln(writer, updateQuery)
-				fmt.Fprintln(writer, values)
-			}
-			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
-				return errors.Wrap(err, "failed to update foreign table")
-			}
-
-			queries.Assign(&rel.EpisodeID, o.ID)
-		}
-	}
-
-	if o.R == nil {
-		o.R = &episodeR{
-			TorrentLinks: related,
-		}
-	} else {
-		o.R.TorrentLinks = append(o.R.TorrentLinks, related...)
-	}
-
-	for _, rel := range related {
-		if rel.R == nil {
-			rel.R = &torrentLinkR{
-				Episode: o,
-			}
-		} else {
-			rel.R.Episode = o
-		}
-	}
-	return nil
-}
-
-// SetTorrentLinks removes all previously related items of the
-// episode replacing them completely with the passed
-// in related items, optionally inserting them as new records.
-// Sets o.R.Episode's TorrentLinks accordingly.
-// Replaces o.R.TorrentLinks with related.
-// Sets related.R.Episode's TorrentLinks accordingly.
-func (o *Episode) SetTorrentLinks(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*TorrentLink) error {
-	query := "update \"torrent_links\" set \"episode_id\" = null where \"episode_id\" = $1"
-	values := []interface{}{o.ID}
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, query)
-		fmt.Fprintln(writer, values)
-	}
-	_, err := exec.ExecContext(ctx, query, values...)
-	if err != nil {
-		return errors.Wrap(err, "failed to remove relationships before set")
-	}
-
-	if o.R != nil {
-		for _, rel := range o.R.TorrentLinks {
-			queries.SetScanner(&rel.EpisodeID, nil)
-			if rel.R == nil {
-				continue
-			}
-
-			rel.R.Episode = nil
-		}
-		o.R.TorrentLinks = nil
-	}
-
-	return o.AddTorrentLinks(ctx, exec, insert, related...)
-}
-
-// RemoveTorrentLinks relationships from objects passed in.
-// Removes related items from R.TorrentLinks (uses pointer comparison, removal does not keep order)
-// Sets related.R.Episode.
-func (o *Episode) RemoveTorrentLinks(ctx context.Context, exec boil.ContextExecutor, related ...*TorrentLink) error {
-	if len(related) == 0 {
-		return nil
-	}
-
-	var err error
-	for _, rel := range related {
-		queries.SetScanner(&rel.EpisodeID, nil)
-		if rel.R != nil {
-			rel.R.Episode = nil
-		}
-		if _, err = rel.Update(ctx, exec, boil.Whitelist("episode_id")); err != nil {
-			return err
-		}
-	}
-	if o.R == nil {
-		return nil
-	}
-
-	for _, rel := range related {
-		for i, ri := range o.R.TorrentLinks {
-			if rel != ri {
-				continue
-			}
-
-			ln := len(o.R.TorrentLinks)
-			if ln > 1 && i < ln-1 {
-				o.R.TorrentLinks[i] = o.R.TorrentLinks[ln-1]
-			}
-			o.R.TorrentLinks = o.R.TorrentLinks[:ln-1]
-			break
-		}
-	}
-
-	return nil
-}
-
 // Episodes retrieves all the records using an executor.
 func Episodes(mods ...qm.QueryMod) episodeQuery {
-	mods = append(mods, qm.From("\"episodes\""))
+	mods = append(mods, qm.From("`episodes`"))
 	q := NewQuery(mods...)
 	if len(queries.GetSelect(q)) == 0 {
-		queries.SetSelect(q, []string{"\"episodes\".*"})
+		queries.SetSelect(q, []string{"`episodes`.*"})
 	}
 
 	return episodeQuery{q}
@@ -1048,7 +526,7 @@ func FindEpisode(ctx context.Context, exec boil.ContextExecutor, iD int64, selec
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from \"episodes\" where \"id\"=$1", sel,
+		"select %s from `episodes` where `id`=?", sel,
 	)
 
 	q := queries.Raw(query, iD)
@@ -1115,15 +593,15 @@ func (o *Episode) Insert(ctx context.Context, exec boil.ContextExecutor, columns
 			return err
 		}
 		if len(wl) != 0 {
-			cache.query = fmt.Sprintf("INSERT INTO \"episodes\" (\"%s\") %%sVALUES (%s)%%s", strings.Join(wl, "\",\""), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
+			cache.query = fmt.Sprintf("INSERT INTO `episodes` (`%s`) %%sVALUES (%s)%%s", strings.Join(wl, "`,`"), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
 		} else {
-			cache.query = "INSERT INTO \"episodes\" %sDEFAULT VALUES%s"
+			cache.query = "INSERT INTO `episodes` () VALUES ()%s%s"
 		}
 
 		var queryOutput, queryReturning string
 
 		if len(cache.retMapping) != 0 {
-			queryReturning = fmt.Sprintf(" RETURNING \"%s\"", strings.Join(returnColumns, "\",\""))
+			cache.retQuery = fmt.Sprintf("SELECT `%s` FROM `episodes` WHERE %s", strings.Join(returnColumns, "`,`"), strmangle.WhereClause("`", "`", 0, episodePrimaryKeyColumns))
 		}
 
 		cache.query = fmt.Sprintf(cache.query, queryOutput, queryReturning)
@@ -1137,17 +615,44 @@ func (o *Episode) Insert(ctx context.Context, exec boil.ContextExecutor, columns
 		fmt.Fprintln(writer, cache.query)
 		fmt.Fprintln(writer, vals)
 	}
-
-	if len(cache.retMapping) != 0 {
-		err = exec.QueryRowContext(ctx, cache.query, vals...).Scan(queries.PtrsFromMapping(value, cache.retMapping)...)
-	} else {
-		_, err = exec.ExecContext(ctx, cache.query, vals...)
-	}
+	result, err := exec.ExecContext(ctx, cache.query, vals...)
 
 	if err != nil {
 		return errors.Wrap(err, "dbmodels: unable to insert into episodes")
 	}
 
+	var lastID int64
+	var identifierCols []interface{}
+
+	if len(cache.retMapping) == 0 {
+		goto CacheNoHooks
+	}
+
+	lastID, err = result.LastInsertId()
+	if err != nil {
+		return ErrSyncFail
+	}
+
+	o.ID = int64(lastID)
+	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == episodeMapping["id"] {
+		goto CacheNoHooks
+	}
+
+	identifierCols = []interface{}{
+		o.ID,
+	}
+
+	if boil.IsDebug(ctx) {
+		writer := boil.DebugWriterFrom(ctx)
+		fmt.Fprintln(writer, cache.retQuery)
+		fmt.Fprintln(writer, identifierCols...)
+	}
+	err = exec.QueryRowContext(ctx, cache.retQuery, identifierCols...).Scan(queries.PtrsFromMapping(value, cache.retMapping)...)
+	if err != nil {
+		return errors.Wrap(err, "dbmodels: unable to populate default values for episodes")
+	}
+
+CacheNoHooks:
 	if !cached {
 		episodeInsertCacheMut.Lock()
 		episodeInsertCache[key] = cache
@@ -1189,9 +694,9 @@ func (o *Episode) Update(ctx context.Context, exec boil.ContextExecutor, columns
 			return 0, errors.New("dbmodels: unable to update episodes, could not build whitelist")
 		}
 
-		cache.query = fmt.Sprintf("UPDATE \"episodes\" SET %s WHERE %s",
-			strmangle.SetParamNames("\"", "\"", 1, wl),
-			strmangle.WhereClause("\"", "\"", len(wl)+1, episodePrimaryKeyColumns),
+		cache.query = fmt.Sprintf("UPDATE `episodes` SET %s WHERE %s",
+			strmangle.SetParamNames("`", "`", 0, wl),
+			strmangle.WhereClause("`", "`", 0, episodePrimaryKeyColumns),
 		)
 		cache.valueMapping, err = queries.BindMapping(episodeType, episodeMapping, append(wl, episodePrimaryKeyColumns...))
 		if err != nil {
@@ -1270,9 +775,9 @@ func (o EpisodeSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, 
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := fmt.Sprintf("UPDATE \"episodes\" SET %s WHERE %s",
-		strmangle.SetParamNames("\"", "\"", 1, colNames),
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), len(colNames)+1, episodePrimaryKeyColumns, len(o)))
+	sql := fmt.Sprintf("UPDATE `episodes` SET %s WHERE %s",
+		strmangle.SetParamNames("`", "`", 0, colNames),
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, episodePrimaryKeyColumns, len(o)))
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1291,9 +796,13 @@ func (o EpisodeSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, 
 	return rowsAff, nil
 }
 
+var mySQLEpisodeUniqueColumns = []string{
+	"id",
+}
+
 // Upsert attempts an insert using an executor, and does an update or ignore on conflict.
 // See boil.Columns documentation for how to properly use updateColumns and insertColumns.
-func (o *Episode) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns) error {
+func (o *Episode) Upsert(ctx context.Context, exec boil.ContextExecutor, updateColumns, insertColumns boil.Columns) error {
 	if o == nil {
 		return errors.New("dbmodels: no episodes provided for upsert")
 	}
@@ -1311,19 +820,14 @@ func (o *Episode) Upsert(ctx context.Context, exec boil.ContextExecutor, updateO
 	}
 
 	nzDefaults := queries.NonZeroDefaultSet(episodeColumnsWithDefault, o)
+	nzUniques := queries.NonZeroDefaultSet(mySQLEpisodeUniqueColumns, o)
+
+	if len(nzUniques) == 0 {
+		return errors.New("cannot upsert with a table that cannot conflict on a unique column")
+	}
 
 	// Build cache key in-line uglily - mysql vs psql problems
 	buf := strmangle.GetBuffer()
-	if updateOnConflict {
-		buf.WriteByte('t')
-	} else {
-		buf.WriteByte('f')
-	}
-	buf.WriteByte('.')
-	for _, c := range conflictColumns {
-		buf.WriteString(c)
-	}
-	buf.WriteByte('.')
 	buf.WriteString(strconv.Itoa(updateColumns.Kind))
 	for _, c := range updateColumns.Cols {
 		buf.WriteString(c)
@@ -1337,6 +841,10 @@ func (o *Episode) Upsert(ctx context.Context, exec boil.ContextExecutor, updateO
 	for _, c := range nzDefaults {
 		buf.WriteString(c)
 	}
+	buf.WriteByte('.')
+	for _, c := range nzUniques {
+		buf.WriteString(c)
+	}
 	key := buf.String()
 	strmangle.PutBuffer(buf)
 
@@ -1347,7 +855,7 @@ func (o *Episode) Upsert(ctx context.Context, exec boil.ContextExecutor, updateO
 	var err error
 
 	if !cached {
-		insert, ret := insertColumns.InsertColumnSet(
+		insert, _ := insertColumns.InsertColumnSet(
 			episodeAllColumns,
 			episodeColumnsWithDefault,
 			episodeColumnsWithoutDefault,
@@ -1359,16 +867,18 @@ func (o *Episode) Upsert(ctx context.Context, exec boil.ContextExecutor, updateO
 			episodePrimaryKeyColumns,
 		)
 
-		if updateOnConflict && len(update) == 0 {
+		if !updateColumns.IsNone() && len(update) == 0 {
 			return errors.New("dbmodels: unable to upsert episodes, could not build update column list")
 		}
 
-		conflict := conflictColumns
-		if len(conflict) == 0 {
-			conflict = make([]string, len(episodePrimaryKeyColumns))
-			copy(conflict, episodePrimaryKeyColumns)
-		}
-		cache.query = buildUpsertQueryPostgres(dialect, "\"episodes\"", updateOnConflict, ret, update, conflict, insert)
+		ret := strmangle.SetComplement(episodeAllColumns, strmangle.SetIntersect(insert, update))
+
+		cache.query = buildUpsertQueryMySQL(dialect, "`episodes`", update, insert)
+		cache.retQuery = fmt.Sprintf(
+			"SELECT %s FROM `episodes` WHERE %s",
+			strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, ret), ","),
+			strmangle.WhereClause("`", "`", 0, nzUniques),
+		)
 
 		cache.valueMapping, err = queries.BindMapping(episodeType, episodeMapping, insert)
 		if err != nil {
@@ -1394,18 +904,47 @@ func (o *Episode) Upsert(ctx context.Context, exec boil.ContextExecutor, updateO
 		fmt.Fprintln(writer, cache.query)
 		fmt.Fprintln(writer, vals)
 	}
-	if len(cache.retMapping) != 0 {
-		err = exec.QueryRowContext(ctx, cache.query, vals...).Scan(returns...)
-		if errors.Is(err, sql.ErrNoRows) {
-			err = nil // Postgres doesn't return anything when there's no update
-		}
-	} else {
-		_, err = exec.ExecContext(ctx, cache.query, vals...)
-	}
+	result, err := exec.ExecContext(ctx, cache.query, vals...)
+
 	if err != nil {
-		return errors.Wrap(err, "dbmodels: unable to upsert episodes")
+		return errors.Wrap(err, "dbmodels: unable to upsert for episodes")
 	}
 
+	var lastID int64
+	var uniqueMap []uint64
+	var nzUniqueCols []interface{}
+
+	if len(cache.retMapping) == 0 {
+		goto CacheNoHooks
+	}
+
+	lastID, err = result.LastInsertId()
+	if err != nil {
+		return ErrSyncFail
+	}
+
+	o.ID = int64(lastID)
+	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == episodeMapping["id"] {
+		goto CacheNoHooks
+	}
+
+	uniqueMap, err = queries.BindMapping(episodeType, episodeMapping, nzUniques)
+	if err != nil {
+		return errors.Wrap(err, "dbmodels: unable to retrieve unique values for episodes")
+	}
+	nzUniqueCols = queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), uniqueMap)
+
+	if boil.IsDebug(ctx) {
+		writer := boil.DebugWriterFrom(ctx)
+		fmt.Fprintln(writer, cache.retQuery)
+		fmt.Fprintln(writer, nzUniqueCols...)
+	}
+	err = exec.QueryRowContext(ctx, cache.retQuery, nzUniqueCols...).Scan(returns...)
+	if err != nil {
+		return errors.Wrap(err, "dbmodels: unable to populate default values for episodes")
+	}
+
+CacheNoHooks:
 	if !cached {
 		episodeUpsertCacheMut.Lock()
 		episodeUpsertCache[key] = cache
@@ -1427,7 +966,7 @@ func (o *Episode) Delete(ctx context.Context, exec boil.ContextExecutor) (int64,
 	}
 
 	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), episodePrimaryKeyMapping)
-	sql := "DELETE FROM \"episodes\" WHERE \"id\"=$1"
+	sql := "DELETE FROM `episodes` WHERE `id`=?"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1492,8 +1031,8 @@ func (o EpisodeSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) 
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "DELETE FROM \"episodes\" WHERE " +
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 1, episodePrimaryKeyColumns, len(o))
+	sql := "DELETE FROM `episodes` WHERE " +
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, episodePrimaryKeyColumns, len(o))
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1547,8 +1086,8 @@ func (o *EpisodeSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor)
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "SELECT \"episodes\".* FROM \"episodes\" WHERE " +
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 1, episodePrimaryKeyColumns, len(*o))
+	sql := "SELECT `episodes`.* FROM `episodes` WHERE " +
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, episodePrimaryKeyColumns, len(*o))
 
 	q := queries.Raw(sql, args...)
 
@@ -1565,7 +1104,7 @@ func (o *EpisodeSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor)
 // EpisodeExists checks if the Episode row exists.
 func EpisodeExists(ctx context.Context, exec boil.ContextExecutor, iD int64) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from \"episodes\" where \"id\"=$1 limit 1)"
+	sql := "select exists(select 1 from `episodes` where `id`=? limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)

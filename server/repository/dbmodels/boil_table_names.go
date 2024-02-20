@@ -8,9 +8,11 @@ var TableNames = struct {
 	Shows        string
 	Subtitles    string
 	TorrentLinks string
+	Videos       string
 }{
 	Episodes:     "episodes",
 	Shows:        "shows",
 	Subtitles:    "subtitles",
 	TorrentLinks: "torrent_links",
+	Videos:       "videos",
 }

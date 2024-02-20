@@ -1,17 +1,24 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"github.com/a-h/templ"
 
+	"github.com/phimtorr/phimtor/desktop/client/api"
 	"github.com/phimtorr/phimtor/desktop/ui"
 )
 
-func (h *Handler) ListShows(c echo.Context) error {
-	resp, err := h.client.ListShowsWithResponse(c.Request().Context(), nil)
+func (h *Handler) ListShows(w http.ResponseWriter, r *http.Request, params api.ListShowsParams) {
+	resp, err := h.client.ListShowsWithResponse(r.Context(), &params)
 	if err != nil {
-		return err
+		handleError(w, r, "List shows", err, http.StatusInternalServerError)
+		return
 	}
-	return render(c, http.StatusOK, ui.Shows(resp.JSON200.Shows, resp.JSON200.Pagination))
+	if resp.StatusCode() != http.StatusOK {
+		handleError(w, r, "List shows", fmt.Errorf("http error=%d", resp.StatusCode()), resp.StatusCode())
+		return
+	}
+	templ.Handler(ui.Shows(resp.JSON200.Shows, resp.JSON200.Pagination)).ServeHTTP(w, r)
 }

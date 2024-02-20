@@ -12,8 +12,9 @@ import "bytes"
 
 import "github.com/phimtorr/phimtor/desktop/client/api"
 import "fmt"
+import "github.com/phimtorr/phimtor/desktop/handler/uri"
 
-func Shows(shows []api.BasicInfo, pg api.Pagination) templ.Component {
+func Shows(shows []api.Show, pg api.Pagination) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -32,7 +33,7 @@ func Shows(shows []api.BasicInfo, pg api.Pagination) templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Here is search box with some filter by year, etc --> <form class=\"my-2 space-y-2\"><input type=\"text\" class=\"mb-2 w-full rounded-lg border border-gray-400 bg-stone-700 p-2\" placeholder=\"Search by name\"><div class=\"flex flex-wrap space-x-2\"><div class=\"mb-2 flex items-center md:mb-0 md:w-1/4\"><label class=\"mr-2\" for=\"type\">Year</label> <select class=\"w-full rounded-lg border border-gray-400 bg-stone-700 p-2\"><option value=\"0\">All</option> <option value=\"1\">2020</option> <option value=\"2\">2019</option> <option value=\"3\">2018</option> <option value=\"4\">2017</option> <option value=\"5\">2016</option></select></div></div><div><button class=\"mb-2 rounded-lg border border-gray-400 bg-stone-700 p-2\">Search</button></div></form><nav class=\"my-2 flex items-center justify-start\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Here is search box with some filter by year, etc --> <form class=\"my-2 space-y-2\"><input type=\"text\" class=\"mb-2 w-full rounded-lg border border-gray-400 bg-stone-700 p-2\" placeholder=\"Search by name\"><div class=\"flex flex-wrap space-x-2\"><div class=\"mb-2 flex items-center md:mb-0 md:w-1/4\"><label class=\"mr-2\" for=\"type\">Year</label> <select class=\"w-full rounded-lg border border-gray-400 bg-stone-700 p-2\"><option value=\"0\">All</option> <option value=\"1\">2020</option> <option value=\"2\">2019</option> <option value=\"3\">2018</option> <option value=\"4\">2017</option> <option value=\"5\">2016</option></select></div></div><div><button class=\"mb-2 rounded-sm border border-gray-400 bg-stone-700 py-2 px-4\">Search</button></div></form><nav class=\"my-2 flex items-center justify-start\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -70,7 +71,7 @@ func Shows(shows []api.BasicInfo, pg api.Pagination) templ.Component {
 	})
 }
 
-func showBasicInfo(info api.BasicInfo) templ.Component {
+func showBasicInfo(show api.Show) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -83,11 +84,20 @@ func showBasicInfo(info api.BasicInfo) templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<figure class=\"transition-transform hover:scale-105\"><a href=\"#\"><div class=\"relative\"><img class=\"h-auto w-full object-cover\" src=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<figure class=\"transition-transform hover:scale-105\"><a href=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(info.PosterLink))
+		var templ_7745c5c3_Var4 templ.SafeURL = templ.SafeURL(uri.GetMovie(show.Id))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var4)))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div class=\"relative\"><img class=\"h-auto w-full object-cover\" src=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(show.PosterLink))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -95,8 +105,8 @@ func showBasicInfo(info api.BasicInfo) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if info.TotalEpisodes > 0 {
-			templ_7745c5c3_Err = label(fmt.Sprintf("%d/%d", info.CurrentEpisode, info.TotalEpisodes)).Render(ctx, templ_7745c5c3_Buffer)
+		if show.TotalEpisodes > 0 {
+			templ_7745c5c3_Err = label(fmt.Sprintf("%d/%d", show.CurrentEpisode, show.TotalEpisodes)).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -105,20 +115,20 @@ func showBasicInfo(info api.BasicInfo) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if info.ShowType == api.BasicInfoShowTypeMovie {
-			templ_7745c5c3_Err = label(fmt.Sprintf("IMDB %.1f", info.Score)).Render(ctx, templ_7745c5c3_Buffer)
+		if show.Type == api.ShowTypeMovie {
+			templ_7745c5c3_Err = label(fmt.Sprintf("IMDB %.1f", show.Score)).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		if info.ShowType == api.BasicInfoShowTypeSeries {
-			templ_7745c5c3_Err = label(fmt.Sprintf("TMDb %.1f", info.Score)).Render(ctx, templ_7745c5c3_Buffer)
+		if show.Type == api.ShowTypeSeries {
+			templ_7745c5c3_Err = label(fmt.Sprintf("TMDb %.1f", show.Score)).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		if info.ReleaseYear > 0 {
-			templ_7745c5c3_Err = label(fmt.Sprintf("%d", info.ReleaseYear)).Render(ctx, templ_7745c5c3_Buffer)
+		if show.ReleaseYear > 0 {
+			templ_7745c5c3_Err = label(fmt.Sprintf("%d", show.ReleaseYear)).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -127,14 +137,14 @@ func showBasicInfo(info api.BasicInfo) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if info.Quantity != "" {
-			templ_7745c5c3_Err = label(info.Quantity).Render(ctx, templ_7745c5c3_Buffer)
+		if show.Quantity != "" {
+			templ_7745c5c3_Err = label(show.Quantity).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		if info.DurationInMinutes > 0 {
-			templ_7745c5c3_Err = label(durationCount(info.DurationInMinutes)).Render(ctx, templ_7745c5c3_Buffer)
+		if show.DurationInMinutes > 0 {
+			templ_7745c5c3_Err = label(durationCount(show.DurationInMinutes)).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -143,12 +153,12 @@ func showBasicInfo(info api.BasicInfo) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var4 string
-		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(info.Title)
+		var templ_7745c5c3_Var5 string
+		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(show.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/shows.templ`, Line: 83, Col: 38}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/shows.templ`, Line: 84, Col: 38}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -156,12 +166,12 @@ func showBasicInfo(info api.BasicInfo) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var5 string
-		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(info.OriginalTitle)
+		var templ_7745c5c3_Var6 string
+		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(show.OriginalTitle)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/shows.templ`, Line: 84, Col: 46}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/shows.templ`, Line: 85, Col: 46}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -184,21 +194,21 @@ func label(text string) templ.Component {
 			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var6 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var6 == nil {
-			templ_7745c5c3_Var6 = templ.NopComponent
+		templ_7745c5c3_Var7 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var7 == nil {
+			templ_7745c5c3_Var7 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<span class=\"rounded-sm bg-stone-600 bg-opacity-70 p-2\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var7 string
-		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(text)
+		var templ_7745c5c3_Var8 string
+		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/shows.templ`, Line: 91, Col: 63}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/shows.templ`, Line: 92, Col: 63}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

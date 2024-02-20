@@ -2,8 +2,9 @@ package ui
 
 import "github.com/phimtorr/phimtor/desktop/client/api"
 import "fmt"
+import "github.com/phimtorr/phimtor/desktop/handler/uri"
 
-templ Shows(shows []api.BasicInfo, pg api.Pagination) {
+templ Shows(shows []api.Show, pg api.Pagination) {
 	@layout("Shows") {
 		<!-- Here is search box with some filter by year, etc -->
 		<form class="my-2 space-y-2">
@@ -29,7 +30,7 @@ templ Shows(shows []api.BasicInfo, pg api.Pagination) {
 			</div>
 			<div>
 				<button
-					class="mb-2 rounded-lg border border-gray-400 bg-stone-700 p-2"
+					class="mb-2 rounded-sm border border-gray-400 bg-stone-700 py-2 px-4"
 				>
 					Search
 				</button>
@@ -46,43 +47,43 @@ templ Shows(shows []api.BasicInfo, pg api.Pagination) {
 	}
 }
 
-templ showBasicInfo(info api.BasicInfo) {
+templ showBasicInfo(show api.Show) {
 	<figure class="transition-transform hover:scale-105">
-		<a href="#">
+		<a href={ templ.SafeURL(uri.GetMovie(show.Id)) }>
 			<div class="relative">
 				<img
 					class="h-auto w-full object-cover"
-					src={ info.PosterLink }
+					src={ show.PosterLink }
 					alt="Film Poster"
 				/>
 				<div class="absolute right-1 top-2 box-border space-x-1">
-					if info.TotalEpisodes > 0 {
-						@label(fmt.Sprintf("%d/%d", info.CurrentEpisode, info.TotalEpisodes))
+					if show.TotalEpisodes > 0 {
+						@label(fmt.Sprintf("%d/%d", show.CurrentEpisode, show.TotalEpisodes))
 					}
 				</div>
 				<div class="absolute left-1 top-2 box-border space-x-1">
-					if info.ShowType == api.BasicInfoShowTypeMovie {
-						@label(fmt.Sprintf("IMDB %.1f", info.Score))
+					if show.Type == api.ShowTypeMovie {
+						@label(fmt.Sprintf("IMDB %.1f", show.Score))
 					}
-					if info.ShowType == api.BasicInfoShowTypeSeries {
-						@label(fmt.Sprintf("TMDb %.1f", info.Score))
+					if show.Type == api.ShowTypeSeries {
+						@label(fmt.Sprintf("TMDb %.1f", show.Score))
 					}
-					if info.ReleaseYear > 0 {
-						@label(fmt.Sprintf("%d", info.ReleaseYear))
+					if show.ReleaseYear > 0 {
+						@label(fmt.Sprintf("%d", show.ReleaseYear))
 					}
 				</div>
 				<div class="absolute bottom-2 right-1 box-border space-x-1">
-					if info.Quantity != "" {
-						@label(info.Quantity)
+					if show.Quantity != "" {
+						@label(show.Quantity)
 					}
-					if info.DurationInMinutes > 0 {
-						@label(durationCount(info.DurationInMinutes))
+					if show.DurationInMinutes > 0 {
+						@label(durationCount(show.DurationInMinutes))
 					}
 				</div>
 			</div>
 			<div class="mt-2">
-				<h2 class="font-bold">{ info.Title }</h2>
-				<p class="font-light">{ info.OriginalTitle }</p>
+				<h2 class="font-bold">{ show.Title }</h2>
+				<p class="font-light">{ show.OriginalTitle }</p>
 			</div>
 		</a>
 	</figure>

@@ -1,0 +1,29 @@
+package ui
+
+import "github.com/phimtorr/phimtor/desktop/client/api"
+
+templ Movie(movie api.Movie) {
+	@layout(movie.Title) {
+		<section class="flex bg-stone-700 p-4 rounded-sm h-full">
+			<div class="w-full">
+				<img
+					class="w-full object-cover"
+					src={ movie.PosterLink }
+					alt={ movie.Title }
+				/>
+			</div>
+			<div class="p-4 flex-grow space-y-4">
+				<div class="space-y-4 mb-4">
+					<h1 class="mb-2 text-2xl font-bold">{ movie.Title }</h1>
+					<h2 class="mb-2 italic">{ movie.OriginalTitle }</h2>
+					<p class="mb-2">{ movie.Description }</p>
+					<p class="mb-2">Release Year: { toString(movie.ReleaseYear) }</p>
+					<p class="mb-2">IMDB Score: { toString(movie.Score) }</p>
+				</div>
+				<div class="mt-4 box-border">
+					<button class="rounded-sm py-4 px-6 bg-red-600 hover:bg-red-700 shadow">Watch Now</button>
+				</div>
+			</div>
+		</section>
+	}
+}

@@ -51,39 +51,39 @@ func makeCacheKey(cols boil.Columns, nzDefaults []string) string {
 	return str
 }
 
-type ShowType string
+type ShowsType string
 
-// Enum values for ShowType
+// Enum values for ShowsType
 const (
-	ShowTypeMovie  ShowType = "movie"
-	ShowTypeSeries ShowType = "series"
+	ShowsTypeMovie  ShowsType = "movie"
+	ShowsTypeSeries ShowsType = "series"
 )
 
-func AllShowType() []ShowType {
-	return []ShowType{
-		ShowTypeMovie,
-		ShowTypeSeries,
+func AllShowsType() []ShowsType {
+	return []ShowsType{
+		ShowsTypeMovie,
+		ShowsTypeSeries,
 	}
 }
 
-func (e ShowType) IsValid() error {
+func (e ShowsType) IsValid() error {
 	switch e {
-	case ShowTypeMovie, ShowTypeSeries:
+	case ShowsTypeMovie, ShowsTypeSeries:
 		return nil
 	default:
 		return errors.New("enum is not valid")
 	}
 }
 
-func (e ShowType) String() string {
+func (e ShowsType) String() string {
 	return string(e)
 }
 
-func (e ShowType) Ordinal() int {
+func (e ShowsType) Ordinal() int {
 	switch e {
-	case ShowTypeMovie:
+	case ShowsTypeMovie:
 		return 0
-	case ShowTypeSeries:
+	case ShowsTypeSeries:
 		return 1
 
 	default:

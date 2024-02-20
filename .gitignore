@@ -26,3 +26,6 @@ go.work
 
 .DS_Store
 .idea
+
+server/db_data
+desktop/tmp

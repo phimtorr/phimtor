@@ -89,13 +89,13 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 // The interface specification for the client above.
 type ClientInterface interface {
 	// GetMovie request
-	GetMovie(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetMovie(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListShows request
 	ListShows(ctx context.Context, params *ListShowsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
-func (c *Client) GetMovie(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) GetMovie(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetMovieRequest(c.Server, id)
 	if err != nil {
 		return nil, err
@@ -120,7 +120,7 @@ func (c *Client) ListShows(ctx context.Context, params *ListShowsParams, reqEdit
 }
 
 // NewGetMovieRequest generates requests for GetMovie
-func NewGetMovieRequest(server string, id int) (*http.Request, error) {
+func NewGetMovieRequest(server string, id int64) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -262,7 +262,7 @@ func WithBaseURL(baseURL string) ClientOption {
 // ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
 	// GetMovieWithResponse request
-	GetMovieWithResponse(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*GetMovieResponse, error)
+	GetMovieWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*GetMovieResponse, error)
 
 	// ListShowsWithResponse request
 	ListShowsWithResponse(ctx context.Context, params *ListShowsParams, reqEditors ...RequestEditorFn) (*ListShowsResponse, error)
@@ -274,6 +274,8 @@ type GetMovieResponse struct {
 	JSON200      *struct {
 		Movie Movie `json:"movie"`
 	}
+	JSON400 *BadRequest
+	JSON500 *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -296,9 +298,11 @@ type ListShowsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		Pagination Pagination  `json:"pagination"`
-		Shows      []BasicInfo `json:"shows"`
+		Pagination Pagination `json:"pagination"`
+		Shows      []Show     `json:"shows"`
 	}
+	JSON400 *BadRequest
+	JSON500 *InternalError
 }
 
 // Status returns HTTPResponse.Status
@@ -318,7 +322,7 @@ func (r ListShowsResponse) StatusCode() int {
 }
 
 // GetMovieWithResponse request returning *GetMovieResponse
-func (c *ClientWithResponses) GetMovieWithResponse(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*GetMovieResponse, error) {
+func (c *ClientWithResponses) GetMovieWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*GetMovieResponse, error) {
 	rsp, err := c.GetMovie(ctx, id, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -358,6 +362,20 @@ func ParseGetMovieResponse(rsp *http.Response) (*GetMovieResponse, error) {
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
 	}
 
 	return response, nil
@@ -379,13 +397,27 @@ func ParseListShowsResponse(rsp *http.Response) (*ListShowsResponse, error) {
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
-			Pagination Pagination  `json:"pagination"`
-			Shows      []BasicInfo `json:"shows"`
+			Pagination Pagination `json:"pagination"`
+			Shows      []Show     `json:"shows"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
 
 	}
 

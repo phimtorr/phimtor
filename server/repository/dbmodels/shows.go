@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/friendsofgo/errors"
+	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
@@ -23,20 +24,21 @@ import (
 
 // Show is an object representing the database table.
 type Show struct {
-	ID    int64    `boil:"id" json:"id" toml:"id" yaml:"id"`
-	Type  ShowType `boil:"type" json:"type" toml:"type" yaml:"type"`
-	Title string   `boil:"title" json:"title" toml:"title" yaml:"title"`
-	OriginalTitle     string    `boil:"original_title" json:"original_title" toml:"original_title" yaml:"original_title"`
-	PosterLink        string    `boil:"poster_link" json:"poster_link" toml:"poster_link" yaml:"poster_link"`
-	Description       string    `boil:"description" json:"description" toml:"description" yaml:"description"`
-	ReleaseYear       int       `boil:"release_year" json:"release_year" toml:"release_year" yaml:"release_year"`
-	Score             float32   `boil:"score" json:"score" toml:"score" yaml:"score"`
-	DurationInMinutes int       `boil:"duration_in_minutes" json:"duration_in_minutes" toml:"duration_in_minutes" yaml:"duration_in_minutes"`
-	Quantity          string    `boil:"quantity" json:"quantity" toml:"quantity" yaml:"quantity"`
-	TotalEpisodes     int       `boil:"total_episodes" json:"total_episodes" toml:"total_episodes" yaml:"total_episodes"`
-	CurrentEpisode    int       `boil:"current_episode" json:"current_episode" toml:"current_episode" yaml:"current_episode"`
-	CreatedAt         time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	UpdatedAt         time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
+	ID                int64      `boil:"id" json:"id" toml:"id" yaml:"id"`
+	Type              ShowsType  `boil:"type" json:"type" toml:"type" yaml:"type"`
+	Title             string     `boil:"title" json:"title" toml:"title" yaml:"title"`
+	OriginalTitle     string     `boil:"original_title" json:"original_title" toml:"original_title" yaml:"original_title"`
+	PosterLink        string     `boil:"poster_link" json:"poster_link" toml:"poster_link" yaml:"poster_link"`
+	Description       string     `boil:"description" json:"description" toml:"description" yaml:"description"`
+	ReleaseYear       int        `boil:"release_year" json:"release_year" toml:"release_year" yaml:"release_year"`
+	Score             float64    `boil:"score" json:"score" toml:"score" yaml:"score"`
+	DurationInMinutes int        `boil:"duration_in_minutes" json:"duration_in_minutes" toml:"duration_in_minutes" yaml:"duration_in_minutes"`
+	Quantity          string     `boil:"quantity" json:"quantity" toml:"quantity" yaml:"quantity"`
+	VideoID           null.Int64 `boil:"video_id" json:"video_id,omitempty" toml:"video_id" yaml:"video_id,omitempty"`
+	TotalEpisodes     int        `boil:"total_episodes" json:"total_episodes" toml:"total_episodes" yaml:"total_episodes"`
+	CurrentEpisode    int        `boil:"current_episode" json:"current_episode" toml:"current_episode" yaml:"current_episode"`
+	CreatedAt         time.Time  `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	UpdatedAt         time.Time  `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
 
 	R *showR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L showL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -53,6 +55,7 @@ var ShowColumns = struct {
 	Score             string
 	DurationInMinutes string
 	Quantity          string
+	VideoID           string
 	TotalEpisodes     string
 	CurrentEpisode    string
 	CreatedAt         string
@@ -68,6 +71,7 @@ var ShowColumns = struct {
 	Score:             "score",
 	DurationInMinutes: "duration_in_minutes",
 	Quantity:          "quantity",
+	VideoID:           "video_id",
 	TotalEpisodes:     "total_episodes",
 	CurrentEpisode:    "current_episode",
 	CreatedAt:         "created_at",
@@ -85,6 +89,7 @@ var ShowTableColumns = struct {
 	Score             string
 	DurationInMinutes string
 	Quantity          string
+	VideoID           string
 	TotalEpisodes     string
 	CurrentEpisode    string
 	CreatedAt         string
@@ -100,6 +105,7 @@ var ShowTableColumns = struct {
 	Score:             "shows.score",
 	DurationInMinutes: "shows.duration_in_minutes",
 	Quantity:          "shows.quantity",
+	VideoID:           "shows.video_id",
 	TotalEpisodes:     "shows.total_episodes",
 	CurrentEpisode:    "shows.current_episode",
 	CreatedAt:         "shows.created_at",
@@ -108,34 +114,34 @@ var ShowTableColumns = struct {
 
 // Generated where
 
-type whereHelperShowType struct{ field string }
+type whereHelperShowsType struct{ field string }
 
-func (w whereHelperShowType) EQ(x ShowType) qm.QueryMod {
+func (w whereHelperShowsType) EQ(x ShowsType) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.EQ, x)
 }
-func (w whereHelperShowType) NEQ(x ShowType) qm.QueryMod {
+func (w whereHelperShowsType) NEQ(x ShowsType) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.NEQ, x)
 }
-func (w whereHelperShowType) LT(x ShowType) qm.QueryMod {
+func (w whereHelperShowsType) LT(x ShowsType) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.LT, x)
 }
-func (w whereHelperShowType) LTE(x ShowType) qm.QueryMod {
+func (w whereHelperShowsType) LTE(x ShowsType) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.LTE, x)
 }
-func (w whereHelperShowType) GT(x ShowType) qm.QueryMod {
+func (w whereHelperShowsType) GT(x ShowsType) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.GT, x)
 }
-func (w whereHelperShowType) GTE(x ShowType) qm.QueryMod {
+func (w whereHelperShowsType) GTE(x ShowsType) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.GTE, x)
 }
-func (w whereHelperShowType) IN(slice []ShowType) qm.QueryMod {
+func (w whereHelperShowsType) IN(slice []ShowsType) qm.QueryMod {
 	values := make([]interface{}, 0, len(slice))
 	for _, value := range slice {
 		values = append(values, value)
 	}
 	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
 }
-func (w whereHelperShowType) NIN(slice []ShowType) qm.QueryMod {
+func (w whereHelperShowsType) NIN(slice []ShowsType) qm.QueryMod {
 	values := make([]interface{}, 0, len(slice))
 	for _, value := range slice {
 		values = append(values, value)
@@ -143,80 +149,113 @@ func (w whereHelperShowType) NIN(slice []ShowType) qm.QueryMod {
 	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
 }
 
-type whereHelperfloat32 struct{ field string }
+type whereHelperfloat64 struct{ field string }
 
-func (w whereHelperfloat32) EQ(x float32) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperfloat32) NEQ(x float32) qm.QueryMod {
+func (w whereHelperfloat64) EQ(x float64) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.EQ, x) }
+func (w whereHelperfloat64) NEQ(x float64) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.NEQ, x)
 }
-func (w whereHelperfloat32) LT(x float32) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperfloat32) LTE(x float32) qm.QueryMod {
+func (w whereHelperfloat64) LT(x float64) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LT, x) }
+func (w whereHelperfloat64) LTE(x float64) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.LTE, x)
 }
-func (w whereHelperfloat32) GT(x float32) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperfloat32) GTE(x float32) qm.QueryMod {
+func (w whereHelperfloat64) GT(x float64) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GT, x) }
+func (w whereHelperfloat64) GTE(x float64) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.GTE, x)
 }
-func (w whereHelperfloat32) IN(slice []float32) qm.QueryMod {
+func (w whereHelperfloat64) IN(slice []float64) qm.QueryMod {
 	values := make([]interface{}, 0, len(slice))
 	for _, value := range slice {
 		values = append(values, value)
 	}
 	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
 }
-func (w whereHelperfloat32) NIN(slice []float32) qm.QueryMod {
+func (w whereHelperfloat64) NIN(slice []float64) qm.QueryMod {
 	values := make([]interface{}, 0, len(slice))
 	for _, value := range slice {
 		values = append(values, value)
 	}
 	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
 }
+
+type whereHelpernull_Int64 struct{ field string }
+
+func (w whereHelpernull_Int64) EQ(x null.Int64) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, false, x)
+}
+func (w whereHelpernull_Int64) NEQ(x null.Int64) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, true, x)
+}
+func (w whereHelpernull_Int64) LT(x null.Int64) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LT, x)
+}
+func (w whereHelpernull_Int64) LTE(x null.Int64) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LTE, x)
+}
+func (w whereHelpernull_Int64) GT(x null.Int64) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GT, x)
+}
+func (w whereHelpernull_Int64) GTE(x null.Int64) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GTE, x)
+}
+func (w whereHelpernull_Int64) IN(slice []int64) qm.QueryMod {
+	values := make([]interface{}, 0, len(slice))
+	for _, value := range slice {
+		values = append(values, value)
+	}
+	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
+}
+func (w whereHelpernull_Int64) NIN(slice []int64) qm.QueryMod {
+	values := make([]interface{}, 0, len(slice))
+	for _, value := range slice {
+		values = append(values, value)
+	}
+	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
+}
+
+func (w whereHelpernull_Int64) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
+func (w whereHelpernull_Int64) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
 
 var ShowWhere = struct {
 	ID                whereHelperint64
-	Type              whereHelperShowType
+	Type              whereHelperShowsType
 	Title             whereHelperstring
 	OriginalTitle     whereHelperstring
 	PosterLink        whereHelperstring
 	Description       whereHelperstring
 	ReleaseYear       whereHelperint
-	Score             whereHelperfloat32
+	Score             whereHelperfloat64
 	DurationInMinutes whereHelperint
 	Quantity          whereHelperstring
+	VideoID           whereHelpernull_Int64
 	TotalEpisodes     whereHelperint
 	CurrentEpisode    whereHelperint
 	CreatedAt         whereHelpertime_Time
 	UpdatedAt         whereHelpertime_Time
 }{
-	ID:                whereHelperint64{field: "\"shows\".\"id\""},
-	Type:              whereHelperShowType{field: "\"shows\".\"type\""},
-	Title:             whereHelperstring{field: "\"shows\".\"title\""},
-	OriginalTitle:     whereHelperstring{field: "\"shows\".\"original_title\""},
-	PosterLink:        whereHelperstring{field: "\"shows\".\"poster_link\""},
-	Description:       whereHelperstring{field: "\"shows\".\"description\""},
-	ReleaseYear:       whereHelperint{field: "\"shows\".\"release_year\""},
-	Score:             whereHelperfloat32{field: "\"shows\".\"score\""},
-	DurationInMinutes: whereHelperint{field: "\"shows\".\"duration_in_minutes\""},
-	Quantity:          whereHelperstring{field: "\"shows\".\"quantity\""},
-	TotalEpisodes:     whereHelperint{field: "\"shows\".\"total_episodes\""},
-	CurrentEpisode:    whereHelperint{field: "\"shows\".\"current_episode\""},
-	CreatedAt:         whereHelpertime_Time{field: "\"shows\".\"created_at\""},
-	UpdatedAt:         whereHelpertime_Time{field: "\"shows\".\"updated_at\""},
+	ID:                whereHelperint64{field: "`shows`.`id`"},
+	Type:              whereHelperShowsType{field: "`shows`.`type`"},
+	Title:             whereHelperstring{field: "`shows`.`title`"},
+	OriginalTitle:     whereHelperstring{field: "`shows`.`original_title`"},
+	PosterLink:        whereHelperstring{field: "`shows`.`poster_link`"},
+	Description:       whereHelperstring{field: "`shows`.`description`"},
+	ReleaseYear:       whereHelperint{field: "`shows`.`release_year`"},
+	Score:             whereHelperfloat64{field: "`shows`.`score`"},
+	DurationInMinutes: whereHelperint{field: "`shows`.`duration_in_minutes`"},
+	Quantity:          whereHelperstring{field: "`shows`.`quantity`"},
+	VideoID:           whereHelpernull_Int64{field: "`shows`.`video_id`"},
+	TotalEpisodes:     whereHelperint{field: "`shows`.`total_episodes`"},
+	CurrentEpisode:    whereHelperint{field: "`shows`.`current_episode`"},
+	CreatedAt:         whereHelpertime_Time{field: "`shows`.`created_at`"},
+	UpdatedAt:         whereHelpertime_Time{field: "`shows`.`updated_at`"},
 }
 
 // ShowRels is where relationship names are stored.
 var ShowRels = struct {
-	Subtitles    string
-	TorrentLinks string
-}{
-	Subtitles:    "Subtitles",
-	TorrentLinks: "TorrentLinks",
-}
+}{}
 
 // showR is where relationships are stored.
 type showR struct {
-	Subtitles    SubtitleSlice    `boil:"Subtitles" json:"Subtitles" toml:"Subtitles" yaml:"Subtitles"`
-	TorrentLinks TorrentLinkSlice `boil:"TorrentLinks" json:"TorrentLinks" toml:"TorrentLinks" yaml:"TorrentLinks"`
 }
 
 // NewStruct creates a new relationship struct
@@ -224,27 +263,13 @@ func (*showR) NewStruct() *showR {
 	return &showR{}
 }
 
-func (r *showR) GetSubtitles() SubtitleSlice {
-	if r == nil {
-		return nil
-	}
-	return r.Subtitles
-}
-
-func (r *showR) GetTorrentLinks() TorrentLinkSlice {
-	if r == nil {
-		return nil
-	}
-	return r.TorrentLinks
-}
-
 // showL is where Load methods for each relationship are stored.
 type showL struct{}
 
 var (
-	showAllColumns            = []string{"id", "type", "title", "original_title", "poster_link", "description", "release_year", "score", "duration_in_minutes", "quantity", "total_episodes", "current_episode", "created_at", "updated_at"}
-	showColumnsWithoutDefault = []string{"type", "title", "original_title", "poster_link", "description", "release_year"}
-	showColumnsWithDefault    = []string{"id", "score", "duration_in_minutes", "quantity", "total_episodes", "current_episode", "created_at", "updated_at"}
+	showAllColumns            = []string{"id", "type", "title", "original_title", "poster_link", "description", "release_year", "score", "duration_in_minutes", "quantity", "video_id", "total_episodes", "current_episode", "created_at", "updated_at"}
+	showColumnsWithoutDefault = []string{"type", "title", "original_title", "poster_link", "description", "release_year", "quantity", "video_id"}
+	showColumnsWithDefault    = []string{"id", "score", "duration_in_minutes", "total_episodes", "current_episode", "created_at", "updated_at"}
 	showPrimaryKeyColumns     = []string{"id"}
 	showGeneratedColumns      = []string{}
 )
@@ -554,520 +579,12 @@ func (q showQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool,
 	return count > 0, nil
 }
 
-// Subtitles retrieves all the subtitle's Subtitles with an executor.
-func (o *Show) Subtitles(mods ...qm.QueryMod) subtitleQuery {
-	var queryMods []qm.QueryMod
-	if len(mods) != 0 {
-		queryMods = append(queryMods, mods...)
-	}
-
-	queryMods = append(queryMods,
-		qm.Where("\"subtitles\".\"show_id\"=?", o.ID),
-	)
-
-	return Subtitles(queryMods...)
-}
-
-// TorrentLinks retrieves all the torrent_link's TorrentLinks with an executor.
-func (o *Show) TorrentLinks(mods ...qm.QueryMod) torrentLinkQuery {
-	var queryMods []qm.QueryMod
-	if len(mods) != 0 {
-		queryMods = append(queryMods, mods...)
-	}
-
-	queryMods = append(queryMods,
-		qm.Where("\"torrent_links\".\"show_id\"=?", o.ID),
-	)
-
-	return TorrentLinks(queryMods...)
-}
-
-// LoadSubtitles allows an eager lookup of values, cached into the
-// loaded structs of the objects. This is for a 1-M or N-M relationship.
-func (showL) LoadSubtitles(ctx context.Context, e boil.ContextExecutor, singular bool, maybeShow interface{}, mods queries.Applicator) error {
-	var slice []*Show
-	var object *Show
-
-	if singular {
-		var ok bool
-		object, ok = maybeShow.(*Show)
-		if !ok {
-			object = new(Show)
-			ok = queries.SetFromEmbeddedStruct(&object, &maybeShow)
-			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeShow))
-			}
-		}
-	} else {
-		s, ok := maybeShow.(*[]*Show)
-		if ok {
-			slice = *s
-		} else {
-			ok = queries.SetFromEmbeddedStruct(&slice, maybeShow)
-			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeShow))
-			}
-		}
-	}
-
-	args := make(map[interface{}]struct{})
-	if singular {
-		if object.R == nil {
-			object.R = &showR{}
-		}
-		args[object.ID] = struct{}{}
-	} else {
-		for _, obj := range slice {
-			if obj.R == nil {
-				obj.R = &showR{}
-			}
-			args[obj.ID] = struct{}{}
-		}
-	}
-
-	if len(args) == 0 {
-		return nil
-	}
-
-	argsSlice := make([]interface{}, len(args))
-	i := 0
-	for arg := range args {
-		argsSlice[i] = arg
-		i++
-	}
-
-	query := NewQuery(
-		qm.From(`subtitles`),
-		qm.WhereIn(`subtitles.show_id in ?`, argsSlice...),
-	)
-	if mods != nil {
-		mods.Apply(query)
-	}
-
-	results, err := query.QueryContext(ctx, e)
-	if err != nil {
-		return errors.Wrap(err, "failed to eager load subtitles")
-	}
-
-	var resultSlice []*Subtitle
-	if err = queries.Bind(results, &resultSlice); err != nil {
-		return errors.Wrap(err, "failed to bind eager loaded slice subtitles")
-	}
-
-	if err = results.Close(); err != nil {
-		return errors.Wrap(err, "failed to close results in eager load on subtitles")
-	}
-	if err = results.Err(); err != nil {
-		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for subtitles")
-	}
-
-	if len(subtitleAfterSelectHooks) != 0 {
-		for _, obj := range resultSlice {
-			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
-				return err
-			}
-		}
-	}
-	if singular {
-		object.R.Subtitles = resultSlice
-		for _, foreign := range resultSlice {
-			if foreign.R == nil {
-				foreign.R = &subtitleR{}
-			}
-			foreign.R.Show = object
-		}
-		return nil
-	}
-
-	for _, foreign := range resultSlice {
-		for _, local := range slice {
-			if queries.Equal(local.ID, foreign.ShowID) {
-				local.R.Subtitles = append(local.R.Subtitles, foreign)
-				if foreign.R == nil {
-					foreign.R = &subtitleR{}
-				}
-				foreign.R.Show = local
-				break
-			}
-		}
-	}
-
-	return nil
-}
-
-// LoadTorrentLinks allows an eager lookup of values, cached into the
-// loaded structs of the objects. This is for a 1-M or N-M relationship.
-func (showL) LoadTorrentLinks(ctx context.Context, e boil.ContextExecutor, singular bool, maybeShow interface{}, mods queries.Applicator) error {
-	var slice []*Show
-	var object *Show
-
-	if singular {
-		var ok bool
-		object, ok = maybeShow.(*Show)
-		if !ok {
-			object = new(Show)
-			ok = queries.SetFromEmbeddedStruct(&object, &maybeShow)
-			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeShow))
-			}
-		}
-	} else {
-		s, ok := maybeShow.(*[]*Show)
-		if ok {
-			slice = *s
-		} else {
-			ok = queries.SetFromEmbeddedStruct(&slice, maybeShow)
-			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeShow))
-			}
-		}
-	}
-
-	args := make(map[interface{}]struct{})
-	if singular {
-		if object.R == nil {
-			object.R = &showR{}
-		}
-		args[object.ID] = struct{}{}
-	} else {
-		for _, obj := range slice {
-			if obj.R == nil {
-				obj.R = &showR{}
-			}
-			args[obj.ID] = struct{}{}
-		}
-	}
-
-	if len(args) == 0 {
-		return nil
-	}
-
-	argsSlice := make([]interface{}, len(args))
-	i := 0
-	for arg := range args {
-		argsSlice[i] = arg
-		i++
-	}
-
-	query := NewQuery(
-		qm.From(`torrent_links`),
-		qm.WhereIn(`torrent_links.show_id in ?`, argsSlice...),
-	)
-	if mods != nil {
-		mods.Apply(query)
-	}
-
-	results, err := query.QueryContext(ctx, e)
-	if err != nil {
-		return errors.Wrap(err, "failed to eager load torrent_links")
-	}
-
-	var resultSlice []*TorrentLink
-	if err = queries.Bind(results, &resultSlice); err != nil {
-		return errors.Wrap(err, "failed to bind eager loaded slice torrent_links")
-	}
-
-	if err = results.Close(); err != nil {
-		return errors.Wrap(err, "failed to close results in eager load on torrent_links")
-	}
-	if err = results.Err(); err != nil {
-		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for torrent_links")
-	}
-
-	if len(torrentLinkAfterSelectHooks) != 0 {
-		for _, obj := range resultSlice {
-			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
-				return err
-			}
-		}
-	}
-	if singular {
-		object.R.TorrentLinks = resultSlice
-		for _, foreign := range resultSlice {
-			if foreign.R == nil {
-				foreign.R = &torrentLinkR{}
-			}
-			foreign.R.Show = object
-		}
-		return nil
-	}
-
-	for _, foreign := range resultSlice {
-		for _, local := range slice {
-			if queries.Equal(local.ID, foreign.ShowID) {
-				local.R.TorrentLinks = append(local.R.TorrentLinks, foreign)
-				if foreign.R == nil {
-					foreign.R = &torrentLinkR{}
-				}
-				foreign.R.Show = local
-				break
-			}
-		}
-	}
-
-	return nil
-}
-
-// AddSubtitles adds the given related objects to the existing relationships
-// of the show, optionally inserting them as new records.
-// Appends related to o.R.Subtitles.
-// Sets related.R.Show appropriately.
-func (o *Show) AddSubtitles(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Subtitle) error {
-	var err error
-	for _, rel := range related {
-		if insert {
-			queries.Assign(&rel.ShowID, o.ID)
-			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
-				return errors.Wrap(err, "failed to insert into foreign table")
-			}
-		} else {
-			updateQuery := fmt.Sprintf(
-				"UPDATE \"subtitles\" SET %s WHERE %s",
-				strmangle.SetParamNames("\"", "\"", 1, []string{"show_id"}),
-				strmangle.WhereClause("\"", "\"", 2, subtitlePrimaryKeyColumns),
-			)
-			values := []interface{}{o.ID, rel.ID}
-
-			if boil.IsDebug(ctx) {
-				writer := boil.DebugWriterFrom(ctx)
-				fmt.Fprintln(writer, updateQuery)
-				fmt.Fprintln(writer, values)
-			}
-			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
-				return errors.Wrap(err, "failed to update foreign table")
-			}
-
-			queries.Assign(&rel.ShowID, o.ID)
-		}
-	}
-
-	if o.R == nil {
-		o.R = &showR{
-			Subtitles: related,
-		}
-	} else {
-		o.R.Subtitles = append(o.R.Subtitles, related...)
-	}
-
-	for _, rel := range related {
-		if rel.R == nil {
-			rel.R = &subtitleR{
-				Show: o,
-			}
-		} else {
-			rel.R.Show = o
-		}
-	}
-	return nil
-}
-
-// SetSubtitles removes all previously related items of the
-// show replacing them completely with the passed
-// in related items, optionally inserting them as new records.
-// Sets o.R.Show's Subtitles accordingly.
-// Replaces o.R.Subtitles with related.
-// Sets related.R.Show's Subtitles accordingly.
-func (o *Show) SetSubtitles(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Subtitle) error {
-	query := "update \"subtitles\" set \"show_id\" = null where \"show_id\" = $1"
-	values := []interface{}{o.ID}
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, query)
-		fmt.Fprintln(writer, values)
-	}
-	_, err := exec.ExecContext(ctx, query, values...)
-	if err != nil {
-		return errors.Wrap(err, "failed to remove relationships before set")
-	}
-
-	if o.R != nil {
-		for _, rel := range o.R.Subtitles {
-			queries.SetScanner(&rel.ShowID, nil)
-			if rel.R == nil {
-				continue
-			}
-
-			rel.R.Show = nil
-		}
-		o.R.Subtitles = nil
-	}
-
-	return o.AddSubtitles(ctx, exec, insert, related...)
-}
-
-// RemoveSubtitles relationships from objects passed in.
-// Removes related items from R.Subtitles (uses pointer comparison, removal does not keep order)
-// Sets related.R.Show.
-func (o *Show) RemoveSubtitles(ctx context.Context, exec boil.ContextExecutor, related ...*Subtitle) error {
-	if len(related) == 0 {
-		return nil
-	}
-
-	var err error
-	for _, rel := range related {
-		queries.SetScanner(&rel.ShowID, nil)
-		if rel.R != nil {
-			rel.R.Show = nil
-		}
-		if _, err = rel.Update(ctx, exec, boil.Whitelist("show_id")); err != nil {
-			return err
-		}
-	}
-	if o.R == nil {
-		return nil
-	}
-
-	for _, rel := range related {
-		for i, ri := range o.R.Subtitles {
-			if rel != ri {
-				continue
-			}
-
-			ln := len(o.R.Subtitles)
-			if ln > 1 && i < ln-1 {
-				o.R.Subtitles[i] = o.R.Subtitles[ln-1]
-			}
-			o.R.Subtitles = o.R.Subtitles[:ln-1]
-			break
-		}
-	}
-
-	return nil
-}
-
-// AddTorrentLinks adds the given related objects to the existing relationships
-// of the show, optionally inserting them as new records.
-// Appends related to o.R.TorrentLinks.
-// Sets related.R.Show appropriately.
-func (o *Show) AddTorrentLinks(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*TorrentLink) error {
-	var err error
-	for _, rel := range related {
-		if insert {
-			queries.Assign(&rel.ShowID, o.ID)
-			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
-				return errors.Wrap(err, "failed to insert into foreign table")
-			}
-		} else {
-			updateQuery := fmt.Sprintf(
-				"UPDATE \"torrent_links\" SET %s WHERE %s",
-				strmangle.SetParamNames("\"", "\"", 1, []string{"show_id"}),
-				strmangle.WhereClause("\"", "\"", 2, torrentLinkPrimaryKeyColumns),
-			)
-			values := []interface{}{o.ID, rel.ID}
-
-			if boil.IsDebug(ctx) {
-				writer := boil.DebugWriterFrom(ctx)
-				fmt.Fprintln(writer, updateQuery)
-				fmt.Fprintln(writer, values)
-			}
-			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
-				return errors.Wrap(err, "failed to update foreign table")
-			}
-
-			queries.Assign(&rel.ShowID, o.ID)
-		}
-	}
-
-	if o.R == nil {
-		o.R = &showR{
-			TorrentLinks: related,
-		}
-	} else {
-		o.R.TorrentLinks = append(o.R.TorrentLinks, related...)
-	}
-
-	for _, rel := range related {
-		if rel.R == nil {
-			rel.R = &torrentLinkR{
-				Show: o,
-			}
-		} else {
-			rel.R.Show = o
-		}
-	}
-	return nil
-}
-
-// SetTorrentLinks removes all previously related items of the
-// show replacing them completely with the passed
-// in related items, optionally inserting them as new records.
-// Sets o.R.Show's TorrentLinks accordingly.
-// Replaces o.R.TorrentLinks with related.
-// Sets related.R.Show's TorrentLinks accordingly.
-func (o *Show) SetTorrentLinks(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*TorrentLink) error {
-	query := "update \"torrent_links\" set \"show_id\" = null where \"show_id\" = $1"
-	values := []interface{}{o.ID}
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, query)
-		fmt.Fprintln(writer, values)
-	}
-	_, err := exec.ExecContext(ctx, query, values...)
-	if err != nil {
-		return errors.Wrap(err, "failed to remove relationships before set")
-	}
-
-	if o.R != nil {
-		for _, rel := range o.R.TorrentLinks {
-			queries.SetScanner(&rel.ShowID, nil)
-			if rel.R == nil {
-				continue
-			}
-
-			rel.R.Show = nil
-		}
-		o.R.TorrentLinks = nil
-	}
-
-	return o.AddTorrentLinks(ctx, exec, insert, related...)
-}
-
-// RemoveTorrentLinks relationships from objects passed in.
-// Removes related items from R.TorrentLinks (uses pointer comparison, removal does not keep order)
-// Sets related.R.Show.
-func (o *Show) RemoveTorrentLinks(ctx context.Context, exec boil.ContextExecutor, related ...*TorrentLink) error {
-	if len(related) == 0 {
-		return nil
-	}
-
-	var err error
-	for _, rel := range related {
-		queries.SetScanner(&rel.ShowID, nil)
-		if rel.R != nil {
-			rel.R.Show = nil
-		}
-		if _, err = rel.Update(ctx, exec, boil.Whitelist("show_id")); err != nil {
-			return err
-		}
-	}
-	if o.R == nil {
-		return nil
-	}
-
-	for _, rel := range related {
-		for i, ri := range o.R.TorrentLinks {
-			if rel != ri {
-				continue
-			}
-
-			ln := len(o.R.TorrentLinks)
-			if ln > 1 && i < ln-1 {
-				o.R.TorrentLinks[i] = o.R.TorrentLinks[ln-1]
-			}
-			o.R.TorrentLinks = o.R.TorrentLinks[:ln-1]
-			break
-		}
-	}
-
-	return nil
-}
-
 // Shows retrieves all the records using an executor.
 func Shows(mods ...qm.QueryMod) showQuery {
-	mods = append(mods, qm.From("\"shows\""))
+	mods = append(mods, qm.From("`shows`"))
 	q := NewQuery(mods...)
 	if len(queries.GetSelect(q)) == 0 {
-		queries.SetSelect(q, []string{"\"shows\".*"})
+		queries.SetSelect(q, []string{"`shows`.*"})
 	}
 
 	return showQuery{q}
@@ -1083,7 +600,7 @@ func FindShow(ctx context.Context, exec boil.ContextExecutor, iD int64, selectCo
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from \"shows\" where \"id\"=$1", sel,
+		"select %s from `shows` where `id`=?", sel,
 	)
 
 	q := queries.Raw(query, iD)
@@ -1150,15 +667,15 @@ func (o *Show) Insert(ctx context.Context, exec boil.ContextExecutor, columns bo
 			return err
 		}
 		if len(wl) != 0 {
-			cache.query = fmt.Sprintf("INSERT INTO \"shows\" (\"%s\") %%sVALUES (%s)%%s", strings.Join(wl, "\",\""), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
+			cache.query = fmt.Sprintf("INSERT INTO `shows` (`%s`) %%sVALUES (%s)%%s", strings.Join(wl, "`,`"), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
 		} else {
-			cache.query = "INSERT INTO \"shows\" %sDEFAULT VALUES%s"
+			cache.query = "INSERT INTO `shows` () VALUES ()%s%s"
 		}
 
 		var queryOutput, queryReturning string
 
 		if len(cache.retMapping) != 0 {
-			queryReturning = fmt.Sprintf(" RETURNING \"%s\"", strings.Join(returnColumns, "\",\""))
+			cache.retQuery = fmt.Sprintf("SELECT `%s` FROM `shows` WHERE %s", strings.Join(returnColumns, "`,`"), strmangle.WhereClause("`", "`", 0, showPrimaryKeyColumns))
 		}
 
 		cache.query = fmt.Sprintf(cache.query, queryOutput, queryReturning)
@@ -1172,17 +689,44 @@ func (o *Show) Insert(ctx context.Context, exec boil.ContextExecutor, columns bo
 		fmt.Fprintln(writer, cache.query)
 		fmt.Fprintln(writer, vals)
 	}
-
-	if len(cache.retMapping) != 0 {
-		err = exec.QueryRowContext(ctx, cache.query, vals...).Scan(queries.PtrsFromMapping(value, cache.retMapping)...)
-	} else {
-		_, err = exec.ExecContext(ctx, cache.query, vals...)
-	}
+	result, err := exec.ExecContext(ctx, cache.query, vals...)
 
 	if err != nil {
 		return errors.Wrap(err, "dbmodels: unable to insert into shows")
 	}
 
+	var lastID int64
+	var identifierCols []interface{}
+
+	if len(cache.retMapping) == 0 {
+		goto CacheNoHooks
+	}
+
+	lastID, err = result.LastInsertId()
+	if err != nil {
+		return ErrSyncFail
+	}
+
+	o.ID = int64(lastID)
+	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == showMapping["id"] {
+		goto CacheNoHooks
+	}
+
+	identifierCols = []interface{}{
+		o.ID,
+	}
+
+	if boil.IsDebug(ctx) {
+		writer := boil.DebugWriterFrom(ctx)
+		fmt.Fprintln(writer, cache.retQuery)
+		fmt.Fprintln(writer, identifierCols...)
+	}
+	err = exec.QueryRowContext(ctx, cache.retQuery, identifierCols...).Scan(queries.PtrsFromMapping(value, cache.retMapping)...)
+	if err != nil {
+		return errors.Wrap(err, "dbmodels: unable to populate default values for shows")
+	}
+
+CacheNoHooks:
 	if !cached {
 		showInsertCacheMut.Lock()
 		showInsertCache[key] = cache
@@ -1224,9 +768,9 @@ func (o *Show) Update(ctx context.Context, exec boil.ContextExecutor, columns bo
 			return 0, errors.New("dbmodels: unable to update shows, could not build whitelist")
 		}
 
-		cache.query = fmt.Sprintf("UPDATE \"shows\" SET %s WHERE %s",
-			strmangle.SetParamNames("\"", "\"", 1, wl),
-			strmangle.WhereClause("\"", "\"", len(wl)+1, showPrimaryKeyColumns),
+		cache.query = fmt.Sprintf("UPDATE `shows` SET %s WHERE %s",
+			strmangle.SetParamNames("`", "`", 0, wl),
+			strmangle.WhereClause("`", "`", 0, showPrimaryKeyColumns),
 		)
 		cache.valueMapping, err = queries.BindMapping(showType, showMapping, append(wl, showPrimaryKeyColumns...))
 		if err != nil {
@@ -1305,9 +849,9 @@ func (o ShowSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, col
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := fmt.Sprintf("UPDATE \"shows\" SET %s WHERE %s",
-		strmangle.SetParamNames("\"", "\"", 1, colNames),
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), len(colNames)+1, showPrimaryKeyColumns, len(o)))
+	sql := fmt.Sprintf("UPDATE `shows` SET %s WHERE %s",
+		strmangle.SetParamNames("`", "`", 0, colNames),
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, showPrimaryKeyColumns, len(o)))
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1326,9 +870,13 @@ func (o ShowSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, col
 	return rowsAff, nil
 }
 
+var mySQLShowUniqueColumns = []string{
+	"id",
+}
+
 // Upsert attempts an insert using an executor, and does an update or ignore on conflict.
 // See boil.Columns documentation for how to properly use updateColumns and insertColumns.
-func (o *Show) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns) error {
+func (o *Show) Upsert(ctx context.Context, exec boil.ContextExecutor, updateColumns, insertColumns boil.Columns) error {
 	if o == nil {
 		return errors.New("dbmodels: no shows provided for upsert")
 	}
@@ -1346,19 +894,14 @@ func (o *Show) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnCo
 	}
 
 	nzDefaults := queries.NonZeroDefaultSet(showColumnsWithDefault, o)
+	nzUniques := queries.NonZeroDefaultSet(mySQLShowUniqueColumns, o)
+
+	if len(nzUniques) == 0 {
+		return errors.New("cannot upsert with a table that cannot conflict on a unique column")
+	}
 
 	// Build cache key in-line uglily - mysql vs psql problems
 	buf := strmangle.GetBuffer()
-	if updateOnConflict {
-		buf.WriteByte('t')
-	} else {
-		buf.WriteByte('f')
-	}
-	buf.WriteByte('.')
-	for _, c := range conflictColumns {
-		buf.WriteString(c)
-	}
-	buf.WriteByte('.')
 	buf.WriteString(strconv.Itoa(updateColumns.Kind))
 	for _, c := range updateColumns.Cols {
 		buf.WriteString(c)
@@ -1372,6 +915,10 @@ func (o *Show) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnCo
 	for _, c := range nzDefaults {
 		buf.WriteString(c)
 	}
+	buf.WriteByte('.')
+	for _, c := range nzUniques {
+		buf.WriteString(c)
+	}
 	key := buf.String()
 	strmangle.PutBuffer(buf)
 
@@ -1382,7 +929,7 @@ func (o *Show) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnCo
 	var err error
 
 	if !cached {
-		insert, ret := insertColumns.InsertColumnSet(
+		insert, _ := insertColumns.InsertColumnSet(
 			showAllColumns,
 			showColumnsWithDefault,
 			showColumnsWithoutDefault,
@@ -1394,16 +941,18 @@ func (o *Show) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnCo
 			showPrimaryKeyColumns,
 		)
 
-		if updateOnConflict && len(update) == 0 {
+		if !updateColumns.IsNone() && len(update) == 0 {
 			return errors.New("dbmodels: unable to upsert shows, could not build update column list")
 		}
 
-		conflict := conflictColumns
-		if len(conflict) == 0 {
-			conflict = make([]string, len(showPrimaryKeyColumns))
-			copy(conflict, showPrimaryKeyColumns)
-		}
-		cache.query = buildUpsertQueryPostgres(dialect, "\"shows\"", updateOnConflict, ret, update, conflict, insert)
+		ret := strmangle.SetComplement(showAllColumns, strmangle.SetIntersect(insert, update))
+
+		cache.query = buildUpsertQueryMySQL(dialect, "`shows`", update, insert)
+		cache.retQuery = fmt.Sprintf(
+			"SELECT %s FROM `shows` WHERE %s",
+			strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, ret), ","),
+			strmangle.WhereClause("`", "`", 0, nzUniques),
+		)
 
 		cache.valueMapping, err = queries.BindMapping(showType, showMapping, insert)
 		if err != nil {
@@ -1429,18 +978,47 @@ func (o *Show) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnCo
 		fmt.Fprintln(writer, cache.query)
 		fmt.Fprintln(writer, vals)
 	}
-	if len(cache.retMapping) != 0 {
-		err = exec.QueryRowContext(ctx, cache.query, vals...).Scan(returns...)
-		if errors.Is(err, sql.ErrNoRows) {
-			err = nil // Postgres doesn't return anything when there's no update
-		}
-	} else {
-		_, err = exec.ExecContext(ctx, cache.query, vals...)
-	}
+	result, err := exec.ExecContext(ctx, cache.query, vals...)
+
 	if err != nil {
-		return errors.Wrap(err, "dbmodels: unable to upsert shows")
+		return errors.Wrap(err, "dbmodels: unable to upsert for shows")
 	}
 
+	var lastID int64
+	var uniqueMap []uint64
+	var nzUniqueCols []interface{}
+
+	if len(cache.retMapping) == 0 {
+		goto CacheNoHooks
+	}
+
+	lastID, err = result.LastInsertId()
+	if err != nil {
+		return ErrSyncFail
+	}
+
+	o.ID = int64(lastID)
+	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == showMapping["id"] {
+		goto CacheNoHooks
+	}
+
+	uniqueMap, err = queries.BindMapping(showType, showMapping, nzUniques)
+	if err != nil {
+		return errors.Wrap(err, "dbmodels: unable to retrieve unique values for shows")
+	}
+	nzUniqueCols = queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), uniqueMap)
+
+	if boil.IsDebug(ctx) {
+		writer := boil.DebugWriterFrom(ctx)
+		fmt.Fprintln(writer, cache.retQuery)
+		fmt.Fprintln(writer, nzUniqueCols...)
+	}
+	err = exec.QueryRowContext(ctx, cache.retQuery, nzUniqueCols...).Scan(returns...)
+	if err != nil {
+		return errors.Wrap(err, "dbmodels: unable to populate default values for shows")
+	}
+
+CacheNoHooks:
 	if !cached {
 		showUpsertCacheMut.Lock()
 		showUpsertCache[key] = cache
@@ -1462,7 +1040,7 @@ func (o *Show) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, er
 	}
 
 	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), showPrimaryKeyMapping)
-	sql := "DELETE FROM \"shows\" WHERE \"id\"=$1"
+	sql := "DELETE FROM `shows` WHERE `id`=?"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1527,8 +1105,8 @@ func (o ShowSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (in
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "DELETE FROM \"shows\" WHERE " +
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 1, showPrimaryKeyColumns, len(o))
+	sql := "DELETE FROM `shows` WHERE " +
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, showPrimaryKeyColumns, len(o))
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1582,8 +1160,8 @@ func (o *ShowSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) er
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "SELECT \"shows\".* FROM \"shows\" WHERE " +
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 1, showPrimaryKeyColumns, len(*o))
+	sql := "SELECT `shows`.* FROM `shows` WHERE " +
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, showPrimaryKeyColumns, len(*o))
 
 	q := queries.Raw(sql, args...)
 
@@ -1600,7 +1178,7 @@ func (o *ShowSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) er
 // ShowExists checks if the Show row exists.
 func ShowExists(ctx context.Context, exec boil.ContextExecutor, iD int64) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from \"shows\" where \"id\"=$1 limit 1)"
+	sql := "select exists(select 1 from `shows` where `id`=? limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
