@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"net/url"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
@@ -69,7 +70,13 @@ func (h *Handler) Register(r chi.Router) {
 			return
 		}
 
-		h.GetVideo(w, r, id)
+		torrentName, err := url.QueryUnescape(r.URL.Query().Get("torrent"))
+		if err != nil {
+			handleError(w, r, "Unescape torrent name", err, http.StatusBadRequest)
+			return
+		}
+
+		h.GetVideo(w, r, id, torrentName)
 		return
 	})
 

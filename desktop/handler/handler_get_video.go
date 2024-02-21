@@ -7,11 +7,12 @@ import (
 	"github.com/a-h/templ"
 	"github.com/gabriel-vasile/mimetype"
 
+	"github.com/phimtorr/phimtor/desktop/client/api"
 	"github.com/phimtorr/phimtor/desktop/torrent"
 	"github.com/phimtorr/phimtor/desktop/ui"
 )
 
-func (h *Handler) GetVideo(w http.ResponseWriter, r *http.Request, id int64) {
+func (h *Handler) GetVideo(w http.ResponseWriter, r *http.Request, id int64, torrentName string) {
 	resp, err := h.client.GetVideoWithResponse(r.Context(), id)
 	if err != nil {
 		handleError(w, r, "Failed to get video", err, http.StatusInternalServerError)
@@ -23,7 +24,7 @@ func (h *Handler) GetVideo(w http.ResponseWriter, r *http.Request, id int64) {
 	}
 
 	video := resp.JSON200.Video
-	selectedTorrent := video.TorrentLinks[0]
+	selectedTorrent := getSelectedTorrentLink(video.TorrentLinks, torrentName)
 
 	infoHash, err := h.torManager.AddFromLink(selectedTorrent.Link)
 	if err != nil {
@@ -35,6 +36,15 @@ func (h *Handler) GetVideo(w http.ResponseWriter, r *http.Request, id int64) {
 	h.torManager.CancelOthers(infoHash)
 
 	templ.Handler(ui.Video(resp.JSON200.Video, infoHash, selectedTorrent)).ServeHTTP(w, r)
+}
+
+func getSelectedTorrentLink(torrentLinked []api.TorrentLink, torrentName string) api.TorrentLink {
+	for _, t := range torrentLinked {
+		if t.Name == torrentName {
+			return t
+		}
+	}
+	return torrentLinked[0]
 }
 
 func (h *Handler) Stream(w http.ResponseWriter, r *http.Request, infoHash torrent.InfoHash, fileIndex int) {

@@ -2,6 +2,7 @@ package uri
 
 import (
 	"fmt"
+	"net/url"
 
 	"github.com/phimtorr/phimtor/desktop/torrent"
 )
@@ -24,6 +25,10 @@ func GetSeries(id int64) string {
 
 func GetVideo(id int64) string {
 	return fmt.Sprintf("/videos/%d", id)
+}
+
+func GetVideoWithTorrentName(id int64, torrentName string) string {
+	return fmt.Sprintf("/videos/%d?torrent=%s", id, url.QueryEscape(torrentName))
 }
 
 func GetStream(infoHash torrent.InfoHash, fileIndex int) string {
