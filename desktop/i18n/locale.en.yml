@@ -1,6 +1,10 @@
 Test:
   HelloWorld: "Hello World!"
 
+Nav:
+  Home: "Home"
+  Settings: "Settings"
+
 Settings:
   Title: "Settings"
   Language:

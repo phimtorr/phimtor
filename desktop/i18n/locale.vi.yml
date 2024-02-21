@@ -1,6 +1,10 @@
 Test:
   HelloWorld: "Xin chào thế giới!"
 
+Nav:
+  Home: "Trang chủ"
+  Settings: "Cài đặt"
+
 Settings:
   Title: "Cài đặt"
   Language:

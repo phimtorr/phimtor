@@ -1,5 +1,9 @@
 package ui 
 
+import "github.com/go-chi/chi/v5"
+import "github.com/phimtorr/phimtor/desktop/handler/uri"
+import "github.com/phimtorr/phimtor/desktop/i18n"
+
 templ layout(title string) {
 	<!DOCTYPE html>
 	<html lang="en">
@@ -16,20 +20,43 @@ templ layout(title string) {
 				<div class="flex flex-shrink-0 items-center">
 					<span class="text-xl font-bold">PhimTor</span>
 				</div>
-				<ul class="flex">
-					<li class="mr-6 p-2">
-						<a class="hover:text-red-700" to="/">Home</a>
-					</li>
-					<li class="mr-6 border-b-2 border-red-700 p-2">
-						<a class="hover:text-red-700" href="/files">Files</a>
-					</li>
-				</ul>
+				<div class="flex">
+					@menu()
+				</div>
 			</nav>
 			<main class="box-border flex-grow bg-stone-800 p-4">
 				{ children... }
 			</main>
 		</body>
 	</html>
+}
+
+var menuItems = []struct {
+	Link      string
+	MessageID string
+}{
+	{uri.Home(), "Nav.Home"},
+	{uri.GetSettings(), "Nav.Settings"},
+}
+
+func isCurrentPage(ctx context.Context, link string) bool {
+	return chi.RouteContext(ctx).RoutePattern() == link
+}
+
+templ menu() {
+	<ul class="flex">
+		for _, item := range menuItems {
+			<li
+				if isCurrentPage(ctx, item.Link) {
+					class="mr-6 border-b-2 border-red-700 p-2"
+				} else {
+					class="mr-6 p-2"
+				}
+			>
+				<a class="hover:text-red-700" href={ templ.SafeURL(item.Link) }>{ i18n.T(ctx, item.MessageID) }</a>
+			</li>
+		}
+	</ul>
 }
 
 templ pagination(page, totalPage int, linkFn func(int) string) {
