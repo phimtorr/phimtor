@@ -23,20 +23,20 @@ func layout(title string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><link href=\"/static/style/output.css\" rel=\"stylesheet\"><script src=\"https://kit.fontawesome.com/aff606e071.js\" crossorigin=\"anonymous\"></script><title>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><link href=\"/static/style/output.css\" rel=\"stylesheet\"><script src=\"https://kit.fontawesome.com/aff606e071.js\" crossorigin=\"anonymous\"></script><script src=\"https://unpkg.com/htmx.org@1.9.10\" integrity=\"sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC\" crossorigin=\"anonymous\"></script><title>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/layout.templ`, Line: 10, Col: 17}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/layout.templ`, Line: 11, Col: 17}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title></head><body class=\"box-border flex flex-col min-h-screen w-full bg-stone-700 text-slate-100\"><nav class=\"flex items-center justify-between bg-stone-900 px-4 py-4\"><div class=\"flex flex-shrink-0 items-center\"><span class=\"text-xl font-bold\">PhimTor</span></div><ul class=\"flex\"><li class=\"mr-6 p-2\"><a class=\"hover:text-red-700\" to=\"/\">Home</a></li><li class=\"mr-6 border-b-2 border-red-700 p-2\"><a class=\"hover:text-red-700\" href=\"/files\">Files</a></li></ul></nav><main class=\"box-border flex-grow bg-stone-800 p-4\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title></head><body class=\"box-border flex flex-col min-h-screen w-full bg-stone-900 text-slate-100\"><nav class=\"flex items-center justify-between bg-stone-700 px-4 py-4\"><div class=\"flex flex-shrink-0 items-center\"><span class=\"text-xl font-bold\">PhimTor</span></div><ul class=\"flex\"><li class=\"mr-6 p-2\"><a class=\"hover:text-red-700\" to=\"/\">Home</a></li><li class=\"mr-6 border-b-2 border-red-700 p-2\"><a class=\"hover:text-red-700\" href=\"/files\">Files</a></li></ul></nav><main class=\"box-border flex-grow bg-stone-800 p-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -140,7 +140,7 @@ func pagination(page, totalPage int, linkFn func(int) string) templ.Component {
 				var templ_7745c5c3_Var6 string
 				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(toString(i))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/layout.templ`, Line: 64, Col: 19}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/layout.templ`, Line: 65, Col: 19}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 				if templ_7745c5c3_Err != nil {

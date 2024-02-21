@@ -9,24 +9,34 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/phimtorr/phimtor/desktop/client/api"
+	"github.com/phimtorr/phimtor/desktop/setting"
 	"github.com/phimtorr/phimtor/desktop/torrent"
 )
 
 type Handler struct {
-	torManager *torrent.Manager
-	client     api.ClientWithResponsesInterface
+	torManager      *torrent.Manager
+	settingsStorage *setting.Storage
+	apiClient       api.ClientWithResponsesInterface
 }
 
-func New(torManager *torrent.Manager, client api.ClientWithResponsesInterface) *Handler {
+func New(
+	torManager *torrent.Manager,
+	settingsStorage *setting.Storage,
+	apiClient api.ClientWithResponsesInterface,
+) *Handler {
 	if torManager == nil {
 		panic("torrent manager is required")
 	}
-	if client == nil {
-		panic("client is required")
+	if settingsStorage == nil {
+		panic("settings storage is required")
+	}
+	if apiClient == nil {
+		panic("apiClient is required")
 	}
 	return &Handler{
-		torManager: torManager,
-		client:     client,
+		torManager:      torManager,
+		settingsStorage: settingsStorage,
+		apiClient:       apiClient,
 	}
 }
 
@@ -97,6 +107,11 @@ func (h *Handler) Register(r chi.Router) {
 		h.Stream(w, r, infoHash, fileIndex)
 		return
 	})
+
+	// settings
+	r.Get("/settings", h.GetSettings)
+	r.Post("/settings", h.UpdateSetting)
+	r.Post("/settings/change-data-dir", h.ChangeDataDir)
 }
 
 func handleError(w http.ResponseWriter, r *http.Request, msg string, err error, status int) {

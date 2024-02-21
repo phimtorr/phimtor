@@ -10,7 +10,7 @@ import (
 )
 
 func (h *Handler) GetMovie(w http.ResponseWriter, r *http.Request, id int64) {
-	resp, err := h.client.GetMovieWithResponse(r.Context(), id)
+	resp, err := h.apiClient.GetMovieWithResponse(r.Context(), id)
 	if err != nil {
 		handleError(w, r, "Get movie", err, http.StatusInternalServerError)
 		return

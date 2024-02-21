@@ -10,7 +10,7 @@ import (
 )
 
 func (h *Handler) GetSeries(w http.ResponseWriter, r *http.Request, id int64) {
-	resp, err := h.client.GetSeriesWithResponse(r.Context(), id)
+	resp, err := h.apiClient.GetSeriesWithResponse(r.Context(), id)
 	if err != nil {
 		handleError(w, r, "Get series", err, http.StatusInternalServerError)
 		return

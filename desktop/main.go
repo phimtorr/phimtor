@@ -17,6 +17,7 @@ import (
 	"github.com/phimtorr/phimtor/desktop/build"
 	"github.com/phimtorr/phimtor/desktop/client"
 	"github.com/phimtorr/phimtor/desktop/handler"
+	"github.com/phimtorr/phimtor/desktop/i18n"
 	"github.com/phimtorr/phimtor/desktop/setting"
 	"github.com/phimtorr/phimtor/desktop/torrent"
 	"github.com/phimtorr/phimtor/desktop/ui/style"
@@ -41,17 +42,18 @@ func main() {
 		}
 	}()
 
-	cl := client.NewClient()
-	hl := handler.New(torManager, cl)
+	apiClient := client.NewClient()
+	httpHandler := handler.New(torManager, settingsStorage, apiClient)
 
 	r := chi.NewRouter()
 	setCommonMiddlewares(r)
 
 	r.Use(setting.Middleware(settingsStorage))
+	r.Use(i18n.Middleware(i18n.NewBundle(), settingsStorage))
 
 	r.Handle("/static/style/*", http.StripPrefix("/static/style", http.FileServer(http.FS(style.FS))))
 
-	hl.Register(r)
+	httpHandler.Register(r)
 
 	addr := ":" + build.ServePort
 	log.Info().Str("address", addr).Msg("Starting HTTP server")

@@ -13,7 +13,7 @@ import (
 )
 
 func (h *Handler) GetVideo(w http.ResponseWriter, r *http.Request, id int64, torrentName string) {
-	resp, err := h.client.GetVideoWithResponse(r.Context(), id)
+	resp, err := h.apiClient.GetVideoWithResponse(r.Context(), id)
 	if err != nil {
 		handleError(w, r, "Failed to get video", err, http.StatusInternalServerError)
 		return

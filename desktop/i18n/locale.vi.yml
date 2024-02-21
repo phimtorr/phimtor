@@ -1,0 +1,19 @@
+Test:
+  HelloWorld: "Xin chào thế giới!"
+
+Settings:
+  Title: "Cài đặt"
+  Language:
+    Title: "Ngôn ngữ"
+    Description: "Thay đổi ngôn ngữ của ứng dụng"
+  DataDir:
+    Title: "Thư mục dữ liệu"
+    Description: "Thay đổi thư mục lưu trữ dữ liệu của ứng dụng. Cần khởi động lại ứng dụng để có hiệu lực."
+    NewDataDirNotification: "Lần sau, dữ liệu sẽ được lưu tại: "
+    Change: "Thay đổi"
+  DeleteAfterClosed:
+    Title: "Xóa khi đóng"
+    Description: "Xóa tất cả dữ liệu khi ứng dụng đóng"
+
+
+

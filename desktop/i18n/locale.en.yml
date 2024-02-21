@@ -1,0 +1,22 @@
+Test:
+  HelloWorld: "Hello World!"
+
+Settings:
+  Title: "Settings"
+  Language:
+    Title: "Language"
+    Description: "Change the language of the application"
+  DataDir:
+    Title: "Data Directory"
+    Description: "Change the directory where the application stores data. Need to restart the application to take effect."
+    NewDataDirNotification: "Next time, data will be store at: "
+    Change: "Change"
+  DeleteAfterClosed:
+    Title: "Delete After Closed"
+    Description: "Delete the downloaded files when the application is closed"
+  
+
+
+
+
+

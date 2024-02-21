@@ -8,10 +8,11 @@ templ layout(title string) {
 			<meta name="viewport" content="width=device-width, initial-scale=1"/>
 			<link href="/static/style/output.css" rel="stylesheet"/>
 			<script src="https://kit.fontawesome.com/aff606e071.js" crossorigin="anonymous"></script>
+			<script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
 			<title>{ title }</title>
 		</head>
-		<body class="box-border flex flex-col min-h-screen w-full bg-stone-700 text-slate-100">
-			<nav class="flex items-center justify-between bg-stone-900 px-4 py-4">
+		<body class="box-border flex flex-col min-h-screen w-full bg-stone-900 text-slate-100">
+			<nav class="flex items-center justify-between bg-stone-700 px-4 py-4">
 				<div class="flex flex-shrink-0 items-center">
 					<span class="text-xl font-bold">PhimTor</span>
 				</div>
@@ -65,7 +66,7 @@ templ pagination(page, totalPage int, linkFn func(int) string) {
 					>{ toString(i) }</a>
 				</li>
 			}
-            if end < totalPage {
+			if end < totalPage {
 				<li>
 					<a
 						href="#"

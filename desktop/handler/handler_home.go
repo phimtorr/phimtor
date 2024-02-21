@@ -11,7 +11,7 @@ import (
 )
 
 func (h *Handler) Home(w http.ResponseWriter, r *http.Request) {
-	resp, err := h.client.ListShowsWithResponse(r.Context(), &api.ListShowsParams{})
+	resp, err := h.apiClient.ListShowsWithResponse(r.Context(), &api.ListShowsParams{})
 	if err != nil {
 		handleError(w, r, "List shows", err, http.StatusInternalServerError)
 		return
