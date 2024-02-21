@@ -6,6 +6,7 @@ replace github.com/phimtorr/phimtor/common => ../common
 
 require (
 	github.com/a-h/templ v0.2.543
+	github.com/adrg/xdg v0.4.0
 	github.com/anacrolix/torrent v1.54.1
 	github.com/gabriel-vasile/mimetype v1.4.2
 	github.com/go-chi/chi/v5 v5.0.12
@@ -13,6 +14,7 @@ require (
 	github.com/phimtorr/phimtor/common v0.0.0-00010101000000-000000000000
 	github.com/rs/cors v1.8.3
 	github.com/rs/zerolog v1.32.0
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (

@@ -1,9 +1,11 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -15,6 +17,7 @@ import (
 	"github.com/phimtorr/phimtor/desktop/build"
 	"github.com/phimtorr/phimtor/desktop/client"
 	"github.com/phimtorr/phimtor/desktop/handler"
+	"github.com/phimtorr/phimtor/desktop/setting"
 	"github.com/phimtorr/phimtor/desktop/torrent"
 	"github.com/phimtorr/phimtor/desktop/ui/style"
 )
@@ -22,15 +25,16 @@ import (
 func main() {
 	logs.Init(strval.MustBool(build.IsLocal))
 
-	// TODO: change the path from settings
-	dataDir := "/Users/lap14897/Downloads/PhimTor"
-	if _, err := os.Stat(dataDir); os.IsNotExist(err) {
-		if err := os.Mkdir(dataDir, 0700); err != nil {
-			panic(fmt.Errorf("create data directory: %w", err))
+	settingsStorage := setting.NewStorage("PhimTor")
+	defer func() {
+		if err := cleanUpStorage(settingsStorage.GetSettings()); err != nil {
+			log.Error().Err(err).Msg("Failed to clean up storage")
 		}
-	}
+	}()
 
-	torManager := torrent.NewManager(dataDir)
+	settings := settingsStorage.GetSettings()
+
+	torManager := torrent.NewManager(settings.GetCurrentDataDir())
 	defer func() {
 		if err := torManager.Close(); err != nil {
 			log.Error().Err(err).Msg("Failed to close torrent manager")
@@ -41,7 +45,9 @@ func main() {
 	hl := handler.New(torManager, cl)
 
 	r := chi.NewRouter()
-	setMiddlewares(r)
+	setCommonMiddlewares(r)
+
+	r.Use(setting.Middleware(settingsStorage))
 
 	r.Handle("/static/style/*", http.StripPrefix("/static/style", http.FileServer(http.FS(style.FS))))
 
@@ -54,11 +60,28 @@ func main() {
 	}
 }
 
-func setMiddlewares(router *chi.Mux) {
+func setCommonMiddlewares(router *chi.Mux) {
 	router.Use(middleware.RequestID)
 	router.Use(logs.NewHTTPStructuredLogger(log.Logger))
 	router.Use(middleware.Recoverer)
 
 	router.Use(cors.AllowAll().Handler)
 	router.Use(middleware.NoCache)
+}
+
+func cleanUpStorage(setting setting.Settings) error {
+	if setting.GetDeleteAfterClosed() {
+		dif, err := os.ReadDir(setting.GetCurrentDataDir())
+		if err != nil {
+			return fmt.Errorf("read data directory: %w", err)
+		}
+		var errs []error
+		for _, f := range dif {
+			if err := os.RemoveAll(filepath.Join(setting.GetCurrentDataDir(), f.Name())); err != nil {
+				errs = append(errs, fmt.Errorf("remove %s: %w", f.Name(), err))
+			}
+		}
+		return errors.Join(errs...)
+	}
+	return nil
 }
