@@ -108,7 +108,34 @@ paths:
           $ref: "#/components/responses/BadRequest"
         500:
           $ref: "#/components/responses/InternalError"
-
+  /videos/{id}:
+    get:
+      operationId: getVideo
+      summary: Get video by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                title: GetVideoResponse
+                type: object
+                properties:
+                  video:
+                    $ref: '#/components/schemas/Video'
+                required:
+                  - video
+        400:
+          $ref: "#/components/responses/BadRequest"
+        500:
+          $ref: "#/components/responses/InternalError"
 
 components:
   responses:

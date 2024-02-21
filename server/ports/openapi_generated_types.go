@@ -76,6 +76,29 @@ type Show struct {
 // ShowType defines model for Show.Type.
 type ShowType string
 
+// Subtitle defines model for Subtitle.
+type Subtitle struct {
+	Language string `json:"language"`
+	Link     string `json:"link"`
+	Name     string `json:"name"`
+	Owner    string `json:"owner"`
+}
+
+// TorrentLink defines model for TorrentLink.
+type TorrentLink struct {
+	Link     string `json:"link"`
+	Name     string `json:"name"`
+	Priority int    `json:"priority"`
+}
+
+// Video defines model for Video.
+type Video struct {
+	Id           int64         `json:"id"`
+	Subtitles    []Subtitle    `json:"subtitles"`
+	Title        string        `json:"title"`
+	TorrentLinks []TorrentLink `json:"torrentLinks"`
+}
+
 // BadRequest defines model for BadRequest.
 type BadRequest = ErrorResponse
 

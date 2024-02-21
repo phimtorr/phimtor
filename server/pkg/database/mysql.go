@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/go-sql-driver/mysql"
+	sqldblogger "github.com/simukti/sqldb-logger"
 )
 
 const (
@@ -30,5 +31,10 @@ func NewMySqlDB() *sql.DB {
 	if err != nil {
 		panic(fmt.Sprintf("Error create database connection: %v", err))
 	}
+	db = sqldblogger.OpenDriver(config.FormatDSN(), db.Driver(), newSQLLogAdapter())
+	// TODO: move to config
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(10)
+	db.SetConnMaxLifetime(10 * time.Second)
 	return db
 }

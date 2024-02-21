@@ -22,6 +22,9 @@ type ServerInterface interface {
 	// List all shows
 	// (GET /shows)
 	ListShows(w http.ResponseWriter, r *http.Request, params ListShowsParams)
+	// Get video by id
+	// (GET /videos/{id})
+	GetVideo(w http.ResponseWriter, r *http.Request, id int64)
 }
 
 // Unimplemented server implementation that returns http.StatusNotImplemented for each endpoint.
@@ -43,6 +46,12 @@ func (_ Unimplemented) GetSeries(w http.ResponseWriter, r *http.Request, id int6
 // List all shows
 // (GET /shows)
 func (_ Unimplemented) ListShows(w http.ResponseWriter, r *http.Request, params ListShowsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// Get video by id
+// (GET /videos/{id})
+func (_ Unimplemented) GetVideo(w http.ResponseWriter, r *http.Request, id int64) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -134,6 +143,32 @@ func (siw *ServerInterfaceWrapper) ListShows(w http.ResponseWriter, r *http.Requ
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListShows(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// GetVideo operation middleware
+func (siw *ServerInterfaceWrapper) GetVideo(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "id" -------------
+	var id int64
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "id", runtime.ParamLocationPath, chi.URLParam(r, "id"), &id)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetVideo(w, r, id)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -264,6 +299,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/shows", wrapper.ListShows)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/videos/{id}", wrapper.GetVideo)
 	})
 
 	return r

@@ -65,15 +65,56 @@ var VideoWhere = struct {
 
 // VideoRels is where relationship names are stored.
 var VideoRels = struct {
-}{}
+	Episode      string
+	Show         string
+	Subtitles    string
+	TorrentLinks string
+}{
+	Episode:      "Episode",
+	Show:         "Show",
+	Subtitles:    "Subtitles",
+	TorrentLinks: "TorrentLinks",
+}
 
 // videoR is where relationships are stored.
 type videoR struct {
+	Episode      *Episode         `boil:"Episode" json:"Episode" toml:"Episode" yaml:"Episode"`
+	Show         *Show            `boil:"Show" json:"Show" toml:"Show" yaml:"Show"`
+	Subtitles    SubtitleSlice    `boil:"Subtitles" json:"Subtitles" toml:"Subtitles" yaml:"Subtitles"`
+	TorrentLinks TorrentLinkSlice `boil:"TorrentLinks" json:"TorrentLinks" toml:"TorrentLinks" yaml:"TorrentLinks"`
 }
 
 // NewStruct creates a new relationship struct
 func (*videoR) NewStruct() *videoR {
 	return &videoR{}
+}
+
+func (r *videoR) GetEpisode() *Episode {
+	if r == nil {
+		return nil
+	}
+	return r.Episode
+}
+
+func (r *videoR) GetShow() *Show {
+	if r == nil {
+		return nil
+	}
+	return r.Show
+}
+
+func (r *videoR) GetSubtitles() SubtitleSlice {
+	if r == nil {
+		return nil
+	}
+	return r.Subtitles
+}
+
+func (r *videoR) GetTorrentLinks() TorrentLinkSlice {
+	if r == nil {
+		return nil
+	}
+	return r.TorrentLinks
 }
 
 // videoL is where Load methods for each relationship are stored.
@@ -390,6 +431,746 @@ func (q videoQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool
 	}
 
 	return count > 0, nil
+}
+
+// Episode pointed to by the foreign key.
+func (o *Video) Episode(mods ...qm.QueryMod) episodeQuery {
+	queryMods := []qm.QueryMod{
+		qm.Where("`video_id` = ?", o.ID),
+	}
+
+	queryMods = append(queryMods, mods...)
+
+	return Episodes(queryMods...)
+}
+
+// Show pointed to by the foreign key.
+func (o *Video) Show(mods ...qm.QueryMod) showQuery {
+	queryMods := []qm.QueryMod{
+		qm.Where("`video_id` = ?", o.ID),
+	}
+
+	queryMods = append(queryMods, mods...)
+
+	return Shows(queryMods...)
+}
+
+// Subtitles retrieves all the subtitle's Subtitles with an executor.
+func (o *Video) Subtitles(mods ...qm.QueryMod) subtitleQuery {
+	var queryMods []qm.QueryMod
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.Where("`subtitles`.`video_id`=?", o.ID),
+	)
+
+	return Subtitles(queryMods...)
+}
+
+// TorrentLinks retrieves all the torrent_link's TorrentLinks with an executor.
+func (o *Video) TorrentLinks(mods ...qm.QueryMod) torrentLinkQuery {
+	var queryMods []qm.QueryMod
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.Where("`torrent_links`.`video_id`=?", o.ID),
+	)
+
+	return TorrentLinks(queryMods...)
+}
+
+// LoadEpisode allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-1 relationship.
+func (videoL) LoadEpisode(ctx context.Context, e boil.ContextExecutor, singular bool, maybeVideo interface{}, mods queries.Applicator) error {
+	var slice []*Video
+	var object *Video
+
+	if singular {
+		var ok bool
+		object, ok = maybeVideo.(*Video)
+		if !ok {
+			object = new(Video)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeVideo)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeVideo))
+			}
+		}
+	} else {
+		s, ok := maybeVideo.(*[]*Video)
+		if ok {
+			slice = *s
+		} else {
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeVideo)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeVideo))
+			}
+		}
+	}
+
+	args := make(map[interface{}]struct{})
+	if singular {
+		if object.R == nil {
+			object.R = &videoR{}
+		}
+		args[object.ID] = struct{}{}
+	} else {
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &videoR{}
+			}
+
+			args[obj.ID] = struct{}{}
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	argsSlice := make([]interface{}, len(args))
+	i := 0
+	for arg := range args {
+		argsSlice[i] = arg
+		i++
+	}
+
+	query := NewQuery(
+		qm.From(`episodes`),
+		qm.WhereIn(`episodes.video_id in ?`, argsSlice...),
+	)
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load Episode")
+	}
+
+	var resultSlice []*Episode
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice Episode")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results of eager load for episodes")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for episodes")
+	}
+
+	if len(episodeAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+
+	if len(resultSlice) == 0 {
+		return nil
+	}
+
+	if singular {
+		foreign := resultSlice[0]
+		object.R.Episode = foreign
+		if foreign.R == nil {
+			foreign.R = &episodeR{}
+		}
+		foreign.R.Video = object
+	}
+
+	for _, local := range slice {
+		for _, foreign := range resultSlice {
+			if local.ID == foreign.VideoID {
+				local.R.Episode = foreign
+				if foreign.R == nil {
+					foreign.R = &episodeR{}
+				}
+				foreign.R.Video = local
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// LoadShow allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-1 relationship.
+func (videoL) LoadShow(ctx context.Context, e boil.ContextExecutor, singular bool, maybeVideo interface{}, mods queries.Applicator) error {
+	var slice []*Video
+	var object *Video
+
+	if singular {
+		var ok bool
+		object, ok = maybeVideo.(*Video)
+		if !ok {
+			object = new(Video)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeVideo)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeVideo))
+			}
+		}
+	} else {
+		s, ok := maybeVideo.(*[]*Video)
+		if ok {
+			slice = *s
+		} else {
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeVideo)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeVideo))
+			}
+		}
+	}
+
+	args := make(map[interface{}]struct{})
+	if singular {
+		if object.R == nil {
+			object.R = &videoR{}
+		}
+		args[object.ID] = struct{}{}
+	} else {
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &videoR{}
+			}
+
+			args[obj.ID] = struct{}{}
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	argsSlice := make([]interface{}, len(args))
+	i := 0
+	for arg := range args {
+		argsSlice[i] = arg
+		i++
+	}
+
+	query := NewQuery(
+		qm.From(`shows`),
+		qm.WhereIn(`shows.video_id in ?`, argsSlice...),
+	)
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load Show")
+	}
+
+	var resultSlice []*Show
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice Show")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results of eager load for shows")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for shows")
+	}
+
+	if len(showAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+
+	if len(resultSlice) == 0 {
+		return nil
+	}
+
+	if singular {
+		foreign := resultSlice[0]
+		object.R.Show = foreign
+		if foreign.R == nil {
+			foreign.R = &showR{}
+		}
+		foreign.R.Video = object
+	}
+
+	for _, local := range slice {
+		for _, foreign := range resultSlice {
+			if queries.Equal(local.ID, foreign.VideoID) {
+				local.R.Show = foreign
+				if foreign.R == nil {
+					foreign.R = &showR{}
+				}
+				foreign.R.Video = local
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// LoadSubtitles allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-M or N-M relationship.
+func (videoL) LoadSubtitles(ctx context.Context, e boil.ContextExecutor, singular bool, maybeVideo interface{}, mods queries.Applicator) error {
+	var slice []*Video
+	var object *Video
+
+	if singular {
+		var ok bool
+		object, ok = maybeVideo.(*Video)
+		if !ok {
+			object = new(Video)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeVideo)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeVideo))
+			}
+		}
+	} else {
+		s, ok := maybeVideo.(*[]*Video)
+		if ok {
+			slice = *s
+		} else {
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeVideo)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeVideo))
+			}
+		}
+	}
+
+	args := make(map[interface{}]struct{})
+	if singular {
+		if object.R == nil {
+			object.R = &videoR{}
+		}
+		args[object.ID] = struct{}{}
+	} else {
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &videoR{}
+			}
+			args[obj.ID] = struct{}{}
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	argsSlice := make([]interface{}, len(args))
+	i := 0
+	for arg := range args {
+		argsSlice[i] = arg
+		i++
+	}
+
+	query := NewQuery(
+		qm.From(`subtitles`),
+		qm.WhereIn(`subtitles.video_id in ?`, argsSlice...),
+	)
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load subtitles")
+	}
+
+	var resultSlice []*Subtitle
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice subtitles")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results in eager load on subtitles")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for subtitles")
+	}
+
+	if len(subtitleAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+	if singular {
+		object.R.Subtitles = resultSlice
+		for _, foreign := range resultSlice {
+			if foreign.R == nil {
+				foreign.R = &subtitleR{}
+			}
+			foreign.R.Video = object
+		}
+		return nil
+	}
+
+	for _, foreign := range resultSlice {
+		for _, local := range slice {
+			if local.ID == foreign.VideoID {
+				local.R.Subtitles = append(local.R.Subtitles, foreign)
+				if foreign.R == nil {
+					foreign.R = &subtitleR{}
+				}
+				foreign.R.Video = local
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// LoadTorrentLinks allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-M or N-M relationship.
+func (videoL) LoadTorrentLinks(ctx context.Context, e boil.ContextExecutor, singular bool, maybeVideo interface{}, mods queries.Applicator) error {
+	var slice []*Video
+	var object *Video
+
+	if singular {
+		var ok bool
+		object, ok = maybeVideo.(*Video)
+		if !ok {
+			object = new(Video)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeVideo)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeVideo))
+			}
+		}
+	} else {
+		s, ok := maybeVideo.(*[]*Video)
+		if ok {
+			slice = *s
+		} else {
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeVideo)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeVideo))
+			}
+		}
+	}
+
+	args := make(map[interface{}]struct{})
+	if singular {
+		if object.R == nil {
+			object.R = &videoR{}
+		}
+		args[object.ID] = struct{}{}
+	} else {
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &videoR{}
+			}
+			args[obj.ID] = struct{}{}
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	argsSlice := make([]interface{}, len(args))
+	i := 0
+	for arg := range args {
+		argsSlice[i] = arg
+		i++
+	}
+
+	query := NewQuery(
+		qm.From(`torrent_links`),
+		qm.WhereIn(`torrent_links.video_id in ?`, argsSlice...),
+	)
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load torrent_links")
+	}
+
+	var resultSlice []*TorrentLink
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice torrent_links")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results in eager load on torrent_links")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for torrent_links")
+	}
+
+	if len(torrentLinkAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+	if singular {
+		object.R.TorrentLinks = resultSlice
+		for _, foreign := range resultSlice {
+			if foreign.R == nil {
+				foreign.R = &torrentLinkR{}
+			}
+			foreign.R.Video = object
+		}
+		return nil
+	}
+
+	for _, foreign := range resultSlice {
+		for _, local := range slice {
+			if local.ID == foreign.VideoID {
+				local.R.TorrentLinks = append(local.R.TorrentLinks, foreign)
+				if foreign.R == nil {
+					foreign.R = &torrentLinkR{}
+				}
+				foreign.R.Video = local
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// SetEpisode of the video to the related item.
+// Sets o.R.Episode to related.
+// Adds o to related.R.Video.
+func (o *Video) SetEpisode(ctx context.Context, exec boil.ContextExecutor, insert bool, related *Episode) error {
+	var err error
+
+	if insert {
+		related.VideoID = o.ID
+
+		if err = related.Insert(ctx, exec, boil.Infer()); err != nil {
+			return errors.Wrap(err, "failed to insert into foreign table")
+		}
+	} else {
+		updateQuery := fmt.Sprintf(
+			"UPDATE `episodes` SET %s WHERE %s",
+			strmangle.SetParamNames("`", "`", 0, []string{"video_id"}),
+			strmangle.WhereClause("`", "`", 0, episodePrimaryKeyColumns),
+		)
+		values := []interface{}{o.ID, related.ID}
+
+		if boil.IsDebug(ctx) {
+			writer := boil.DebugWriterFrom(ctx)
+			fmt.Fprintln(writer, updateQuery)
+			fmt.Fprintln(writer, values)
+		}
+		if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+			return errors.Wrap(err, "failed to update foreign table")
+		}
+
+		related.VideoID = o.ID
+	}
+
+	if o.R == nil {
+		o.R = &videoR{
+			Episode: related,
+		}
+	} else {
+		o.R.Episode = related
+	}
+
+	if related.R == nil {
+		related.R = &episodeR{
+			Video: o,
+		}
+	} else {
+		related.R.Video = o
+	}
+	return nil
+}
+
+// SetShow of the video to the related item.
+// Sets o.R.Show to related.
+// Adds o to related.R.Video.
+func (o *Video) SetShow(ctx context.Context, exec boil.ContextExecutor, insert bool, related *Show) error {
+	var err error
+
+	if insert {
+		queries.Assign(&related.VideoID, o.ID)
+
+		if err = related.Insert(ctx, exec, boil.Infer()); err != nil {
+			return errors.Wrap(err, "failed to insert into foreign table")
+		}
+	} else {
+		updateQuery := fmt.Sprintf(
+			"UPDATE `shows` SET %s WHERE %s",
+			strmangle.SetParamNames("`", "`", 0, []string{"video_id"}),
+			strmangle.WhereClause("`", "`", 0, showPrimaryKeyColumns),
+		)
+		values := []interface{}{o.ID, related.ID}
+
+		if boil.IsDebug(ctx) {
+			writer := boil.DebugWriterFrom(ctx)
+			fmt.Fprintln(writer, updateQuery)
+			fmt.Fprintln(writer, values)
+		}
+		if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+			return errors.Wrap(err, "failed to update foreign table")
+		}
+
+		queries.Assign(&related.VideoID, o.ID)
+	}
+
+	if o.R == nil {
+		o.R = &videoR{
+			Show: related,
+		}
+	} else {
+		o.R.Show = related
+	}
+
+	if related.R == nil {
+		related.R = &showR{
+			Video: o,
+		}
+	} else {
+		related.R.Video = o
+	}
+	return nil
+}
+
+// RemoveShow relationship.
+// Sets o.R.Show to nil.
+// Removes o from all passed in related items' relationships struct.
+func (o *Video) RemoveShow(ctx context.Context, exec boil.ContextExecutor, related *Show) error {
+	var err error
+
+	queries.SetScanner(&related.VideoID, nil)
+	if _, err = related.Update(ctx, exec, boil.Whitelist("video_id")); err != nil {
+		return errors.Wrap(err, "failed to update local table")
+	}
+
+	if o.R != nil {
+		o.R.Show = nil
+	}
+
+	if related == nil || related.R == nil {
+		return nil
+	}
+
+	related.R.Video = nil
+
+	return nil
+}
+
+// AddSubtitles adds the given related objects to the existing relationships
+// of the video, optionally inserting them as new records.
+// Appends related to o.R.Subtitles.
+// Sets related.R.Video appropriately.
+func (o *Video) AddSubtitles(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Subtitle) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			rel.VideoID = o.ID
+			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		} else {
+			updateQuery := fmt.Sprintf(
+				"UPDATE `subtitles` SET %s WHERE %s",
+				strmangle.SetParamNames("`", "`", 0, []string{"video_id"}),
+				strmangle.WhereClause("`", "`", 0, subtitlePrimaryKeyColumns),
+			)
+			values := []interface{}{o.ID, rel.ID}
+
+			if boil.IsDebug(ctx) {
+				writer := boil.DebugWriterFrom(ctx)
+				fmt.Fprintln(writer, updateQuery)
+				fmt.Fprintln(writer, values)
+			}
+			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+				return errors.Wrap(err, "failed to update foreign table")
+			}
+
+			rel.VideoID = o.ID
+		}
+	}
+
+	if o.R == nil {
+		o.R = &videoR{
+			Subtitles: related,
+		}
+	} else {
+		o.R.Subtitles = append(o.R.Subtitles, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &subtitleR{
+				Video: o,
+			}
+		} else {
+			rel.R.Video = o
+		}
+	}
+	return nil
+}
+
+// AddTorrentLinks adds the given related objects to the existing relationships
+// of the video, optionally inserting them as new records.
+// Appends related to o.R.TorrentLinks.
+// Sets related.R.Video appropriately.
+func (o *Video) AddTorrentLinks(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*TorrentLink) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			rel.VideoID = o.ID
+			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		} else {
+			updateQuery := fmt.Sprintf(
+				"UPDATE `torrent_links` SET %s WHERE %s",
+				strmangle.SetParamNames("`", "`", 0, []string{"video_id"}),
+				strmangle.WhereClause("`", "`", 0, torrentLinkPrimaryKeyColumns),
+			)
+			values := []interface{}{o.ID, rel.ID}
+
+			if boil.IsDebug(ctx) {
+				writer := boil.DebugWriterFrom(ctx)
+				fmt.Fprintln(writer, updateQuery)
+				fmt.Fprintln(writer, values)
+			}
+			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+				return errors.Wrap(err, "failed to update foreign table")
+			}
+
+			rel.VideoID = o.ID
+		}
+	}
+
+	if o.R == nil {
+		o.R = &videoR{
+			TorrentLinks: related,
+		}
+	} else {
+		o.R.TorrentLinks = append(o.R.TorrentLinks, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &torrentLinkR{
+				Video: o,
+			}
+		} else {
+			rel.R.Video = o
+		}
+	}
+	return nil
 }
 
 // Videos retrieves all the records using an executor.
