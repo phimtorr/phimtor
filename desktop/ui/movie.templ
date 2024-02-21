@@ -1,6 +1,7 @@
 package ui
 
 import "github.com/phimtorr/phimtor/desktop/client/api"
+import "github.com/phimtorr/phimtor/desktop/handler/uri"
 
 templ Movie(movie api.Movie) {
 	@layout(movie.Title) {
@@ -21,7 +22,9 @@ templ Movie(movie api.Movie) {
 					<p class="mb-2">IMDB Score: { toString(movie.Score) }</p>
 				</div>
 				<div class="mt-4 box-border">
-					<button class="rounded-sm py-4 px-6 bg-red-600 hover:bg-red-700 shadow">Watch Now</button>
+					<a href={ templ.SafeURL(uri.GetVideo(movie.VideoId)) }>
+						<button type="button" class="rounded-sm py-4 px-6 bg-red-600 hover:bg-red-700 shadow">Watch Now</button>
+					</a>
 				</div>
 			</div>
 		</section>

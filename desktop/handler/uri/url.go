@@ -19,3 +19,7 @@ func GetMovie(id int64) string {
 func GetSeries(id int64) string {
 	return fmt.Sprintf("/series/%d", id)
 }
+
+func GetVideo(id int64) string {
+	return fmt.Sprintf("/videos/%d", id)
+}

@@ -1,0 +1,33 @@
+package ui
+
+import "github.com/phimtorr/phimtor/desktop/client/api"
+
+templ Video(video api.Video) {
+	@layout(video.Title) {
+		<section class="w-full">
+			<video class="w-full" controls>
+				<source
+					src="https://www.w3schools.com/html/mov_bbb.mp4"
+					type="video/mp4"
+				/>
+				<source
+					src="https://www.w3schools.com/html/mov_bbb.ogg"
+					type="video/ogg"
+				/>
+				Your browser does not support the video tag.
+			</video>
+			<h1 class="my-2 text-2xl font-bold">{ video.Title }</h1>
+		</section>
+		<section class="w-full mt-4">
+			<h2 class="text-xl font-semibold">Torrents</h2>
+			<div class="flex flex-wrap gap-2 mt-4">
+				for _, l := range video.TorrentLinks {
+					<button
+						type="button"
+						class="inline-flex justify-center items-center space-x-1 rounded bg-stone-900 px-4 py-2 text-slate-100 hover:bg-stone-800"
+					>{ l.Name }</button>
+				}
+			</div>
+		</section>
+	}
+}
