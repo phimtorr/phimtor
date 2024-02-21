@@ -86,9 +86,10 @@ type Subtitle struct {
 
 // TorrentLink defines model for TorrentLink.
 type TorrentLink struct {
-	Link     string `json:"link"`
-	Name     string `json:"name"`
-	Priority int    `json:"priority"`
+	FileIndex int    `json:"fileIndex"`
+	Link      string `json:"link"`
+	Name      string `json:"name"`
+	Priority  int    `json:"priority"`
 }
 
 // Video defines model for Video.

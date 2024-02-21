@@ -348,11 +348,14 @@ components:
           type: string
         link:
           type: string
+        fileIndex:
+          type: integer
         priority:
           type: integer
       required:
         - name
         - link
+        - fileIndex
         - priority
 
     Subtitle:

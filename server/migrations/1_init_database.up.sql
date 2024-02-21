@@ -55,6 +55,7 @@ CREATE TABLE IF NOT EXISTS torrent_links
 
     name       varchar(50)  NOT NULL DEFAULT '',
     link       VARCHAR(255) NOT NULL DEFAULT '',
+    file_index INT          NOT NULL DEFAULT 0,
     priority   INT          NOT NULL DEFAULT 0,
 
     created_at timestamp    NOT NULL DEFAULT current_timestamp,

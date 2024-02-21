@@ -27,6 +27,7 @@ type TorrentLink struct {
 	VideoID   int64     `boil:"video_id" json:"video_id" toml:"video_id" yaml:"video_id"`
 	Name      string    `boil:"name" json:"name" toml:"name" yaml:"name"`
 	Link      string    `boil:"link" json:"link" toml:"link" yaml:"link"`
+	FileIndex int       `boil:"file_index" json:"file_index" toml:"file_index" yaml:"file_index"`
 	Priority  int       `boil:"priority" json:"priority" toml:"priority" yaml:"priority"`
 	CreatedAt time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
@@ -40,6 +41,7 @@ var TorrentLinkColumns = struct {
 	VideoID   string
 	Name      string
 	Link      string
+	FileIndex string
 	Priority  string
 	CreatedAt string
 	UpdatedAt string
@@ -48,6 +50,7 @@ var TorrentLinkColumns = struct {
 	VideoID:   "video_id",
 	Name:      "name",
 	Link:      "link",
+	FileIndex: "file_index",
 	Priority:  "priority",
 	CreatedAt: "created_at",
 	UpdatedAt: "updated_at",
@@ -58,6 +61,7 @@ var TorrentLinkTableColumns = struct {
 	VideoID   string
 	Name      string
 	Link      string
+	FileIndex string
 	Priority  string
 	CreatedAt string
 	UpdatedAt string
@@ -66,6 +70,7 @@ var TorrentLinkTableColumns = struct {
 	VideoID:   "torrent_links.video_id",
 	Name:      "torrent_links.name",
 	Link:      "torrent_links.link",
+	FileIndex: "torrent_links.file_index",
 	Priority:  "torrent_links.priority",
 	CreatedAt: "torrent_links.created_at",
 	UpdatedAt: "torrent_links.updated_at",
@@ -78,6 +83,7 @@ var TorrentLinkWhere = struct {
 	VideoID   whereHelperint64
 	Name      whereHelperstring
 	Link      whereHelperstring
+	FileIndex whereHelperint
 	Priority  whereHelperint
 	CreatedAt whereHelpertime_Time
 	UpdatedAt whereHelpertime_Time
@@ -86,6 +92,7 @@ var TorrentLinkWhere = struct {
 	VideoID:   whereHelperint64{field: "`torrent_links`.`video_id`"},
 	Name:      whereHelperstring{field: "`torrent_links`.`name`"},
 	Link:      whereHelperstring{field: "`torrent_links`.`link`"},
+	FileIndex: whereHelperint{field: "`torrent_links`.`file_index`"},
 	Priority:  whereHelperint{field: "`torrent_links`.`priority`"},
 	CreatedAt: whereHelpertime_Time{field: "`torrent_links`.`created_at`"},
 	UpdatedAt: whereHelpertime_Time{field: "`torrent_links`.`updated_at`"},
@@ -119,9 +126,9 @@ func (r *torrentLinkR) GetVideo() *Video {
 type torrentLinkL struct{}
 
 var (
-	torrentLinkAllColumns            = []string{"id", "video_id", "name", "link", "priority", "created_at", "updated_at"}
+	torrentLinkAllColumns            = []string{"id", "video_id", "name", "link", "file_index", "priority", "created_at", "updated_at"}
 	torrentLinkColumnsWithoutDefault = []string{"video_id", "name", "link"}
-	torrentLinkColumnsWithDefault    = []string{"id", "priority", "created_at", "updated_at"}
+	torrentLinkColumnsWithDefault    = []string{"id", "file_index", "priority", "created_at", "updated_at"}
 	torrentLinkPrimaryKeyColumns     = []string{"id"}
 	torrentLinkGeneratedColumns      = []string{}
 )

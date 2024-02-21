@@ -8,18 +8,24 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/phimtorr/phimtor/desktop/client/api"
+	"github.com/phimtorr/phimtor/desktop/torrent"
 )
 
 type Handler struct {
-	client api.ClientWithResponsesInterface
+	torManager *torrent.Manager
+	client     api.ClientWithResponsesInterface
 }
 
-func New(client api.ClientWithResponsesInterface) *Handler {
+func New(torManager *torrent.Manager, client api.ClientWithResponsesInterface) *Handler {
+	if torManager == nil {
+		panic("torrent manager is required")
+	}
 	if client == nil {
 		panic("client is required")
 	}
 	return &Handler{
-		client: client,
+		torManager: torManager,
+		client:     client,
 	}
 }
 
@@ -64,6 +70,24 @@ func (h *Handler) Register(r chi.Router) {
 		}
 
 		h.GetVideo(w, r, id)
+		return
+	})
+
+	r.Get("/stream/{infoHash}/{fileIndex}", func(w http.ResponseWriter, r *http.Request) {
+		infoHashStr := chi.URLParam(r, "infoHash")
+		infoHash, err := torrent.InfoHashFromString(infoHashStr)
+		if err != nil {
+			handleError(w, r, "Parse info hash", err, http.StatusBadRequest)
+			return
+		}
+		fileIndexStr := chi.URLParam(r, "fileIndex")
+		fileIndex, err := strconv.Atoi(fileIndexStr)
+		if err != nil {
+			handleError(w, r, "Parse file index", err, http.StatusBadRequest)
+			return
+		}
+
+		h.Stream(w, r, infoHash, fileIndex)
 		return
 	})
 }

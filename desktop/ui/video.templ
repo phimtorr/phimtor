@@ -1,18 +1,23 @@
 package ui
 
 import "github.com/phimtorr/phimtor/desktop/client/api"
+import "github.com/phimtorr/phimtor/desktop/torrent"
+import "github.com/phimtorr/phimtor/desktop/handler/uri"
 
-templ Video(video api.Video) {
+templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.TorrentLink) {
 	@layout(video.Title) {
 		<section class="w-full">
-			<video class="w-full" controls>
+			<video
+				class="w-full"
+				controls
+				autoplay
+				disablepictureinpicture
+				preload="auto"
+				crossorigin="anonymous"
+			>
 				<source
-					src="https://www.w3schools.com/html/mov_bbb.mp4"
+					src={ uri.GetStream(infoHash, selectedLink.FileIndex) }
 					type="video/mp4"
-				/>
-				<source
-					src="https://www.w3schools.com/html/mov_bbb.ogg"
-					type="video/ogg"
 				/>
 				Your browser does not support the video tag.
 			</video>
@@ -22,10 +27,18 @@ templ Video(video api.Video) {
 			<h2 class="text-xl font-semibold">Torrents</h2>
 			<div class="flex flex-wrap gap-2 mt-4">
 				for _, l := range video.TorrentLinks {
-					<button
-						type="button"
-						class="inline-flex justify-center items-center space-x-1 rounded bg-stone-900 px-4 py-2 text-slate-100 hover:bg-stone-800"
-					>{ l.Name }</button>
+					if l == selectedLink {
+						<button
+							type="button"
+							class="inline-flex justify-center items-center space-x-1 rounded bg-red-600 px-4 py-2 text-slate-100 hover:bg-red-700"
+							disabled
+						>{ l.Name }</button>
+					} else {
+						<button
+							type="button"
+							class="inline-flex justify-center items-center space-x-1 rounded bg-stone-500 hover:bg-red-700 px-4 py-2 text-slate-100"
+						>{ l.Name }</button>
+					}
 				}
 			</div>
 		</section>

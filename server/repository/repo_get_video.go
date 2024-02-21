@@ -38,9 +38,10 @@ func toHTTPTorrentLinks(dbLinks dbmodels.TorrentLinkSlice) []ports.TorrentLink {
 	var links []ports.TorrentLink
 	for _, link := range dbLinks {
 		links = append(links, ports.TorrentLink{
-			Link:     link.Link,
-			Name:     link.Name,
-			Priority: link.Priority,
+			Link:      link.Link,
+			Name:      link.Name,
+			FileIndex: link.FileIndex,
+			Priority:  link.Priority,
 		})
 	}
 	slices.SortStableFunc(links, func(a, b ports.TorrentLink) int {
