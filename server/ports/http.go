@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/go-chi/render"
 	"github.com/rs/zerolog/log"
 )
 
@@ -27,10 +28,14 @@ func NewHttpServer(repository Repository) HttpServer {
 
 func handleError(w http.ResponseWriter, r *http.Request, msg string, err error, status int) {
 	log.Ctx(r.Context()).Error().Err(err).Msg(msg)
-	http.Error(w, msg+": "+err.Error(), status)
-}
+	code := "internal-error"
+	if status == http.StatusBadRequest {
+		code = "bad-request"
+	}
 
-func redirect(w http.ResponseWriter, r *http.Request, url string) {
-	w.Header().Set("HX-Redirect", url)
-	http.Redirect(w, r, url, http.StatusSeeOther)
+	render.Status(r, status)
+	render.JSON(w, r, ErrorResponse{
+		Code:    code,
+		Message: msg,
+	})
 }
