@@ -1,9 +1,17 @@
 Test:
   HelloWorld: "Hello World!"
 
+DesktopApp:
+  Title: "Phim Tor"
+  OpenWebBrowser: "Open PhimTor on web browser"
+
 Nav:
   Home: "Home"
   Settings: "Settings"
+
+Shows:
+  Title: "Shows"
+
 
 Settings:
   Title: "Settings"

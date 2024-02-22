@@ -16,12 +16,14 @@ require (
 	github.com/phimtorr/phimtor/common v0.0.0-00010101000000-000000000000
 	github.com/rs/cors v1.8.3
 	github.com/rs/zerolog v1.32.0
+	github.com/zserge/lorca v0.1.11-0.20240107174849-36a77caf0fc7
 	golang.org/x/text v0.14.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
 	github.com/RoaringBitmap/roaring v1.2.3 // indirect
+	github.com/YOMIkio/lorca v0.2.1-0.20240217024234-0316cc3e2995 // indirect
 	github.com/ajwerner/btree v0.0.0-20211221152037-f427b3e689c0 // indirect
 	github.com/akavel/rsrc v0.10.2 // indirect
 	github.com/alecthomas/atomic v0.1.0-alpha2 // indirect

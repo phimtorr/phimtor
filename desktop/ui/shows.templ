@@ -3,9 +3,10 @@ package ui
 import "github.com/phimtorr/phimtor/desktop/client/api"
 import "fmt"
 import "github.com/phimtorr/phimtor/desktop/handler/uri"
+import "github.com/phimtorr/phimtor/desktop/i18n"
 
 templ Shows(shows []api.Show, pg api.Pagination) {
-	@layout("Shows") {
+	@layout(i18n.MustT(ctx, "Shows.Title")) {
 		<!-- Here is search box with some filter by year, etc -->
 		<form class="my-2 space-y-2">
 			<input

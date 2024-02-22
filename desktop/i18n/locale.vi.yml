@@ -1,9 +1,16 @@
 Test:
   HelloWorld: "Xin chào thế giới!"
 
+DesktopApp:
+  Title: "Phim Tor"
+  OpenWebBrowser: "Mở PhimTor trên trình duyệt"
+
 Nav:
   Home: "Trang chủ"
   Settings: "Cài đặt"
+
+Shows:
+  Title: "Danh sách phim"
 
 Settings:
   Title: "Cài đặt"

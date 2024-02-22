@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/YOMIkio/lorca"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/rs/cors"
@@ -16,6 +17,7 @@ import (
 	"github.com/phimtorr/phimtor/common/strval"
 	"github.com/phimtorr/phimtor/desktop/build"
 	"github.com/phimtorr/phimtor/desktop/client"
+	"github.com/phimtorr/phimtor/desktop/data"
 	"github.com/phimtorr/phimtor/desktop/handler"
 	"github.com/phimtorr/phimtor/desktop/i18n"
 	"github.com/phimtorr/phimtor/desktop/setting"
@@ -34,6 +36,7 @@ func main() {
 	}()
 
 	settings := settingsStorage.GetSettings()
+	i18nBundle := i18n.NewBundle()
 
 	torManager := torrent.NewManager(settings.GetCurrentDataDir())
 	defer func() {
@@ -49,17 +52,48 @@ func main() {
 	setCommonMiddlewares(r)
 
 	r.Use(setting.Middleware(settingsStorage))
-	r.Use(i18n.Middleware(i18n.NewBundle(), settingsStorage))
+	r.Use(i18n.Middleware(i18nBundle, settingsStorage))
 
 	r.Handle("/static/style/*", http.StripPrefix("/static/style", http.FileServer(http.FS(style.FS))))
+	r.Handle("/static/assets/*", http.StripPrefix("/static/assets", http.FileServer(http.FS(data.Assets))))
 
 	httpHandler.Register(r)
 
-	addr := ":" + build.ServePort
-	log.Info().Str("address", addr).Msg("Starting HTTP server")
-	if err := http.ListenAndServe(addr, r); err != nil {
-		log.Fatal().Err(err).Msg("Stopped HTTP server")
+	servePort := strval.MustInt(build.ServePort)
+
+	addr := fmt.Sprintf(":%d", servePort)
+	httpServer := &http.Server{
+		Addr:    addr,
+		Handler: r,
 	}
+	defer func() {
+		if err := httpServer.Close(); err != nil {
+			log.Error().Err(err).Msg("Failed to close HTTP server")
+		}
+	}()
+
+	go func() {
+		log.Info().Str("address", addr).Msg("Starting HTTP server")
+		if err := httpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			log.Fatal().Err(err).Msg("Failed to start HTTP server")
+		}
+	}()
+
+	runUI(servePort)
+}
+
+func runUI(servePort int) {
+	ui, err := lorca.New(fmt.Sprintf("http://localhost:%d", servePort), "", 1280, 800)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to create UI")
+	}
+	defer func() {
+		if err := ui.Close(); err != nil {
+			log.Error().Err(err).Msg("Failed to close UI")
+		}
+	}()
+
+	<-ui.Done()
 }
 
 func setCommonMiddlewares(router *chi.Mux) {
