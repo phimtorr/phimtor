@@ -11,6 +11,7 @@ import (
 
 	"github.com/phimtorr/phimtor/common/logs"
 	"github.com/phimtorr/phimtor/common/strval"
+	"github.com/phimtorr/phimtor/server/migrations"
 	"github.com/phimtorr/phimtor/server/ports"
 	"github.com/phimtorr/phimtor/server/repository"
 
@@ -21,6 +22,10 @@ func main() {
 	logs.Init(strval.MustBool(os.Getenv("LOCAL_ENV")))
 
 	db := database.NewMySqlDB()
+	if err := migrations.Run(db); err != nil {
+		log.Fatal().Err(err).Msg("Failed to run migrations")
+	}
+	
 	repo := repository.NewRepository(db)
 	httpServer := ports.NewHttpServer(repo)
 

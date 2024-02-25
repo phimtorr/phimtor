@@ -9,6 +9,7 @@ require (
 	github.com/go-chi/chi/v5 v5.0.12
 	github.com/go-chi/render v1.0.3
 	github.com/go-sql-driver/mysql v1.6.0
+	github.com/golang-migrate/migrate/v4 v4.17.0
 	github.com/oapi-codegen/runtime v1.1.1
 	github.com/phimtorr/phimtor/common v0.0.0-00010101000000-000000000000
 	github.com/rs/cors v1.10.1
@@ -24,12 +25,15 @@ require (
 	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
 	github.com/gofrs/uuid v4.2.0+incompatible // indirect
 	github.com/google/uuid v1.5.0 // indirect
+	github.com/hashicorp/errwrap v1.1.0 // indirect
+	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/volatiletech/inflect v0.0.1 // indirect
 	github.com/volatiletech/randomize v0.0.1 // indirect
+	go.uber.org/atomic v1.7.0 // indirect
 	golang.org/x/sys v0.15.0 // indirect
-	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
+	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 )
