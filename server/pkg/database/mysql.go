@@ -25,6 +25,7 @@ func NewMySqlDB() *sql.DB {
 		Timeout:              defaultDialTimeout,
 		ParseTime:            true,
 		AllowNativePasswords: true,
+		MultiStatements:      true,
 	}
 
 	db, err := sql.Open("mysql", config.FormatDSN())
