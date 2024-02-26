@@ -1,9 +1,10 @@
 name: Build and deploy server
 
 on:
-  push:
-    branches:
-      - master
+  release: null
+#  push:
+#    branches:
+#      - master
 
 jobs:
   build:
