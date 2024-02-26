@@ -29,4 +29,4 @@ go.work
 
 server/db_data
 desktop/tmp
-desktop/build/bin
+**/bin

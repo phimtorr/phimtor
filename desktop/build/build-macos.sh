@@ -1,15 +1,19 @@
 #!/bin/sh
 set -xe
 
-SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+if [ -z "$VERSION" ]; then
+    echo "VERSION is not set"
+    exit 1
+fi
 
-readonly VERSION="${1:-0.0.1}"
-readonly APPDIR="build/bin/PhimTor.app"
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+WORKING_DIR=$(cd "$SCRIPT_DIR"/.. && pwd)
+
+readonly APPDIR="$WORKING_DIR/bin/PhimTor.app"
 
 mkdir -p $APPDIR/Contents/{MacOS,Resources}
 
-go build -o $APPDIR/Contents/MacOS/PhimTor
-chmod +x $APPDIR/Contents/MacOS/*
+"$SCRIPT_DIR/build.sh" "$APPDIR/Contents/MacOS/PhimTor"
 
 cat > $APPDIR/Contents/Info.plist << EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -42,7 +46,7 @@ cat > $APPDIR/Contents/Info.plist << EOF
 </plist>
 EOF
 
-cp $SCRIPT_DIR/icons/icon.icns $APPDIR/Contents/Resources/icon.icns
-find $APPDIR
+cp "$SCRIPT_DIR/icons/icon.icns" "$APPDIR/Contents/Resources/icon.icns"
+find "$APPDIR"
 
-productbuild --component $APPDIR ./build/bin/PhimTor.pkg
+productbuild --component "$APPDIR" "$WORKING_DIR/bin/PhimTor.pkg"

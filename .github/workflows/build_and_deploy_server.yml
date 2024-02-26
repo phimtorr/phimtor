@@ -13,6 +13,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Store the version, stripping any v-prefix
+      - name: Write release version
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          echo Original version: $VERSION
+          if [ -z "$VERSION" ] || ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-.+)*$ ]]; then
+            VERSION="0.0.0-$(git rev-parse --short HEAD)"
+          fi
+          echo Version: $VERSION
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo $VERSION > server/version
+        shell: bash
+
       # Setup Golang
       - name: Setup Golang
         uses: actions/setup-go@v5
@@ -26,20 +39,24 @@ jobs:
       # Build server
       - name: Build server
         run: |
-          cd server && go build -o server
+          cd server && go build -o server && chmod +x server
         shell: bash
 
       # Upload artifacts
       - name: Upload server
         uses: actions/upload-artifact@v4
         with:
-          name: server
-          path: server/server
+          name: server_artifact
+          path: |
+            server/server
+            server/version
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
     environment: development
+    env:
+      SERVICE_NAME: phimtor.server.dev.service
     steps:
       - name: Install ssh key
         run: |
@@ -51,10 +68,13 @@ jobs:
       - name: Download server
         uses: actions/download-artifact@v4
         with:
-          name: server
+          name: server_artifact
+          path: server
 
       - name: Deploy server
         run: |
-          chmod +x server
-          scp server ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.WORKING_DIR }}
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "systemctl --user stop $SERVICE_NAME"
+          scp -r server ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.WORKING_DIR }}
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "chmod +x ${{ vars.WORKING_DIR }}/server/server"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "systemctl --user start $SERVICE_NAME"
         shell: bash

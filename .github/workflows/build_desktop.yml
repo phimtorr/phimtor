@@ -4,17 +4,12 @@ permissions:
   contents: write
 
 on:
-  release:
-    types: [published, released]
+  release: null
+#  push:
+#    branches:
+#      - master
 
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version to build'
-        required: true
-        default: '1.0.0'
-
-defaults: 
+defaults:
   run:
     working-directory: ./desktop
 
@@ -23,7 +18,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -34,10 +29,12 @@ jobs:
       - name: Write release version
         run: |
           VERSION=${GITHUB_REF_NAME#v}
-          SHORT_VERSION=${VERSION%.*}
+          echo Original version: $VERSION
+          if [ -z "$VERSION" ] || ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-.+)*$ ]]; then
+            VERSION="0.0.0-$(git rev-parse --short HEAD)"
+          fi
           echo Version: $VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "SHORT_VERSION=$SHORT_VERSION" >> $GITHUB_ENV
         shell: bash
 
       # Setup Golang
@@ -55,33 +52,36 @@ jobs:
       - name: Build MacOS
         if: runner.os == 'macOS'
         run: |
-          ./build/build-macos.sh $VERSION
+          ./build/build-macos.sh
         shell: bash
       # ---- End MacOS --------
 
       # ------ Windows --------
       # Build Windows
-      - name: Build Windows
+      - name: Install dependencies
         if: runner.os == 'Windows'
         run: |
           choco install rcedit -y
-          go build -ldflags "-H windowsgui -extldflags=-static" -o build/bin/PhimTor.exe
-          rcedit build/bin/PhimTor.exe --set-icon build/icons/icon.ico --set-file-version $SHORT_VERSION --set-product-version $SHORT_VERSION
+        shell: bash
+      - name: Build Windows
+        if: runner.os == 'Windows'
+        run: |
+          ./build/build-windows.sh
         shell: bash
       # ------ End Windows -------
 
       # ----- Linux --------
-      - name: Install dependencies
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install gcc libgtk-3-dev libayatana-appindicator3-dev
-        shell: bash
+      #      - name: Install dependencies
+      #        if: runner.os == 'Linux'
+      #        run: |
+      #          sudo apt-get update
+      #          sudo apt-get install gcc libgtk-3-dev libayatana-appindicator3-dev
+      #        shell: bash
       # Build Linux
       - name: Build Linux
         if: runner.os == 'Linux'
         run: |
-          ./build/build-linux.sh $VERSION
+          ./build/build-linux.sh
         shell: bash
       # ----- End Linux -------
 
@@ -90,9 +90,9 @@ jobs:
         with:
           name: PhimTor_${{runner.os}}
           path: |
-            ${{github.workspace}}/desktop/build/bin/*.pkg
-            ${{github.workspace}}/desktop/build/bin/*.deb
-            ${{github.workspace}}\desktop\build\bin\*.exe
+            ${{github.workspace}}/desktop/bin/*.pkg
+            ${{github.workspace}}/desktop/bin/*.deb
+            ${{github.workspace}}\desktop\bin\*.exe
 
       - name: Release
         uses: softprops/action-gh-release@v1
