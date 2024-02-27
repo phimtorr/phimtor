@@ -49,4 +49,4 @@ EOF
 cp "$SCRIPT_DIR/icons/icon.icns" "$APPDIR/Contents/Resources/icon.icns"
 find "$APPDIR"
 
-productbuild --component "$APPDIR" "$WORKING_DIR/bin/PhimTor.pkg"
+productbuild --component "$APPDIR" /Applications "$WORKING_DIR/bin/PhimTor.pkg"
