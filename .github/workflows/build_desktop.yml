@@ -4,14 +4,9 @@ permissions:
   contents: write
 
 on:
-  release: null
-#  push:
-#    branches:
-#      - master
-
-defaults:
-  run:
-    working-directory: ./desktop
+  push:
+    branches:
+      - master
 
 jobs:
   build:
@@ -19,17 +14,20 @@ jobs:
       fail-fast: true
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
-
+    env:
+      SERVER_ADDR: "https://dev.phimtor.net"
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+          fetch-tags: true
 
       # Store the version, stripping any v-prefix
       - name: Write release version
         run: |
-          VERSION=${GITHUB_REF_NAME#v}
-          echo Original version: $VERSION
+          VERSION=$(git describe --tags --always --match='v[0-9]*.[0-9]*.[0-9]*' 2> /dev/null | sed 's/^.//')
           if [ -z "$VERSION" ] || ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-.+)*$ ]]; then
             VERSION="0.0.0-$(git rev-parse --short HEAD)"
           fi
@@ -52,7 +50,7 @@ jobs:
       - name: Build MacOS
         if: runner.os == 'macOS'
         run: |
-          ./build/build-macos.sh
+          ./desktop/build/build-macos.sh
         shell: bash
       # ---- End MacOS --------
 
@@ -66,29 +64,23 @@ jobs:
       - name: Build Windows
         if: runner.os == 'Windows'
         run: |
-          ./build/build-windows.sh
+          ./desktop/build/build-windows.sh
         shell: bash
       # ------ End Windows -------
 
       # ----- Linux --------
-      #      - name: Install dependencies
-      #        if: runner.os == 'Linux'
-      #        run: |
-      #          sudo apt-get update
-      #          sudo apt-get install gcc libgtk-3-dev libayatana-appindicator3-dev
-      #        shell: bash
       # Build Linux
       - name: Build Linux
         if: runner.os == 'Linux'
         run: |
-          ./build/build-linux.sh
+          ./desktop/build/build-linux.sh
         shell: bash
       # ----- End Linux -------
 
       # Upload build assets
       - uses: actions/upload-artifact@v4
         with:
-          name: PhimTor_${{runner.os}}
+          name: desktop_app_${{runner.os}}
           path: |
             ${{github.workspace}}/desktop/bin/*.pkg
             ${{github.workspace}}/desktop/bin/*.deb
@@ -102,3 +94,42 @@ jobs:
             **/bin/*.pkg
             **/bin/*.deb
             **/bin/*.exe
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - name: Install ssh key
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+          cat >>~/.ssh/config <<END
+          Host server
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/id_rsa
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        shell: bash
+
+      - name: Download desktop
+        uses: actions/download-artifact@v4
+        with:
+          pattern: desktop_app_*
+          merge-multiple: true
+          path: desktop_app
+
+      - run: |
+          ls -lR desktop_app
+
+      - name: Deploy desktop
+        run: |
+          ssh server 'mkdir -p ${{ vars.WORKING_DIR }}/desktop_app'
+          ssh server 'rm -rf ${{ vars.WORKING_DIR }}/desktop_app/*'
+          find desktop_app -name "*.exe" -o -name "*.pkg" -o -name "*.deb" | xargs -I{} scp {} server:${{ vars.WORKING_DIR }}/desktop_app/
+        shell: bash
