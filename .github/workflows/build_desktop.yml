@@ -46,6 +46,11 @@ jobs:
         shell: bash
 
       # ---- MacOS-------
+      - name: Install dependencies
+        if: runner.os == 'macOS'
+        run: |
+          brew install create-dmg
+        shell: bash
       # Build MacOS
       - name: Build MacOS
         if: runner.os == 'macOS'
@@ -83,6 +88,7 @@ jobs:
           name: desktop_app_${{runner.os}}
           path: |
             ${{github.workspace}}/desktop/bin/*.pkg
+            ${{github.workspace}}/desktop/bin/*.dmg
             ${{github.workspace}}/desktop/bin/*.deb
             ${{github.workspace}}\desktop\bin\*.exe
 
@@ -92,6 +98,7 @@ jobs:
         with:
           files: |
             **/bin/*.pkg
+            **/bin/*.dmg
             **/bin/*.deb
             **/bin/*.exe
   release:
@@ -131,5 +138,5 @@ jobs:
         run: |
           ssh server 'mkdir -p ${{ vars.WORKING_DIR }}/desktop_app'
           ssh server 'rm -rf ${{ vars.WORKING_DIR }}/desktop_app/*'
-          find desktop_app -name "*.exe" -o -name "*.pkg" -o -name "*.deb" | xargs -I{} scp {} server:${{ vars.WORKING_DIR }}/desktop_app/
+          find desktop_app -name "*.exe" -o -name "*.pkg" -o -name "*.deb" -o -name "*.dmg" | xargs -I{} scp {} server:${{ vars.WORKING_DIR }}/desktop_app/
         shell: bash
