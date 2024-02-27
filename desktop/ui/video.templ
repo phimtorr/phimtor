@@ -2,7 +2,7 @@ package ui
 
 import "github.com/phimtorr/phimtor/desktop/client/api"
 import "github.com/phimtorr/phimtor/desktop/torrent"
-import "github.com/phimtorr/phimtor/desktop/handler/uri"
+import "github.com/phimtorr/phimtor/desktop/server/handler/uri"
 
 templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.TorrentLink) {
 	@layout(video.Title) {
@@ -44,5 +44,57 @@ templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.Torrent
 				}
 			</div>
 		</section>
+		<section>
+			<h2 class="mb-2 text-xl font-bold">Subtitle</h2>
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+				<div class="">
+					<h3 class="mb-2 text-lg font-bold">Vietnamese</h3>
+					<div class="w-full">
+						for _, sub := range filterSubtitles(video.Subtitles, "vi") {
+							@subtitle(sub)
+						}
+					</div>
+				</div>
+				<div class="">
+					<h3 class="mb-2 text-lg font-bold">English</h3>
+					<div class="w-full">
+						for _, sub := range filterSubtitles(video.Subtitles, "en") {
+							@subtitle(sub)
+						}
+					</div>
+				</div>
+			</div>
+		</section>
 	}
+}
+
+func filterSubtitles(subtitles []api.Subtitle, lang string) []api.Subtitle {
+	var filtered []api.Subtitle
+	for _, s := range subtitles {
+		if s.Language == lang {
+			filtered = append(filtered, s)
+		}
+	}
+	return filtered
+}
+
+templ subtitle(sub api.Subtitle) {
+	<div class="flex items-center justify-between">
+		<div class="flex-1">
+			<p class="">{ sub.Name }</p>
+			<p class="font-thin text-xs">{ sub.Owner }</p>
+		</div>
+		<div class="flex space-x-2">
+			<button
+				class="rounded bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-700 text-sm"
+			>
+				Apply
+			</button>
+			<button
+				class="rounded bg-stone-600 px-4 py-2 font-bold text-white hover:bg-stone-700 text-sm"
+			>
+				Download
+			</button>
+		</div>
+	</div>
 }

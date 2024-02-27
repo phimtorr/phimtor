@@ -5,19 +5,14 @@ package ui
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import (
-	"bytes"
-	"context"
-	"io"
+import "github.com/a-h/templ"
+import "context"
+import "io"
+import "bytes"
 
-	"github.com/a-h/templ"
-
-	uri2 "github.com/phimtorr/phimtor/desktop/server/handler/uri"
-
-	"github.com/go-chi/chi/v5"
-
-	"github.com/phimtorr/phimtor/desktop/i18n"
-)
+import "github.com/go-chi/chi/v5"
+import "github.com/phimtorr/phimtor/desktop/server/handler/uri"
+import "github.com/phimtorr/phimtor/desktop/i18n"
 
 func layout(title string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
@@ -76,8 +71,8 @@ var menuItems = []struct {
 	Link      string
 	MessageID string
 }{
-	{uri2.Home(), "Nav.Home"},
-	{uri2.GetSettings(), "Nav.Settings"},
+	{uri.Home(), "Nav.Home"},
+	{uri.GetSettings(), "Nav.Settings"},
 }
 
 func isCurrentPage(ctx context.Context, link string) bool {
