@@ -42,3 +42,7 @@ func SelectSubtitle(videoID int64, subtitleName string) string {
 func UnselectSubtitle(videoID int64) string {
 	return fmt.Sprintf("/videos/%d/subtitles", videoID)
 }
+
+func UploadSubtitle(videoID int64) string {
+	return fmt.Sprintf("/videos/%d/subtitles/upload", videoID)
+}

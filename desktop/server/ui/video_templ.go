@@ -245,7 +245,15 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, name, fil
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"> <button class=\"m-1 rounded bg-stone-900 px-4 py-2 hover:bg-red-700\"><i icon=\"fa-solid fa-eraser\"></i> Reset</button> <button class=\"m-1 rounded bg-stone-900 px-4 py-2 hover:bg-red-700\"><i icon=\"fa-solid fa-backward\"></i> -0.5s</button><p class=\"mx-2\">500ms</p><button class=\"ml-2 rounded bg-stone-900 px-4 py-2 hover:bg-red-700\"><i icon=\"fa-solid fa-forward\"></i> +0.5s</button></div></div><div class=\"col-span-1 flex flex-col rounded-sm px-1 py-3 hover:bg-stone-700\"><h4 class=\"mb-1 text-sm font-thin\">Add from file</h4><input type=\"file\" name=\"fileInput\" accept=\".vtt, .srt, application/x-subrip, text/vtt\" class=\"rounded border border-gray-400 bg-stone-700 text-stone-100 file:mr-5 file:rounded-l file:border-[0px] file:bg-stone-700 file:p-4 file:text-stone-100 hover:border-red-700 hover:file:cursor-pointer hover:file:bg-stone-800 hover:file:text-red-700\"></div></div><div class=\"grid grid-cols-1 md:grid-cols-2 gap-4\"><div class=\"\"><h3 class=\"mb-2 text-lg font-bold\">Vietnamese</h3><div class=\"w-full\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"> <button class=\"m-1 rounded bg-stone-900 px-4 py-2 hover:bg-red-700\"><i icon=\"fa-solid fa-eraser\"></i> Reset</button> <button class=\"m-1 rounded bg-stone-900 px-4 py-2 hover:bg-red-700\"><i icon=\"fa-solid fa-backward\"></i> -0.5s</button><p class=\"mx-2\">500ms</p><button class=\"ml-2 rounded bg-stone-900 px-4 py-2 hover:bg-red-700\"><i icon=\"fa-solid fa-forward\"></i> +0.5s</button></div></div><div class=\"col-span-1 flex flex-col rounded-sm px-1 py-3 hover:bg-stone-700\"><h4 class=\"mb-1 text-sm font-thin\">Add from file</h4><input type=\"file\" name=\"fileInput\" accept=\".vtt, .srt, application/x-subrip, text/vtt\" class=\"rounded border border-gray-400 bg-stone-700 text-stone-100 file:mr-5 file:rounded-l file:border-[0px] file:bg-stone-700 file:p-4 file:text-stone-100 hover:border-red-700 hover:file:cursor-pointer hover:file:bg-stone-800 hover:file:text-red-700\" hx-encoding=\"multipart/form-data\" hx-post=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(uri.UploadSubtitle(videoID)))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-swap=\"outerHTML\" hx-target=\"#subtitleSection\"></div></div><div class=\"grid grid-cols-1 md:grid-cols-2 gap-4\"><div class=\"\"><h3 class=\"mb-2 text-lg font-bold\">Vietnamese</h3><div class=\"w-full\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -306,7 +314,7 @@ func subtitle(videoID int64, sub api.Subtitle, isSelected bool) templ.Component 
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(sub.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/video.templ`, Line: 161, Col: 26}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/video.templ`, Line: 165, Col: 26}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
@@ -319,7 +327,7 @@ func subtitle(videoID int64, sub api.Subtitle, isSelected bool) templ.Component 
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(sub.Owner)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/video.templ`, Line: 162, Col: 44}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/video.templ`, Line: 166, Col: 44}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {
