@@ -3,6 +3,7 @@ package ui
 import "github.com/phimtorr/phimtor/desktop/client/api"
 import "github.com/phimtorr/phimtor/desktop/torrent"
 import "github.com/phimtorr/phimtor/desktop/server/handler/uri"
+import "github.com/phimtorr/phimtor/desktop/i18n"
 
 templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.TorrentLink, selectedSubtitleName string) {
 	@layout(video.Title) {
@@ -92,7 +93,7 @@ templ SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Su
 	<section id="subtitleSection">
 		<div class="flex items-center justify-between">
 			<h3 class="my-4 text-xl font-bold">
-				<span class="border-b-2 border-red-700 pb-1">Subtitle</span>
+				<span class="border-b-2 border-red-700 pb-1">{ i18n.T(ctx, "Subtitle.Title") }</span>
 			</h3>
 			<p class="pr-1 text-sm">{ state.Name }</p>
 		</div>
@@ -100,7 +101,7 @@ templ SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Su
 			<div
 				class="col-span-1 flex flex-col rounded-sm px-1 py-3 hover:bg-stone-700"
 			>
-				<h4 class="mb-1 text-sm font-thin">Adjustment</h4>
+				<h4 class="mb-1 text-sm font-thin">{ i18n.T(ctx, "Subtitle.Adjustment.Title") }</h4>
 				<div
 					class="flex items-center"
 					hx-include="[name='name'], [name='fileName'], [name='originalContent']"
@@ -114,7 +115,7 @@ templ SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Su
 						hx-target="#subtitleSection"
 						hx-swap="outerHTML"
 					>
-						<i icon="fa-solid fa-eraser"></i> Reset
+						<i icon="fa-solid fa-eraser"></i> { i18n.T(ctx, "Subtitle.Adjustment.Reset") }
 					</button>
 					<button
 						class="m-1 rounded bg-stone-900 px-4 py-2 hover:bg-red-700"
@@ -138,7 +139,7 @@ templ SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Su
 			<div
 				class="col-span-1 flex flex-col rounded-sm px-1 py-3 hover:bg-stone-700"
 			>
-				<h4 class="mb-1 text-sm font-thin">Add from file</h4>
+				<h4 class="mb-1 text-sm font-thin">{ i18n.T(ctx, "Subtitle.AddFromFile") }</h4>
 				<input
 					type="file"
 					name="fileInput"
@@ -153,7 +154,7 @@ templ SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Su
 		</div>
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 			<div class="">
-				<h3 class="mb-2 text-lg font-bold">Vietnamese</h3>
+				<h3 class="mb-2 text-lg font-bold">{ i18n.T(ctx, "Subtitle.Vietnamese") }</h3>
 				<div class="w-full">
 					for _, sub := range filterSubtitles(availableSubtitles, "vi") {
 						@subtitle(videoID, sub, sub.Name == state.Name)
@@ -161,7 +162,7 @@ templ SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Su
 				</div>
 			</div>
 			<div class="">
-				<h3 class="mb-2 text-lg font-bold">English</h3>
+				<h3 class="mb-2 text-lg font-bold">{ i18n.T(ctx, "Subtitle.English") }</h3>
 				<div class="w-full">
 					for _, sub := range filterSubtitles(availableSubtitles, "en") {
 						@subtitle(videoID, sub, sub.Name == state.Name)
@@ -202,7 +203,7 @@ templ subtitleSelectButton(videoID int64, sub api.Subtitle) {
 		hx-swap="outerHTML"
 		hx-target="#subtitleSection"
 	>
-		Select
+		{ i18n.T(ctx, "Subtitle.Action.Select") }
 	</button>
 }
 
@@ -213,7 +214,7 @@ templ unselecteSubtitleButton(videoID int64) {
 		hx-swap="outerHTML"
 		hx-target="#subtitleSection"
 	>
-		Unselect
+		{ i18n.T(ctx, "Subtitle.Action.Unselect") }
 	</button>
 }
 
@@ -223,6 +224,6 @@ templ subtitleDownloadButton(videoID int64, sub api.Subtitle) {
 		hx-post={ uri.DownloadSubtitle(videoID, sub.Name) }
 		hx-swap="none"
 	>
-		Download
+		{ i18n.T(ctx, "Subtitle.Action.Download") }
 	</button>
 }
