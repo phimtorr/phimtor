@@ -38,3 +38,7 @@ func GetStream(infoHash torrent.InfoHash, fileIndex int) string {
 func SelectSubtitle(videoID int64, subtitleName string) string {
 	return fmt.Sprintf("/videos/%d/subtitles/%s", videoID, url.QueryEscape(subtitleName))
 }
+
+func UnselectSubtitle(videoID int64) string {
+	return fmt.Sprintf("/videos/%d/subtitles", videoID)
+}

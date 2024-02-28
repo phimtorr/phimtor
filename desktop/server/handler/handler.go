@@ -110,6 +110,7 @@ func (h *Handler) Register(r chi.Router) {
 	})
 
 	// subtitles
+	// this for select or unselect subtitle
 	r.Post("/videos/{videoID}/subtitles/{subtitleName}", func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.ParseInt(chi.URLParam(r, "videoID"), 10, 64)
 		if err != nil {
@@ -123,6 +124,15 @@ func (h *Handler) Register(r chi.Router) {
 		}
 
 		h.SelectSubtitle(w, r, id, subtitleName)
+	})
+	r.Post("/videos/{videoID}/subtitles", func(w http.ResponseWriter, r *http.Request) {
+		id, err := strconv.ParseInt(chi.URLParam(r, "videoID"), 10, 64)
+		if err != nil {
+			handleError(w, r, "Parse video id", err, http.StatusBadRequest)
+			return
+		}
+
+		h.SelectSubtitle(w, r, id, "")
 	})
 
 	// settings

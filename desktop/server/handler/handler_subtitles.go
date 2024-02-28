@@ -19,7 +19,7 @@ func (h *Handler) SelectSubtitle(w http.ResponseWriter, r *http.Request, videoID
 
 	if subtitleName == "" {
 		templ.Handler(
-			ui.SubtitleSectionWithoutSubtitle(video.Subtitles),
+			ui.SubtitleSectionWithoutSubtitle(videoID, video.Subtitles),
 		).ServeHTTP(w, r)
 		return
 	}
@@ -43,7 +43,7 @@ func (h *Handler) SelectSubtitle(w http.ResponseWriter, r *http.Request, videoID
 	}
 
 	templ.Handler(
-		ui.SubtitleSection(video.Subtitles, selectedSubtitle.Name, fileName, originalContent, normalizedContent),
+		ui.SubtitleSection(videoID, video.Subtitles, selectedSubtitle.Name, fileName, originalContent, normalizedContent),
 	).ServeHTTP(w, r)
 }
 

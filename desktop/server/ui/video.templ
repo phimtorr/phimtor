@@ -63,11 +63,11 @@ func filterSubtitles(subtitles []api.Subtitle, lang string) []api.Subtitle {
 	return filtered
 }
 
-templ SubtitleSectionWithoutSubtitle(availableSubtitles []api.Subtitle) {
-	@SubtitleSection(availableSubtitles, "", "", []byte{}, []byte{})
+templ SubtitleSectionWithoutSubtitle(videoID int64, availableSubtitles []api.Subtitle) {
+	@SubtitleSection(videoID, availableSubtitles, "", "", []byte{}, []byte{})
 }
 
-templ SubtitleSection(availableSubtitles []api.Subtitle, name, fileName string, originalContent, content []byte) {
+templ SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, name, fileName string, originalContent, content []byte) {
 	if len(content) == 0 {
 		<div id="subtitleTrack" hx-swap-oob="outerHTML:#subtitleTrack"></div>
 	} else {
@@ -135,7 +135,7 @@ templ SubtitleSection(availableSubtitles []api.Subtitle, name, fileName string, 
 				<h3 class="mb-2 text-lg font-bold">Vietnamese</h3>
 				<div class="w-full">
 					for _, sub := range filterSubtitles(availableSubtitles, "vi") {
-						@subtitle(sub, sub.Name == name)
+						@subtitle(videoID, sub, sub.Name == name)
 					}
 				</div>
 			</div>
@@ -143,7 +143,7 @@ templ SubtitleSection(availableSubtitles []api.Subtitle, name, fileName string, 
 				<h3 class="mb-2 text-lg font-bold">English</h3>
 				<div class="w-full">
 					for _, sub := range filterSubtitles(availableSubtitles, "en") {
-						@subtitle(sub, sub.Name == name)
+						@subtitle(videoID, sub, sub.Name == name)
 					}
 				</div>
 			</div>
@@ -151,23 +151,55 @@ templ SubtitleSection(availableSubtitles []api.Subtitle, name, fileName string, 
 	</section>
 }
 
-templ subtitle(sub api.Subtitle, isSelected bool) {
+templ subtitle(videoID int64, sub api.Subtitle, isSelected bool) {
 	<div class="flex items-center justify-between">
 		<div class="flex-1">
-			<p class="">{ sub.Name }</p>
-			<p class="font-thin text-xs">{ sub.Owner }</p>
+			<div
+				if isSelected {
+					class="text-red-700"
+				}
+			>
+				<p class="">{ sub.Name }</p>
+				<p class="font-thin text-xs">{ sub.Owner }</p>
+			</div>
 		</div>
 		<div class="flex space-x-2">
-			<button
-				class="rounded bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-700 text-sm"
-			>
-				Apply
-			</button>
-			<button
-				class="rounded bg-stone-600 px-4 py-2 font-bold text-white hover:bg-stone-700 text-sm"
-			>
-				Download
-			</button>
+			if isSelected {
+				@unselecteSubtitleButton(videoID)
+			} else {
+				@subtitleSelectButton(videoID, sub)
+			}
+			@subtitleDownloadButton(videoID, sub)
 		</div>
 	</div>
+}
+
+templ subtitleSelectButton(videoID int64, sub api.Subtitle) {
+	<button
+		class="rounded bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-700 text-sm"
+		hx-post={ uri.SelectSubtitle(videoID, sub.Name) }
+		hx-swap="outerHTML"
+		hx-target="#subtitleSection"
+	>
+		Select
+	</button>
+}
+
+templ unselecteSubtitleButton(videoID int64) {
+	<button
+		class="rounded bg-stone-600 px-4 py-2 font-bold text-white hover:bg-stone-700 text-sm"
+		hx-post={ uri.UnselectSubtitle(videoID) }
+		hx-swap="outerHTML"
+		hx-target="#subtitleSection"
+	>
+		Unselect
+	</button>
+}
+
+templ subtitleDownloadButton(videoID int64, sub api.Subtitle) {
+	<button
+		class="rounded bg-stone-600 px-4 py-2 font-bold text-white hover:bg-stone-700 text-sm"
+	>
+		Download
+	</button>
 }
