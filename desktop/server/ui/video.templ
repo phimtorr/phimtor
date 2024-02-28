@@ -63,21 +63,29 @@ func filterSubtitles(subtitles []api.Subtitle, lang string) []api.Subtitle {
 	return filtered
 }
 
-templ SubtitleSectionWithoutSubtitle(videoID int64, availableSubtitles []api.Subtitle) {
-	@SubtitleSection(videoID, availableSubtitles, "", "", []byte{}, []byte{})
+type SubtitleState struct {
+	Name                   string
+	FileName               string
+	OriginalContent        []byte
+	Content                []byte
+	AdjustmentMilliseconds int
 }
 
-templ SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, name, fileName string, originalContent, content []byte) {
-	if len(content) == 0 {
+templ SubtitleSectionWithoutSubtitle(videoID int64, availableSubtitles []api.Subtitle) {
+	@SubtitleSection(videoID, availableSubtitles, SubtitleState{})
+}
+
+templ SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state SubtitleState) {
+	if len(state.Content) == 0 {
 		<div id="subtitleTrack" hx-swap-oob="outerHTML:#subtitleTrack"></div>
 	} else {
 		<track
 			id="subtitleTrack"
 			hx-swap-oob="outerHTML:#subtitleTrack"
 			kind="subtitles"
-			label={ name }
+			label={ state.Name }
 			srclang="en"
-			src={ toBase64Src("text/vtt", content) }
+			src={ toBase64Src("text/vtt", state.Content) }
 			default
 		/>
 	}
@@ -86,7 +94,7 @@ templ SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, name, fi
 			<h3 class="my-4 text-xl font-bold">
 				<span class="border-b-2 border-red-700 pb-1">Subtitle</span>
 			</h3>
-			<p class="pr-1 text-sm">{ name }</p>
+			<p class="pr-1 text-sm">{ state.Name }</p>
 		</div>
 		<div class="grid grid-cols-1 gap-1 text-sm md:grid-cols-2">
 			<div
@@ -97,22 +105,31 @@ templ SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, name, fi
 					class="flex items-center"
 					hx-include="[name='name'], [name='fileName'], [name='originalContent']"
 				>
-					<input type="hidden" name="name" value={ name }/>
-					<input type="hidden" name="fileName" value={ fileName }/>
-					<input type="hidden" name="originalContent" value={ toBase64(originalContent) }/>
+					<input type="hidden" name="name" value={ state.Name }/>
+					<input type="hidden" name="fileName" value={ state.FileName }/>
+					<input type="hidden" name="originalContent" value={ toBase64(state.OriginalContent) }/>
 					<button
 						class="m-1 rounded bg-stone-900 px-4 py-2 hover:bg-red-700"
+						hx-post={ uri.AdjustSubtitle(videoID, 0) }
+						hx-target="#subtitleSection"
+						hx-swap="outerHTML"
 					>
 						<i icon="fa-solid fa-eraser"></i> Reset
 					</button>
 					<button
 						class="m-1 rounded bg-stone-900 px-4 py-2 hover:bg-red-700"
+						hx-post={ uri.AdjustSubtitle(videoID, state.AdjustmentMilliseconds-500) }
+						hx-target="#subtitleSection"
+						hx-swap="outerHTML"
 					>
 						<i icon="fa-solid fa-backward"></i> -0.5s
 					</button>
-					<p class="mx-2">500ms</p>
+					<p class="mx-2">{ toString(state.AdjustmentMilliseconds) }ms</p>
 					<button
 						class="ml-2 rounded bg-stone-900 px-4 py-2 hover:bg-red-700"
+						hx-post={ uri.AdjustSubtitle(videoID, state.AdjustmentMilliseconds+500) }
+						hx-target="#subtitleSection"
+						hx-swap="outerHTML"
 					>
 						<i icon="fa-solid fa-forward"></i> +0.5s
 					</button>
@@ -139,7 +156,7 @@ templ SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, name, fi
 				<h3 class="mb-2 text-lg font-bold">Vietnamese</h3>
 				<div class="w-full">
 					for _, sub := range filterSubtitles(availableSubtitles, "vi") {
-						@subtitle(videoID, sub, sub.Name == name)
+						@subtitle(videoID, sub, sub.Name == state.Name)
 					}
 				</div>
 			</div>
@@ -147,7 +164,7 @@ templ SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, name, fi
 				<h3 class="mb-2 text-lg font-bold">English</h3>
 				<div class="w-full">
 					for _, sub := range filterSubtitles(availableSubtitles, "en") {
-						@subtitle(videoID, sub, sub.Name == name)
+						@subtitle(videoID, sub, sub.Name == state.Name)
 					}
 				</div>
 			</div>

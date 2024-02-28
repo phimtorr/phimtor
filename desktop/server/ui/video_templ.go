@@ -144,6 +144,14 @@ func filterSubtitles(subtitles []api.Subtitle, lang string) []api.Subtitle {
 	return filtered
 }
 
+type SubtitleState struct {
+	Name                   string
+	FileName               string
+	OriginalContent        []byte
+	Content                []byte
+	AdjustmentMilliseconds int
+}
+
 func SubtitleSectionWithoutSubtitle(videoID int64, availableSubtitles []api.Subtitle) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
@@ -157,7 +165,7 @@ func SubtitleSectionWithoutSubtitle(videoID int64, availableSubtitles []api.Subt
 			templ_7745c5c3_Var7 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = SubtitleSection(videoID, availableSubtitles, "", "", []byte{}, []byte{}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = SubtitleSection(videoID, availableSubtitles, SubtitleState{}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -168,7 +176,7 @@ func SubtitleSectionWithoutSubtitle(videoID int64, availableSubtitles []api.Subt
 	})
 }
 
-func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, name, fileName string, originalContent, content []byte) templ.Component {
+func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state SubtitleState) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -181,7 +189,7 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, name, fil
 			templ_7745c5c3_Var8 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		if len(content) == 0 {
+		if len(state.Content) == 0 {
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"subtitleTrack\" hx-swap-oob=\"outerHTML:#subtitleTrack\"></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -191,7 +199,7 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, name, fil
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(name))
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(state.Name))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -199,7 +207,7 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, name, fil
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(toBase64Src("text/vtt", content)))
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(toBase64Src("text/vtt", state.Content)))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -213,9 +221,9 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, name, fil
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var9 string
-		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(name)
+		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(state.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/video.templ`, Line: 88, Col: 33}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/video.templ`, Line: 96, Col: 39}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
@@ -225,7 +233,7 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, name, fil
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(name))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(state.Name))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -233,7 +241,7 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, name, fil
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(fileName))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(state.FileName))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -241,11 +249,48 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, name, fil
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(toBase64(originalContent)))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(toBase64(state.OriginalContent)))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"> <button class=\"m-1 rounded bg-stone-900 px-4 py-2 hover:bg-red-700\"><i icon=\"fa-solid fa-eraser\"></i> Reset</button> <button class=\"m-1 rounded bg-stone-900 px-4 py-2 hover:bg-red-700\"><i icon=\"fa-solid fa-backward\"></i> -0.5s</button><p class=\"mx-2\">500ms</p><button class=\"ml-2 rounded bg-stone-900 px-4 py-2 hover:bg-red-700\"><i icon=\"fa-solid fa-forward\"></i> +0.5s</button></div></div><div class=\"col-span-1 flex flex-col rounded-sm px-1 py-3 hover:bg-stone-700\"><h4 class=\"mb-1 text-sm font-thin\">Add from file</h4><input type=\"file\" name=\"fileInput\" accept=\".vtt, .srt, application/x-subrip, text/vtt\" class=\"rounded border border-gray-400 bg-stone-700 text-stone-100 file:mr-5 file:rounded-l file:border-[0px] file:bg-stone-700 file:p-4 file:text-stone-100 hover:border-red-700 hover:file:cursor-pointer hover:file:bg-stone-800 hover:file:text-red-700\" hx-encoding=\"multipart/form-data\" hx-post=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"> <button class=\"m-1 rounded bg-stone-900 px-4 py-2 hover:bg-red-700\" hx-post=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(uri.AdjustSubtitle(videoID, 0)))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#subtitleSection\" hx-swap=\"outerHTML\"><i icon=\"fa-solid fa-eraser\"></i> Reset</button> <button class=\"m-1 rounded bg-stone-900 px-4 py-2 hover:bg-red-700\" hx-post=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(uri.AdjustSubtitle(videoID, state.AdjustmentMilliseconds-500)))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#subtitleSection\" hx-swap=\"outerHTML\"><i icon=\"fa-solid fa-backward\"></i> -0.5s</button><p class=\"mx-2\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var10 string
+		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(toString(state.AdjustmentMilliseconds))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/video.templ`, Line: 126, Col: 61}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("ms</p><button class=\"ml-2 rounded bg-stone-900 px-4 py-2 hover:bg-red-700\" hx-post=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(uri.AdjustSubtitle(videoID, state.AdjustmentMilliseconds+500)))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#subtitleSection\" hx-swap=\"outerHTML\"><i icon=\"fa-solid fa-forward\"></i> +0.5s</button></div></div><div class=\"col-span-1 flex flex-col rounded-sm px-1 py-3 hover:bg-stone-700\"><h4 class=\"mb-1 text-sm font-thin\">Add from file</h4><input type=\"file\" name=\"fileInput\" accept=\".vtt, .srt, application/x-subrip, text/vtt\" class=\"rounded border border-gray-400 bg-stone-700 text-stone-100 file:mr-5 file:rounded-l file:border-[0px] file:bg-stone-700 file:p-4 file:text-stone-100 hover:border-red-700 hover:file:cursor-pointer hover:file:bg-stone-800 hover:file:text-red-700\" hx-encoding=\"multipart/form-data\" hx-post=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -258,7 +303,7 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, name, fil
 			return templ_7745c5c3_Err
 		}
 		for _, sub := range filterSubtitles(availableSubtitles, "vi") {
-			templ_7745c5c3_Err = subtitle(videoID, sub, sub.Name == name).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = subtitle(videoID, sub, sub.Name == state.Name).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -268,7 +313,7 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, name, fil
 			return templ_7745c5c3_Err
 		}
 		for _, sub := range filterSubtitles(availableSubtitles, "en") {
-			templ_7745c5c3_Err = subtitle(videoID, sub, sub.Name == name).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = subtitle(videoID, sub, sub.Name == state.Name).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -292,9 +337,9 @@ func subtitle(videoID int64, sub api.Subtitle, isSelected bool) templ.Component 
 			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var10 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var10 == nil {
-			templ_7745c5c3_Var10 = templ.NopComponent
+		templ_7745c5c3_Var11 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var11 == nil {
+			templ_7745c5c3_Var11 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex items-center justify-between\"><div class=\"flex-1\"><div")
@@ -311,12 +356,12 @@ func subtitle(videoID int64, sub api.Subtitle, isSelected bool) templ.Component 
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var11 string
-		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(sub.Name)
+		var templ_7745c5c3_Var12 string
+		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(sub.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/video.templ`, Line: 165, Col: 26}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/video.templ`, Line: 182, Col: 26}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -324,12 +369,12 @@ func subtitle(videoID int64, sub api.Subtitle, isSelected bool) templ.Component 
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var12 string
-		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(sub.Owner)
+		var templ_7745c5c3_Var13 string
+		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(sub.Owner)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/video.templ`, Line: 166, Col: 44}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/video.templ`, Line: 183, Col: 44}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -371,9 +416,9 @@ func subtitleSelectButton(videoID int64, sub api.Subtitle) templ.Component {
 			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var13 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var13 == nil {
-			templ_7745c5c3_Var13 = templ.NopComponent
+		templ_7745c5c3_Var14 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var14 == nil {
+			templ_7745c5c3_Var14 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<button class=\"rounded bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-700 text-sm\" hx-post=\"")
@@ -403,9 +448,9 @@ func unselecteSubtitleButton(videoID int64) templ.Component {
 			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var14 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var14 == nil {
-			templ_7745c5c3_Var14 = templ.NopComponent
+		templ_7745c5c3_Var15 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var15 == nil {
+			templ_7745c5c3_Var15 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<button class=\"rounded bg-stone-600 px-4 py-2 font-bold text-white hover:bg-stone-700 text-sm\" hx-post=\"")
@@ -435,9 +480,9 @@ func subtitleDownloadButton(videoID int64, sub api.Subtitle) templ.Component {
 			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var15 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var15 == nil {
-			templ_7745c5c3_Var15 = templ.NopComponent
+		templ_7745c5c3_Var16 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var16 == nil {
+			templ_7745c5c3_Var16 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<button class=\"rounded bg-stone-600 px-4 py-2 font-bold text-white hover:bg-stone-700 text-sm\">Download</button>")

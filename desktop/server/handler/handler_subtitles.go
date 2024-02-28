@@ -1,8 +1,11 @@
 package handler
 
 import (
+	"encoding/base64"
 	"io"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/a-h/templ"
 	"github.com/rs/zerolog/log"
@@ -45,7 +48,13 @@ func (h *Handler) SelectSubtitle(w http.ResponseWriter, r *http.Request, videoID
 	}
 
 	templ.Handler(
-		ui.SubtitleSection(videoID, video.Subtitles, selectedSubtitle.Name, fileName, originalContent, normalizedContent),
+		ui.SubtitleSection(videoID, video.Subtitles, ui.SubtitleState{
+			Name:                   selectedSubtitle.Name,
+			FileName:               fileName,
+			OriginalContent:        originalContent,
+			Content:                normalizedContent,
+			AdjustmentMilliseconds: 0,
+		}),
 	).ServeHTTP(w, r)
 }
 
@@ -93,10 +102,50 @@ func (h *Handler) UploadSubtitle(w http.ResponseWriter, r *http.Request, videoID
 	}
 
 	templ.Handler(
-		ui.SubtitleSection(videoID, video.Subtitles, fileName, fileName, originalContent, content),
+		ui.SubtitleSection(videoID, video.Subtitles, ui.SubtitleState{
+			Name:                   fileName,
+			FileName:               fileName,
+			OriginalContent:        originalContent,
+			Content:                content,
+			AdjustmentMilliseconds: 0,
+		}),
 	).ServeHTTP(w, r)
 }
 
 func (h *Handler) AdjustSubtitle(w http.ResponseWriter, r *http.Request, videoID int64) {
+	video, err := h.apiClient.GetVideo(r.Context(), videoID)
+	if err != nil {
+		handleError(w, r, "Get video", err, http.StatusInternalServerError)
+		return
+	}
 
+	adjustMilliSeconds, err := strconv.ParseInt(r.URL.Query().Get("ms"), 10, 64)
+	if err != nil {
+		handleError(w, r, "Parse milliseconds", err, http.StatusBadRequest)
+		return
+	}
+
+	name := r.FormValue("name")
+	fileName := r.FormValue("fileName")
+	originalContent, err := base64.StdEncoding.DecodeString(r.FormValue("originalContent"))
+	if err != nil {
+		handleError(w, r, "Decode original content", err, http.StatusBadRequest)
+		return
+	}
+
+	content, err := subtitle.Normalize(fileName, originalContent, time.Duration(adjustMilliSeconds)*time.Millisecond)
+	if err != nil {
+		handleError(w, r, "Normalize subtitle", err, http.StatusBadRequest)
+		return
+	}
+
+	templ.Handler(
+		ui.SubtitleSection(videoID, video.Subtitles, ui.SubtitleState{
+			Name:                   name,
+			FileName:               fileName,
+			OriginalContent:        originalContent,
+			Content:                content,
+			AdjustmentMilliseconds: int(adjustMilliSeconds),
+		}),
+	).ServeHTTP(w, r)
 }

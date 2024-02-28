@@ -145,6 +145,15 @@ func (h *Handler) Register(r chi.Router) {
 
 		h.UploadSubtitle(w, r, id)
 	})
+	r.Post("/videos/{videoID}/subtitles/adjust", func(w http.ResponseWriter, r *http.Request) {
+		id, err := strconv.ParseInt(chi.URLParam(r, "videoID"), 10, 64)
+		if err != nil {
+			handleError(w, r, "Parse video id", err, http.StatusBadRequest)
+			return
+		}
+
+		h.AdjustSubtitle(w, r, id)
+	})
 
 	// settings
 	r.Get("/settings", h.GetSettings)
