@@ -13,18 +13,13 @@ import (
 )
 
 func (h *Handler) GetVideo(w http.ResponseWriter, r *http.Request, id int64, torrentName string) {
-	resp, err := h.apiClient.GetVideoWithResponse(r.Context(), id)
+	video, err := h.apiClient.GetVideo(r.Context(), id)
 	if err != nil {
 		handleError(w, r, "Failed to get video", err, http.StatusInternalServerError)
 		return
 	}
-	if resp.StatusCode() != http.StatusOK {
-		handleError(w, r, "Failed to get video", err, resp.StatusCode())
-		return
-	}
-
-	video := resp.JSON200.Video
 	selectedTorrent := getSelectedTorrentLink(video.TorrentLinks, torrentName)
+	selectedSubtitle := getSelectedSubtitle(video.Subtitles)
 
 	infoHash, err := h.torManager.AddFromLink(selectedTorrent.Link)
 	if err != nil {
@@ -35,7 +30,7 @@ func (h *Handler) GetVideo(w http.ResponseWriter, r *http.Request, id int64, tor
 	// This step is for speed up the download!
 	h.torManager.CancelOthers(infoHash)
 
-	templ.Handler(ui.Video(resp.JSON200.Video, infoHash, selectedTorrent)).ServeHTTP(w, r)
+	templ.Handler(ui.Video(video, infoHash, selectedTorrent, selectedSubtitle.Name)).ServeHTTP(w, r)
 }
 
 func getSelectedTorrentLink(torrentLinked []api.TorrentLink, torrentName string) api.TorrentLink {
@@ -45,6 +40,18 @@ func getSelectedTorrentLink(torrentLinked []api.TorrentLink, torrentName string)
 		}
 	}
 	return torrentLinked[0]
+}
+
+func getSelectedSubtitle(subtitles []api.Subtitle) api.Subtitle {
+	if len(subtitles) == 0 {
+		return api.Subtitle{}
+	}
+	for _, s := range subtitles {
+		if s.Language == "vi" {
+			return s
+		}
+	}
+	return subtitles[0]
 }
 
 func (h *Handler) Stream(w http.ResponseWriter, r *http.Request, infoHash torrent.InfoHash, fileIndex int) {
