@@ -8,8 +8,8 @@ import (
 	"github.com/gabriel-vasile/mimetype"
 
 	"github.com/phimtorr/phimtor/desktop/client/api"
+	"github.com/phimtorr/phimtor/desktop/server/ui"
 	"github.com/phimtorr/phimtor/desktop/torrent"
-	"github.com/phimtorr/phimtor/desktop/ui"
 )
 
 func (h *Handler) GetVideo(w http.ResponseWriter, r *http.Request, id int64, torrentName string) {

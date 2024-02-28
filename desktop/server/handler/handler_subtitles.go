@@ -6,8 +6,8 @@ import (
 	"github.com/a-h/templ"
 
 	"github.com/phimtorr/phimtor/desktop/client/api"
+	"github.com/phimtorr/phimtor/desktop/server/ui"
 	"github.com/phimtorr/phimtor/desktop/subtitle"
-	"github.com/phimtorr/phimtor/desktop/ui"
 )
 
 func (h *Handler) SelectSubtitle(w http.ResponseWriter, r *http.Request, videoID int64, subtitleName string) {

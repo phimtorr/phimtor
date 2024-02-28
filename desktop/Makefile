@@ -1,7 +1,7 @@
 .PHONY: tailwindcss
 tailwindcss:
 	@echo "Building Tailwind CSS..."
-	npx tailwindcss -i ui/style/input.css -o ui/style/output.css
+	npx tailwindcss -i server/ui/style/input.css -o server/ui/style/output.css
 	@echo "Done."
 
 .PHONY: templ

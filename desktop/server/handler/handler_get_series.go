@@ -6,7 +6,7 @@ import (
 
 	"github.com/a-h/templ"
 
-	"github.com/phimtorr/phimtor/desktop/ui"
+	"github.com/phimtorr/phimtor/desktop/server/ui"
 )
 
 func (h *Handler) GetSeries(w http.ResponseWriter, r *http.Request, id int64) {
