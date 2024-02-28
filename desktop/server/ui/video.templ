@@ -220,6 +220,8 @@ templ unselecteSubtitleButton(videoID int64) {
 templ subtitleDownloadButton(videoID int64, sub api.Subtitle) {
 	<button
 		class="rounded bg-stone-600 px-4 py-2 font-bold text-white hover:bg-stone-700 text-sm"
+		hx-post={ uri.DownloadSubtitle(videoID, sub.Name) }
+		hx-swap="none"
 	>
 		Download
 	</button>

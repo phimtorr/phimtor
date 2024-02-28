@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/a-h/templ"
+	"github.com/pkg/browser"
 	"github.com/rs/zerolog/log"
 
 	"github.com/phimtorr/phimtor/desktop/client/api"
@@ -68,7 +69,24 @@ func findSubtitle(subtitles []api.Subtitle, subtitleName string) (api.Subtitle, 
 }
 
 func (h *Handler) DownloadSubtitle(w http.ResponseWriter, r *http.Request, videoID int64, subtitleName string) {
+	video, err := h.apiClient.GetVideo(r.Context(), videoID)
+	if err != nil {
+		handleError(w, r, "Get video", err, http.StatusInternalServerError)
+		return
+	}
 
+	selectedSubtitle, found := findSubtitle(video.Subtitles, subtitleName)
+	if !found {
+		handleError(w, r, "Subtitle not found", err, http.StatusBadRequest)
+		return
+	}
+
+	if err := browser.OpenURL(selectedSubtitle.Link); err != nil {
+		handleError(w, r, "Open URL", err, http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func (h *Handler) UploadSubtitle(w http.ResponseWriter, r *http.Request, videoID int64) {

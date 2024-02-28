@@ -154,7 +154,20 @@ func (h *Handler) Register(r chi.Router) {
 
 		h.AdjustSubtitle(w, r, id)
 	})
+	r.Post("/videos/{videoID}/subtitles/{subtitleName}/download", func(w http.ResponseWriter, r *http.Request) {
+		id, err := strconv.ParseInt(chi.URLParam(r, "videoID"), 10, 64)
+		if err != nil {
+			handleError(w, r, "Parse video id", err, http.StatusBadRequest)
+			return
+		}
+		subtitleName, err := url.QueryUnescape(chi.URLParam(r, "subtitleName"))
+		if err != nil {
+			handleError(w, r, "Unescape subtitle name", err, http.StatusBadRequest)
+			return
+		}
 
+		h.DownloadSubtitle(w, r, id, subtitleName)
+	})
 	// settings
 	r.Get("/settings", h.GetSettings)
 	r.Post("/settings", h.UpdateSetting)

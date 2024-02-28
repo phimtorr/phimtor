@@ -50,3 +50,7 @@ func UploadSubtitle(videoID int64) string {
 func AdjustSubtitle(videoID int64, adjustMilliseconds int) string {
 	return fmt.Sprintf("/videos/%d/subtitles/adjust?ms=%d", videoID, adjustMilliseconds)
 }
+
+func DownloadSubtitle(videoID int64, subtitleName string) string {
+	return fmt.Sprintf("/videos/%d/subtitles/%s/download", videoID, url.QueryEscape(subtitleName))
+}
