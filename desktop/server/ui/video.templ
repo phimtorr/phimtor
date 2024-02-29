@@ -90,7 +90,7 @@ templ SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Su
 			default
 		/>
 	}
-	<section id="subtitleSection">
+	<section id="subtitleSection" class="mt-4">
 		<div class="flex items-center justify-between">
 			<h3 class="my-4 text-xl font-bold">
 				<span class="border-b-2 border-red-700 pb-1">{ i18n.T(ctx, "Subtitle.Title") }</span>
@@ -152,7 +152,7 @@ templ SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Su
 				/>
 			</div>
 		</div>
-		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
 			<div class="">
 				<h3 class="mb-2 text-lg font-bold">{ i18n.T(ctx, "Subtitle.Vietnamese") }</h3>
 				<div class="w-full">
@@ -181,7 +181,11 @@ templ subtitle(videoID int64, sub api.Subtitle, isSelected bool) {
 					class="text-red-700"
 				}
 			>
-				<p class="">{ sub.Name }</p>
+				<p class="">{ sub.Name } 
+					if isSelected {
+						<i class="fa-solid fa-check text-slate-100"></i>
+					}
+				</p>
 				<p class="font-thin text-xs">{ sub.Owner }</p>
 			</div>
 		</div>
