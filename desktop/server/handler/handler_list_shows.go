@@ -7,7 +7,7 @@ import (
 	"github.com/a-h/templ"
 
 	"github.com/phimtorr/phimtor/desktop/client/api"
-	"github.com/phimtorr/phimtor/desktop/ui"
+	"github.com/phimtorr/phimtor/desktop/server/ui"
 )
 
 func (h *Handler) ListShows(w http.ResponseWriter, r *http.Request, params api.ListShowsParams) {

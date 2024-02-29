@@ -26,6 +26,20 @@ Settings:
   DeleteAfterClosed:
     Title: "Delete After Closed"
     Description: "Delete the downloaded files when the application is closed"
+
+Subtitle:
+  Title: "Subtitle"
+  Adjustment:
+    Title: "Adjustment"
+    Reset: "Reset"
+  AddFromFile: "Add subtitle from file"
+  Vietnamese: "Vietnamese"
+  English: "English"
+  Action:
+    Select: "Select"
+    Unselect: "Unselect"
+    Download: "Download"
+
   
 
 

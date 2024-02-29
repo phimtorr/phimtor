@@ -26,5 +26,17 @@ Settings:
     Title: "Xóa khi đóng"
     Description: "Xóa tất cả dữ liệu khi ứng dụng đóng"
 
+Subtitle:
+  Title: "Phụ đề"
+  Adjustment:
+    Title: "Điều chỉnh"
+    Reset: "Đặt lại"
+  AddFromFile: "Thêm phụ đề từ tập tin"
+  Vietnamese: "Tiếng Việt"
+  English: "Tiếng Anh"
+  Action:
+    Select: "Chọn"
+    Unselect: "Bỏ chọn"
+    Download: "Tải về"
 
 

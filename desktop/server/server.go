@@ -15,9 +15,9 @@ import (
 	"github.com/phimtorr/phimtor/desktop/data"
 	"github.com/phimtorr/phimtor/desktop/i18n"
 	"github.com/phimtorr/phimtor/desktop/server/handler"
+	"github.com/phimtorr/phimtor/desktop/server/ui/style"
 	"github.com/phimtorr/phimtor/desktop/setting"
 	"github.com/phimtorr/phimtor/desktop/torrent"
-	"github.com/phimtorr/phimtor/desktop/ui/style"
 )
 
 type closeFn struct {

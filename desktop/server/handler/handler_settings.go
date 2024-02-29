@@ -9,8 +9,8 @@ import (
 	"github.com/ncruces/zenity"
 
 	"github.com/phimtorr/phimtor/desktop/server/handler/uri"
+	"github.com/phimtorr/phimtor/desktop/server/ui"
 	"github.com/phimtorr/phimtor/desktop/setting"
-	"github.com/phimtorr/phimtor/desktop/ui"
 )
 
 func (h *Handler) GetSettings(w http.ResponseWriter, r *http.Request) {
