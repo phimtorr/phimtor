@@ -11,7 +11,7 @@ import "io"
 import "bytes"
 
 import "github.com/phimtorr/phimtor/desktop/client/api"
-import "github.com/phimtorr/phimtor/desktop/server/handler/uri"
+import "github.com/phimtorr/phimtor/desktop/server/uri"
 
 func Series(series api.Series) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {

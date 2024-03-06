@@ -12,7 +12,7 @@ import "bytes"
 
 import "github.com/phimtorr/phimtor/desktop/client/api"
 import "github.com/phimtorr/phimtor/desktop/torrent"
-import "github.com/phimtorr/phimtor/desktop/server/handler/uri"
+import "github.com/phimtorr/phimtor/desktop/server/uri"
 import "github.com/phimtorr/phimtor/desktop/i18n"
 
 func Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.TorrentLink, selectedSubtitleName string) templ.Component {

@@ -11,7 +11,7 @@ import "io"
 import "bytes"
 
 import "github.com/go-chi/chi/v5"
-import "github.com/phimtorr/phimtor/desktop/server/handler/uri"
+import "github.com/phimtorr/phimtor/desktop/server/uri"
 import "github.com/phimtorr/phimtor/desktop/i18n"
 
 func layout(title string) templ.Component {
@@ -73,7 +73,8 @@ var menuItems = []struct {
 }{
 	{uri.Home(), "Nav.Home"},
 	{uri.GetSettings(), "Nav.Settings"},
-	{uri.Login(), "Nav.Login"},
+	{uri.SignIn(), "Nav.SignIn"},
+	{uri.SignUp(), "Nav.SignUp"},
 }
 
 func isCurrentPage(ctx context.Context, link string) bool {
@@ -129,7 +130,7 @@ func menu() templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, item.MessageID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/layout.templ`, Line: 57, Col: 97}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/layout.templ`, Line: 58, Col: 97}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -232,7 +233,7 @@ func pagination(page, totalPage int, linkFn func(int) string) templ.Component {
 				var templ_7745c5c3_Var9 string
 				templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(toString(i))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/layout.templ`, Line: 94, Col: 19}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/layout.templ`, Line: 95, Col: 19}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 				if templ_7745c5c3_Err != nil {

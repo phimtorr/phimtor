@@ -12,7 +12,7 @@ import "bytes"
 
 import "github.com/phimtorr/phimtor/desktop/setting"
 import "github.com/phimtorr/phimtor/desktop/i18n"
-import "github.com/phimtorr/phimtor/desktop/server/handler/uri"
+import "github.com/phimtorr/phimtor/desktop/server/uri"
 
 func Settings(settings setting.Settings) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {

@@ -12,7 +12,7 @@ import "bytes"
 
 import "github.com/phimtorr/phimtor/desktop/client/api"
 import "fmt"
-import "github.com/phimtorr/phimtor/desktop/server/handler/uri"
+import "github.com/phimtorr/phimtor/desktop/server/uri"
 import "github.com/phimtorr/phimtor/desktop/i18n"
 
 func Shows(shows []api.Show, pg api.Pagination) templ.Component {

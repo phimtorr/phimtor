@@ -8,8 +8,8 @@ import (
 	"github.com/a-h/templ"
 	"github.com/ncruces/zenity"
 
-	"github.com/phimtorr/phimtor/desktop/server/handler/uri"
 	"github.com/phimtorr/phimtor/desktop/server/ui"
+	"github.com/phimtorr/phimtor/desktop/server/uri"
 	"github.com/phimtorr/phimtor/desktop/setting"
 )
 
