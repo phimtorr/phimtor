@@ -8,6 +8,16 @@ DesktopApp:
 Nav:
   Home: "Trang chủ"
   Settings: "Cài đặt"
+  Login: "Đăng nhập"
+
+Login:
+  Title: "Đăng nhập"
+  Email: "Email"
+  Password: "Mật khẩu"
+  Action:
+    Login: "Đăng nhập"
+    Register: "Đăng ký"
+    ForgotPassword: "Quên mật khẩu?"
 
 Shows:
   Title: "Danh sách phim"

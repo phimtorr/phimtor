@@ -172,6 +172,10 @@ func (h *Handler) Register(r chi.Router) {
 	r.Get("/settings", h.GetSettings)
 	r.Post("/settings", h.UpdateSetting)
 	r.Post("/settings/change-data-dir", h.ChangeDataDir)
+
+	// auth
+	r.Get("/login", h.Login)
+	r.Post("/login", h.Login)
 }
 
 func handleError(w http.ResponseWriter, r *http.Request, msg string, err error, status int) {

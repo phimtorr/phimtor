@@ -8,6 +8,16 @@ DesktopApp:
 Nav:
   Home: "Home"
   Settings: "Settings"
+  Login: "Login"
+
+Login:
+  Title: "Login"
+  Email: "Email"
+  Password: "Password"
+  Action:
+    Login: "Login"
+    Register: "Register"
+    ForgotPassword: "Forgot password?"
 
 Shows:
   Title: "Shows"

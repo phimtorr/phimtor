@@ -6,7 +6,7 @@ replace github.com/phimtorr/phimtor/common => ../common
 
 require (
 	github.com/YOMIkio/lorca v0.2.1-0.20240217024234-0316cc3e2995
-	github.com/a-h/templ v0.2.543
+	github.com/a-h/templ v0.2.598
 	github.com/adrg/xdg v0.4.0
 	github.com/anacrolix/torrent v1.54.1
 	github.com/asticode/go-astisub v0.26.2

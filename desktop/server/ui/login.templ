@@ -1,0 +1,32 @@
+package ui 
+
+import "github.com/phimtorr/phimtor/desktop/i18n"
+
+templ Login() {
+	@layout(i18n.MustT(ctx, "Login.Title")) {
+		<section class="login w-2/3 mx-auto">
+			<h1 class="text-2xl mb-4">{ i18n.MustT(ctx, "Login.Title") }</h1>
+			<form class="login-form bg-stone-700 rounded-sm p-4">
+				<div class="mb-4">
+					<label for="email" class="block  font-medium">{ i18n.T(ctx, "Login.Email") }</label>
+					<input type="email" id="email" name="email" class="mt-1 p-4 focus:ring-gray-500 focus:border-red-600 block w-full shadow-sm bg-stone-600  border-gray-300 rounded-sm" required/>
+				</div>
+				<div class="mb-4">
+					<label for="password" class="block  font-medium">{ i18n.T(ctx, "Login.Password") }</label>
+					<input type="password" id="password" name="password" class="mt-1 p-4 focus:ring-gray-500 focus:border-red-600 block w-full shadow-sm  bg-stone-600 border-gray-300 rounded-sm" required/>
+				</div>
+				<div class="flex items-center justify-between">
+					<div class="flex items-center"></div>
+					<div class="">
+						<a href="#" class="font-medium text-stale-50 hover:text-red-700">{ i18n.T(ctx, "Login.Action.ForgotPassword") }</a>
+					</div>
+				</div>
+				<div class="mt-4">
+					<button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-sm shadow-sm  font-medium  bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+						{ i18n.T(ctx, "Login.Action.Login") }
+					</button>
+				</div>
+			</form>
+		</section>
+	}
+}

@@ -17,7 +17,7 @@ templ layout(title string) {
 			<title>{ title }</title>
 		</head>
 		<body class="box-border flex flex-col min-h-screen w-full bg-stone-900 text-slate-100">
-			<nav class="flex items-center justify-between bg-stone-700 px-4 py-4">
+			<nav class="flex items-center justify-between bg-stone-800 px-4 py-4">
 				<div class="flex flex-shrink-0 items-center">
 					<span class="text-xl font-bold">PhimTor</span>
 				</div>
@@ -25,7 +25,7 @@ templ layout(title string) {
 					@menu()
 				</div>
 			</nav>
-			<main class="box-border flex-grow bg-stone-800 p-4">
+			<main class="box-border flex-grow bg-stone-900 p-4">
 				{ children... }
 			</main>
 		</body>
@@ -38,6 +38,7 @@ var menuItems = []struct {
 }{
 	{uri.Home(), "Nav.Home"},
 	{uri.GetSettings(), "Nav.Settings"},
+	{uri.Login(), "Nav.Login"},
 }
 
 func isCurrentPage(ctx context.Context, link string) bool {
