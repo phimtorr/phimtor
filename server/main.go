@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"net/http"
 	"os"
 
+	firebase "firebase.google.com/go/v4"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/rs/cors"
@@ -11,26 +13,29 @@ import (
 
 	"github.com/phimtorr/phimtor/common/logs"
 	"github.com/phimtorr/phimtor/common/strval"
+	"github.com/phimtorr/phimtor/server/auth"
 	"github.com/phimtorr/phimtor/server/migrations"
+	"github.com/phimtorr/phimtor/server/pkg/database"
 	"github.com/phimtorr/phimtor/server/ports"
 	"github.com/phimtorr/phimtor/server/repository"
-
-	"github.com/phimtorr/phimtor/server/pkg/database"
 )
 
 func main() {
 	logs.Init(strval.MustBool(os.Getenv("LOCAL_ENV")))
 
+	firebaseApp := newFirebaseApp()
+
 	db := database.NewMySqlDB()
 	if err := migrations.Run(db); err != nil {
 		log.Fatal().Err(err).Msg("Failed to run migrations")
 	}
-	
+
 	repo := repository.NewRepository(db)
 	httpServer := ports.NewHttpServer(repo)
 
 	r := chi.NewRouter()
 	setMiddlewares(r)
+	setAuthMiddleware(r, firebaseApp)
 
 	handler := ports.HandlerFromMuxWithBaseURL(httpServer, r, "/api/v1")
 
@@ -55,4 +60,22 @@ func setMiddlewares(router *chi.Mux) {
 		middleware.SetHeader("X-Frame-Options", "deny"),
 	)
 	router.Use(middleware.NoCache)
+}
+
+func setAuthMiddleware(router *chi.Mux, firebaseApp *firebase.App) {
+	authClient, err := firebaseApp.Auth(context.Background())
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to create firebase auth client")
+	}
+
+	router.Use(auth.NewFirebaseHttpMiddleware(authClient).Middleware)
+}
+
+func newFirebaseApp() *firebase.App {
+	// must set GOOGLE_APPLICATION_CREDENTIALS
+	app, err := firebase.NewApp(context.Background(), nil)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to create firebase app")
+	}
+	return app
 }
