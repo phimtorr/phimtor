@@ -1,12 +1,17 @@
 package ui 
 
 import "github.com/phimtorr/phimtor/desktop/i18n"
+import "github.com/phimtorr/phimtor/desktop/server/uri"
 
 templ SignIn() {
 	@layout(i18n.MustT(ctx, "SignIn.Title")) {
 		<section class="sign-in w-2/3 mx-auto">
 			<h1 class="text-2xl mb-4">{ i18n.MustT(ctx, "SignIn.Title") }</h1>
-			<form class="sign-in-form bg-stone-700 rounded-sm p-4">
+			<form class="sign-in-form bg-stone-700 rounded-sm p-4"
+				hx-post={uri.SignIn()}
+				hx-target="body"
+				hx-swap="outerHTML"
+			>
 				<div class="mb-4">
 					<label for="email" class="block  font-medium">{ i18n.T(ctx, "SignIn.Email") }</label>
 					<input type="email" id="email" name="email" class="mt-1 p-4 focus:ring-gray-500 focus:border-red-600 block w-full shadow-sm bg-stone-600  border-gray-300 rounded-sm" required/>

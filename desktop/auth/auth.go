@@ -34,8 +34,9 @@ func NewFirebaseAuth(apiKey string) *FirebaseAuth {
 
 func (a *FirebaseAuth) SignIn(ctx context.Context, email, password string) error {
 	resp, err := a.svc.Accounts.SignInWithPassword(&identitytoolkit.GoogleCloudIdentitytoolkitV1SignInWithPasswordRequest{
-		Email:    email,
-		Password: password,
+		Email:             email,
+		Password:          password,
+		ReturnSecureToken: true,
 	}).Context(ctx).Do()
 	if err != nil {
 		return errors.Wrap(err, "sign in")
@@ -69,6 +70,7 @@ func (a *FirebaseAuth) SignUp(ctx context.Context, email, password, displayName 
 
 func (a *FirebaseAuth) SignOut() {
 	a.setUser(User{})
+	a.setCredentials(credentials{})
 }
 
 func (a *FirebaseAuth) setUser(user User) {

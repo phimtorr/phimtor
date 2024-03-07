@@ -2,6 +2,8 @@ package server
 
 import (
 	"errors"
+	"github.com/phimtorr/phimtor/desktop/auth"
+	"github.com/phimtorr/phimtor/desktop/build"
 	"net"
 	"net/http"
 
@@ -57,9 +59,11 @@ func (s *Server) Start() int {
 	s.closeFns = append(s.closeFns, newCloseFn("torManager", torManager.Close))
 
 	apiClient := client.NewClient()
-	httpHandler := handler.New(torManager, settingsStorage, apiClient)
+	authService := auth.NewFirebaseAuth(build.FirebaseAPIKey)
 
-	router := newChiRouter(settingsStorage)
+	httpHandler := handler.New(torManager, settingsStorage, apiClient, authService)
+
+	router := newChiRouter(settingsStorage, authService)
 	httpHandler.Register(router)
 
 	ln, cleanUp := createListener()
@@ -90,11 +94,12 @@ func (s *Server) Close() {
 	}
 }
 
-func newChiRouter(settingsStorage *setting.Storage) *chi.Mux {
+func newChiRouter(settingsStorage *setting.Storage, authService *auth.FirebaseAuth) *chi.Mux {
 	r := chi.NewRouter()
 	setCommonMiddlewares(r)
 
 	r.Use(setting.Middleware(settingsStorage))
+	r.Use(auth.Middleware(authService))
 	r.Use(i18n.Middleware(i18n.NewBundle(), settingsStorage))
 
 	r.Handle("/static/style/*", http.StripPrefix("/static/style", http.FileServer(http.FS(style.FS))))

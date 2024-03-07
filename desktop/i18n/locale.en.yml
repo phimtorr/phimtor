@@ -10,6 +10,7 @@ Nav:
   Settings: "Settings"
   SignIn: "Sign In"
   SignUp: "Sign Up"
+  SignOut: "Sign Out"
 
 SignIn:
   Title: "Sign In"

@@ -1,6 +1,9 @@
 package handler
 
 import (
+	"github.com/a-h/templ"
+	"github.com/phimtorr/phimtor/desktop/auth"
+	"github.com/phimtorr/phimtor/desktop/server/ui"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -18,12 +21,14 @@ type Handler struct {
 	torManager      *torrent.Manager
 	settingsStorage *setting.Storage
 	apiClient       *client.Client
+	authService     *auth.FirebaseAuth
 }
 
 func New(
 	torManager *torrent.Manager,
 	settingsStorage *setting.Storage,
 	apiClient *client.Client,
+	authService *auth.FirebaseAuth,
 ) *Handler {
 	if torManager == nil {
 		panic("torrent manager is required")
@@ -34,10 +39,14 @@ func New(
 	if apiClient == nil {
 		panic("apiClient is required")
 	}
+	if authService == nil {
+		panic("authService is required")
+	}
 	return &Handler{
 		torManager:      torManager,
 		settingsStorage: settingsStorage,
 		apiClient:       apiClient,
+		authService:     authService,
 	}
 }
 
@@ -174,8 +183,13 @@ func (h *Handler) Register(r chi.Router) {
 	r.Post("/settings/change-data-dir", h.ChangeDataDir)
 
 	// auth
-	r.HandleFunc("/sign-in", h.SignIn)
-	r.HandleFunc("/sign-up", h.SignUp)
+	r.Get("/sign-in", templ.Handler(ui.SignIn()).ServeHTTP)
+	r.Post("/sign-in", h.SignIn)
+
+	r.Get("/sign-up", templ.Handler(ui.SignUp()).ServeHTTP)
+	r.Post("/sign-up", h.SignUp)
+
+	r.HandleFunc("/sign-out", h.SignOut)
 }
 
 func handleError(w http.ResponseWriter, r *http.Request, msg string, err error, status int) {

@@ -3,6 +3,7 @@ package ui
 import "github.com/go-chi/chi/v5"
 import "github.com/phimtorr/phimtor/desktop/server/uri"
 import "github.com/phimtorr/phimtor/desktop/i18n"
+import "github.com/phimtorr/phimtor/desktop/auth"
 
 templ layout(title string) {
 	<!DOCTYPE html>
@@ -38,8 +39,6 @@ var menuItems = []struct {
 }{
 	{uri.Home(), "Nav.Home"},
 	{uri.GetSettings(), "Nav.Settings"},
-	{uri.SignIn(), "Nav.SignIn"},
-	{uri.SignUp(), "Nav.SignUp"},
 }
 
 func isCurrentPage(ctx context.Context, link string) bool {
@@ -49,17 +48,30 @@ func isCurrentPage(ctx context.Context, link string) bool {
 templ menu() {
 	<ul class="flex">
 		for _, item := range menuItems {
-			<li
-				if isCurrentPage(ctx, item.Link) {
-					class="mr-6 border-b-2 border-red-700 p-2"
-				} else {
-					class="mr-6 p-2"
-				}
-			>
-				<a class="hover:text-red-700" href={ templ.SafeURL(item.Link) }>{ i18n.T(ctx, item.MessageID) }</a>
+			@navLink(item.Link, item.MessageID)
+		}
+		if auth.IsSignedIn(ctx) {
+			<li class="mr-6 p-2">
+				<span>{ auth.CurrentUser(ctx).DisplayName }</span>
 			</li>
+			@navLink(uri.SignOut(), "Nav.SignOut")
+		} else {
+			@navLink(uri.SignIn(), "Nav.SignIn")
+			@navLink(uri.SignUp(), "Nav.SignUp")
 		}
 	</ul>
+}
+
+templ navLink(link string, messageID string) {
+	<li
+		if isCurrentPage(ctx, link) {
+			class="mr-6 border-b-2 border-red-700 p-2"
+		} else {
+			class="mr-6 p-2"
+		}
+	>
+		<a class="hover:text-red-700" href={ templ.SafeURL(link) }>{ i18n.T(ctx, messageID) }</a>
+	</li>
 }
 
 templ pagination(page, totalPage int, linkFn func(int) string) {

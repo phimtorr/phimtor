@@ -7,3 +7,7 @@ func SignIn() string {
 func SignUp() string {
 	return "/sign-up"
 }
+
+func SignOut() string {
+	return "/sign-out"
+}

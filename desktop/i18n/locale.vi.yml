@@ -10,6 +10,7 @@ Nav:
   Settings: "Cài đặt"
   SignIn: "Đăng nhập"
   SignUp: "Đăng ký"
+  SignOut: "Đăng xuất"
 
 SignIn:
   Title: "Đăng nhập"
