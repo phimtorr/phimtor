@@ -7,7 +7,11 @@ templ SignUp() {
 	@layout(i18n.MustT(ctx, "SignUp.Title")) {
 		<section class="SignUp w-2/3 mx-auto">
 			<h1 class="text-2xl mb-4">{ i18n.MustT(ctx, "SignUp.Title") }</h1>
-			<form class="SignUp-form bg-stone-700 rounded-sm p-4">
+			<form class="SignUp-form bg-stone-700 rounded-sm p-4" 
+				hx-post={ uri.SignUp() }
+				hx-swap="outerHTML"
+				hx-target="body"
+			>
 				<div class="mb-4">
 					<label for="email" class="block  font-medium">{ i18n.T(ctx, "SignUp.Email") }</label>
 					<input type="email" id="email" name="email" class="mt-1 p-4 focus:ring-gray-500 focus:border-red-600 block w-full shadow-sm bg-stone-600  border-gray-300 rounded-sm" required/>
