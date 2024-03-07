@@ -198,6 +198,10 @@ func handleError(w http.ResponseWriter, r *http.Request, msg string, err error, 
 }
 
 func redirect(w http.ResponseWriter, r *http.Request, url string) {
-	w.Header().Set("HX-Redirect", url)
-	http.Redirect(w, r, url, http.StatusSeeOther)
+	if r.Header.Get("HX-Request") == "true" {
+		w.Header().Set("HX-Redirect", url)
+		w.WriteHeader(http.StatusOK)
+	} else {
+		http.Redirect(w, r, url, http.StatusSeeOther)
+	}
 }

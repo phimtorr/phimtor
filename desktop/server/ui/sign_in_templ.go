@@ -53,7 +53,7 @@ func SignIn() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"body\" hx-swap=\"outerHTML\"><div class=\"mb-4\"><label for=\"email\" class=\"block  font-medium\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target-error=\"#errors\"><div class=\"mb-4\"><label for=\"email\" class=\"block  font-medium\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -92,14 +92,14 @@ func SignIn() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div></div><div class=\"mt-4\"><button type=\"submit\" class=\"w-full flex justify-center py-2 px-4 border border-transparent rounded-sm shadow-sm  font-medium  bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div></div><div class=\"mt-4 bg-red-700 rounded-sm\"><div id=\"errors\" class=\"m-4\"></div></div><div class=\"mt-4\"><button type=\"submit\" class=\"w-full flex justify-center py-2 px-4 border border-transparent rounded-sm shadow-sm  font-medium  bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "SignIn.Action.SignIn"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/sign_in.templ`, Line: 30, Col: 43}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/sign_in.templ`, Line: 33, Col: 43}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {

@@ -53,14 +53,14 @@ func SignUp() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-swap=\"outerHTML\" hx-target=\"body\"><div class=\"mb-4\"><label for=\"email\" class=\"block  font-medium\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target-error=\"#errors\"><div class=\"mb-4\"><label for=\"email\" class=\"block  font-medium\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "SignUp.Email"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/sign_up.templ`, Line: 15, Col: 80}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/sign_up.templ`, Line: 14, Col: 80}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -73,7 +73,7 @@ func SignUp() templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "SignUp.DisplayName"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/sign_up.templ`, Line: 19, Col: 92}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/sign_up.templ`, Line: 18, Col: 92}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -86,7 +86,7 @@ func SignUp() templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "SignUp.Password"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/sign_up.templ`, Line: 23, Col: 86}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/sign_up.templ`, Line: 22, Col: 86}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -99,20 +99,20 @@ func SignUp() templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "SignUp.ConfirmPassword"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/sign_up.templ`, Line: 27, Col: 100}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/sign_up.templ`, Line: 26, Col: 100}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</label> <input type=\"password\" id=\"confirmPassword\" name=\"confirmPassword\" class=\"mt-1 p-4 focus:ring-gray-500 focus:border-red-600 block w-full shadow-sm  bg-stone-600 border-gray-300 rounded-sm\" required></div><div class=\"mt-4 space-y-2\"><button type=\"submit\" class=\"w-full flex justify-center py-2 px-4 border border-transparent rounded-sm shadow-sm  font-medium  bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</label> <input type=\"password\" id=\"confirmPassword\" name=\"confirmPassword\" class=\"mt-1 p-4 focus:ring-gray-500 focus:border-red-600 block w-full shadow-sm  bg-stone-600 border-gray-300 rounded-sm\" required></div><div class=\"mt-4 bg-red-700 rounded-sm\"><div id=\"errors\" class=\"m-4\"></div></div><div class=\"mt-4 space-y-2\"><button type=\"submit\" class=\"w-full flex justify-center py-2 px-4 border border-transparent rounded-sm shadow-sm  font-medium  bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "SignUp.Action.SignUp"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/sign_up.templ`, Line: 32, Col: 43}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/sign_up.templ`, Line: 34, Col: 43}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
@@ -134,7 +134,7 @@ func SignUp() templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "SignUp.Action.SignIn"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/sign_up.templ`, Line: 35, Col: 43}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/sign_up.templ`, Line: 37, Col: 43}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {

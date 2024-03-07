@@ -15,9 +15,10 @@ templ layout(title string) {
 			<link href="/static/style/output.css" rel="stylesheet"/>
 			<script src="https://kit.fontawesome.com/aff606e071.js" crossorigin="anonymous"></script>
 			<script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+			<script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
 			<title>{ title }</title>
 		</head>
-		<body class="box-border flex flex-col min-h-screen w-full bg-stone-900 text-slate-100">
+		<body class="box-border flex flex-col min-h-screen w-full bg-stone-900 text-slate-100" hx-ext="response-targets">
 			<nav class="flex items-center justify-between bg-stone-800 px-4 py-4">
 				<div class="flex flex-shrink-0 items-center">
 					<span class="text-xl font-bold">PhimTor</span>
