@@ -58,8 +58,8 @@ func (s *Server) Start() int {
 	torManager := torrent.NewManager(settings.GetCurrentDataDir())
 	s.closeFns = append(s.closeFns, newCloseFn("torManager", torManager.Close))
 
-	apiClient := client.NewClient()
 	authService := auth.NewFirebaseAuth(build.FirebaseAPIKey)
+	apiClient := client.NewClient(authService)
 
 	httpHandler := handler.New(torManager, settingsStorage, apiClient, authService)
 
