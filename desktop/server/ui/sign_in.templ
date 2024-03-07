@@ -26,9 +26,7 @@ templ SignIn() {
 						<a href="#" class="font-medium text-stale-50 hover:text-red-700">{ i18n.T(ctx, "SignIn.Action.ForgotPassword") }</a>
 					</div>
 				</div>
-				<div class="mt-4 bg-red-700 rounded-sm">
-					<div id="errors" class="m-4"></div>
-				</div>
+				@errorPlaceHolder()
 				<div class="mt-4">
 					<button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-sm shadow-sm  font-medium  bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
 						{ i18n.T(ctx, "SignIn.Action.SignIn") }
