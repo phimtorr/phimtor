@@ -1,8 +1,9 @@
 package ui 
 
 import "github.com/go-chi/chi/v5"
-import "github.com/phimtorr/phimtor/desktop/server/handler/uri"
+import "github.com/phimtorr/phimtor/desktop/server/uri"
 import "github.com/phimtorr/phimtor/desktop/i18n"
+import "github.com/phimtorr/phimtor/desktop/auth"
 
 templ layout(title string) {
 	<!DOCTYPE html>
@@ -14,10 +15,11 @@ templ layout(title string) {
 			<link href="/static/style/output.css" rel="stylesheet"/>
 			<script src="https://kit.fontawesome.com/aff606e071.js" crossorigin="anonymous"></script>
 			<script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+			<script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
 			<title>{ title }</title>
 		</head>
-		<body class="box-border flex flex-col min-h-screen w-full bg-stone-900 text-slate-100">
-			<nav class="flex items-center justify-between bg-stone-700 px-4 py-4">
+		<body class="box-border flex flex-col min-h-screen w-full bg-stone-900 text-slate-100" hx-ext="response-targets">
+			<nav class="flex items-center justify-between bg-stone-800 px-4 py-4">
 				<div class="flex flex-shrink-0 items-center">
 					<span class="text-xl font-bold">PhimTor</span>
 				</div>
@@ -25,7 +27,7 @@ templ layout(title string) {
 					@menu()
 				</div>
 			</nav>
-			<main class="box-border flex-grow bg-stone-800 p-4">
+			<main class="box-border flex-grow bg-stone-900 p-4">
 				{ children... }
 			</main>
 		</body>
@@ -47,17 +49,30 @@ func isCurrentPage(ctx context.Context, link string) bool {
 templ menu() {
 	<ul class="flex">
 		for _, item := range menuItems {
-			<li
-				if isCurrentPage(ctx, item.Link) {
-					class="mr-6 border-b-2 border-red-700 p-2"
-				} else {
-					class="mr-6 p-2"
-				}
-			>
-				<a class="hover:text-red-700" href={ templ.SafeURL(item.Link) }>{ i18n.T(ctx, item.MessageID) }</a>
+			@navLink(item.Link, item.MessageID)
+		}
+		if auth.IsSignedIn(ctx) {
+			<li class="mr-6 p-2">
+				<span>{ auth.CurrentUser(ctx).DisplayName }</span>
 			</li>
+			@navLink(uri.SignOut(), "Nav.SignOut")
+		} else {
+			@navLink(uri.SignIn(), "Nav.SignIn")
+			@navLink(uri.SignUp(), "Nav.SignUp")
 		}
 	</ul>
+}
+
+templ navLink(link string, messageID string) {
+	<li
+		if isCurrentPage(ctx, link) {
+			class="mr-6 border-b-2 border-red-700 p-2"
+		} else {
+			class="mr-6 p-2"
+		}
+	>
+		<a class="hover:text-red-700" href={ templ.SafeURL(link) }>{ i18n.T(ctx, messageID) }</a>
+	</li>
 }
 
 templ pagination(page, totalPage int, linkFn func(int) string) {

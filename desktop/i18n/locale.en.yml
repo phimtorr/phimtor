@@ -8,6 +8,28 @@ DesktopApp:
 Nav:
   Home: "Home"
   Settings: "Settings"
+  SignIn: "Sign In"
+  SignUp: "Sign Up"
+  SignOut: "Sign Out"
+
+SignIn:
+  Title: "Sign In"
+  Email: "Email"
+  Password: "Password"
+  Action:
+    SignIn: "Sign In"
+    SignUp: "Sign Up"
+    ForgotPassword: "Forgot password?"
+
+SignUp:
+  Title: "Sign Up"
+  Email: "Email"
+  DisplayName: "Display Name"
+  Password: "Password"
+  ConfirmPassword: "Confirm Password"
+  Action:
+    SignUp: "Sign Up"
+    SignIn: "Sign In"
 
 Shows:
   Title: "Shows"

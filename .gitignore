@@ -30,3 +30,5 @@ go.work
 server/db_data
 desktop/tmp
 **/bin
+
+**/.vscode

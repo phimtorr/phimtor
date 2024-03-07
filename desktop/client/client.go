@@ -15,9 +15,31 @@ type Client struct {
 	*api.ClientWithResponses
 }
 
-func NewClient() *Client {
+type AuthService interface {
+	GetJWTToken(ctx context.Context) (string, error)
+}
+
+func tokenRequestEditor(authService AuthService) api.RequestEditorFn {
+	return func(ctx context.Context, req *http.Request) error {
+		token, err := authService.GetJWTToken(ctx)
+		if err != nil {
+			return errors.Wrap(err, "get jwt token")
+		}
+		if token != "" {
+			req.Header.Set("Authorization", "Bearer "+token)
+		}
+		return nil
+	}
+
+}
+
+func NewClient(authService AuthService) *Client {
+	if authService == nil {
+		panic("authService is required")
+	}
+
 	apiBaseURL := strings.TrimRight(build.ServerAddr, "/") + "/api/v1"
-	cl, err := api.NewClientWithResponses(apiBaseURL)
+	cl, err := api.NewClientWithResponses(apiBaseURL, api.WithRequestEditorFn(tokenRequestEditor(authService)))
 	if err != nil {
 		panic(err)
 	}
