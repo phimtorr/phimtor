@@ -16,6 +16,7 @@ jobs:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
     env:
       SERVER_ADDR: "https://dev.phimtor.net"
+      FIREBASE_API_KEY: "AIzaSyD0OPqFBC2tYvj74wMWvXqoPixSryet2lQ"
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout

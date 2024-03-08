@@ -25,6 +25,10 @@ if [ -n "$SERVER_ADDR" ]; then
     LDFLAGS="$LDFLAGS -X ${PACKAGE}/build.ServerAddr=$SERVER_ADDR"
 fi
 
+if [ -n "$FIREBASE_API_KEY" ]; then
+    LDFLAGS="$LDFLAGS -X ${PACKAGE}/build.FirebaseAPIKey=$FIREBASE_API_KEY"
+fi
+
 GOOS=$(go env GOOS)
 if [ "$GOOS" = "windows" ]; then
     LDFLAGS="$LDFLAGS -H windowsgui -extldflags=-static"
