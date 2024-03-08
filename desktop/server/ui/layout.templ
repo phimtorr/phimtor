@@ -79,9 +79,12 @@ templ pagination(page, totalPage int, linkFn func(int) string) {
 	<ul class="inline-flex -space-x-px">
 		<li>
 			<a
-				href={ templ.SafeURL(linkFn(max(1, page-1))) }
+				if page == 1 {
+					href="#"
+				} else {
+					href={ templ.SafeURL(linkFn(max(1, page-1))) }
+				}
 				class="ms-0 flex h-8 items-center justify-center rounded-s-lg border border-e-0 border-gray-400 bg-stone-800 px-3 leading-tight hover:bg-stone-600"
-				disabled?={ page == 1 }
 			>
 				<i class="fa fa-angle-left"></i>
 			</a>
@@ -99,13 +102,14 @@ templ pagination(page, totalPage int, linkFn func(int) string) {
 			for i := start; i <= end; i++ {
 				<li>
 					<a
-						href={ templ.SafeURL(linkFn(i)) }
+						
 						if i == page {
 							class="flex h-8 items-center justify-center border border-gray-300 bg-red-600 px-3 hover:bg-red-700"
+							href="#"
 						} else {
 							class="flex h-8 items-center justify-center border border-gray-300 bg-stone-800 px-3 leading-tight hover:bg-stone-600"
+							href={ templ.SafeURL(linkFn(i)) }
 						}
-						disabled?={ i == page }
 					>{ toString(i) }</a>
 				</li>
 			}
@@ -121,9 +125,12 @@ templ pagination(page, totalPage int, linkFn func(int) string) {
 		}
 		<li>
 			<a
-				href={ templ.SafeURL(linkFn(max(totalPage, page+1))) }
+				if page == totalPage {
+					href="#"
+				} else {
+					href={ templ.SafeURL(linkFn(max(totalPage, page+1))) }
+				}
 				class="flex h-8 items-center justify-center rounded-e-lg border border-gray-300 bg-stone-800 px-3 leading-tight hover:bg-stone-600"
-				disabled?={ page == totalPage }
 			><i class="fa fa-angle-right"></i></a>
 		</li>
 	</ul>

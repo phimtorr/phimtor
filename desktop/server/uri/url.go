@@ -2,6 +2,7 @@ package uri
 
 import (
 	"fmt"
+	"github.com/phimtorr/phimtor/desktop/client/api"
 	"net/url"
 
 	"github.com/phimtorr/phimtor/desktop/torrent"
@@ -11,8 +12,8 @@ func Home() string {
 	return "/"
 }
 
-func ListShows() string {
-	return "/shows"
+func ListShows(page, pageSize int, showType api.ShowType) string {
+	return fmt.Sprintf("/shows?page=%d&pageSize=%d&type=%s", page, pageSize, showType)
 }
 
 func GetMovie(id int64) string {

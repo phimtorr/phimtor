@@ -224,26 +224,31 @@ func pagination(page, totalPage int, linkFn func(int) string) templ.Component {
 			templ_7745c5c3_Var8 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<ul class=\"inline-flex -space-x-px\"><li><a href=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var9 templ.SafeURL = templ.SafeURL(linkFn(max(1, page-1)))
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var9)))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"ms-0 flex h-8 items-center justify-center rounded-s-lg border border-e-0 border-gray-400 bg-stone-800 px-3 leading-tight hover:bg-stone-600\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<ul class=\"inline-flex -space-x-px\"><li><a")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if page == 1 {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" disabled")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" href=\"#\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		} else {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" href=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var9 templ.SafeURL = templ.SafeURL(linkFn(max(1, page-1)))
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var9)))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("><i class=\"fa fa-angle-left\"></i></a></li>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" class=\"ms-0 flex h-8 items-center justify-center rounded-s-lg border border-e-0 border-gray-400 bg-stone-800 px-3 leading-tight hover:bg-stone-600\"><i class=\"fa fa-angle-left\"></i></a></li>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -255,32 +260,26 @@ func pagination(page, totalPage int, linkFn func(int) string) templ.Component {
 				}
 			}
 			for i := start; i <= end; i++ {
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><a href=\"")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				var templ_7745c5c3_Var10 templ.SafeURL = templ.SafeURL(linkFn(i))
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var10)))
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><a")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				if i == page {
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" class=\"flex h-8 items-center justify-center border border-gray-300 bg-red-600 px-3 hover:bg-red-700\"")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" class=\"flex h-8 items-center justify-center border border-gray-300 bg-red-600 px-3 hover:bg-red-700\" href=\"#\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				} else {
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" class=\"flex h-8 items-center justify-center border border-gray-300 bg-stone-800 px-3 leading-tight hover:bg-stone-600\"")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" class=\"flex h-8 items-center justify-center border border-gray-300 bg-stone-800 px-3 leading-tight hover:bg-stone-600\" href=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-				}
-				if i == page {
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" disabled")
+					var templ_7745c5c3_Var10 templ.SafeURL = templ.SafeURL(linkFn(i))
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var10)))
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -292,7 +291,7 @@ func pagination(page, totalPage int, linkFn func(int) string) templ.Component {
 				var templ_7745c5c3_Var11 string
 				templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(toString(i))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/layout.templ`, Line: 108, Col: 19}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/layout.templ`, Line: 112, Col: 19}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 				if templ_7745c5c3_Err != nil {
@@ -314,26 +313,31 @@ func pagination(page, totalPage int, linkFn func(int) string) templ.Component {
 				}
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><a href=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var12 templ.SafeURL = templ.SafeURL(linkFn(max(totalPage, page+1)))
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var12)))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"flex h-8 items-center justify-center rounded-e-lg border border-gray-300 bg-stone-800 px-3 leading-tight hover:bg-stone-600\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><a")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if page == totalPage {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" disabled")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" href=\"#\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		} else {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" href=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var12 templ.SafeURL = templ.SafeURL(linkFn(max(totalPage, page+1)))
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var12)))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("><i class=\"fa fa-angle-right\"></i></a></li></ul>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" class=\"flex h-8 items-center justify-center rounded-e-lg border border-gray-300 bg-stone-800 px-3 leading-tight hover:bg-stone-600\"><i class=\"fa fa-angle-right\"></i></a></li></ul>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

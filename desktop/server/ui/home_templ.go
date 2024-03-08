@@ -12,6 +12,7 @@ import "bytes"
 
 import "github.com/phimtorr/phimtor/desktop/i18n"
 import "github.com/phimtorr/phimtor/desktop/client/api"
+import "github.com/phimtorr/phimtor/desktop/server/uri"
 
 func Home(movies []api.Show, series []api.Show) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
@@ -36,7 +37,7 @@ func Home(movies []api.Show, series []api.Show) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = h2(i18n.MustT(ctx, "Home.Movies.Title"), primaryButton(i18n.MustT(ctx, "Home.SeeMore"), nil)).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = h2(i18n.MustT(ctx, "Home.Movies.Title"), primaryButtonLink(i18n.MustT(ctx, "Home.SeeMore"), uri.ListShows(1, 0, api.ShowTypeMovie), nil)).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -48,7 +49,7 @@ func Home(movies []api.Show, series []api.Show) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = h2(i18n.MustT(ctx, "Home.Series.Title"), primaryButton(i18n.MustT(ctx, "Home.SeeMore"), nil)).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = h2(i18n.MustT(ctx, "Home.Series.Title"), primaryButtonLink(i18n.MustT(ctx, "Home.SeeMore"), uri.ListShows(1, 0, api.ShowTypeSeries), nil)).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

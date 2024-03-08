@@ -15,7 +15,7 @@ import "fmt"
 import "github.com/phimtorr/phimtor/desktop/server/uri"
 import "github.com/phimtorr/phimtor/desktop/i18n"
 
-func Shows(shows []api.Show, pg api.Pagination) templ.Component {
+func Shows(shows []api.Show, pg api.Pagination, showType api.ShowType) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -34,11 +34,15 @@ func Shows(shows []api.Show, pg api.Pagination) templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Here is search box with some filter by year, etc --> <form class=\"my-2 space-y-2\"><input type=\"text\" class=\"mb-2 w-full rounded-lg border border-gray-400 bg-stone-700 p-2\" placeholder=\"Search by name\"><div class=\"flex flex-wrap space-x-2\"><div class=\"mb-2 flex items-center md:mb-0 md:w-1/4\"><label class=\"mr-2\" for=\"type\">Year</label> <select class=\"w-full rounded-lg border border-gray-400 bg-stone-700 p-2\"><option value=\"0\">All</option> <option value=\"1\">2020</option> <option value=\"2\">2019</option> <option value=\"3\">2018</option> <option value=\"4\">2017</option> <option value=\"5\">2016</option></select></div></div><div><button class=\"mb-2 rounded-sm border border-gray-400 bg-stone-700 py-2 px-4\">Search</button></div></form><nav class=\"my-2 flex items-center justify-start\">")
+			templ_7745c5c3_Err = h1(getShowTitle(ctx, showType)).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = pagination(pg.Page, pg.TotalPages, func(i int) string { return "" }).Render(ctx, templ_7745c5c3_Buffer)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <nav class=\"my-2 flex items-center justify-start\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = pagination(pg.Page, pg.TotalPages, func(i int) string { return uri.ListShows(i, 0, showType) }).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -55,7 +59,7 @@ func Shows(shows []api.Show, pg api.Pagination) templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = layout(i18n.MustT(ctx, "Shows.Title")).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = layout(getShowTitle(ctx, showType)).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -64,6 +68,20 @@ func Shows(shows []api.Show, pg api.Pagination) templ.Component {
 		}
 		return templ_7745c5c3_Err
 	})
+}
+
+func getShowTitle(ctx context.Context, showType api.ShowType) string {
+	return fmt.Sprintf("%s: %s", i18n.MustT(ctx, "Shows.Title"), getShowTypeName(ctx, showType))
+}
+
+func getShowTypeName(ctx context.Context, showType api.ShowType) string {
+	if showType == api.ShowTypeMovie {
+		return i18n.MustT(ctx, "Shows.ShowType.Movies")
+	}
+	if showType == api.ShowTypeSeries {
+		return i18n.MustT(ctx, "Shows.ShowType.Series")
+	}
+	return ""
 }
 
 func showsGrid(shows []api.Show) templ.Component {
@@ -185,7 +203,7 @@ func showBasicInfo(show api.Show) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(show.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/shows.templ`, Line: 91, Col: 38}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/shows.templ`, Line: 76, Col: 38}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -198,7 +216,7 @@ func showBasicInfo(show api.Show) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(show.OriginalTitle)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/shows.templ`, Line: 92, Col: 46}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/shows.templ`, Line: 77, Col: 46}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -245,7 +263,7 @@ func label(text string) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/shows.templ`, Line: 110, Col: 63}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/shows.templ`, Line: 95, Col: 63}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {

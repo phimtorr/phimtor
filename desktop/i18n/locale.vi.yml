@@ -41,6 +41,9 @@ Home:
 
 Shows:
   Title: "Danh sách phim"
+  ShowType:
+    Movies: "Phim lẻ"
+    Series: "Phim bộ"
 
 Settings:
   Title: "Cài đặt"

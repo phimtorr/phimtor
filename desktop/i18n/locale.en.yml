@@ -41,6 +41,9 @@ Home:
 
 Shows:
   Title: "Shows"
+  ShowType:
+      Movies: "Movies"
+      Series: "Series"
 
 
 Settings:

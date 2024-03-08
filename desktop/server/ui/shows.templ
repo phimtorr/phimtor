@@ -5,43 +5,28 @@ import "fmt"
 import "github.com/phimtorr/phimtor/desktop/server/uri"
 import "github.com/phimtorr/phimtor/desktop/i18n"
 
-templ Shows(shows []api.Show, pg api.Pagination) {
-	@layout(i18n.MustT(ctx, "Shows.Title")) {
-		<!-- Here is search box with some filter by year, etc -->
-		<form class="my-2 space-y-2">
-			<input
-				type="text"
-				class="mb-2 w-full rounded-lg border border-gray-400 bg-stone-700 p-2"
-				placeholder="Search by name"
-			/>
-			<div class="flex flex-wrap space-x-2">
-				<div class="mb-2 flex items-center md:mb-0 md:w-1/4">
-					<label class="mr-2" for="type">Year</label>
-					<select
-						class="w-full rounded-lg border border-gray-400 bg-stone-700 p-2"
-					>
-						<option value="0">All</option>
-						<option value="1">2020</option>
-						<option value="2">2019</option>
-						<option value="3">2018</option>
-						<option value="4">2017</option>
-						<option value="5">2016</option>
-					</select>
-				</div>
-			</div>
-			<div>
-				<button
-					class="mb-2 rounded-sm border border-gray-400 bg-stone-700 py-2 px-4"
-				>
-					Search
-				</button>
-			</div>
-		</form>
+templ Shows(shows []api.Show, pg api.Pagination, showType api.ShowType) {
+	@layout(getShowTitle(ctx, showType)) {
+		@h1(getShowTitle(ctx, showType))
 		<nav class="my-2 flex items-center justify-start">
-			@pagination(pg.Page, pg.TotalPages, func(i int) string { return "" })
+			@pagination(pg.Page, pg.TotalPages, func(i int) string { return uri.ListShows(i, 0, showType)})
 		</nav>
 		@showsGrid(shows)
 	}
+}
+
+func getShowTitle(ctx context.Context, showType api.ShowType) string {
+	return fmt.Sprintf("%s: %s", i18n.MustT(ctx, "Shows.Title"), getShowTypeName(ctx, showType))
+}
+
+func getShowTypeName(ctx context.Context, showType api.ShowType) string {
+	if showType == api.ShowTypeMovie {
+		return i18n.MustT(ctx, "Shows.ShowType.Movies")
+	}
+	if showType == api.ShowTypeSeries {
+		return i18n.MustT(ctx, "Shows.ShowType.Series")
+	}
+	return ""
 }
 
 
