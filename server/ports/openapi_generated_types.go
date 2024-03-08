@@ -73,7 +73,7 @@ type Show struct {
 	Type              ShowType `json:"type"`
 }
 
-// ShowType defines model for Show.Type.
+// ShowType defines model for ShowType.
 type ShowType string
 
 // Subtitle defines model for Subtitle.
@@ -108,6 +108,13 @@ type InternalError = ErrorResponse
 
 // ListShowsParams defines parameters for ListShows.
 type ListShowsParams struct {
-	Name *string `form:"name,omitempty" json:"name,omitempty"`
-	Page *int    `form:"page,omitempty" json:"page,omitempty"`
+	Page     *int      `form:"page,omitempty" json:"page,omitempty"`
+	PageSize *int      `form:"pageSize,omitempty" json:"pageSize,omitempty"`
+	Type     *ShowType `form:"type,omitempty" json:"type,omitempty"`
+}
+
+// SearchShowsParams defines parameters for SearchShows.
+type SearchShowsParams struct {
+	Query string `form:"query" json:"query"`
+	Page  *int   `form:"page,omitempty" json:"page,omitempty"`
 }

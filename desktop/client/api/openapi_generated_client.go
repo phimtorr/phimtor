@@ -97,6 +97,9 @@ type ClientInterface interface {
 	// ListShows request
 	ListShows(ctx context.Context, params *ListShowsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// SearchShows request
+	SearchShows(ctx context.Context, params *SearchShowsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetVideo request
 	GetVideo(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
@@ -127,6 +130,18 @@ func (c *Client) GetSeries(ctx context.Context, id int64, reqEditors ...RequestE
 
 func (c *Client) ListShows(ctx context.Context, params *ListShowsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListShowsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SearchShows(ctx context.Context, params *SearchShowsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSearchShowsRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -239,9 +254,9 @@ func NewListShowsRequest(server string, params *ListShowsParams) (*http.Request,
 	if params != nil {
 		queryValues := queryURL.Query()
 
-		if params.Name != nil {
+		if params.Page != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "name", runtime.ParamLocationQuery, *params.Name); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -253,6 +268,83 @@ func NewListShowsRequest(server string, params *ListShowsParams) (*http.Request,
 				}
 			}
 
+		}
+
+		if params.PageSize != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "pageSize", runtime.ParamLocationQuery, *params.PageSize); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Type != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "type", runtime.ParamLocationQuery, *params.Type); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSearchShowsRequest generates requests for SearchShows
+func NewSearchShowsRequest(server string, params *SearchShowsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/shows/search")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "query", runtime.ParamLocationQuery, params.Query); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
 		}
 
 		if params.Page != nil {
@@ -368,6 +460,9 @@ type ClientWithResponsesInterface interface {
 	// ListShowsWithResponse request
 	ListShowsWithResponse(ctx context.Context, params *ListShowsParams, reqEditors ...RequestEditorFn) (*ListShowsResponse, error)
 
+	// SearchShowsWithResponse request
+	SearchShowsWithResponse(ctx context.Context, params *SearchShowsParams, reqEditors ...RequestEditorFn) (*SearchShowsResponse, error)
+
 	// GetVideoWithResponse request
 	GetVideoWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*GetVideoResponse, error)
 }
@@ -451,6 +546,33 @@ func (r ListShowsResponse) StatusCode() int {
 	return 0
 }
 
+type SearchShowsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Pagination Pagination `json:"pagination"`
+		Shows      []Show     `json:"shows"`
+	}
+	JSON400 *BadRequest
+	JSON500 *InternalError
+}
+
+// Status returns HTTPResponse.Status
+func (r SearchShowsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SearchShowsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetVideoResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -502,6 +624,15 @@ func (c *ClientWithResponses) ListShowsWithResponse(ctx context.Context, params 
 		return nil, err
 	}
 	return ParseListShowsResponse(rsp)
+}
+
+// SearchShowsWithResponse request returning *SearchShowsResponse
+func (c *ClientWithResponses) SearchShowsWithResponse(ctx context.Context, params *SearchShowsParams, reqEditors ...RequestEditorFn) (*SearchShowsResponse, error) {
+	rsp, err := c.SearchShows(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSearchShowsResponse(rsp)
 }
 
 // GetVideoWithResponse request returning *GetVideoResponse
@@ -606,6 +737,49 @@ func ParseListShowsResponse(rsp *http.Response) (*ListShowsResponse, error) {
 	}
 
 	response := &ListShowsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Pagination Pagination `json:"pagination"`
+			Shows      []Show     `json:"shows"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSearchShowsResponse parses an HTTP response from a SearchShowsWithResponse call
+func ParseSearchShowsResponse(rsp *http.Response) (*SearchShowsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SearchShowsResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}

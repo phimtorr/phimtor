@@ -12,21 +12,23 @@ import (
 )
 
 const (
-	pageSize = 15
+	pageSizeDefault = 18
+	pageSizeMin     = 6
+	pageSizeMax     = 24
 )
 
 func (r Repository) ListShows(ctx context.Context, params ports.ListShowsParams) ([]ports.Show, ports.Pagination, error) {
-	name := unPointer(params.Name)
 	page := unPointer(params.Page)
+	pageSize := unPointer(params.PageSize)
+	showType := unPointer(params.Type)
 
-	if page <= 0 {
-		page = 1
-	}
+	page = max(page, 1)
+	pageSize = max(pageSize, pageSizeMin)
+	pageSize = min(pageSize, pageSizeMax)
 
 	var queryMods []qm.QueryMod
-	if name != "" {
-		queryMods = append(queryMods, dbmodels.ShowWhere.Title.LIKE("%"+name+"%"))
-		queryMods = append(queryMods, qm.Or2(dbmodels.ShowWhere.OriginalTitle.LIKE("%"+name+"%")))
+	if showType != "" {
+		queryMods = append(queryMods, dbmodels.ShowWhere.Type.EQ(dbmodels.ShowsType(showType)))
 	}
 
 	pagingQueryMods := append(queryMods,
@@ -37,6 +39,38 @@ func (r Repository) ListShows(ctx context.Context, params ports.ListShowsParams)
 
 	shows, err := dbmodels.Shows(pagingQueryMods...).
 		All(ctx, r.db)
+	if err != nil {
+		return nil, ports.Pagination{}, errors.Wrap(err, "get shows")
+	}
+
+	count, err := dbmodels.Shows(queryMods...).Count(ctx, r.db)
+	if err != nil {
+		return nil, ports.Pagination{}, errors.Wrap(err, "count shows")
+	}
+
+	return toHTTPShows(shows), toHTTPPagination(page, pageSize, count), nil
+}
+
+func (r Repository) SearchShow(ctx context.Context, params ports.SearchShowsParams) ([]ports.Show, ports.Pagination, error) {
+	query := params.Query
+	page := unPointer(params.Page)
+
+	page = max(page, 1)
+	pageSize := pageSizeDefault
+
+	if query == "" {
+		return nil, ports.Pagination{}, errors.New("query is empty")
+	}
+
+	var queryMods []qm.QueryMod
+	queryMods = append(queryMods, qm.Where("MATCH(title, original_title) AGAINST (?)", query))
+
+	pagingQueryMods := append(queryMods,
+		qm.Limit(pageSize),
+		qm.Offset((page-1)*pageSize),
+	)
+
+	shows, err := dbmodels.Shows(pagingQueryMods...).All(ctx, r.db)
 	if err != nil {
 		return nil, ports.Pagination{}, errors.Wrap(err, "get shows")
 	}
