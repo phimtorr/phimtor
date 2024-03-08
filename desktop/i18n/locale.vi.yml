@@ -72,4 +72,7 @@ Subtitle:
     Unselect: "Bỏ chọn"
     Download: "Tải về"
 
+Pagination:
+  Info: "Trang {{ .Page }} của {{ .TotalPages }} (Tổng số: {{ .TotalResults }})"
+
 

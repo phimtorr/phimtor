@@ -73,7 +73,8 @@ Subtitle:
     Unselect: "Unselect"
     Download: "Download"
 
-  
+Pagination:
+  Info: "Page {{ .Page }} of {{ .TotalPages }} (Total: {{ .TotalResults }})"
 
 
 
