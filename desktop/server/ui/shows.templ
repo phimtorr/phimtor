@@ -40,23 +40,19 @@ templ Shows(shows []api.Show, pg api.Pagination) {
 		<nav class="my-2 flex items-center justify-start">
 			@pagination(pg.Page, pg.TotalPages, func(i int) string { return "" })
 		</nav>
-		<section class="grid grid-cols-6 gap-x-6 gap-y-4 mt-4">
-			for _, show := range shows {
-				@showBasicInfo(show)
-			}
-		</section>
+		@showsGrid(shows)
 	}
 }
 
-func getShowURL(show api.Show) templ.SafeURL {
-	if show.Type == api.ShowTypeMovie {
-		return templ.SafeURL(uri.GetMovie(show.Id))
-	}
-	if show.Type == api.ShowTypeSeries {
-		return templ.SafeURL(uri.GetSeries(show.Id))
-	}
-	return ""
+
+templ showsGrid(shows []api.Show) {
+	<section class="grid grid-cols-6 gap-x-6 gap-y-4 mt-4">
+		for _, show := range shows {
+			@showBasicInfo(show)
+		}
+	</section>
 }
+
 
 templ showBasicInfo(show api.Show) {
 	<figure class="transition-transform hover:scale-105">
@@ -98,6 +94,17 @@ templ showBasicInfo(show api.Show) {
 			</div>
 		</a>
 	</figure>
+}
+
+
+func getShowURL(show api.Show) templ.SafeURL {
+	if show.Type == api.ShowTypeMovie {
+		return templ.SafeURL(uri.GetMovie(show.Id))
+	}
+	if show.Type == api.ShowTypeSeries {
+		return templ.SafeURL(uri.GetSeries(show.Id))
+	}
+	return ""
 }
 
 templ label(text string) {

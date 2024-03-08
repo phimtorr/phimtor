@@ -31,6 +31,14 @@ SignUp:
     SignUp: "Sign Up"
     SignIn: "Sign In"
 
+Home:
+  Title: "Home"
+  Movies:
+    Title: "Movies"
+  Series:
+    Title: "Series"
+  SeeMore: "See more"
+
 Shows:
   Title: "Shows"
 

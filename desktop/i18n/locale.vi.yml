@@ -31,6 +31,14 @@ SignUp:
     SignUp: "Đăng ký"
     SignIn: "Đăng nhập"
 
+Home:
+  Title: "Trang chủ"
+  Movies:
+    Title: "Phim lẻ"
+  Series:
+    Title: "Phim bộ"
+  SeeMore: "Xem thêm"
+
 Shows:
   Title: "Danh sách phim"
 
