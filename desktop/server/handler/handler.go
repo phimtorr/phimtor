@@ -1,18 +1,17 @@
 package handler
 
 import (
-	"github.com/a-h/templ"
-	"github.com/phimtorr/phimtor/desktop/auth"
-	"github.com/phimtorr/phimtor/desktop/server/ui"
 	"net/http"
 	"net/url"
 	"strconv"
 
+	"github.com/a-h/templ"
 	"github.com/go-chi/chi/v5"
+	"github.com/phimtorr/phimtor/desktop/auth"
+	"github.com/phimtorr/phimtor/desktop/server/ui"
 	"github.com/rs/zerolog/log"
 
 	"github.com/phimtorr/phimtor/desktop/client"
-	"github.com/phimtorr/phimtor/desktop/client/api"
 	"github.com/phimtorr/phimtor/desktop/setting"
 	"github.com/phimtorr/phimtor/desktop/torrent"
 )
@@ -53,10 +52,8 @@ func New(
 func (h *Handler) Register(r chi.Router) {
 	r.Get("/", h.Home)
 
-	r.Get("/shows", func(w http.ResponseWriter, r *http.Request) {
-		h.ListShows(w, r, api.ListShowsParams{})
-		return
-	})
+	r.Get("/shows", h.ListShows)
+	r.Get("/shows/search", h.SearchShows)
 
 	r.Get("/movies/{id}", func(w http.ResponseWriter, r *http.Request) {
 		idStr := chi.URLParam(r, "id")

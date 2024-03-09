@@ -1,0 +1,19 @@
+package ui
+
+import "github.com/phimtorr/phimtor/desktop/i18n"
+import "github.com/phimtorr/phimtor/desktop/client/api"
+import "github.com/phimtorr/phimtor/desktop/server/uri"
+
+templ Home(movies []api.Show, series []api.Show) {
+    @layout(i18n.MustT(ctx, "Home.Title")) {
+        <section class="mb-4 ">
+            @h2(i18n.MustT(ctx, "Home.Movies.Title"), primaryButtonLink(i18n.MustT(ctx, "Home.SeeMore"), uri.ListShows(1, 0, api.ShowTypeMovie), nil))
+            @showsGrid(movies)
+        </section>
+        <br class="border-b border-gray-500" />
+        <section class="mt-4">
+            @h2(i18n.MustT(ctx, "Home.Series.Title"), primaryButtonLink(i18n.MustT(ctx, "Home.SeeMore"), uri.ListShows(1, 0, api.ShowTypeSeries), nil))
+            @showsGrid(series)
+        </section>
+    }
+}

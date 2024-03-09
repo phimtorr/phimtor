@@ -31,8 +31,27 @@ SignUp:
     SignUp: "Sign Up"
     SignIn: "Sign In"
 
+Home:
+  Title: "Home"
+  Movies:
+    Title: "Movies"
+  Series:
+    Title: "Series"
+  SeeMore: "See more"
+
 Shows:
   Title: "Shows"
+  ShowType:
+      Movies: "Movies"
+      Series: "Series"
+
+Search:
+  SearchBar:
+    Button: "Search"
+    Placeholder: "Search for movies, series, actors, directors, ..."
+  Results:
+    Title: "Search Results for: {{ .Query }}"
+    NoResults: "No results found"
 
 
 Settings:
@@ -62,7 +81,8 @@ Subtitle:
     Unselect: "Unselect"
     Download: "Download"
 
-  
+Pagination:
+  Info: "Page {{ .Page }} of {{ .TotalPages }} (Total: {{ .TotalResults }})"
 
 
 

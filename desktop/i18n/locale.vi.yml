@@ -31,8 +31,27 @@ SignUp:
     SignUp: "Đăng ký"
     SignIn: "Đăng nhập"
 
+Home:
+  Title: "Trang chủ"
+  Movies:
+    Title: "Phim lẻ"
+  Series:
+    Title: "Phim bộ"
+  SeeMore: "Xem thêm"
+
 Shows:
   Title: "Danh sách phim"
+  ShowType:
+    Movies: "Phim lẻ"
+    Series: "Phim bộ"
+
+Search:
+  SearchBar:
+    Button: "Tìm kiếm"
+    Placeholder: "Tìm kiếm tên phim,..."
+  Results:
+    Title: "Kết quả tìm kiếm cho: {{ .Query }}"
+    NoResults: "Không tìm thấy kết quả"
 
 Settings:
   Title: "Cài đặt"
@@ -60,5 +79,8 @@ Subtitle:
     Select: "Chọn"
     Unselect: "Bỏ chọn"
     Download: "Tải về"
+
+Pagination:
+  Info: "Trang {{ .Page }} của {{ .TotalPages }} (Tổng số: {{ .TotalResults }})"
 
 

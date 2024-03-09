@@ -16,18 +16,25 @@ paths:
       operationId: listShows
       summary: List all shows
       parameters:
-        - name: name
-          in: query
-          required: false
-          schema:
-            type: string
         - name: page
           in: query
           required: false
           schema:
             type: integer
             default: 1
-
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 18
+            minimum: 6
+            maximum: 24
+        - name: type
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/ShowType'
       responses:
         '200':
           description: OK
@@ -50,6 +57,46 @@ paths:
           $ref: "#/components/responses/BadRequest"
         500:
           $ref: "#/components/responses/InternalError"
+
+  /shows/search:
+    get:
+      operationId: searchShows
+      summary: Search shows
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                title: SearchShowsResponse
+                type: object
+                properties:
+                  shows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Show'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                required:
+                  - shows
+                  - pagination
+        400:
+          $ref: "#/components/responses/BadRequest"
+        500:
+          $ref: "#/components/responses/InternalError"
+
 
   /movies/{id}:
     get:
@@ -181,10 +228,7 @@ components:
         posterLink:
           type: string
         type:
-          type: string
-          enum:
-            - movie
-            - series
+          $ref: '#/components/schemas/ShowType'
         releaseYear:
           type: integer
         score:
@@ -209,6 +253,12 @@ components:
         - quantity
         - totalEpisodes
         - currentEpisode
+
+    ShowType:
+      type: string
+      enum:
+        - movie
+        - series
 
     Pagination:
       type: object

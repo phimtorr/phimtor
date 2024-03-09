@@ -1,19 +1,11 @@
 package ports
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/go-chi/render"
 	"github.com/rs/zerolog/log"
 )
-
-type Repository interface {
-	ListShows(ctx context.Context, params ListShowsParams) ([]Show, Pagination, error)
-	GetMovie(ctx context.Context, id int64) (Movie, error)
-	GetSeries(ctx context.Context, id int64) (Series, error)
-	GetVideo(ctx context.Context, id int64) (Video, error)
-}
 
 type HttpServer struct {
 	repo Repository

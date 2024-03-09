@@ -22,6 +22,9 @@ type ServerInterface interface {
 	// List all shows
 	// (GET /shows)
 	ListShows(w http.ResponseWriter, r *http.Request, params ListShowsParams)
+	// Search shows
+	// (GET /shows/search)
+	SearchShows(w http.ResponseWriter, r *http.Request, params SearchShowsParams)
 	// Get video by id
 	// (GET /videos/{id})
 	GetVideo(w http.ResponseWriter, r *http.Request, id int64)
@@ -46,6 +49,12 @@ func (_ Unimplemented) GetSeries(w http.ResponseWriter, r *http.Request, id int6
 // List all shows
 // (GET /shows)
 func (_ Unimplemented) ListShows(w http.ResponseWriter, r *http.Request, params ListShowsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// Search shows
+// (GET /shows/search)
+func (_ Unimplemented) SearchShows(w http.ResponseWriter, r *http.Request, params SearchShowsParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -125,11 +134,62 @@ func (siw *ServerInterfaceWrapper) ListShows(w http.ResponseWriter, r *http.Requ
 	// Parameter object where we will unmarshal all parameters from the context
 	var params ListShowsParams
 
-	// ------------- Optional query parameter "name" -------------
+	// ------------- Optional query parameter "page" -------------
 
-	err = runtime.BindQueryParameter("form", true, false, "name", r.URL.Query(), &params.Name)
+	err = runtime.BindQueryParameter("form", true, false, "page", r.URL.Query(), &params.Page)
 	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "name", Err: err})
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		return
+	}
+
+	// ------------- Optional query parameter "pageSize" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "pageSize", r.URL.Query(), &params.PageSize)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "pageSize", Err: err})
+		return
+	}
+
+	// ------------- Optional query parameter "type" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "type", r.URL.Query(), &params.Type)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "type", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListShows(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// SearchShows operation middleware
+func (siw *ServerInterfaceWrapper) SearchShows(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SearchShowsParams
+
+	// ------------- Required query parameter "query" -------------
+
+	if paramValue := r.URL.Query().Get("query"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "query"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "query", r.URL.Query(), &params.Query)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "query", Err: err})
 		return
 	}
 
@@ -142,7 +202,7 @@ func (siw *ServerInterfaceWrapper) ListShows(w http.ResponseWriter, r *http.Requ
 	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListShows(w, r, params)
+		siw.Handler.SearchShows(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -299,6 +359,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/shows", wrapper.ListShows)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/shows/search", wrapper.SearchShows)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/videos/{id}", wrapper.GetVideo)

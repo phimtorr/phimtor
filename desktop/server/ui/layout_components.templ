@@ -1,0 +1,35 @@
+package ui
+
+templ h1(title string) {
+    <h1 class="text-4xl my-2 font-extrabold">{ title }</h1>
+}
+
+templ h2(title string, rightComponent templ.Component) {
+	<div class="flex items-center justify-between mt-2">
+		<div class="p-4 border-l-2 border-red-700">
+			<h2 class="font-bold text-2xl">{ title }</h2>
+		</div>
+		<div>
+			@rightComponent
+		</div>
+	</div>
+}
+
+templ primaryButton(label string, attrs templ.Attributes) {
+	<button
+		class="rounded-sm bg-red-600 px-4 py-2 text-slate-100 shadow-md shadow-stone-900 hover:bg-red-700"
+		{ attrs... }
+	>
+		{ label }
+	</button>
+}
+
+templ primaryButtonLink(label string, href string, attrs templ.Attributes) {
+    <a
+        class="rounded-sm bg-red-600 px-4 py-2 text-slate-100 shadow-md shadow-stone-900 hover:bg-red-700"
+        href={ templ.SafeURL(href) }
+        { attrs... }
+    >
+        { label }
+    </a>
+}
