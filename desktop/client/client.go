@@ -62,6 +62,21 @@ func (c *Client) ListShows(ctx context.Context, page, pageSize int, showType api
 	return resp.JSON200.Shows, resp.JSON200.Pagination, nil
 }
 
+func (c *Client) SearchShows(ctx context.Context, query string, page int) ([]api.Show, api.Pagination, error) {
+	resp, err := c.SearchShowsWithResponse(ctx, &api.SearchShowsParams{
+		Query: query,
+		Page:  &page,
+	})
+	if err != nil {
+		return nil, api.Pagination{}, errors.Wrap(err, "search shows")
+	}
+	if resp.StatusCode() != http.StatusOK {
+		return nil, api.Pagination{}, errors.Errorf("search shows with status code %d", resp.StatusCode())
+	}
+
+	return resp.JSON200.Shows, resp.JSON200.Pagination, nil
+}
+
 func (c *Client) GetVideo(ctx context.Context, id int64) (api.Video, error) {
 	resp, err := c.GetVideoWithResponse(ctx, id)
 	if err != nil {

@@ -45,6 +45,14 @@ Shows:
     Movies: "Phim lẻ"
     Series: "Phim bộ"
 
+Search:
+  SearchBar:
+    Button: "Tìm kiếm"
+    Placeholder: "Tìm kiếm tên phim,..."
+  Results:
+    Title: "Kết quả tìm kiếm cho: {{ .Query }}"
+    NoResults: "Không tìm thấy kết quả"
+
 Settings:
   Title: "Cài đặt"
   Language:

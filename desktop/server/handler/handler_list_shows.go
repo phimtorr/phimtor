@@ -1,11 +1,12 @@
 package handler
 
 import (
+	"net/http"
+	"strconv"
+
 	"github.com/a-h/templ"
 	"github.com/phimtorr/phimtor/desktop/client/api"
 	"github.com/phimtorr/phimtor/desktop/server/ui"
-	"net/http"
-	"strconv"
 )
 
 func (h *Handler) ListShows(w http.ResponseWriter, r *http.Request) {
@@ -33,4 +34,33 @@ func (h *Handler) ListShows(w http.ResponseWriter, r *http.Request) {
 	}
 
 	templ.Handler(ui.Shows(shows, pagination, showType)).ServeHTTP(w, r)
+}
+
+func (h *Handler) SearchShows(w http.ResponseWriter, r *http.Request) {
+	qPage := r.URL.Query().Get("page")
+	query := r.URL.Query().Get("q")
+
+	page := 1
+
+	if qPage != "" {
+		_page, err := strconv.Atoi(qPage)
+		if err != nil {
+			handleError(w, r, "Parse page", err, http.StatusBadRequest)
+			return
+		}
+		page = _page
+	}
+	
+	if query == "" {
+		handleError(w, r, "Empty query", nil, http.StatusBadRequest)
+		return
+	}
+
+	shows, pagination, err := h.apiClient.SearchShows(r.Context(), query, page)
+	if err != nil {
+		handleError(w, r, "Search shows", err, http.StatusInternalServerError)
+		return
+	}
+
+	templ.Handler(ui.SearchPage(query, shows, pagination)).ServeHTTP(w, r)
 }

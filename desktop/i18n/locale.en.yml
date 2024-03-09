@@ -45,6 +45,14 @@ Shows:
       Movies: "Movies"
       Series: "Series"
 
+Search:
+  SearchBar:
+    Button: "Search"
+    Placeholder: "Search for movies, series, actors, directors, ..."
+  Results:
+    Title: "Search Results for: {{ .Query }}"
+    NoResults: "No results found"
+
 
 Settings:
   Title: "Settings"
