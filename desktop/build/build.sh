@@ -31,7 +31,12 @@ fi
 
 GOOS=$(go env GOOS)
 if [ "$GOOS" = "windows" ]; then
-    LDFLAGS="$LDFLAGS -H windowsgui -extldflags=-static"
+    LDFLAGS="$LDFLAGS -H windowsgui"
+fi
+
+# if not macOS
+if [ "$GOOS" != "darwin" ]; then
+    LDFLAGS="$LDFLAGS -extldflags=-static"
 fi
 
 (
