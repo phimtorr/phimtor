@@ -49,7 +49,7 @@ func Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.TorrentL
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(video.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_video.templ`, Line: 25, Col: 52}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server\ui\view_video.templ`, Line: 25, Col: 52}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -68,7 +68,7 @@ func Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.TorrentL
 					var templ_7745c5c3_Var4 string
 					templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(l.Name)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_video.templ`, Line: 36, Col: 15}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `server\ui\view_video.templ`, Line: 36, Col: 15}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 					if templ_7745c5c3_Err != nil {
@@ -95,7 +95,7 @@ func Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.TorrentL
 					var templ_7745c5c3_Var6 string
 					templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(l.Name)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_video.templ`, Line: 42, Col: 16}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `server\ui\view_video.templ`, Line: 42, Col: 16}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 					if templ_7745c5c3_Err != nil {
@@ -224,7 +224,7 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Sub
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "Subtitle.Title"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_video.templ`, Line: 95, Col: 80}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server\ui\view_video.templ`, Line: 95, Col: 80}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
@@ -237,7 +237,7 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Sub
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(state.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_video.templ`, Line: 97, Col: 39}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server\ui\view_video.templ`, Line: 97, Col: 39}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {
@@ -250,7 +250,7 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Sub
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "Subtitle.Adjustment.Title"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_video.templ`, Line: 103, Col: 81}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server\ui\view_video.templ`, Line: 103, Col: 81}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
@@ -295,7 +295,7 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Sub
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "Subtitle.Adjustment.Reset"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_video.templ`, Line: 117, Col: 82}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server\ui\view_video.templ`, Line: 117, Col: 82}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {
@@ -316,7 +316,7 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Sub
 		var templ_7745c5c3_Var13 string
 		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(toString(state.AdjustmentMilliseconds))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_video.templ`, Line: 127, Col: 61}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server\ui\view_video.templ`, Line: 127, Col: 61}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {
@@ -337,7 +337,7 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Sub
 		var templ_7745c5c3_Var14 string
 		templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "Subtitle.AddFromFile"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_video.templ`, Line: 141, Col: 76}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server\ui\view_video.templ`, Line: 141, Col: 76}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 		if templ_7745c5c3_Err != nil {
@@ -358,7 +358,7 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Sub
 		var templ_7745c5c3_Var15 string
 		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "Subtitle.Vietnamese"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_video.templ`, Line: 156, Col: 75}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server\ui\view_video.templ`, Line: 156, Col: 75}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 		if templ_7745c5c3_Err != nil {
@@ -381,7 +381,7 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Sub
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "Subtitle.English"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_video.templ`, Line: 164, Col: 72}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server\ui\view_video.templ`, Line: 164, Col: 72}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {
@@ -438,7 +438,7 @@ func subtitle(videoID int64, sub api.Subtitle, isSelected bool) templ.Component 
 		var templ_7745c5c3_Var18 string
 		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(sub.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_video.templ`, Line: 183, Col: 26}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server\ui\view_video.templ`, Line: 183, Col: 26}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 		if templ_7745c5c3_Err != nil {
@@ -461,7 +461,7 @@ func subtitle(videoID int64, sub api.Subtitle, isSelected bool) templ.Component 
 		var templ_7745c5c3_Var19 string
 		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(sub.Owner)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_video.templ`, Line: 188, Col: 44}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server\ui\view_video.templ`, Line: 188, Col: 44}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 		if templ_7745c5c3_Err != nil {
@@ -525,7 +525,7 @@ func subtitleSelectButton(videoID int64, sub api.Subtitle) templ.Component {
 		var templ_7745c5c3_Var21 string
 		templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "Subtitle.Action.Select"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_video.templ`, Line: 209, Col: 41}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server\ui\view_video.templ`, Line: 209, Col: 41}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 		if templ_7745c5c3_Err != nil {
@@ -570,7 +570,7 @@ func unselecteSubtitleButton(videoID int64) templ.Component {
 		var templ_7745c5c3_Var23 string
 		templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "Subtitle.Action.Unselect"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_video.templ`, Line: 220, Col: 43}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server\ui\view_video.templ`, Line: 220, Col: 43}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
 		if templ_7745c5c3_Err != nil {
@@ -615,7 +615,7 @@ func subtitleDownloadButton(videoID int64, sub api.Subtitle) templ.Component {
 		var templ_7745c5c3_Var25 string
 		templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "Subtitle.Action.Download"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_video.templ`, Line: 230, Col: 43}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server\ui\view_video.templ`, Line: 230, Col: 43}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
 		if templ_7745c5c3_Err != nil {
