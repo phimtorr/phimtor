@@ -24,14 +24,29 @@ templ primaryButton(label string, attrs templ.Attributes) {
 	</button>
 }
 
-templ primaryButtonLink(label string, href string, attrs templ.Attributes) {
+templ primaryButtonLink(href string, contents templ.Component) {
     <a
-        class="rounded-sm bg-red-600 px-4 py-2 text-slate-100 shadow-md shadow-stone-900 hover:bg-red-700"
+        class="rounded-sm bg-red-600 px-4 py-2 text-slate-100 shadow-md shadow-stone-900 hover:bg-red-700 space-x-2 inline-flex"
         href={ templ.SafeURL(href) }
-        { attrs... }
+        hx-boost="true"
     >
-        { label }
+        @contents
+		@htmxIndicator()
     </a>
+}
+
+templ paragraph(contents string, errs ...error) {
+	<p>{ contents }</p>
+}
+
+templ span(contents string, errs ...error) {
+	<span>{ contents }</span>
+}
+
+templ many(components ...templ.Component) {
+	for _, c := range components {
+		@c
+	}
 }
 
 templ htmxIndicator() {
