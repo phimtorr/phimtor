@@ -52,6 +52,12 @@ Movies:
   Action:
     WatchNow: "Watch Now"
 
+Series:
+  ReleaseYear: "Release Year"
+  Duration: "Duration"
+  Action:
+    WatchNow: "Watch Now"
+
 Search:
   SearchBar:
     Button: "Search"

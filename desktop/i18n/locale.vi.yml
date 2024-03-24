@@ -52,6 +52,12 @@ Movies:
   Action:
     WatchNow: "Xem ngay"
 
+Series:
+  ReleaseYear: "Năm phát hành"
+  Duration: "Thời lượng"
+  Action:
+    WatchNow: "Xem ngay"
+
 Search:
   SearchBar:
     Button: "Tìm kiếm"
