@@ -45,6 +45,13 @@ Shows:
       Movies: "Movies"
       Series: "Series"
 
+Movies:
+  ReleaseYear: "Release Year"
+  Duration: "Duration"
+  IMDB: "IMDB"
+  Action:
+    WatchNow: "Watch Now"
+
 Search:
   SearchBar:
     Button: "Search"

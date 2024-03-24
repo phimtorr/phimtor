@@ -45,6 +45,13 @@ Shows:
     Movies: "Phim lẻ"
     Series: "Phim bộ"
 
+Movies:
+  ReleaseYear: "Năm phát hành"
+  Duration: "Thời lượng"
+  IMDB: "IMDB"
+  Action:
+    WatchNow: "Xem ngay"
+
 Search:
   SearchBar:
     Button: "Tìm kiếm"
