@@ -36,12 +36,7 @@ templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.Torrent
 							disabled
 						>{ l.Name }</button>
 					} else {
-						<a href={ templ.SafeURL(uri.GetVideoWithTorrentName(video.Id, l.Name)) }>
-							<button
-								type="button"
-								class="inline-flex justify-center items-center space-x-1 rounded bg-stone-500 hover:bg-red-700 px-4 py-2 text-slate-100"
-							>{ l.Name }</button>
-						</a>
+						@secondaryButtonLink(uri.GetVideoWithTorrentName(video.Id, l.Name), span(l.Name))
 					}
 				}
 			</div>
@@ -95,7 +90,10 @@ templ SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Su
 			<h3 class="my-4 text-xl font-bold">
 				<span class="border-b-2 border-red-700 pb-1">{ i18n.T(ctx, "Subtitle.Title") }</span>
 			</h3>
-			<p class="pr-1 text-sm">{ state.Name }</p>
+			<div class="inline-flex items-center space-x-2">
+				<p class="pr-1 text-sm">{ state.Name }</p>
+				@htmxIndicatorWithClassName("subtitle-indicator")
+			</div>
 		</div>
 		<div class="grid grid-cols-1 gap-1 text-sm md:grid-cols-2">
 			<div
@@ -114,6 +112,7 @@ templ SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Su
 						hx-post={ uri.AdjustSubtitle(videoID, 0) }
 						hx-target="#subtitleSection"
 						hx-swap="outerHTML"
+						hx-indicator=".subtitle-indicator"
 					>
 						<i icon="fa-solid fa-eraser"></i> { i18n.T(ctx, "Subtitle.Adjustment.Reset") }
 					</button>
@@ -122,6 +121,7 @@ templ SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Su
 						hx-post={ uri.AdjustSubtitle(videoID, state.AdjustmentMilliseconds-500) }
 						hx-target="#subtitleSection"
 						hx-swap="outerHTML"
+						hx-indicator=".subtitle-indicator"
 					>
 						<i icon="fa-solid fa-backward"></i> -0.5s
 					</button>
@@ -131,6 +131,7 @@ templ SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Su
 						hx-post={ uri.AdjustSubtitle(videoID, state.AdjustmentMilliseconds+500) }
 						hx-target="#subtitleSection"
 						hx-swap="outerHTML"
+						hx-indicator=".subtitle-indicator"
 					>
 						<i icon="fa-solid fa-forward"></i> +0.5s
 					</button>
@@ -149,6 +150,7 @@ templ SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Su
 					hx-post={ uri.UploadSubtitle(videoID) }
 					hx-swap="outerHTML"
 					hx-target="#subtitleSection"
+					hx-indicator=".subtitle-indicator"
 				/>
 			</div>
 		</div>
@@ -181,7 +183,8 @@ templ subtitle(videoID int64, sub api.Subtitle, isSelected bool) {
 					class="text-red-700"
 				}
 			>
-				<p class="">{ sub.Name } 
+				<p class="">
+					{ sub.Name }
 					if isSelected {
 						<i class="fa-solid fa-check text-slate-100"></i>
 					}
@@ -206,6 +209,7 @@ templ subtitleSelectButton(videoID int64, sub api.Subtitle) {
 		hx-post={ uri.SelectSubtitle(videoID, sub.Name) }
 		hx-swap="outerHTML"
 		hx-target="#subtitleSection"
+		hx-indicator=".subtitle-indicator"
 	>
 		{ i18n.T(ctx, "Subtitle.Action.Select") }
 	</button>
@@ -217,6 +221,7 @@ templ unselecteSubtitleButton(videoID int64) {
 		hx-post={ uri.UnselectSubtitle(videoID) }
 		hx-swap="outerHTML"
 		hx-target="#subtitleSection"
+		hx-indicator=".subtitle-indicator"
 	>
 		{ i18n.T(ctx, "Subtitle.Action.Unselect") }
 	</button>

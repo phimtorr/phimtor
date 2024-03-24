@@ -2,6 +2,7 @@ package ui
 
 import "github.com/phimtorr/phimtor/desktop/client/api"
 import "github.com/phimtorr/phimtor/desktop/server/uri"
+import "github.com/phimtorr/phimtor/desktop/i18n"
 
 templ Movie(movie api.Movie) {
 	@layout(movie.Title) {
@@ -18,13 +19,12 @@ templ Movie(movie api.Movie) {
 					<h1 class="mb-2 text-2xl font-bold">{ movie.Title }</h1>
 					<h2 class="mb-2 italic">{ movie.OriginalTitle }</h2>
 					<p class="mb-2">{ movie.Description }</p>
-					<p class="mb-2">Release Year: { toString(movie.ReleaseYear) }</p>
-					<p class="mb-2">IMDB Score: { toString(movie.Score) }</p>
+					<p class="mb-2">{i18n.T(ctx, "Movies.ReleaseYear")}: { toString(movie.ReleaseYear) }</p>
+					<p class="mb-2">IMDB: { toString(movie.Score) }</p>
+					<p class="mb-2">{i18n.T(ctx, "Movies.Duration")}: { toString(movie.DurationInMinutes) }m</p>
 				</div>
 				<div class="mt-4 box-border">
-					<a href={ templ.SafeURL(uri.GetVideo(movie.VideoId)) }>
-						<button type="button" class="rounded-sm py-4 px-6 bg-red-600 hover:bg-red-700 shadow">Watch Now</button>
-					</a>
+					@primaryButtonLink(uri.GetVideo(movie.VideoId), many(span(i18n.T(ctx, "Movies.Action.WatchNow"))))
 				</div>
 			</div>
 		</section>
