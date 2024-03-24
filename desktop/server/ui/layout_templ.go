@@ -41,7 +41,7 @@ func layout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><script>\n\t\t\t\t.htmx-indicator {\n\t\t\t\t\tdisplay: none;\n\t\t\t\t}\n\t\t\t\t.htmx-request .htmx-indicator {\n\t\t\t\t\tdisplay: inline;\n\t\t\t\t}\n\t\t\t\t.htmx-request.htmx-indicator {\n\t\t\t\t\tdisplay: inline;\n\t\t\t\t}\n\t\t\t</script></head><body class=\"box-border flex flex-col min-h-screen w-full bg-stone-900 text-slate-100\" hx-ext=\"response-targets\"><nav class=\"flex items-center justify-between bg-stone-800 px-4 py-4\"><div class=\"flex flex-shrink-0 items-center\"><span class=\"text-xl font-bold\">PhimTor</span></div><div class=\"flex-grow px-4\"><form class=\"max-w-md mx-auto\" method=\"GET\" action=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><style>\n\t\t\t\t.htmx-indicator {\n\t\t\t\t\tdisplay: none;\n\t\t\t\t}\n\t\t\t\t.htmx-request .htmx-indicator {\n\t\t\t\t\tdisplay: inline;\n\t\t\t\t}\n\t\t\t\t.htmx-request.htmx-indicator {\n\t\t\t\t\tdisplay: inline;\n\t\t\t\t}\n\t\t\t</style></head><body class=\"box-border flex flex-col min-h-screen w-full bg-stone-900 text-slate-100\" hx-ext=\"response-targets\"><nav class=\"flex items-center justify-between bg-stone-800 px-4 py-4\"><div class=\"flex flex-shrink-0 items-center\"><span class=\"text-xl font-bold\">PhimTor</span></div><div class=\"flex-grow px-4\"><form class=\"max-w-md mx-auto\" method=\"GET\" action=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
