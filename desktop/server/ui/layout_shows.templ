@@ -1,0 +1,87 @@
+package ui
+
+import "github.com/phimtorr/phimtor/desktop/client/api"
+import "fmt"
+import "github.com/phimtorr/phimtor/desktop/server/uri"
+import "github.com/phimtorr/phimtor/desktop/i18n"
+
+func getShowTitle(ctx context.Context, showType api.ShowType) string {
+	return fmt.Sprintf("%s: %s", i18n.MustT(ctx, "Shows.Title"), getShowTypeName(ctx, showType))
+}
+
+func getShowTypeName(ctx context.Context, showType api.ShowType) string {
+	if showType == api.ShowTypeMovie {
+		return i18n.MustT(ctx, "Shows.ShowType.Movies")
+	}
+	if showType == api.ShowTypeSeries {
+		return i18n.MustT(ctx, "Shows.ShowType.Series")
+	}
+	return ""
+}
+
+
+templ showsGrid(shows []api.Show) {
+	<section class="grid grid-cols-6 gap-x-6 gap-y-4 mt-4">
+		for _, show := range shows {
+			@showBasicInfo(show)
+		}
+	</section>
+}
+
+
+templ showBasicInfo(show api.Show) {
+	<figure class="transition-transform hover:scale-105">
+		<a href={ getShowURL(show) }>
+			<div class="relative">
+				<img
+					class="h-auto w-full object-cover"
+					src={ show.PosterLink }
+					alt="Film Poster"
+				/>
+				<div class="absolute right-1 top-2 box-border space-x-1">
+					if show.TotalEpisodes > 0 {
+						@label(fmt.Sprintf("%d/%d", show.CurrentEpisode, show.TotalEpisodes))
+					}
+				</div>
+				<div class="absolute left-1 top-2 box-border space-x-1">
+					if show.Type == api.ShowTypeMovie {
+						@label(fmt.Sprintf("IMDB %.1f", show.Score))
+					}
+					if show.Type == api.ShowTypeSeries {
+						@label(fmt.Sprintf("TMDb %.1f", show.Score))
+					}
+					if show.ReleaseYear > 0 {
+						@label(fmt.Sprintf("%d", show.ReleaseYear))
+					}
+				</div>
+				<div class="absolute bottom-2 right-1 box-border space-x-1">
+					if show.Quantity != "" {
+						@label(show.Quantity)
+					}
+					if show.DurationInMinutes > 0 {
+						@label(durationCount(show.DurationInMinutes))
+					}
+				</div>
+			</div>
+			<div class="mt-2">
+				<h2 class="font-bold">{ show.Title }</h2>
+				<p class="font-light">{ show.OriginalTitle }</p>
+			</div>
+		</a>
+	</figure>
+}
+
+
+func getShowURL(show api.Show) templ.SafeURL {
+	if show.Type == api.ShowTypeMovie {
+		return templ.SafeURL(uri.GetMovie(show.Id))
+	}
+	if show.Type == api.ShowTypeSeries {
+		return templ.SafeURL(uri.GetSeries(show.Id))
+	}
+	return ""
+}
+
+templ label(text string) {
+	<span class="rounded-sm bg-stone-600 bg-opacity-70 p-2">{ text }</span>
+}
