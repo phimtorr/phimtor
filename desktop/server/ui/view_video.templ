@@ -24,8 +24,11 @@ templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.Torrent
 				<div id="subtitleTrack"></div>
 				Your browser does not support the video tag.
 			</video>
-			<section>
-				@VideoStatistics(torrent.Stats{})
+			<section 
+				hx-get={uri.GetStats(infoHash, selectedLink.FileIndex)}
+				hx-trigger="every 2s"
+				hx-sync="this:abort"
+			>
 			</section>
 			<h1 class="my-2 text-2xl font-bold">{ video.Title }</h1>
 		</section>

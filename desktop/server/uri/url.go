@@ -48,6 +48,10 @@ func GetStream(infoHash torrent.InfoHash, fileIndex int) string {
 	return fmt.Sprintf("/stream/%s/%d", infoHash, fileIndex)
 }
 
+func GetStats(infoHash torrent.InfoHash, fileIndex int) string {
+	return fmt.Sprintf("/stats/%s/%d", infoHash, fileIndex)
+}
+
 func SelectSubtitle(videoID int64, subtitleName string) string {
 	return fmt.Sprintf("/videos/%d/subtitles/%s", videoID, url.QueryEscape(subtitleName))
 }
