@@ -75,3 +75,8 @@ func (h *Handler) Stream(w http.ResponseWriter, r *http.Request, infoHash torren
 
 	http.ServeContent(w, r, file.DisplayPath(), time.Time{}, reader)
 }
+
+func (h *Handler) Stats(w http.ResponseWriter, r *http.Request, infoHash torrent.InfoHash, fileIndex int) {
+	stats := h.torManager.Stats(infoHash, fileIndex)
+	templ.Handler(ui.VideoStatistics(stats)).ServeHTTP(w, r)
+}

@@ -1,5 +1,6 @@
 package ui
 
+import "fmt"
 import "github.com/phimtorr/phimtor/desktop/client/api"
 import "github.com/phimtorr/phimtor/desktop/torrent"
 import "github.com/phimtorr/phimtor/desktop/server/uri"
@@ -7,7 +8,7 @@ import "github.com/phimtorr/phimtor/desktop/i18n"
 
 templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.TorrentLink, selectedSubtitleName string) {
 	@layout(video.Title) {
-		<section class="w-full">
+		<section class="w-full space-y-2">
 			<video
 				class="w-full"
 				controls
@@ -23,6 +24,12 @@ templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.Torrent
 				<div id="subtitleTrack"></div>
 				Your browser does not support the video tag.
 			</video>
+			<section 
+				hx-get={uri.GetStats(infoHash, selectedLink.FileIndex)}
+				hx-trigger="every 2s"
+				hx-sync="this:abort"
+			>
+			</section>
 			<h1 class="my-2 text-2xl font-bold">{ video.Title }</h1>
 		</section>
 		<section class="w-full mt-4">
@@ -47,6 +54,33 @@ templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.Torrent
 			hx-swap="outerHTML"
 		></section>
 	}
+}
+
+templ VideoStatistics(stats torrent.Stats) {
+	<div class="text-sm font-thin">
+		<div class="flex flex-wrap justify-end items-center  space-x-2">
+			<p>Total Peers: { toString(stats.TotalPeers) }</p>
+			<p>Active Peers: { toString(stats.ActivePeers) }</p>
+			<p>Pending Peers: { toString(stats.PendingPeers) }</p>
+			<p>Connected Seeders: { toString(stats.ConnectedSeeders) }</p>
+			<p>Haft Open Peers: { toString(stats.HalfOpenPeers) }</p>
+		</div>
+		<div>
+			<div class="flex items-center justify-end">
+				<p>Downloaded: { percent(stats.BytesCompleted, stats.Length) }</p>
+			</div>
+			<div class="w-full bg-gray-700 rounded-full h-1 mb-4 ">
+				<div
+					class="bg-red-700 h-1 rounded-full"
+					{ templ.Attributes{"style": fmt.Sprintf("width: %s", percent(stats.BytesCompleted, stats.Length))}... }
+				></div>
+			</div>
+		</div>
+	</div>
+}
+
+func percent(value, total int64) string {
+	return fmt.Sprintf("%.1f%%", float64(value)/float64(total)*100)
 }
 
 func filterSubtitles(subtitles []api.Subtitle, lang string) []api.Subtitle {

@@ -115,6 +115,24 @@ func (h *Handler) Register(r chi.Router) {
 		return
 	})
 
+	r.Get("/stats/{infoHash}/{fileIndex}", func(w http.ResponseWriter, r *http.Request) {
+		infoHashStr := chi.URLParam(r, "infoHash")
+		infoHash, err := torrent.InfoHashFromString(infoHashStr)
+		if err != nil {
+			handleError(w, r, "Parse info hash", err, http.StatusBadRequest)
+			return
+		}
+		fileIndexStr := chi.URLParam(r, "fileIndex")
+		fileIndex, err := strconv.Atoi(fileIndexStr)
+		if err != nil {
+			handleError(w, r, "Parse file index", err, http.StatusBadRequest)
+			return
+		}
+
+		h.Stats(w, r, infoHash, fileIndex)
+		return
+	})
+
 	// subtitles
 	// select subtitle
 	r.Post("/videos/{videoID}/subtitles/{subtitleName}", func(w http.ResponseWriter, r *http.Request) {

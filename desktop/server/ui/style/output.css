@@ -705,6 +705,10 @@ video {
   display: none;
 }
 
+.h-1 {
+  height: 0.25rem;
+}
+
 .h-4 {
   height: 1rem;
 }
@@ -963,6 +967,11 @@ video {
 
 .border-transparent {
   border-color: transparent;
+}
+
+.bg-gray-700 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(55 65 81 / var(--tw-bg-opacity));
 }
 
 .bg-red-600 {
