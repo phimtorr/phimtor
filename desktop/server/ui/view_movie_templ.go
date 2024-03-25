@@ -33,7 +33,7 @@ func Movie(movie api.Movie) templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"flex bg-stone-700 p-4 rounded-sm h-full\"><div class=\"w-full\"><img class=\"w-full object-cover\" src=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"flex bg-stone-700 p-4 rounded-sm h-full\"><div class=\"\"><img class=\"object-cover max-h-full\" src=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -59,7 +59,7 @@ func Movie(movie api.Movie) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></div><div class=\"p-4 flex-grow space-y-4\"><div class=\"space-y-4 mb-4\"><h1 class=\"mb-2 text-2xl font-bold\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></div><div class=\"p-4 flex-1 space-y-4\"><div class=\"space-y-4 mb-4\"><h1 class=\"mb-2 text-2xl font-bold\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

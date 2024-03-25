@@ -7,14 +7,14 @@ import "github.com/phimtorr/phimtor/desktop/i18n"
 templ Movie(movie api.Movie) {
 	@layout(movie.Title) {
 		<section class="flex bg-stone-700 p-4 rounded-sm h-full">
-			<div class="w-full">
+			<div class="">
 				<img
-					class="w-full object-cover"
+					class="object-cover max-h-full"
 					src={ movie.PosterLink }
 					alt={ movie.Title }
 				/>
 			</div>
-			<div class="p-4 flex-grow space-y-4">
+			<div class="p-4 flex-1 space-y-4">
 				<div class="space-y-4 mb-4">
 					<h1 class="mb-2 text-2xl font-bold">{ movie.Title }</h1>
 					<h2 class="mb-2 italic">{ movie.OriginalTitle }</h2>
