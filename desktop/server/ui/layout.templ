@@ -30,8 +30,8 @@ templ layout(title string) {
 				}
 			</style>
 		</head>
-		<body class="box-border flex flex-col min-h-screen w-full bg-stone-900 text-slate-100" hx-ext="response-targets">
-			<nav class="flex items-center justify-between bg-stone-800 px-4 py-4">
+		<body class="box-border flex flex-col min-h-screen w-full bg-stone-900 h-screen text-slate-100" hx-ext="response-targets">
+			<nav class="flex items-center justify-between bg-stone-800 px-4 py-4 border-b border-gray-600">
 				<div class="flex flex-shrink-0 items-center">
 					<span class="text-xl font-bold">PhimTor</span>
 				</div>
@@ -49,33 +49,23 @@ templ layout(title string) {
 					</form>
 				</div>
 				<div class="flex">
-					@menu()
+					@topRightMenu()
 				</div>
 			</nav>
-			<main class="box-border flex-grow bg-stone-900 p-4">
-				{ children... }
-			</main>
+			<div class="flex flex-1 overflow-hidden">
+				<aside class="px-4 py-6 bg-stone-800 flex flex-col items-center justify-between overflow-y-auto">
+					@sideBarMenu()
+				</aside>
+				<main class="box-border flex-1 bg-stone-900 p-4 overflow-y-auto">
+					{ children... }
+				</main>
+			</div>
 		</body>
 	</html>
 }
 
-var menuItems = []struct {
-	Link      string
-	MessageID string
-}{
-	{uri.Home(), "Nav.Home"},
-	{uri.GetSettings(), "Nav.Settings"},
-}
-
-func isCurrentPage(ctx context.Context, link string) bool {
-	return chi.RouteContext(ctx).RoutePattern() == link
-}
-
-templ menu() {
+templ topRightMenu() {
 	<ul class="flex">
-		for _, item := range menuItems {
-			@navLink(item.Link, item.MessageID)
-		}
 		if auth.IsSignedIn(ctx) {
 			<li class="mr-6 p-2">
 				<span>{ auth.CurrentUser(ctx).DisplayName }</span>
@@ -98,4 +88,27 @@ templ navLink(link string, messageID string) {
 	>
 		<a class="hover:text-red-700" href={ templ.SafeURL(link) }>{ i18n.T(ctx, messageID) }</a>
 	</li>
+}
+
+templ sideBarMenu() {
+	<ul>
+		@sideBarLink(uri.Home(), "fa-film")
+	</ul>
+	<ul>
+		@sideBarLink(uri.GetSettings(), "fa-gear")
+	</ul>
+}
+
+templ sideBarLink(link string, iconName string) {
+	<li
+		if isCurrentPage(ctx, link) {
+			class="text-red-700"
+		}
+	>
+		<a class="hover:text-red-700" href={ templ.SafeURL(link) }><i class={ "fa-solid", iconName }></i></a>
+	</li>
+}
+
+func isCurrentPage(ctx context.Context, link string) bool {
+	return chi.RouteContext(ctx).RoutePattern() == link
 }

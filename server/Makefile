@@ -6,3 +6,7 @@ migrate-up:
 .PHONY: sqlboiler
 sqlboiler:
 	sqlboiler mysql -c sqlboiler.toml
+
+.PHONY: dependencies
+dependencies:
+	export $(cat .env | xargs) && docker compose up -d
