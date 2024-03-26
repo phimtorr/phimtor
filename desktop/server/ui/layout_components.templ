@@ -24,6 +24,15 @@ templ primaryButton(label string, attrs templ.Attributes) {
 	</button>
 }
 
+templ secondaryButton(attrs templ.Attributes, contents templ.Component) {
+	<button
+		class="rounded-sm px-4 py-2 bg-stone-500 hover:bg-red-700 shadow-md shadow-stone-900 space-x-2 inline-flex"
+		{ attrs... }
+	>
+		@contents
+	</button>
+}
+
 templ primaryButtonLink(href string, contents templ.Component) {
 	<a
 		class="rounded-sm bg-red-600 px-4 py-2 text-slate-100 shadow-md shadow-stone-900 hover:bg-red-700 space-x-2 inline-flex"
@@ -37,7 +46,7 @@ templ primaryButtonLink(href string, contents templ.Component) {
 
 templ secondaryButtonLink(href string, contents templ.Component) {
 	<a
-		class="rounded-sm py-4 px-6 bg-stone-500 hover:bg-red-700 shadow-md shadow-stone-900 space-x-2 inline-flex"
+		class="rounded-sm px-4 py-2 bg-stone-500 hover:bg-red-700 shadow-md shadow-stone-900 space-x-2 inline-flex"
 		href={ templ.SafeURL(href) }
 		hx-boost="true"
 	>
@@ -52,6 +61,10 @@ templ paragraph(contents string, errs ...error) {
 
 templ span(contents string, errs ...error) {
 	<span>{ contents }</span>
+}
+
+templ i(className string) {
+	<i class={ className }></i>
 }
 
 templ many(components ...templ.Component) {

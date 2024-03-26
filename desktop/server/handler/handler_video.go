@@ -4,6 +4,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/phimtorr/phimtor/desktop/server/uri"
+	"github.com/phimtorr/phimtor/desktop/vlc"
+
 	"github.com/a-h/templ"
 	"github.com/gabriel-vasile/mimetype"
 
@@ -74,6 +77,22 @@ func (h *Handler) Stream(w http.ResponseWriter, r *http.Request, infoHash torren
 	}
 
 	http.ServeContent(w, r, file.DisplayPath(), time.Time{}, reader)
+}
+
+func (h *Handler) OpenInVLC(w http.ResponseWriter, r *http.Request, infoHash torrent.InfoHash, fileIndex int) {
+	protocol := "http"
+	if r.TLS != nil {
+		protocol = "https"
+	}
+
+	streamURL := protocol + "://" + r.Host + uri.GetStream(infoHash, fileIndex)
+
+	if err := vlc.OpenURL(streamURL); err != nil {
+		handleError(w, r, "Failed to open in VLC", err, http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func (h *Handler) Stats(w http.ResponseWriter, r *http.Request, infoHash torrent.InfoHash, fileIndex int) {
