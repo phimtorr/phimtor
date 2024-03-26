@@ -96,4 +96,8 @@ Subtitle:
 Pagination:
   Info: "Trang {{ .Page }} của {{ .TotalPages }} (Tổng số: {{ .TotalResults }})"
 
+Video:
+  Action:
+    OpenInVLC: "Mở bằng VLC"
+
 

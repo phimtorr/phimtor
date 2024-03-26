@@ -97,7 +97,9 @@ Subtitle:
 Pagination:
   Info: "Page {{ .Page }} of {{ .TotalPages }} (Total: {{ .TotalResults }})"
 
-
+Video:
+  Action:
+    OpenInVLC: "Open in VLC"
 
 
 
