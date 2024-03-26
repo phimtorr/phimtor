@@ -10,6 +10,7 @@ templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.Torrent
 	@layout(video.Title) {
 		<section class="w-full space-y-2">
 			<video
+				id="video"
 				class="w-full"
 				controls
 				autoplay
@@ -34,7 +35,8 @@ templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.Torrent
 				@secondaryButton(templ.Attributes{
 					"hx-post": uri.OpenInVLC(infoHash, selectedLink.FileIndex),
 					"hx-swap": "none",
-					"hx-sync": "drop",
+					"hx-sync": "this:drop",
+					"onclick":  "document.getElementById('video').pause()", // Pause the video before opening in VLC
 				},
 					many(
 						span(i18n.T(ctx, "Video.Action.OpenInVLC")),
