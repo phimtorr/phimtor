@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strings"
 
+	commonErrors "github.com/phimtorr/phimtor/common/errors"
+
 	"github.com/friendsofgo/errors"
 
 	"github.com/phimtorr/phimtor/desktop/build"
@@ -30,7 +32,6 @@ func tokenRequestEditor(authService AuthService) api.RequestEditorFn {
 		}
 		return nil
 	}
-
 }
 
 func NewClient(authService AuthService) *Client {
@@ -52,11 +53,8 @@ func (c *Client) ListShows(ctx context.Context, page, pageSize int, showType api
 		PageSize: &pageSize,
 		Type:     &showType,
 	})
-	if err != nil {
-		return nil, api.Pagination{}, errors.Wrap(err, "list shows")
-	}
-	if resp.StatusCode() != http.StatusOK {
-		return nil, api.Pagination{}, errors.Errorf("list shows with status code %d", resp.StatusCode())
+	if isNotResponseOk(resp.StatusCode(), err) {
+		return nil, api.Pagination{}, handleError(resp.JSON400, resp.JSON500, err)
 	}
 
 	return resp.JSON200.Shows, resp.JSON200.Pagination, nil
@@ -67,11 +65,8 @@ func (c *Client) SearchShows(ctx context.Context, query string, page int) ([]api
 		Query: query,
 		Page:  &page,
 	})
-	if err != nil {
-		return nil, api.Pagination{}, errors.Wrap(err, "search shows")
-	}
-	if resp.StatusCode() != http.StatusOK {
-		return nil, api.Pagination{}, errors.Errorf("search shows with status code %d", resp.StatusCode())
+	if isNotResponseOk(resp.StatusCode(), err) {
+		return nil, api.Pagination{}, handleError(resp.JSON400, resp.JSON500, err)
 	}
 
 	return resp.JSON200.Shows, resp.JSON200.Pagination, nil
@@ -79,12 +74,23 @@ func (c *Client) SearchShows(ctx context.Context, query string, page int) ([]api
 
 func (c *Client) GetVideo(ctx context.Context, id int64) (api.Video, error) {
 	resp, err := c.GetVideoWithResponse(ctx, id)
-	if err != nil {
-		return api.Video{}, errors.Wrap(err, "get video")
-	}
-	if resp.StatusCode() != http.StatusOK {
-		return api.Video{}, errors.Errorf("get video with status code %d", resp.StatusCode())
+	if isNotResponseOk(resp.StatusCode(), err) {
+		return api.Video{}, handleError(resp.JSON400, resp.JSON500, err)
 	}
 
 	return resp.JSON200.Video, nil
+}
+
+func isNotResponseOk(statusCode int, err error) bool {
+	return statusCode < 200 || statusCode >= 300 || err != nil
+}
+
+func handleError(json400 *api.BadRequest, json500 *api.InternalError, err error) error {
+	if json400 != nil {
+		return commonErrors.NewIncorrectInputError(json400.Code, json400.Message)
+	}
+	if json500 != nil {
+		return commonErrors.NewUnknownError(json500.Code, json500.Message)
+	}
+	return err
 }

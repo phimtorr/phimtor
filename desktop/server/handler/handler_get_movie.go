@@ -1,25 +1,23 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
-	"github.com/a-h/templ"
-
+	"github.com/friendsofgo/errors"
+	"github.com/go-chi/chi/v5"
 	"github.com/phimtorr/phimtor/desktop/server/ui"
 )
 
-func (h *Handler) GetMovie(w http.ResponseWriter, r *http.Request, id int64) {
+func (h *Handler) GetMovie(w http.ResponseWriter, r *http.Request) error {
+	id, err := parseID(chi.URLParam(r, "id"))
+	if err != nil {
+		return err
+	}
+
 	resp, err := h.apiClient.GetMovieWithResponse(r.Context(), id)
 	if err != nil {
-		handleError(w, r, "Get movie", err, http.StatusInternalServerError)
-		return
+		return errors.Wrap(err, "get movie")
 	}
 
-	if resp.StatusCode() != http.StatusOK {
-		handleError(w, r, "Get movie", fmt.Errorf("http error=%d", resp.StatusCode()), resp.StatusCode())
-		return
-	}
-
-	templ.Handler(ui.Movie(resp.JSON200.Movie)).ServeHTTP(w, r)
+	return ui.Movie(resp.JSON200.Movie).Render(r.Context(), w)
 }

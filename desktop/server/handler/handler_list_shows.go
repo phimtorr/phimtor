@@ -4,63 +4,83 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/a-h/templ"
+	"github.com/friendsofgo/errors"
+	commonErrors "github.com/phimtorr/phimtor/common/errors"
+
 	"github.com/phimtorr/phimtor/desktop/client/api"
 	"github.com/phimtorr/phimtor/desktop/server/ui"
 )
 
-func (h *Handler) ListShows(w http.ResponseWriter, r *http.Request) {
-	qPage := r.URL.Query().Get("page")
-	qPageSize := r.URL.Query().Get("pageSize")
+func (h *Handler) ListShows(w http.ResponseWriter, r *http.Request) error {
 	qType := r.URL.Query().Get("type")
 
-	page, err := strconv.Atoi(qPage)
+	page, err := parsePage(r)
 	if err != nil {
-		handleError(w, r, "Parse page", err, http.StatusBadRequest)
-		return
+		return err
 	}
-	pageSize, err := strconv.Atoi(qPageSize)
+
+	pageSize, err := parsePageSize(r)
 	if err != nil {
-		handleError(w, r, "Parse pageSize", err, http.StatusBadRequest)
-		return
+		return err
 	}
 
 	showType := api.ShowType(qType)
 
 	shows, pagination, err := h.apiClient.ListShows(r.Context(), page, pageSize, showType)
 	if err != nil {
-		handleError(w, r, "List shows", err, http.StatusInternalServerError)
-		return
+		return errors.Wrap(err, "list shows")
 	}
 
-	templ.Handler(ui.Shows(shows, pagination, showType)).ServeHTTP(w, r)
+	return ui.Shows(shows, pagination, showType).Render(r.Context(), w)
 }
 
-func (h *Handler) SearchShows(w http.ResponseWriter, r *http.Request) {
-	qPage := r.URL.Query().Get("page")
-	query := r.URL.Query().Get("q")
-
-	page := 1
-
-	if qPage != "" {
-		_page, err := strconv.Atoi(qPage)
-		if err != nil {
-			handleError(w, r, "Parse page", err, http.StatusBadRequest)
-			return
-		}
-		page = _page
+func (h *Handler) SearchShows(w http.ResponseWriter, r *http.Request) error {
+	page, err := parsePage(r)
+	if err != nil {
+		return err
 	}
-	
+
+	query := r.URL.Query().Get("q")
 	if query == "" {
-		handleError(w, r, "Empty query", nil, http.StatusBadRequest)
-		return
+		return commonErrors.NewIncorrectInputError("empty-query", "empty query")
 	}
 
 	shows, pagination, err := h.apiClient.SearchShows(r.Context(), query, page)
 	if err != nil {
-		handleError(w, r, "Search shows", err, http.StatusInternalServerError)
-		return
+		return errors.Wrap(err, "search shows")
 	}
 
-	templ.Handler(ui.SearchPage(query, shows, pagination)).ServeHTTP(w, r)
+	return ui.SearchPage(query, shows, pagination).Render(r.Context(), w)
+}
+
+var (
+	ErrInvalidPage = commonErrors.NewIncorrectInputError("invalid-page", "invalid page")
+)
+
+func parsePage(r *http.Request) (int, error) {
+	qPage := r.URL.Query().Get("page")
+	if qPage == "" {
+		return 1, nil
+	}
+	page, err := strconv.Atoi(qPage)
+	if err != nil {
+		return 0, errors.Wrapf(ErrInvalidPage, "parse page=%s, err=%v", qPage, err)
+	}
+	return page, nil
+}
+
+var (
+	ErrInvalidPageSize = commonErrors.NewIncorrectInputError("invalid-page-size", "invalid page size")
+)
+
+func parsePageSize(r *http.Request) (int, error) {
+	qPageSize := r.URL.Query().Get("pageSize")
+	if qPageSize == "" {
+		return 1, nil
+	}
+	pageSize, err := strconv.Atoi(qPageSize)
+	if err != nil {
+		return 0, errors.Wrapf(ErrInvalidPageSize, "parse page_size=%s, err=%v", qPageSize, err)
+	}
+	return pageSize, nil
 }

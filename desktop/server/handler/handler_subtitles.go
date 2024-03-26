@@ -2,12 +2,17 @@ package handler
 
 import (
 	"encoding/base64"
+	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strconv"
 	"time"
 
-	"github.com/a-h/templ"
+	"github.com/friendsofgo/errors"
+	"github.com/go-chi/chi/v5"
+	commonErrors "github.com/phimtorr/phimtor/common/errors"
+
 	"github.com/pkg/browser"
 	"github.com/rs/zerolog/log"
 
@@ -16,47 +21,44 @@ import (
 	"github.com/phimtorr/phimtor/desktop/subtitle"
 )
 
-func (h *Handler) SelectSubtitle(w http.ResponseWriter, r *http.Request, videoID int64, subtitleName string) {
-	video, err := h.apiClient.GetVideo(r.Context(), videoID)
+func (h *Handler) SelectSubtitle(w http.ResponseWriter, r *http.Request) error {
+	videoID, err := parseVideoID(chi.URLParam(r, "videoID"))
 	if err != nil {
-		handleError(w, r, "Get video", err, http.StatusInternalServerError)
-		return
+		return err
 	}
 
-	if subtitleName == "" {
-		templ.Handler(
-			ui.SubtitleSectionWithoutSubtitle(videoID, video.Subtitles),
-		).ServeHTTP(w, r)
-		return
+	subtitleName, err := parseSubtitleName(chi.URLParam(r, "subtitleName"))
+	if err != nil {
+		return err
+	}
+
+	video, err := h.apiClient.GetVideo(r.Context(), videoID)
+	if err != nil {
+		return errors.Wrap(err, "get video")
 	}
 
 	selectedSubtitle, found := findSubtitle(video.Subtitles, subtitleName)
 	if !found {
-		handleError(w, r, "Subtitle not found", err, http.StatusBadRequest)
-		return
+		return commonErrors.NewIncorrectInputError("subtitle-not-found", fmt.Sprintf("subtitle not found: %s", subtitleName))
 	}
 
 	fileName, originalContent, err := subtitle.GetFileFromLink(selectedSubtitle.Link)
 	if err != nil {
-		handleError(w, r, "Get subtitle file", err, http.StatusInternalServerError)
-		return
+		return errors.Wrap(err, "get file from link")
 	}
 
 	normalizedContent, err := subtitle.Normalize(fileName, originalContent, 0)
 	if err != nil {
-		handleError(w, r, "Normalize subtitle", err, http.StatusInternalServerError)
-		return
+		return errors.Wrap(err, "normalize subtitle")
 	}
 
-	templ.Handler(
-		ui.SubtitleSection(videoID, video.Subtitles, ui.SubtitleState{
-			Name:                   selectedSubtitle.Name,
-			FileName:               fileName,
-			OriginalContent:        originalContent,
-			Content:                normalizedContent,
-			AdjustmentMilliseconds: 0,
-		}),
-	).ServeHTTP(w, r)
+	return ui.SubtitleSection(videoID, video.Subtitles, ui.SubtitleState{
+		Name:                   selectedSubtitle.Name,
+		FileName:               fileName,
+		OriginalContent:        originalContent,
+		Content:                normalizedContent,
+		AdjustmentMilliseconds: 0,
+	}).Render(r.Context(), w)
 }
 
 func findSubtitle(subtitles []api.Subtitle, subtitleName string) (api.Subtitle, bool) {
@@ -68,37 +70,61 @@ func findSubtitle(subtitles []api.Subtitle, subtitleName string) (api.Subtitle, 
 	return api.Subtitle{}, false
 }
 
-func (h *Handler) DownloadSubtitle(w http.ResponseWriter, r *http.Request, videoID int64, subtitleName string) {
+func (h *Handler) UnselectSubtitle(w http.ResponseWriter, r *http.Request) error {
+	videoID, err := parseVideoID(chi.URLParam(r, "videoID"))
+	if err != nil {
+		return err
+	}
+
 	video, err := h.apiClient.GetVideo(r.Context(), videoID)
 	if err != nil {
-		handleError(w, r, "Get video", err, http.StatusInternalServerError)
-		return
+		return errors.Wrap(err, "get video")
+	}
+	return ui.SubtitleSectionWithoutSubtitle(videoID, video.Subtitles).Render(r.Context(), w)
+}
+
+func (h *Handler) DownloadSubtitle(w http.ResponseWriter, r *http.Request) error {
+	videoID, err := parseVideoID(chi.URLParam(r, "videoID"))
+	if err != nil {
+		return err
+	}
+
+	subtitleName, err := parseSubtitleName(chi.URLParam(r, "subtitleName"))
+	if err != nil {
+		return err
+	}
+
+	video, err := h.apiClient.GetVideo(r.Context(), videoID)
+	if err != nil {
+		return errors.Wrap(err, "get video")
 	}
 
 	selectedSubtitle, found := findSubtitle(video.Subtitles, subtitleName)
 	if !found {
-		handleError(w, r, "Subtitle not found", err, http.StatusBadRequest)
-		return
+		return commonErrors.NewIncorrectInputError("subtitle-not-found", fmt.Sprintf("subtitle not found: %s", subtitleName))
 	}
 
 	if err := browser.OpenURL(selectedSubtitle.Link); err != nil {
-		handleError(w, r, "Open URL", err, http.StatusInternalServerError)
-		return
+		return errors.Wrap(err, "open url")
 	}
 
 	w.WriteHeader(http.StatusNoContent)
+	return nil
 }
 
-func (h *Handler) UploadSubtitle(w http.ResponseWriter, r *http.Request, videoID int64) {
+func (h *Handler) UploadSubtitle(w http.ResponseWriter, r *http.Request) error {
+	videoID, err := parseVideoID(chi.URLParam(r, "videoID"))
+	if err != nil {
+		return err
+	}
+
 	video, err := h.apiClient.GetVideo(r.Context(), videoID)
 	if err != nil {
-		handleError(w, r, "Get video", err, http.StatusInternalServerError)
-		return
+		return errors.Wrap(err, "get video")
 	}
 	file, header, err := r.FormFile("fileInput")
 	if err != nil {
-		handleError(w, r, "Get subtitle file", err, http.StatusBadRequest)
-		return
+		return errors.Wrap(err, "get form file")
 	}
 	defer func() {
 		if err := file.Close(); err != nil {
@@ -109,61 +135,80 @@ func (h *Handler) UploadSubtitle(w http.ResponseWriter, r *http.Request, videoID
 
 	originalContent, err := io.ReadAll(file)
 	if err != nil {
-		handleError(w, r, "Read file", err, http.StatusBadRequest)
-		return
+		return errors.Wrap(err, "read all")
 	}
 
 	content, err := subtitle.Normalize(fileName, originalContent, 0)
 	if err != nil {
-		handleError(w, r, "Normalize subtitle", err, http.StatusBadRequest)
-		return
+		return errors.Wrap(err, "normalize subtitle")
 	}
 
-	templ.Handler(
-		ui.SubtitleSection(videoID, video.Subtitles, ui.SubtitleState{
-			Name:                   fileName,
-			FileName:               fileName,
-			OriginalContent:        originalContent,
-			Content:                content,
-			AdjustmentMilliseconds: 0,
-		}),
-	).ServeHTTP(w, r)
+	return ui.SubtitleSection(videoID, video.Subtitles, ui.SubtitleState{
+		Name:                   fileName,
+		FileName:               fileName,
+		OriginalContent:        originalContent,
+		Content:                content,
+		AdjustmentMilliseconds: 0,
+	}).Render(r.Context(), w)
 }
 
-func (h *Handler) AdjustSubtitle(w http.ResponseWriter, r *http.Request, videoID int64) {
+func (h *Handler) AdjustSubtitle(w http.ResponseWriter, r *http.Request) error {
+	videoID, err := parseVideoID(chi.URLParam(r, "videoID"))
+	if err != nil {
+		return err
+	}
+
 	video, err := h.apiClient.GetVideo(r.Context(), videoID)
 	if err != nil {
-		handleError(w, r, "Get video", err, http.StatusInternalServerError)
-		return
+		return errors.Wrap(err, "get video")
 	}
 
 	adjustMilliSeconds, err := strconv.ParseInt(r.URL.Query().Get("ms"), 10, 64)
 	if err != nil {
-		handleError(w, r, "Parse milliseconds", err, http.StatusBadRequest)
-		return
+		return commonErrors.NewIncorrectInputError("invalid-ms", fmt.Sprintf("invalid ms=%s, err=%v", r.URL.Query().Get("ms"), err))
 	}
 
 	name := r.FormValue("name")
 	fileName := r.FormValue("fileName")
 	originalContent, err := base64.StdEncoding.DecodeString(r.FormValue("originalContent"))
 	if err != nil {
-		handleError(w, r, "Decode original content", err, http.StatusBadRequest)
-		return
+		return errors.Wrap(err, "decode original content")
 	}
 
 	content, err := subtitle.Normalize(fileName, originalContent, time.Duration(adjustMilliSeconds)*time.Millisecond)
 	if err != nil {
-		handleError(w, r, "Normalize subtitle", err, http.StatusBadRequest)
-		return
+		return errors.Wrap(err, "normalize subtitle")
 	}
 
-	templ.Handler(
-		ui.SubtitleSection(videoID, video.Subtitles, ui.SubtitleState{
-			Name:                   name,
-			FileName:               fileName,
-			OriginalContent:        originalContent,
-			Content:                content,
-			AdjustmentMilliseconds: int(adjustMilliSeconds),
-		}),
-	).ServeHTTP(w, r)
+	return ui.SubtitleSection(videoID, video.Subtitles, ui.SubtitleState{
+		Name:                   name,
+		FileName:               fileName,
+		OriginalContent:        originalContent,
+		Content:                content,
+		AdjustmentMilliseconds: int(adjustMilliSeconds),
+	}).Render(r.Context(), w)
+}
+
+var (
+	ErrInvalidVideoID = commonErrors.NewIncorrectInputError("invalid-video-id", "invalid video id")
+)
+
+func parseVideoID(videoIDRaw string) (int64, error) {
+	videoID, err := strconv.ParseInt(videoIDRaw, 10, 64)
+	if err != nil {
+		return 0, errors.Wrapf(ErrInvalidVideoID, "parse videoID=%s, err=%v", videoIDRaw, err)
+	}
+	return videoID, nil
+}
+
+var (
+	ErrInvalidSubtitleName = commonErrors.NewIncorrectInputError("invalid-subtitle-name", "invalid subtitle name")
+)
+
+func parseSubtitleName(subtitleNameRaw string) (string, error) {
+	subtitleName, err := url.QueryUnescape(subtitleNameRaw)
+	if err != nil {
+		return "", errors.Wrapf(ErrInvalidSubtitleName, "parse subtitle_name=%s, err=%v", subtitleName, err)
+	}
+	return subtitleName, nil
 }

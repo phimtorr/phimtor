@@ -1,11 +1,11 @@
 package handler
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 
-	"github.com/a-h/templ"
+	"github.com/friendsofgo/errors"
+
 	"github.com/ncruces/zenity"
 
 	"github.com/phimtorr/phimtor/desktop/server/ui"
@@ -13,15 +13,14 @@ import (
 	"github.com/phimtorr/phimtor/desktop/setting"
 )
 
-func (h *Handler) GetSettings(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetSettings(w http.ResponseWriter, r *http.Request) error {
 	settings := h.settingsStorage.GetSettings()
-	templ.Handler(ui.Settings(settings)).ServeHTTP(w, r)
+	return ui.Settings(settings).Render(r.Context(), w)
 }
 
-func (h *Handler) UpdateSetting(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) UpdateSetting(w http.ResponseWriter, r *http.Request) error {
 	if err := r.ParseForm(); err != nil {
-		handleError(w, r, "Parse form", err, http.StatusBadRequest)
-		return
+		return errors.Wrap(err, "parse form")
 	}
 
 	err := h.settingsStorage.UpdateSettings(func(s setting.Settings) (setting.Settings, error) {
@@ -36,14 +35,14 @@ func (h *Handler) UpdateSetting(w http.ResponseWriter, r *http.Request) {
 		return s, nil
 	})
 	if err != nil {
-		handleError(w, r, "Update setting", err, http.StatusInternalServerError)
-		return
+		return errors.Wrap(err, "update setting")
 	}
 
 	redirect(w, r, uri.GetSettings())
+	return nil
 }
 
-func (h *Handler) ChangeDataDir(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) ChangeDataDir(w http.ResponseWriter, r *http.Request) error {
 	err := h.settingsStorage.UpdateSettings(func(s setting.Settings) (setting.Settings, error) {
 		newDataDir, err := zenity.SelectFile(
 			zenity.Directory(),
@@ -62,12 +61,12 @@ func (h *Handler) ChangeDataDir(w http.ResponseWriter, r *http.Request) {
 	})
 	if errors.Is(err, zenity.ErrCanceled) {
 		redirect(w, r, uri.GetSettings())
-		return
+		return nil
 	}
 	if err != nil {
-		handleError(w, r, "Update setting", err, http.StatusInternalServerError)
-		return
+		return errors.Wrap(err, "change data dir")
 	}
 
 	redirect(w, r, uri.GetSettings())
+	return nil
 }

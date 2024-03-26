@@ -4,6 +4,8 @@ import (
 	"context"
 	"math"
 
+	commonErrors "github.com/phimtorr/phimtor/common/errors"
+
 	"github.com/friendsofgo/errors"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 
@@ -59,7 +61,7 @@ func (r Repository) SearchShow(ctx context.Context, params ports.SearchShowsPara
 	pageSize := pageSizeDefault
 
 	if query == "" {
-		return nil, ports.Pagination{}, errors.New("query is empty")
+		return nil, ports.Pagination{}, commonErrors.NewIncorrectInputError("empty-query", "query is empty")
 	}
 
 	var queryMods []qm.QueryMod

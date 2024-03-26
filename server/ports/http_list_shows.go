@@ -9,7 +9,7 @@ import (
 func (h HttpServer) ListShows(w http.ResponseWriter, r *http.Request, params ListShowsParams) {
 	shows, pagination, err := h.repo.ListShows(r.Context(), params)
 	if err != nil {
-		handleError(w, r, "List shows", err, http.StatusInternalServerError)
+		respondError(w, r, err)
 		return
 	}
 
@@ -22,7 +22,7 @@ func (h HttpServer) ListShows(w http.ResponseWriter, r *http.Request, params Lis
 func (h HttpServer) SearchShows(w http.ResponseWriter, r *http.Request, params SearchShowsParams) {
 	shows, pagination, err := h.repo.SearchShow(r.Context(), params)
 	if err != nil {
-		handleError(w, r, "Search shows", err, http.StatusInternalServerError)
+		respondError(w, r, err)
 		return
 	}
 

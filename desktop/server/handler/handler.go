@@ -2,8 +2,9 @@ package handler
 
 import (
 	"net/http"
-	"net/url"
-	"strconv"
+
+	"github.com/friendsofgo/errors"
+	commonErrors "github.com/phimtorr/phimtor/common/errors"
 
 	"github.com/a-h/templ"
 	"github.com/go-chi/chi/v5"
@@ -50,182 +51,68 @@ func New(
 }
 
 func (h *Handler) Register(r chi.Router) {
-	r.Get("/", h.Home)
+	r.Get("/", errHandlerFunc(h.Home))
 
-	r.Get("/shows", h.ListShows)
-	r.Get("/shows/search", h.SearchShows)
+	r.Get("/shows", errHandlerFunc(h.ListShows))
+	r.Get("/shows/search", errHandlerFunc(h.SearchShows))
 
-	r.Get("/movies/{id}", func(w http.ResponseWriter, r *http.Request) {
-		idStr := chi.URLParam(r, "id")
-		id, err := strconv.ParseInt(idStr, 10, 64)
-		if err != nil {
-			handleError(w, r, "Parse movie id", err, http.StatusBadRequest)
-			return
-		}
+	r.Get("/movies/{id}", errHandlerFunc(h.GetMovie))
+	r.Get("/series/{id}", errHandlerFunc(h.GetSeries))
 
-		h.GetMovie(w, r, id)
-		return
-	})
-
-	r.Get("/series/{id}", func(w http.ResponseWriter, r *http.Request) {
-		idStr := chi.URLParam(r, "id")
-		id, err := strconv.ParseInt(idStr, 10, 64)
-		if err != nil {
-			handleError(w, r, "Parse series id", err, http.StatusBadRequest)
-			return
-		}
-
-		h.GetSeries(w, r, id)
-		return
-	})
-
-	r.Get("/videos/{id}", func(w http.ResponseWriter, r *http.Request) {
-		idStr := chi.URLParam(r, "id")
-		id, err := strconv.ParseInt(idStr, 10, 64)
-		if err != nil {
-			handleError(w, r, "Parse video id", err, http.StatusBadRequest)
-			return
-		}
-
-		torrentName, err := url.QueryUnescape(r.URL.Query().Get("torrent"))
-		if err != nil {
-			handleError(w, r, "Unescape torrent name", err, http.StatusBadRequest)
-			return
-		}
-
-		h.GetVideo(w, r, id, torrentName)
-		return
-	})
-
-	r.Get("/stream/{infoHash}/{fileIndex}", func(w http.ResponseWriter, r *http.Request) {
-		infoHashStr := chi.URLParam(r, "infoHash")
-		infoHash, err := torrent.InfoHashFromString(infoHashStr)
-		if err != nil {
-			handleError(w, r, "Parse info hash", err, http.StatusBadRequest)
-			return
-		}
-		fileIndexStr := chi.URLParam(r, "fileIndex")
-		fileIndex, err := strconv.Atoi(fileIndexStr)
-		if err != nil {
-			handleError(w, r, "Parse file index", err, http.StatusBadRequest)
-			return
-		}
-
-		h.Stream(w, r, infoHash, fileIndex)
-		return
-	})
-
-	r.Post("/open-in-vlc/{infoHash}/{fileIndex}", func(w http.ResponseWriter, r *http.Request) {
-		infoHashStr := chi.URLParam(r, "infoHash")
-		infoHash, err := torrent.InfoHashFromString(infoHashStr)
-		if err != nil {
-			handleError(w, r, "Parse info hash", err, http.StatusBadRequest)
-			return
-		}
-		fileIndexStr := chi.URLParam(r, "fileIndex")
-		fileIndex, err := strconv.Atoi(fileIndexStr)
-		if err != nil {
-			handleError(w, r, "Parse file index", err, http.StatusBadRequest)
-			return
-		}
-
-		h.OpenInVLC(w, r, infoHash, fileIndex)
-		return
-	})
-
-	r.Get("/stats/{infoHash}/{fileIndex}", func(w http.ResponseWriter, r *http.Request) {
-		infoHashStr := chi.URLParam(r, "infoHash")
-		infoHash, err := torrent.InfoHashFromString(infoHashStr)
-		if err != nil {
-			handleError(w, r, "Parse info hash", err, http.StatusBadRequest)
-			return
-		}
-		fileIndexStr := chi.URLParam(r, "fileIndex")
-		fileIndex, err := strconv.Atoi(fileIndexStr)
-		if err != nil {
-			handleError(w, r, "Parse file index", err, http.StatusBadRequest)
-			return
-		}
-
-		h.Stats(w, r, infoHash, fileIndex)
-		return
-	})
+	r.Get("/videos/{id}", errHandlerFunc(h.GetVideo))
+	r.Get("/stream/{infoHash}/{fileIndex}", errHandlerFunc(h.Stream))
+	r.Post("/open-in-vlc/{infoHash}/{fileIndex}", errHandlerFunc(h.OpenInVLC))
+	r.Get("/stats/{infoHash}/{fileIndex}", errHandlerFunc(h.Stats))
 
 	// subtitles
 	// select subtitle
-	r.Post("/videos/{videoID}/subtitles/{subtitleName}", func(w http.ResponseWriter, r *http.Request) {
-		id, err := strconv.ParseInt(chi.URLParam(r, "videoID"), 10, 64)
-		if err != nil {
-			handleError(w, r, "Parse video id", err, http.StatusBadRequest)
-			return
-		}
-		subtitleName, err := url.QueryUnescape(chi.URLParam(r, "subtitleName"))
-		if err != nil {
-			handleError(w, r, "Unescape subtitle name", err, http.StatusBadRequest)
-			return
-		}
-
-		h.SelectSubtitle(w, r, id, subtitleName)
-	})
+	r.Post("/videos/{videoID}/subtitles/{subtitleName}", errHandlerFunc(h.SelectSubtitle))
 	// unset subtitle
-	r.Post("/videos/{videoID}/subtitles", func(w http.ResponseWriter, r *http.Request) {
-		id, err := strconv.ParseInt(chi.URLParam(r, "videoID"), 10, 64)
-		if err != nil {
-			handleError(w, r, "Parse video id", err, http.StatusBadRequest)
-			return
-		}
-
-		h.SelectSubtitle(w, r, id, "")
-	})
+	r.Post("/videos/{videoID}/subtitles", errHandlerFunc(h.UnselectSubtitle))
 	// upload file
-	r.Post("/videos/{videoID}/subtitles/upload", func(w http.ResponseWriter, r *http.Request) {
-		id, err := strconv.ParseInt(chi.URLParam(r, "videoID"), 10, 64)
-		if err != nil {
-			handleError(w, r, "Parse video id", err, http.StatusBadRequest)
-			return
-		}
-
-		h.UploadSubtitle(w, r, id)
-	})
-	r.Post("/videos/{videoID}/subtitles/adjust", func(w http.ResponseWriter, r *http.Request) {
-		id, err := strconv.ParseInt(chi.URLParam(r, "videoID"), 10, 64)
-		if err != nil {
-			handleError(w, r, "Parse video id", err, http.StatusBadRequest)
-			return
-		}
-
-		h.AdjustSubtitle(w, r, id)
-	})
-	r.Post("/videos/{videoID}/subtitles/{subtitleName}/download", func(w http.ResponseWriter, r *http.Request) {
-		id, err := strconv.ParseInt(chi.URLParam(r, "videoID"), 10, 64)
-		if err != nil {
-			handleError(w, r, "Parse video id", err, http.StatusBadRequest)
-			return
-		}
-		subtitleName, err := url.QueryUnescape(chi.URLParam(r, "subtitleName"))
-		if err != nil {
-			handleError(w, r, "Unescape subtitle name", err, http.StatusBadRequest)
-			return
-		}
-
-		h.DownloadSubtitle(w, r, id, subtitleName)
-	})
+	r.Post("/videos/{videoID}/subtitles/upload", errHandlerFunc(h.UploadSubtitle))
+	r.Post("/videos/{videoID}/subtitles/adjust", errHandlerFunc(h.AdjustSubtitle))
+	r.Post("/videos/{videoID}/subtitles/{subtitleName}/download", errHandlerFunc(h.DownloadSubtitle))
 	// settings
-	r.Get("/settings", h.GetSettings)
-	r.Post("/settings", h.UpdateSetting)
-	r.Post("/settings/change-data-dir", h.ChangeDataDir)
+	r.Get("/settings", errHandlerFunc(h.GetSettings))
+	r.Post("/settings", errHandlerFunc(h.UpdateSetting))
+	r.Post("/settings/change-data-dir", errHandlerFunc(h.ChangeDataDir))
 
 	// auth
 	r.Get("/sign-in", templ.Handler(ui.SignIn()).ServeHTTP)
-	r.Post("/sign-in", h.SignIn)
+	r.Post("/sign-in", errHandlerFunc(h.SignIn))
 
 	r.Get("/sign-up", templ.Handler(ui.SignUp()).ServeHTTP)
-	r.Post("/sign-up", h.SignUp)
+	r.Post("/sign-up", errHandlerFunc(h.SignUp))
 
 	r.HandleFunc("/sign-out", h.SignOut)
 }
 
-func handleError(w http.ResponseWriter, r *http.Request, msg string, err error, status int) {
+func errHandlerFunc(h func(w http.ResponseWriter, r *http.Request) error) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		err := h(w, r)
+		if err == nil {
+			return
+		}
+
+		var slugErr commonErrors.SlugError
+		if !errors.As(err, &slugErr) {
+			handleError(w, r, "Internal error", "internal-error", err, http.StatusInternalServerError)
+			return
+		}
+
+		switch slugErr.ErrorType() {
+		case commonErrors.ErrorTypeIncorrectInput:
+			handleError(w, r, "Incorrect input", slugErr.Slug(), err, http.StatusBadRequest)
+		case commonErrors.ErrorTypeAuthorization:
+			handleError(w, r, "Authorization error", slugErr.Slug(), err, http.StatusUnauthorized)
+		default:
+			handleError(w, r, "Internal error", slugErr.Slug(), err, http.StatusInternalServerError)
+		}
+	}
+}
+
+func handleError(w http.ResponseWriter, r *http.Request, msg string, slug string, err error, status int) {
 	log.Ctx(r.Context()).Error().Err(err).Msg(msg)
 	http.Error(w, msg+": "+err.Error(), status)
 }
