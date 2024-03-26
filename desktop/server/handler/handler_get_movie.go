@@ -3,23 +3,26 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
-	"github.com/a-h/templ"
+	"github.com/friendsofgo/errors"
+	"github.com/go-chi/chi/v5"
+	commonErrors "github.com/phimtorr/phimtor/common/errors"
 
 	"github.com/phimtorr/phimtor/desktop/server/ui"
 )
 
-func (h *Handler) GetMovie(w http.ResponseWriter, r *http.Request, id int64) {
+func (h *Handler) GetMovie(w http.ResponseWriter, r *http.Request) error {
+	idStr := chi.URLParam(r, "id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		return commonErrors.NewIncorrectInputError("invalid-id", fmt.Sprintf("invalid id=%s, err=%v", idStr, err))
+	}
+
 	resp, err := h.apiClient.GetMovieWithResponse(r.Context(), id)
 	if err != nil {
-		handleError(w, r, "Get movie", err, http.StatusInternalServerError)
-		return
+		return errors.Wrap(err, "get movie")
 	}
 
-	if resp.StatusCode() != http.StatusOK {
-		handleError(w, r, "Get movie", fmt.Errorf("http error=%d", resp.StatusCode()), resp.StatusCode())
-		return
-	}
-
-	templ.Handler(ui.Movie(resp.JSON200.Movie)).ServeHTTP(w, r)
+	return ui.Movie(resp.JSON200.Movie).Render(r.Context(), w)
 }

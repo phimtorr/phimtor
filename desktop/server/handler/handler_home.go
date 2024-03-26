@@ -2,15 +2,16 @@ package handler
 
 import (
 	"context"
-	"github.com/a-h/templ"
-	"golang.org/x/sync/errgroup"
 	"net/http"
+
+	"github.com/friendsofgo/errors"
+	"golang.org/x/sync/errgroup"
 
 	"github.com/phimtorr/phimtor/desktop/client/api"
 	"github.com/phimtorr/phimtor/desktop/server/ui"
 )
 
-func (h *Handler) Home(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Home(w http.ResponseWriter, r *http.Request) error {
 	ctx, cancel := context.WithCancel(r.Context())
 	defer cancel()
 
@@ -40,9 +41,8 @@ func (h *Handler) Home(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err := errGrp.Wait(); err != nil {
-		handleError(w, r, "Error fetch data", err, http.StatusInternalServerError)
-		return
+		return errors.Wrap(err, "fetch data")
 	}
 
-	templ.Handler(ui.Home(movies, series)).ServeHTTP(w, r)
+	return ui.Home(movies, series).Render(r.Context(), w)
 }

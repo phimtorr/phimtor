@@ -1,70 +1,64 @@
 package handler
 
 import (
-	"github.com/friendsofgo/errors"
-	"github.com/phimtorr/phimtor/desktop/server/uri"
 	"net/http"
+
+	"github.com/friendsofgo/errors"
+	commonErrors "github.com/phimtorr/phimtor/common/errors"
+	"github.com/phimtorr/phimtor/desktop/server/uri"
 )
 
-func (h *Handler) SignIn(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) SignIn(w http.ResponseWriter, r *http.Request) error {
 	if err := r.ParseForm(); err != nil {
-		handleError(w, r, "Parse form", err, http.StatusBadRequest)
-		return
+		return errors.Wrap(err, "parse form")
 	}
 
 	email := r.Form.Get("email")
 	password := r.Form.Get("password")
 
 	if err := h.authService.SignIn(r.Context(), email, password); err != nil {
-		handleError(w, r, "Sign in", err, http.StatusInternalServerError)
-		return
+		return errors.Wrap(err, "sign in")
 	}
 
 	redirect(w, r, uri.Home())
+	return nil
 }
 
-func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) error {
 	if err := r.ParseForm(); err != nil {
-		handleError(w, r, "Parse form", err, http.StatusBadRequest)
-		return
+		return errors.Wrap(err, "parse form")
 	}
 
 	email := r.Form.Get("email")
 	if email == "" {
-		handleError(w, r, "Email is required", errors.New("email is empty"), http.StatusBadRequest)
-		return
+		return commonErrors.NewIncorrectInputError("empty-email", "Email is required")
 	}
 
 	displayName := r.Form.Get("displayName")
 	if displayName == "" {
-		handleError(w, r, "Display name is required", errors.New("display name is empty"), http.StatusBadRequest)
-		return
-
+		return commonErrors.NewIncorrectInputError("empty-display-name", "Display name is required")
 	}
 
 	password := r.Form.Get("password")
 	if password == "" {
-		handleError(w, r, "Password is required", errors.New("password is empty"), http.StatusBadRequest)
-		return
+		return commonErrors.NewIncorrectInputError("empty-password", "Password is required")
 	}
 
 	confirmPassword := r.Form.Get("confirmPassword")
 	if confirmPassword == "" {
-		handleError(w, r, "Confirm password is required", errors.New("confirm password is empty"), http.StatusBadRequest)
-		return
+		return commonErrors.NewIncorrectInputError("empty-confirm-password", "Confirm password is required")
 	}
 
 	if password != confirmPassword {
-		handleError(w, r, "Passwords do not match", errors.New("passwords not match"), http.StatusBadRequest)
-		return
+		return commonErrors.NewIncorrectInputError("passwords-not-match", "Passwords do not match")
 	}
 
 	if err := h.authService.SignUp(r.Context(), email, password, displayName); err != nil {
-		handleError(w, r, "Sign up", err, http.StatusInternalServerError)
-		return
+		return errors.Wrap(err, "sign up")
 	}
 
 	redirect(w, r, uri.Home())
+	return nil
 }
 
 func (h *Handler) SignOut(w http.ResponseWriter, r *http.Request) {

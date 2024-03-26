@@ -53,7 +53,7 @@ func (c *Client) ListShows(ctx context.Context, page, pageSize int, showType api
 		PageSize: &pageSize,
 		Type:     &showType,
 	})
-	if isResponseOk(resp.StatusCode(), err) {
+	if isNotResponseOk(resp.StatusCode(), err) {
 		return nil, api.Pagination{}, handleError(resp.JSON400, resp.JSON500, err)
 	}
 
@@ -65,7 +65,7 @@ func (c *Client) SearchShows(ctx context.Context, query string, page int) ([]api
 		Query: query,
 		Page:  &page,
 	})
-	if isResponseOk(resp.StatusCode(), err) {
+	if isNotResponseOk(resp.StatusCode(), err) {
 		return nil, api.Pagination{}, handleError(resp.JSON400, resp.JSON500, err)
 	}
 
@@ -74,15 +74,15 @@ func (c *Client) SearchShows(ctx context.Context, query string, page int) ([]api
 
 func (c *Client) GetVideo(ctx context.Context, id int64) (api.Video, error) {
 	resp, err := c.GetVideoWithResponse(ctx, id)
-	if isResponseOk(resp.StatusCode(), err) {
+	if isNotResponseOk(resp.StatusCode(), err) {
 		return api.Video{}, handleError(resp.JSON400, resp.JSON500, err)
 	}
 
 	return resp.JSON200.Video, nil
 }
 
-func isResponseOk(statusCode int, err error) bool {
-	return statusCode == http.StatusOK && err == nil
+func isNotResponseOk(statusCode int, err error) bool {
+	return statusCode < 200 || statusCode >= 300 || err != nil
 }
 
 func handleError(json400 *api.BadRequest, json500 *api.InternalError, err error) error {
