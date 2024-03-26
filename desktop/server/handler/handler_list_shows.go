@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -13,17 +12,16 @@ import (
 )
 
 func (h *Handler) ListShows(w http.ResponseWriter, r *http.Request) error {
-	qPage := r.URL.Query().Get("page")
-	qPageSize := r.URL.Query().Get("pageSize")
 	qType := r.URL.Query().Get("type")
 
-	page, err := strconv.Atoi(qPage)
+	page, err := parsePage(r)
 	if err != nil {
-		return commonErrors.NewIncorrectInputError("invalid-page", fmt.Sprintf("invalid page=%s, err=%v", qPage, err))
+		return err
 	}
-	pageSize, err := strconv.Atoi(qPageSize)
+
+	pageSize, err := parsePageSize(r)
 	if err != nil {
-		return commonErrors.NewIncorrectInputError("invalid-page-size", fmt.Sprintf("invalid page_size=%s, err=%v", qPageSize, err))
+		return err
 	}
 
 	showType := api.ShowType(qType)
@@ -37,19 +35,12 @@ func (h *Handler) ListShows(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (h *Handler) SearchShows(w http.ResponseWriter, r *http.Request) error {
-	qPage := r.URL.Query().Get("page")
-	query := r.URL.Query().Get("q")
-
-	page := 1
-
-	if qPage != "" {
-		_page, err := strconv.Atoi(qPage)
-		if err != nil {
-			return commonErrors.NewIncorrectInputError("invalid-page", fmt.Sprintf("invalid page=%s, err=%v", qPage, err))
-		}
-		page = _page
+	page, err := parsePage(r)
+	if err != nil {
+		return err
 	}
 
+	query := r.URL.Query().Get("q")
 	if query == "" {
 		return commonErrors.NewIncorrectInputError("empty-query", "empty query")
 	}
@@ -60,4 +51,36 @@ func (h *Handler) SearchShows(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	return ui.SearchPage(query, shows, pagination).Render(r.Context(), w)
+}
+
+var (
+	ErrInvalidPage = commonErrors.NewIncorrectInputError("invalid-page", "invalid page")
+)
+
+func parsePage(r *http.Request) (int, error) {
+	qPage := r.URL.Query().Get("page")
+	if qPage == "" {
+		return 1, nil
+	}
+	page, err := strconv.Atoi(qPage)
+	if err != nil {
+		return 0, errors.Wrapf(ErrInvalidPage, "parse page=%s, err=%v", qPage, err)
+	}
+	return page, nil
+}
+
+var (
+	ErrInvalidPageSize = commonErrors.NewIncorrectInputError("invalid-page-size", "invalid page size")
+)
+
+func parsePageSize(r *http.Request) (int, error) {
+	qPageSize := r.URL.Query().Get("pageSize")
+	if qPageSize == "" {
+		return 1, nil
+	}
+	pageSize, err := strconv.Atoi(qPageSize)
+	if err != nil {
+		return 0, errors.Wrapf(ErrInvalidPageSize, "parse page_size=%s, err=%v", qPageSize, err)
+	}
+	return pageSize, nil
 }

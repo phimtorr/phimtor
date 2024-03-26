@@ -23,21 +23,21 @@ import (
 )
 
 func (h *Handler) GetVideo(w http.ResponseWriter, r *http.Request) error {
-	idStr := chi.URLParam(r, "id")
-	id, err := strconv.ParseInt(idStr, 10, 64)
+	id, err := parseID(chi.URLParam(r, "id"))
 	if err != nil {
-		return commonErrors.NewIncorrectInputError("invalid-id", fmt.Sprintf("invalid id=%s, err=%v", idStr, err))
+		return err
 	}
 
-	torrentName, err := url.QueryUnescape(r.URL.Query().Get("torrent"))
+	torrentName, err := parseTorrentName(r.URL.Query().Get("torrent"))
 	if err != nil {
-		return commonErrors.NewIncorrectInputError("invalid-torrent-name", fmt.Sprintf("invalid torrent_name=%s, err=%v", torrentName, err))
+		return err
 	}
 
 	video, err := h.apiClient.GetVideo(r.Context(), id)
 	if err != nil {
 		return errors.Wrap(err, "get video")
 	}
+
 	selectedTorrent := getSelectedTorrentLink(video.TorrentLinks, torrentName)
 	selectedSubtitle := getSelectedSubtitle(video.Subtitles)
 
@@ -74,16 +74,15 @@ func getSelectedSubtitle(subtitles []api.Subtitle) api.Subtitle {
 }
 
 func (h *Handler) Stream(w http.ResponseWriter, r *http.Request) error {
-	infoHashStr := chi.URLParam(r, "infoHash")
-	infoHash, err := torrent.InfoHashFromString(infoHashStr)
+	infoHash, err := parseInfoHash(chi.URLParam(r, "infoHash"))
 	if err != nil {
-		return commonErrors.NewIncorrectInputError("invalid-info-hash", fmt.Sprintf("invalid info_hash=%s, err=%v", infoHashStr, err))
+		return err
 	}
-	fileIndexStr := chi.URLParam(r, "fileIndex")
-	fileIndex, err := strconv.Atoi(fileIndexStr)
+	fileIndex, err := parseFileIndex(chi.URLParam(r, "fileIndex"))
 	if err != nil {
-		return commonErrors.NewIncorrectInputError("invalid-file-index", fmt.Sprintf("invalid file_index=%s, err=%v", fileIndexStr, err))
+		return err
 	}
+
 	file, err := h.torManager.GetFile(infoHash, fileIndex)
 	if err != nil {
 		return errors.Wrap(err, "get file")
@@ -105,16 +104,15 @@ func (h *Handler) Stream(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (h *Handler) OpenInVLC(w http.ResponseWriter, r *http.Request) error {
-	infoHashStr := chi.URLParam(r, "infoHash")
-	infoHash, err := torrent.InfoHashFromString(infoHashStr)
+	infoHash, err := parseInfoHash(chi.URLParam(r, "infoHash"))
 	if err != nil {
-		return commonErrors.NewIncorrectInputError("invalid-info-hash", fmt.Sprintf("invalid info_hash=%s, err=%v", infoHashStr, err))
+		return err
 	}
-	fileIndexStr := chi.URLParam(r, "fileIndex")
-	fileIndex, err := strconv.Atoi(fileIndexStr)
+	fileIndex, err := parseFileIndex(chi.URLParam(r, "fileIndex"))
 	if err != nil {
-		return commonErrors.NewIncorrectInputError("invalid-file-index", fmt.Sprintf("invalid file_index=%s, err=%v", fileIndexStr, err))
+		return err
 	}
+
 	protocol := "http"
 	if r.TLS != nil {
 		protocol = "https"
@@ -131,18 +129,64 @@ func (h *Handler) OpenInVLC(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (h *Handler) Stats(w http.ResponseWriter, r *http.Request) error {
-	infoHashStr := chi.URLParam(r, "infoHash")
-	infoHash, err := torrent.InfoHashFromString(infoHashStr)
+	infoHash, err := parseInfoHash(chi.URLParam(r, "infoHash"))
 	if err != nil {
-		return commonErrors.NewIncorrectInputError("invalid-info-hash", fmt.Sprintf("invalid info_hash=%s, err=%v", infoHashStr, err))
+		return err
 	}
-	fileIndexStr := chi.URLParam(r, "fileIndex")
-	fileIndex, err := strconv.Atoi(fileIndexStr)
+	fileIndex, err := parseFileIndex(chi.URLParam(r, "fileIndex"))
 	if err != nil {
-		return commonErrors.NewIncorrectInputError("invalid-file-index", fmt.Sprintf("invalid file_index=%s, err=%v", fileIndexStr, err))
+		return err
 	}
 
 	stats := h.torManager.Stats(infoHash, fileIndex)
 
 	return ui.VideoStatistics(stats).Render(r.Context(), w)
+}
+
+var (
+	ErrInvalidID = commonErrors.NewIncorrectInputError("invalid-id", "invalid id")
+)
+
+func parseID(idRaw string) (int64, error) {
+	id, err := strconv.ParseInt(idRaw, 10, 64)
+	if err != nil {
+		return 0, errors.Wrapf(ErrInvalidID, "parse id=%s, err=%v", idRaw, err)
+	}
+	return id, nil
+}
+
+var (
+	ErrInvalidTorrentName = commonErrors.NewIncorrectInputError("invalid-torrent-name", "invalid torrent name")
+)
+
+func parseTorrentName(torrentNameRaw string) (string, error) {
+	torrentName, err := url.QueryUnescape(torrentNameRaw)
+	if err != nil {
+		return "", errors.Wrapf(ErrInvalidTorrentName, "parse torrent_name=%s, err=%v", torrentName, err)
+	}
+	return torrentName, nil
+}
+
+var (
+	ErrInvalidInfoHash = commonErrors.NewIncorrectInputError("invalid-info-hash", "invalid info hash")
+)
+
+func parseInfoHash(infoHashRaw string) (torrent.InfoHash, error) {
+	infoHash, err := torrent.InfoHashFromString(infoHashRaw)
+	if err != nil {
+		return torrent.InfoHash{}, errors.Wrap(ErrInvalidInfoHash, fmt.Sprintf("parse info_hash=%s, err=%v", infoHashRaw, err))
+	}
+	return infoHash, nil
+}
+
+var (
+	ErrInvalidFileIndex = commonErrors.NewIncorrectInputError("invalid-file-index", "invalid file index")
+)
+
+func parseFileIndex(fileIndexRaw string) (int, error) {
+	fileIndex, err := strconv.Atoi(fileIndexRaw)
+	if err != nil {
+		return 0, errors.Wrap(ErrInvalidFileIndex, fmt.Sprintf("parse file_index=%s, err=%v", fileIndexRaw, err))
+	}
+	return fileIndex, nil
 }

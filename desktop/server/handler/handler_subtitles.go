@@ -22,14 +22,16 @@ import (
 )
 
 func (h *Handler) SelectSubtitle(w http.ResponseWriter, r *http.Request) error {
-	videoID, err := strconv.ParseInt(chi.URLParam(r, "videoID"), 10, 64)
+	videoID, err := parseVideoID(chi.URLParam(r, "videoID"))
 	if err != nil {
-		return commonErrors.NewIncorrectInputError("invalid-video-id", fmt.Sprintf("invalid videoID err=%v", err))
+		return err
 	}
-	subtitleName, err := url.QueryUnescape(chi.URLParam(r, "subtitleName"))
+
+	subtitleName, err := parseSubtitleName(chi.URLParam(r, "subtitleName"))
 	if err != nil {
-		return commonErrors.NewIncorrectInputError("invalid-subtitle-name", fmt.Sprintf("invalid subtitle name err=%v", err))
+		return err
 	}
+
 	video, err := h.apiClient.GetVideo(r.Context(), videoID)
 	if err != nil {
 		return errors.Wrap(err, "get video")
@@ -69,9 +71,9 @@ func findSubtitle(subtitles []api.Subtitle, subtitleName string) (api.Subtitle, 
 }
 
 func (h *Handler) UnselectSubtitle(w http.ResponseWriter, r *http.Request) error {
-	videoID, err := strconv.ParseInt(chi.URLParam(r, "videoID"), 10, 64)
+	videoID, err := parseVideoID(chi.URLParam(r, "videoID"))
 	if err != nil {
-		return commonErrors.NewIncorrectInputError("invalid-video-id", fmt.Sprintf("invalid videoID err=%v", err))
+		return err
 	}
 
 	video, err := h.apiClient.GetVideo(r.Context(), videoID)
@@ -82,14 +84,16 @@ func (h *Handler) UnselectSubtitle(w http.ResponseWriter, r *http.Request) error
 }
 
 func (h *Handler) DownloadSubtitle(w http.ResponseWriter, r *http.Request) error {
-	videoID, err := strconv.ParseInt(chi.URLParam(r, "videoID"), 10, 64)
+	videoID, err := parseVideoID(chi.URLParam(r, "videoID"))
 	if err != nil {
-		return commonErrors.NewIncorrectInputError("invalid-video-id", fmt.Sprintf("invalid videoID err=%v", err))
+		return err
 	}
-	subtitleName, err := url.QueryUnescape(chi.URLParam(r, "subtitleName"))
+
+	subtitleName, err := parseSubtitleName(chi.URLParam(r, "subtitleName"))
 	if err != nil {
-		return commonErrors.NewIncorrectInputError("invalid-subtitle-name", fmt.Sprintf("invalid subtitle name err=%v", err))
+		return err
 	}
+
 	video, err := h.apiClient.GetVideo(r.Context(), videoID)
 	if err != nil {
 		return errors.Wrap(err, "get video")
@@ -109,10 +113,11 @@ func (h *Handler) DownloadSubtitle(w http.ResponseWriter, r *http.Request) error
 }
 
 func (h *Handler) UploadSubtitle(w http.ResponseWriter, r *http.Request) error {
-	videoID, err := strconv.ParseInt(chi.URLParam(r, "videoID"), 10, 64)
+	videoID, err := parseVideoID(chi.URLParam(r, "videoID"))
 	if err != nil {
-		return commonErrors.NewIncorrectInputError("invalid-video-id", fmt.Sprintf("invalid videoID err=%v", err))
+		return err
 	}
+
 	video, err := h.apiClient.GetVideo(r.Context(), videoID)
 	if err != nil {
 		return errors.Wrap(err, "get video")
@@ -148,10 +153,11 @@ func (h *Handler) UploadSubtitle(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (h *Handler) AdjustSubtitle(w http.ResponseWriter, r *http.Request) error {
-	videoID, err := strconv.ParseInt(chi.URLParam(r, "videoID"), 10, 64)
+	videoID, err := parseVideoID(chi.URLParam(r, "videoID"))
 	if err != nil {
-		return commonErrors.NewIncorrectInputError("invalid-video-id", fmt.Sprintf("invalid videoID err=%v", err))
+		return err
 	}
+
 	video, err := h.apiClient.GetVideo(r.Context(), videoID)
 	if err != nil {
 		return errors.Wrap(err, "get video")
@@ -181,4 +187,28 @@ func (h *Handler) AdjustSubtitle(w http.ResponseWriter, r *http.Request) error {
 		Content:                content,
 		AdjustmentMilliseconds: int(adjustMilliSeconds),
 	}).Render(r.Context(), w)
+}
+
+var (
+	ErrInvalidVideoID = commonErrors.NewIncorrectInputError("invalid-video-id", "invalid video id")
+)
+
+func parseVideoID(videoIDRaw string) (int64, error) {
+	videoID, err := strconv.ParseInt(videoIDRaw, 10, 64)
+	if err != nil {
+		return 0, errors.Wrapf(ErrInvalidVideoID, "parse videoID=%s, err=%v", videoIDRaw, err)
+	}
+	return videoID, nil
+}
+
+var (
+	ErrInvalidSubtitleName = commonErrors.NewIncorrectInputError("invalid-subtitle-name", "invalid subtitle name")
+)
+
+func parseSubtitleName(subtitleNameRaw string) (string, error) {
+	subtitleName, err := url.QueryUnescape(subtitleNameRaw)
+	if err != nil {
+		return "", errors.Wrapf(ErrInvalidSubtitleName, "parse subtitle_name=%s, err=%v", subtitleName, err)
+	}
+	return subtitleName, nil
 }
