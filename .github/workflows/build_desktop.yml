@@ -1,12 +1,20 @@
-name: Build Desktop App
-
-permissions:
-  contents: write
+name: Build desktop app
 
 on:
-  push:
-    branches:
-      - master
+  workflow_call:
+    inputs:
+      server_address:
+        description: 'Address of the server'
+        required: true
+        type: string
+      firebase_api_key:
+        description: 'Firebase API key'
+        required: true
+        type: string
+    outputs:
+      artifact_pattern:
+        description: 'Pattern to download the artifact'
+        value: 'desktop_app_*'
 
 jobs:
   build:
@@ -14,10 +22,10 @@ jobs:
       fail-fast: true
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
-    env:
-      SERVER_ADDR: "https://dev.phimtor.net"
-      FIREBASE_API_KEY: "AIzaSyD0OPqFBC2tYvj74wMWvXqoPixSryet2lQ"
     runs-on: ${{ matrix.os }}
+    env:
+      SERVER_ADDR: ${{ inputs.server_address }}
+      FIREBASE_API_KEY: ${{ inputs.firebase_api_key }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -93,51 +101,3 @@ jobs:
             ${{github.workspace}}/desktop/bin/*.deb
             ${{github.workspace}}\desktop\bin\*.exe
 
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: |
-            **/bin/*.pkg
-            **/bin/*.dmg
-            **/bin/*.deb
-            **/bin/*.exe
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    environment: development
-    steps:
-      - name: Install ssh key
-        run: |
-          install -m 600 -D /dev/null ~/.ssh/id_rsa
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
-          cat >>~/.ssh/config <<END
-          Host server
-            HostName $SSH_HOST
-            User $SSH_USER
-            IdentityFile ~/.ssh/id_rsa
-            StrictHostKeyChecking no
-          END
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        shell: bash
-
-      - name: Download desktop
-        uses: actions/download-artifact@v4
-        with:
-          pattern: desktop_app_*
-          merge-multiple: true
-          path: desktop_app
-
-      - run: |
-          ls -lR desktop_app
-
-      - name: Deploy desktop
-        run: |
-          ssh server 'mkdir -p ${{ vars.WORKING_DIR }}/desktop_app'
-          ssh server 'rm -rf ${{ vars.WORKING_DIR }}/desktop_app/*'
-          find desktop_app -name "*.exe" -o -name "*.pkg" -o -name "*.deb" -o -name "*.dmg" | xargs -I{} scp {} server:${{ vars.WORKING_DIR }}/desktop_app/
-        shell: bash
