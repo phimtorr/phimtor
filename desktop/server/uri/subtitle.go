@@ -6,6 +6,9 @@ import (
 )
 
 func SelectSubtitle(videoID int64, subtitleName string) string {
+	if subtitleName == "" {
+		return UnselectSubtitle(videoID)
+	}
 	return fmt.Sprintf("/videos/%d/subtitles/%s", videoID, url.QueryEscape(subtitleName))
 }
 
