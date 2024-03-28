@@ -6,6 +6,7 @@ replace github.com/phimtorr/phimtor/common => ../common
 
 require (
 	firebase.google.com/go/v4 v4.13.0
+	github.com/a-h/templ v0.2.648
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-chi/chi/v5 v5.0.12
 	github.com/go-chi/render v1.0.3
@@ -49,7 +50,7 @@ require (
 	github.com/volatiletech/inflect v0.0.1 // indirect
 	github.com/volatiletech/randomize v0.0.1 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	go.uber.org/atomic v1.7.0 // indirect
+	go.uber.org/atomic v1.10.0 // indirect
 	golang.org/x/crypto v0.17.0 // indirect
 	golang.org/x/net v0.19.0 // indirect
 	golang.org/x/oauth2 v0.14.0 // indirect
