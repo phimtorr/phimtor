@@ -1,21 +1,20 @@
-name: Build and deploy server on dev
+name: Build and deploy server on prod
 
 on:
-  push:
-    branches:
-      - master
+  release:
+    types: [published]
 
 jobs:
   build:
-   uses: ./.github/workflows/build_server.yml
+    uses: ./.github/workflows/build_server.yml
 
   deploy:
     needs: [build]
     uses: ./.github/workflows/deploy_server.yml
     with:
       artifact_name: ${{ needs.build.outputs.artifact_name }}
-      environment: development
-      service_name: "phimtor.server.dev.service"
+      environment: production
+      service_name: "phimtor.server.prod.service"
     secrets:
       SSH_HOST: ${{ secrets.SSH_HOST }}
       SSH_USER: ${{ secrets.SSH_USER }}
