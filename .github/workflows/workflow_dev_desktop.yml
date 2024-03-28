@@ -1,0 +1,27 @@
+name: Build Desktop App on Dev
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    uses: ./.github/workflows/build_desktop.yml
+    with:
+        server_address: "https://dev.phimtor.net"
+        firebase_api_key: "AIzaSyD0OPqFBC2tYvj74wMWvXqoPixSryet2lQ"
+
+  release:
+    needs: [build]
+    uses: ./.github/workflows/release_desktop.yml
+    with:
+      artifact_pattern: ${{ needs.build.outputs.artifact_pattern }}
+      environment: development
+    secrets:
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}

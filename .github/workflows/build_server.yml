@@ -1,20 +1,20 @@
-name: Build and deploy server
+name: Build server
 
 on:
-  push:
-    branches:
-      - master
+  workflow_call:
+    outputs:
+      artifact_name:
+        description: 'Name of the artifact'
+        value: server_artifact
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 50
-          fetch-tags: true
 
       # Store the version, stripping any v-prefix
       - name: Write release version
@@ -52,31 +52,3 @@ jobs:
           path: |
             server/server
             server/version
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment: development
-    env:
-      SERVICE_NAME: phimtor.server.dev.service
-    steps:
-      - name: Install ssh key
-        run: |
-          install -m 600 -D /dev/null ~/.ssh/id_rsa
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-        shell: bash
-
-      - name: Download server
-        uses: actions/download-artifact@v4
-        with:
-          name: server_artifact
-          path: server
-
-      - name: Deploy server
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "systemctl --user stop $SERVICE_NAME"
-          scp -r server ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.WORKING_DIR }}
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "chmod +x ${{ vars.WORKING_DIR }}/server/server"
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "systemctl --user start $SERVICE_NAME"
-        shell: bash
