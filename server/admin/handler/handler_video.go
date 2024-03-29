@@ -4,12 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
-	commonErrors "github.com/phimtorr/phimtor/common/errors"
-
-	"github.com/phimtorr/phimtor/server/admin/ui"
-
 	"github.com/friendsofgo/errors"
 	"github.com/go-chi/chi/v5"
+	commonErrors "github.com/phimtorr/phimtor/common/errors"
+	"github.com/phimtorr/phimtor/server/admin/ui"
 )
 
 func (h *Handler) ViewVideo(w http.ResponseWriter, r *http.Request) error {
@@ -72,4 +70,23 @@ func (h *Handler) CreateTorrent(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	return ui.ViewTorrents(video.ID, video.Torrents).Render(r.Context(), w)
+}
+
+func (h *Handler) DeleteTorrent(w http.ResponseWriter, r *http.Request) error {
+	videoID, err := parseID(chi.URLParam(r, "id"))
+	if err != nil {
+		return err
+	}
+
+	torrentID, err := parseID(chi.URLParam(r, "torrentID"))
+	if err != nil {
+		return err
+	}
+
+	if err := h.repo.DeleteTorrent(r.Context(), videoID, torrentID); err != nil {
+		return errors.Wrap(err, "delete torrent")
+	}
+
+	w.WriteHeader(http.StatusOK)
+	return nil
 }

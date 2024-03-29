@@ -67,3 +67,11 @@ func (r AdminRepository) CreateTorrent(ctx context.Context, torrent handler.Torr
 	}
 	return dbTorrentLink.ID, nil
 }
+
+func (r AdminRepository) DeleteTorrent(ctx context.Context, videoID, id int64) error {
+	_, err := dbmodels.TorrentLinks(
+		dbmodels.TorrentLinkWhere.ID.EQ(id),
+		dbmodels.TorrentLinkWhere.VideoID.EQ(videoID),
+	).DeleteAll(ctx, r.db)
+	return err
+}

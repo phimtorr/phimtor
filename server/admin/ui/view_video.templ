@@ -40,9 +40,10 @@ templ ViewTorrents(videoID int64, torrents []Torrent) {
 						<th>Link</th>
 						<th>File Index</th>
 						<th>Priority</th>
+                        <th>Action</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody hx-confirm="Are you sure?" hx-target="closest tr" hx-swap="outerHTML">
 					for _, torrent := range torrents {
 						<tr>
 							<td>{ toString(torrent.ID) }</td>
@@ -50,6 +51,13 @@ templ ViewTorrents(videoID int64, torrents []Torrent) {
 							<td>{ torrent.Link }</td>
 							<td>{ toString(torrent.FileIndex) }</td>
 							<td>{ toString(torrent.Priority) }</td>
+                            <td>
+                                <button
+                                    hx-delete={ uri.DeleteTorrent(videoID, torrent.ID) }
+                                >
+                                    Delete
+                                    </button>
+                            </td>
 						</tr>
 					}
 				</tbody>

@@ -37,6 +37,7 @@ func (s HTTPServer) Register(r chi.Router) {
 
 	r.Get("/videos/{id}", errHandlerFunc(s.handler.ViewVideo))
 	r.Post("/videos/{id}/torrents/create", errHandlerFunc(s.handler.CreateTorrent))
+	r.Delete("/videos/{id}/torrents/{torrentID}", errHandlerFunc(s.handler.DeleteTorrent))
 }
 
 func errHandlerFunc(h func(w http.ResponseWriter, r *http.Request) error) http.HandlerFunc {
