@@ -1,0 +1,150 @@
+package ui
+
+import "github.com/phimtorr/phimtor/server/admin/uri"
+
+type Video struct {
+	ID        int64
+	Torrents  []Torrent
+	Subtitles []Subtitle
+}
+
+templ ViewVideo(video Video) {
+	<header>
+		<h2>Video</h2>
+	</header>
+	<section>
+		@ViewTorrents(video.ID, video.Torrents)
+		@ViewSubtitles(video.ID, video.Subtitles)
+	</section>
+}
+
+type Torrent struct {
+	ID        int64
+	Name      string
+	Link      string
+	FileIndex int
+	Priority  int
+}
+
+templ ViewTorrents(videoID int64, torrents []Torrent) {
+	<article>
+		<header>
+			<h3>Torrents</h3>
+		</header>
+		<section>
+			<table>
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Name</th>
+						<th>Link</th>
+						<th>File Index</th>
+						<th>Priority</th>
+					</tr>
+				</thead>
+				<tbody>
+					for _, torrent := range torrents {
+						<tr>
+							<td>{ toString(torrent.ID) }</td>
+							<td>{ torrent.Name }</td>
+							<td>{ torrent.Link }</td>
+							<td>{ toString(torrent.FileIndex) }</td>
+							<td>{ toString(torrent.Priority) }</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</section>
+		<section>
+			<h4>Add torrent</h4>
+			<form
+				hx-post={ uri.CreateTorrent(videoID) }
+				hx-target="closest article"
+				hx-swap="outerHTML"
+			>
+				<label>
+					Name
+					<input type="text" name="name" required/>
+				</label>
+				<label>
+					Link
+					<input type="url" name="link" required/>
+				</label>
+				<label>
+					File Index
+					<input type="number" name="fileIndex" value="0"/>
+				</label>
+				<label>
+					Priority
+					<input type="number" name="priority" value="0"/>
+				</label>
+				<button type="submit">Add</button>
+			</form>
+		</section>
+	</article>
+}
+
+type Subtitle struct {
+	ID       int64
+	Language string
+	Name     string
+	Owner    string
+	Link     string
+}
+
+templ ViewSubtitles(videoID int64, subtitles []Subtitle) {
+	<article>
+		<header>
+			<h3>Subtitles</h3>
+		</header>
+		<section>
+			<table>
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Name</th>
+						<th>Link</th>
+						<th>File Index</th>
+						<th>Priority</th>
+					</tr>
+				</thead>
+				<tbody>
+					for _, sub := range subtitles {
+						<tr>
+							<td>{ toString(sub.ID) }</td>
+							<td>{ sub.Language }</td>
+							<td>{ sub.Name }</td>
+							<td>{ sub.Owner }</td>
+							<td>{ sub.Link }</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</section>
+		<section>
+			<h4>Add subtitle</h4>
+			<form>
+				<label>
+					Language
+					<select name="language" required>
+						<option value="vi">Vietnamese</option>
+						<option value="en">English</option>
+					</select>
+				</label>
+				<label>
+					Name
+					<input type="text" name="name" required/>
+				</label>
+				<label>
+					Owner
+					<input type="text" name="owner" required/>
+				</label>
+				<label>
+					Link
+					<input type="file" name="file" required/>
+				</label>
+				<button type="submit">Add</button>
+			</form>
+		</section>
+	</article>
+}

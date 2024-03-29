@@ -31,11 +31,12 @@ func (s HTTPServer) Register(r chi.Router) {
 
 	r.Get("/shows/create", templ.Handler(ui.CreateShowForm()).ServeHTTP)
 	r.Post("/shows/create", errHandlerFunc(s.handler.CreateShow))
-
 	r.Get("/shows/{id}", errHandlerFunc(s.handler.ViewShow))
-
 	r.Get("/shows/{id}/update", errHandlerFunc(s.handler.ViewUpdateShowForm))
 	r.Post("/shows/{id}/update", errHandlerFunc(s.handler.UpdateShow))
+
+	r.Get("/videos/{id}", errHandlerFunc(s.handler.ViewVideo))
+	r.Post("/videos/{id}/torrents/create", errHandlerFunc(s.handler.CreateTorrent))
 }
 
 func errHandlerFunc(h func(w http.ResponseWriter, r *http.Request) error) http.HandlerFunc {

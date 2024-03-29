@@ -129,6 +129,7 @@ func (r AdminRepository) GetShow(ctx context.Context, id int64) (ui.Show, error)
 		Score:             dbShow.Score,
 		DurationInMinutes: dbShow.DurationInMinutes,
 		Quality:           dbShow.Quantity,
+		VideoID:           dbShow.VideoID.Int64,
 	}
 
 	if dbShow.Type == dbmodels.ShowsTypeSeries {

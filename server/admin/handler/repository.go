@@ -12,6 +12,9 @@ type Repository interface {
 	CreateShow(ctx context.Context, show ShowToCreate) (int64, error)
 	UpdateShow(ctx context.Context, show ShowToUpdate) error
 	GetShow(ctx context.Context, id int64) (ui.Show, error)
+
+	GetVideo(ctx context.Context, id int64) (ui.Video, error)
+	CreateTorrent(ctx context.Context, torrent TorrentToCreate) (int64, error)
 }
 
 type ShowToCreate struct {
@@ -38,4 +41,12 @@ type ShowToUpdate struct {
 	DurationInMinutes int
 	Quality           string
 	TotalEpisodes     int
+}
+
+type TorrentToCreate struct {
+	VideoID   int64
+	Name      string
+	Link      string
+	FileIndex int
+	Priority  int
 }

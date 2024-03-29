@@ -108,6 +108,14 @@ templ ViewShow(show Show) {
 				<a href={ templ.SafeURL(uri.UpdateShow(show.ID)) }>Edit</a>
 			</footer>
 		</article>
+		<article>
+			if show.VideoID != 0 {
+				<section
+					hx-get={ uri.ViewVideo(show.VideoID) }
+					hx-trigger="load"
+				></section>
+			}
+		</article>
 	}
 }
 
