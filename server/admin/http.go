@@ -4,6 +4,9 @@ import (
 	"database/sql"
 	"net/http"
 
+	"github.com/a-h/templ"
+	"github.com/phimtorr/phimtor/server/admin/ui"
+
 	"github.com/phimtorr/phimtor/server/repository"
 
 	"github.com/friendsofgo/errors"
@@ -25,6 +28,8 @@ func NewHTTPServer(db *sql.DB) HTTPServer {
 
 func (s HTTPServer) Register(r chi.Router) {
 	r.Get("/shows", errHandlerFunc(s.handler.ListShows))
+
+	r.Get("/movies/create", templ.Handler(ui.MovieForm()).ServeHTTP)
 }
 
 func errHandlerFunc(h func(w http.ResponseWriter, r *http.Request) error) http.HandlerFunc {

@@ -8,3 +8,7 @@ func ListShows(page int) string {
 	}
 	return "shows"
 }
+
+func GetCreateMovieForm() string {
+	return "movies/create"
+}

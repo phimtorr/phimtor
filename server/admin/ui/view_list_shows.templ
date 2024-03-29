@@ -12,8 +12,8 @@ type Show struct {
 templ Shows(shows []Show, pag Pagination) {
 	@layout("Shows") {
 		<h1>Shows</h1>
-		<section>
-			<button>Create Movie</button>
+		<section hx-boost="true">
+			<a href={ templ.SafeURL(uri.GetCreateMovieForm()) }>Create Movie</a>
 		</section>
 		<section>
 			<article>
@@ -31,8 +31,8 @@ templ Shows(shows []Show, pag Pagination) {
 							<tr>
 								<td>{ toString(s.ID) }</td>
 								<td>
-										<span>{ s.Title }</span>
-										<small style="display: block;">{ s.OriginalTitle }</small>
+									<span>{ s.Title }</span>
+									<small style="display: block;">{ s.OriginalTitle }</small>
 								</td>
 								<td><img src={ s.Poster } alt={ s.Title } style="width: 150px;"/></td>
 								<td>
