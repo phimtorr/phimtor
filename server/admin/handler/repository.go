@@ -16,6 +16,8 @@ type Repository interface {
 	GetVideo(ctx context.Context, id int64) (ui.Video, error)
 	CreateTorrent(ctx context.Context, torrent TorrentToCreate) (int64, error)
 	DeleteTorrent(ctx context.Context, videoID, id int64) error
+
+	CreateSubtitle(ctx context.Context, subtitle SubtitleToCreate) (int64, error)
 }
 
 type ShowToCreate struct {
@@ -50,4 +52,13 @@ type TorrentToCreate struct {
 	Link      string
 	FileIndex int
 	Priority  int
+}
+
+type SubtitleToCreate struct {
+	VideoID  int64
+	Language string
+	Name     string
+	Owner    string
+	Link     string
+	FileKey  string
 }

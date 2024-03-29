@@ -40,7 +40,7 @@ templ ViewTorrents(videoID int64, torrents []Torrent) {
 						<th>Link</th>
 						<th>File Index</th>
 						<th>Priority</th>
-                        <th>Action</th>
+						<th>Action</th>
 					</tr>
 				</thead>
 				<tbody hx-confirm="Are you sure?" hx-target="closest tr" hx-swap="outerHTML">
@@ -51,13 +51,13 @@ templ ViewTorrents(videoID int64, torrents []Torrent) {
 							<td>{ torrent.Link }</td>
 							<td>{ toString(torrent.FileIndex) }</td>
 							<td>{ toString(torrent.Priority) }</td>
-                            <td>
-                                <button
-                                    hx-delete={ uri.DeleteTorrent(videoID, torrent.ID) }
-                                >
-                                    Delete
-                                    </button>
-                            </td>
+							<td>
+								<button
+									hx-delete={ uri.DeleteTorrent(videoID, torrent.ID) }
+								>
+									Delete
+								</button>
+							</td>
 						</tr>
 					}
 				</tbody>
@@ -110,10 +110,10 @@ templ ViewSubtitles(videoID int64, subtitles []Subtitle) {
 				<thead>
 					<tr>
 						<th>ID</th>
+						<th>Language</th>
 						<th>Name</th>
+						<th>Owner</th>
 						<th>Link</th>
-						<th>File Index</th>
-						<th>Priority</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -131,7 +131,12 @@ templ ViewSubtitles(videoID int64, subtitles []Subtitle) {
 		</section>
 		<section>
 			<h4>Add subtitle</h4>
-			<form>
+			<form
+				hx-encoding="multipart/form-data"
+				hx-post={ uri.CreateSubtitle(videoID) }
+				hx-target="closest article"
+				hx-swap="outerHTML"
+			>
 				<label>
 					Language
 					<select name="language" required>

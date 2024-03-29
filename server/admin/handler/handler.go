@@ -1,18 +1,33 @@
 package handler
 
-import "net/http"
+import (
+	"context"
+	"io"
+	"net/http"
+)
 
-type Handler struct {
-	repo Repository
+type FileService interface {
+	UploadFile(ctx context.Context, key string, body io.Reader) (string, error)
+	DeleteFile(ctx context.Context, key string) error
 }
 
-func New(repo Repository) *Handler {
+type Handler struct {
+	repo        Repository
+	fileService FileService
+}
+
+func New(repo Repository, fileService FileService) *Handler {
 	if repo == nil {
 		panic("nil repository")
 
 	}
+	if fileService == nil {
+		panic("nil file service")
+	}
+
 	return &Handler{
-		repo: repo,
+		repo:        repo,
+		fileService: fileService,
 	}
 }
 

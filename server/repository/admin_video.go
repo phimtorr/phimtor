@@ -75,3 +75,18 @@ func (r AdminRepository) DeleteTorrent(ctx context.Context, videoID, id int64) e
 	).DeleteAll(ctx, r.db)
 	return err
 }
+
+func (r AdminRepository) CreateSubtitle(ctx context.Context, subtitle handler.SubtitleToCreate) (int64, error) {
+	dbSubtitle := &dbmodels.Subtitle{
+		VideoID:  subtitle.VideoID,
+		Language: subtitle.Language,
+		Name:     subtitle.Name,
+		Owner:    subtitle.Owner,
+		Link:     subtitle.Link,
+		FileKey:  subtitle.FileKey,
+	}
+	if err := dbSubtitle.Insert(ctx, r.db, boil.Infer()); err != nil {
+		return 0, err
+	}
+	return dbSubtitle.ID, nil
+}

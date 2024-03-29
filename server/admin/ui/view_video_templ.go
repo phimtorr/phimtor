@@ -152,7 +152,7 @@ func ViewTorrents(videoID int64, torrents []Torrent) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(uri.DeleteTorrent(videoID, torrent.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/ui/view_video.templ`, Line: 56, Col: 86}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/ui/view_video.templ`, Line: 56, Col: 59}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
@@ -208,7 +208,7 @@ func ViewSubtitles(videoID int64, subtitles []Subtitle) templ.Component {
 			templ_7745c5c3_Var10 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<article><header><h3>Subtitles</h3></header><section><table><thead><tr><th>ID</th><th>Name</th><th>Link</th><th>File Index</th><th>Priority</th></tr></thead> <tbody>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<article><header><h3>Subtitles</h3></header><section><table><thead><tr><th>ID</th><th>Language</th><th>Name</th><th>Owner</th><th>Link</th></tr></thead> <tbody>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -283,7 +283,20 @@ func ViewSubtitles(videoID int64, subtitles []Subtitle) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</tbody></table></section><section><h4>Add subtitle</h4><form><label>Language <select name=\"language\" required><option value=\"vi\">Vietnamese</option> <option value=\"en\">English</option></select></label> <label>Name <input type=\"text\" name=\"name\" required></label> <label>Owner <input type=\"text\" name=\"owner\" required></label> <label>Link <input type=\"file\" name=\"file\" required></label> <button type=\"submit\">Add</button></form></section></article>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</tbody></table></section><section><h4>Add subtitle</h4><form hx-encoding=\"multipart/form-data\" hx-post=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var16 string
+		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(uri.CreateSubtitle(videoID))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/ui/view_video.templ`, Line: 136, Col: 41}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"closest article\" hx-swap=\"outerHTML\"><label>Language <select name=\"language\" required><option value=\"vi\">Vietnamese</option> <option value=\"en\">English</option></select></label> <label>Name <input type=\"text\" name=\"name\" required></label> <label>Owner <input type=\"text\" name=\"owner\" required></label> <label>Link <input type=\"file\" name=\"file\" required></label> <button type=\"submit\">Add</button></form></section></article>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

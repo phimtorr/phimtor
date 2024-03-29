@@ -90,3 +90,55 @@ func (h *Handler) DeleteTorrent(w http.ResponseWriter, r *http.Request) error {
 	w.WriteHeader(http.StatusOK)
 	return nil
 }
+
+func (h *Handler) CreateSubtitle(w http.ResponseWriter, r *http.Request) error {
+	videoID, err := parseID(chi.URLParam(r, "id"))
+	if err != nil {
+		return err
+	}
+
+	if err := r.ParseMultipartForm(10 << 20); err != nil {
+		return errors.Wrap(err, "parsing form")
+	}
+
+	language := r.Form.Get("language")
+	if language == "" {
+		return commonErrors.NewIncorrectInputError("empty-language", "empty language")
+	}
+	name := r.Form.Get("name")
+	if name == "" {
+		return commonErrors.NewIncorrectInputError("empty-name", "empty name")
+	}
+	owner := r.Form.Get("owner")
+
+	file, fileHeader, err := r.FormFile("file")
+	fileKey := strconv.FormatInt(videoID, 10) + "/" + language + "/" + fileHeader.Filename
+
+	fileContent := make([]byte, fileHeader.Size)
+	if _, err := file.Read(fileContent); err != nil {
+		return errors.Wrap(err, "read file")
+	}
+
+	objectURL, err := h.fileService.UploadFile(r.Context(), fileKey, file)
+	if err != nil {
+		return errors.Wrap(err, "upload file")
+	}
+
+	if _, err := h.repo.CreateSubtitle(r.Context(), SubtitleToCreate{
+		VideoID:  videoID,
+		Language: language,
+		Name:     name,
+		Owner:    owner,
+		Link:     objectURL,
+		FileKey:  fileKey,
+	}); err != nil {
+		return errors.Wrap(err, "create subtitle")
+	}
+
+	video, err := h.repo.GetVideo(r.Context(), videoID)
+	if err != nil {
+		return errors.Wrap(err, "get video")
+	}
+
+	return ui.ViewSubtitles(video.ID, video.Subtitles).Render(r.Context(), w)
+}

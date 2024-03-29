@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"net/http"
 
+	"github.com/phimtorr/phimtor/server/admin/s3"
+
 	"github.com/a-h/templ"
 	"github.com/phimtorr/phimtor/server/admin/ui"
 
@@ -22,7 +24,10 @@ type HTTPServer struct {
 
 func NewHTTPServer(db *sql.DB) HTTPServer {
 	return HTTPServer{
-		handler: handler.New(repository.NewAdminRepository(db)),
+		handler: handler.New(
+			repository.NewAdminRepository(db),
+			s3.NewService(),
+		),
 	}
 }
 
@@ -38,6 +43,7 @@ func (s HTTPServer) Register(r chi.Router) {
 	r.Get("/videos/{id}", errHandlerFunc(s.handler.ViewVideo))
 	r.Post("/videos/{id}/torrents/create", errHandlerFunc(s.handler.CreateTorrent))
 	r.Delete("/videos/{id}/torrents/{torrentID}", errHandlerFunc(s.handler.DeleteTorrent))
+	r.Post("/videos/{id}/subtitles/create", errHandlerFunc(s.handler.CreateSubtitle))
 }
 
 func errHandlerFunc(h func(w http.ResponseWriter, r *http.Request) error) http.HandlerFunc {
