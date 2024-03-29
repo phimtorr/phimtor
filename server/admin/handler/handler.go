@@ -1,14 +1,6 @@
 package handler
 
-import (
-	"context"
-
-	"github.com/phimtorr/phimtor/server/admin/ui"
-)
-
-type Repository interface {
-	ListShows(ctx context.Context, page int, pageSize int) ([]ui.Show, ui.Pagination, error)
-}
+import "net/http"
 
 type Handler struct {
 	repo Repository
@@ -21,5 +13,14 @@ func New(repo Repository) *Handler {
 	}
 	return &Handler{
 		repo: repo,
+	}
+}
+
+func redirect(w http.ResponseWriter, r *http.Request, url string) {
+	if r.Header.Get("HX-Request") == "true" {
+		w.Header().Set("HX-Redirect", url)
+		w.WriteHeader(http.StatusOK)
+	} else {
+		http.Redirect(w, r, url, http.StatusSeeOther)
 	}
 }

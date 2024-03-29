@@ -2,18 +2,18 @@ package ui
 
 import "github.com/phimtorr/phimtor/server/admin/uri"
 
-type Show struct {
+type ShowDisplay struct {
 	ID            int64
 	Title         string
 	OriginalTitle string
 	Poster        string
 }
 
-templ Shows(shows []Show, pag Pagination) {
+templ Shows(shows []ShowDisplay, pag Pagination) {
 	@layout("Shows") {
 		<h1>Shows</h1>
-		<section hx-boost="true">
-			<a href={ templ.SafeURL(uri.GetCreateMovieForm()) }>Create Movie</a>
+		<section>
+			<a href={ templ.SafeURL(uri.CreateShow()) }>Create Show</a>
 		</section>
 		<section>
 			<article>
@@ -36,6 +36,7 @@ templ Shows(shows []Show, pag Pagination) {
 								</td>
 								<td><img src={ s.Poster } alt={ s.Title } style="width: 150px;"/></td>
 								<td>
+									<a href={ templ.SafeURL(uri.ViewShow(s.ID)) }>View</a>
 									<button class="contrast">Delete</button>
 								</td>
 							</tr>

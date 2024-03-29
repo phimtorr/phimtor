@@ -29,7 +29,13 @@ func NewHTTPServer(db *sql.DB) HTTPServer {
 func (s HTTPServer) Register(r chi.Router) {
 	r.Get("/shows", errHandlerFunc(s.handler.ListShows))
 
-	r.Get("/movies/create", templ.Handler(ui.MovieForm()).ServeHTTP)
+	r.Get("/shows/create", templ.Handler(ui.CreateShowForm()).ServeHTTP)
+	r.Post("/shows/create", errHandlerFunc(s.handler.CreateShow))
+
+	r.Get("/shows/{id}", errHandlerFunc(s.handler.ViewShow))
+
+	r.Get("/shows/{id}/update", errHandlerFunc(s.handler.ViewUpdateShowForm))
+	r.Post("/shows/{id}/update", errHandlerFunc(s.handler.UpdateShow))
 }
 
 func errHandlerFunc(h func(w http.ResponseWriter, r *http.Request) error) http.HandlerFunc {
@@ -75,5 +81,5 @@ func handleError(w http.ResponseWriter, r *http.Request, msg string, slug string
 		Err(err).
 		Str("slug", slug).
 		Msg(msg)
-	http.Error(w, msg, status)
+	http.Error(w, msg+": "+err.Error(), status)
 }

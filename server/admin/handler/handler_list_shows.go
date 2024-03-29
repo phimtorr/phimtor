@@ -21,7 +21,7 @@ func (h *Handler) ListShows(w http.ResponseWriter, r *http.Request) error {
 		page = 1
 	}
 
-	shows, pag, err := h.repo.ListShows(r.Context(), page, pageSize)
+	shows, pag, err := h.repo.ListShowDisplays(r.Context(), page, pageSize)
 	if err != nil {
 		return errors.Wrap(err, "list shows")
 	}

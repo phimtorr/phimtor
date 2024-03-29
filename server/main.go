@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/phimtorr/phimtor/server/admin/uri"
+
 	"github.com/phimtorr/phimtor/server/admin"
 
 	firebase "firebase.google.com/go/v4"
@@ -43,7 +45,7 @@ func main() {
 	setMiddlewares(r)
 	setAuthMiddleware(r, firebaseApp)
 
-	r.Mount("/admin", adminR)
+	r.Mount(uri.Prefix, adminR)
 
 	handler := ports.HandlerFromMuxWithBaseURL(httpServer, r, "/api/v1")
 
