@@ -142,3 +142,31 @@ func (h *Handler) CreateSubtitle(w http.ResponseWriter, r *http.Request) error {
 
 	return ui.ViewSubtitles(video.ID, video.Subtitles).Render(r.Context(), w)
 }
+
+func (h *Handler) DeleteSubtitle(w http.ResponseWriter, r *http.Request) error {
+	videoID, err := parseID(chi.URLParam(r, "id"))
+	if err != nil {
+		return err
+	}
+
+	subtitleID, err := parseID(chi.URLParam(r, "subtitleID"))
+	if err != nil {
+		return err
+	}
+
+	sub, err := h.repo.GetSubtitle(r.Context(), videoID, subtitleID)
+	if err != nil {
+		return errors.Wrap(err, "get subtitle")
+	}
+
+	if err := h.repo.DeleteSubtitle(r.Context(), videoID, subtitleID); err != nil {
+		return errors.Wrap(err, "delete subtitle")
+	}
+
+	if err := h.fileService.DeleteFile(r.Context(), sub.FileKey); err != nil {
+		return errors.Wrap(err, "delete file")
+	}
+
+	w.WriteHeader(http.StatusOK)
+	return nil
+}

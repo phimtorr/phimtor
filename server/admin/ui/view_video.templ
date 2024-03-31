@@ -98,6 +98,7 @@ type Subtitle struct {
 	Name     string
 	Owner    string
 	Link     string
+	FileKey  string
 }
 
 templ ViewSubtitles(videoID int64, subtitles []Subtitle) {
@@ -114,9 +115,10 @@ templ ViewSubtitles(videoID int64, subtitles []Subtitle) {
 						<th>Name</th>
 						<th>Owner</th>
 						<th>Link</th>
+						<th>Action</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody hx-confirm="Are you sure?" hx-target="closest tr" hx-swap="outerHTML">
 					for _, sub := range subtitles {
 						<tr>
 							<td>{ toString(sub.ID) }</td>
@@ -124,6 +126,13 @@ templ ViewSubtitles(videoID int64, subtitles []Subtitle) {
 							<td>{ sub.Name }</td>
 							<td>{ sub.Owner }</td>
 							<td>{ sub.Link }</td>
+							<td>
+								<button
+									hx-delete={ uri.DeleteSubtitle(videoID, sub.ID) }
+								>
+									Delete
+								</button>
+							</td>
 						</tr>
 					}
 				</tbody>

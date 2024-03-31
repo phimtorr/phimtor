@@ -17,7 +17,9 @@ type Repository interface {
 	CreateTorrent(ctx context.Context, torrent TorrentToCreate) (int64, error)
 	DeleteTorrent(ctx context.Context, videoID, id int64) error
 
+	GetSubtitle(ctx context.Context, videoID, id int64) (ui.Subtitle, error)
 	CreateSubtitle(ctx context.Context, subtitle SubtitleToCreate) (int64, error)
+	DeleteSubtitle(ctx context.Context, videoID, id int64) error
 }
 
 type ShowToCreate struct {

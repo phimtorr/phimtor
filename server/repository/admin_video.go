@@ -44,6 +44,7 @@ func toUIVideo(vid *dbmodels.Video) ui.Video {
 			Name:     s.Name,
 			Owner:    s.Owner,
 			Link:     s.Link,
+			FileKey:  s.FileKey,
 		})
 	}
 
@@ -76,6 +77,24 @@ func (r AdminRepository) DeleteTorrent(ctx context.Context, videoID, id int64) e
 	return err
 }
 
+func (r AdminRepository) GetSubtitle(ctx context.Context, videoID, id int64) (ui.Subtitle, error) {
+	dbSubtitle, err := dbmodels.Subtitles(
+		dbmodels.SubtitleWhere.ID.EQ(id),
+		dbmodels.SubtitleWhere.VideoID.EQ(videoID),
+	).One(ctx, r.db)
+	if err != nil {
+		return ui.Subtitle{}, err
+	}
+	return ui.Subtitle{
+		ID:       dbSubtitle.ID,
+		Language: dbSubtitle.Language,
+		Name:     dbSubtitle.Name,
+		Owner:    dbSubtitle.Owner,
+		Link:     dbSubtitle.Link,
+		FileKey:  dbSubtitle.FileKey,
+	}, nil
+}
+
 func (r AdminRepository) CreateSubtitle(ctx context.Context, subtitle handler.SubtitleToCreate) (int64, error) {
 	dbSubtitle := &dbmodels.Subtitle{
 		VideoID:  subtitle.VideoID,
@@ -89,4 +108,12 @@ func (r AdminRepository) CreateSubtitle(ctx context.Context, subtitle handler.Su
 		return 0, err
 	}
 	return dbSubtitle.ID, nil
+}
+
+func (r AdminRepository) DeleteSubtitle(ctx context.Context, videoID, id int64) error {
+	_, err := dbmodels.Subtitles(
+		dbmodels.SubtitleWhere.ID.EQ(id),
+		dbmodels.SubtitleWhere.VideoID.EQ(videoID),
+	).DeleteAll(ctx, r.db)
+	return err
 }

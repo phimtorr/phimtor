@@ -17,3 +17,7 @@ func DeleteTorrent(videoID, id int64) string {
 func CreateSubtitle(videoID int64) string {
 	return Prefix + "/videos/" + strconv.FormatInt(videoID, 10) + "/subtitles/create"
 }
+
+func DeleteSubtitle(videoID, id int64) string {
+	return Prefix + "/videos/" + strconv.FormatInt(videoID, 10) + "/subtitles/" + strconv.FormatInt(id, 10)
+}
