@@ -7,7 +7,7 @@ import "github.com/phimtorr/phimtor/desktop/server/uri"
 templ Home(movies []api.Show, series []api.Show) {
     @layout(i18n.MustT(ctx, "Home.Title")) {
         <section class="mb-4 ">
-            @h2(i18n.MustT(ctx, "Home.Movies.Title"), primaryButtonLink(uri.ListShows(1, 0, api.ShowTypeMovie), many(
+            @h2(i18n.MustT(ctx, "Home.Movies.Title"), primaryButtonLink(uri.ListShows(1, 18, api.ShowTypeMovie), many(
                 span((i18n.T(ctx, "Home.SeeMore"))),
             )))
             @showsGrid(movies)
@@ -16,7 +16,7 @@ templ Home(movies []api.Show, series []api.Show) {
         <br class="border-b border-gray-500" />
 
         <section class="mt-4">
-            @h2(i18n.MustT(ctx, "Home.Series.Title"), primaryButtonLink(uri.ListShows(1, 0, api.ShowTypeSeries), many(
+            @h2(i18n.MustT(ctx, "Home.Series.Title"), primaryButtonLink(uri.ListShows(1, 18, api.ShowTypeSeries), many(
                 span((i18n.T(ctx, "Home.SeeMore"))),
             )))
             @showsGrid(series)

@@ -7,7 +7,7 @@ templ Shows(shows []api.Show, pg api.Pagination, showType api.ShowType) {
 	@layout(getShowTitle(ctx, showType)) {
 		@h1(getShowTitle(ctx, showType))
 		<nav class="my-2 flex items-center justify-start space-x-2">
-			@pagination(pg.Page, pg.TotalPages, func(i int) string { return uri.ListShows(i, 0, showType) })
+			@pagination(pg.Page, pg.TotalPages, func(i int) string { return uri.ListShows(i, 18, showType) })
 			@paginationInfo(pg)
 		</nav>
 		@showsGrid(shows)
