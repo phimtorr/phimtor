@@ -29,6 +29,7 @@ type Subtitle struct {
 	Name      string    `boil:"name" json:"name" toml:"name" yaml:"name"`
 	Owner     string    `boil:"owner" json:"owner" toml:"owner" yaml:"owner"`
 	Link      string    `boil:"link" json:"link" toml:"link" yaml:"link"`
+	FileKey   string    `boil:"file_key" json:"file_key" toml:"file_key" yaml:"file_key"`
 	CreatedAt time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
 
@@ -43,6 +44,7 @@ var SubtitleColumns = struct {
 	Name      string
 	Owner     string
 	Link      string
+	FileKey   string
 	CreatedAt string
 	UpdatedAt string
 }{
@@ -52,6 +54,7 @@ var SubtitleColumns = struct {
 	Name:      "name",
 	Owner:     "owner",
 	Link:      "link",
+	FileKey:   "file_key",
 	CreatedAt: "created_at",
 	UpdatedAt: "updated_at",
 }
@@ -63,6 +66,7 @@ var SubtitleTableColumns = struct {
 	Name      string
 	Owner     string
 	Link      string
+	FileKey   string
 	CreatedAt string
 	UpdatedAt string
 }{
@@ -72,6 +76,7 @@ var SubtitleTableColumns = struct {
 	Name:      "subtitles.name",
 	Owner:     "subtitles.owner",
 	Link:      "subtitles.link",
+	FileKey:   "subtitles.file_key",
 	CreatedAt: "subtitles.created_at",
 	UpdatedAt: "subtitles.updated_at",
 }
@@ -85,6 +90,7 @@ var SubtitleWhere = struct {
 	Name      whereHelperstring
 	Owner     whereHelperstring
 	Link      whereHelperstring
+	FileKey   whereHelperstring
 	CreatedAt whereHelpertime_Time
 	UpdatedAt whereHelpertime_Time
 }{
@@ -94,6 +100,7 @@ var SubtitleWhere = struct {
 	Name:      whereHelperstring{field: "`subtitles`.`name`"},
 	Owner:     whereHelperstring{field: "`subtitles`.`owner`"},
 	Link:      whereHelperstring{field: "`subtitles`.`link`"},
+	FileKey:   whereHelperstring{field: "`subtitles`.`file_key`"},
 	CreatedAt: whereHelpertime_Time{field: "`subtitles`.`created_at`"},
 	UpdatedAt: whereHelpertime_Time{field: "`subtitles`.`updated_at`"},
 }
@@ -126,8 +133,8 @@ func (r *subtitleR) GetVideo() *Video {
 type subtitleL struct{}
 
 var (
-	subtitleAllColumns            = []string{"id", "video_id", "language", "name", "owner", "link", "created_at", "updated_at"}
-	subtitleColumnsWithoutDefault = []string{"video_id", "language", "name", "owner", "link"}
+	subtitleAllColumns            = []string{"id", "video_id", "language", "name", "owner", "link", "file_key", "created_at", "updated_at"}
+	subtitleColumnsWithoutDefault = []string{"video_id", "language", "name", "owner", "link", "file_key"}
 	subtitleColumnsWithDefault    = []string{"id", "created_at", "updated_at"}
 	subtitlePrimaryKeyColumns     = []string{"id"}
 	subtitleGeneratedColumns      = []string{}

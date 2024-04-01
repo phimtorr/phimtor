@@ -1,0 +1,177 @@
+package ui 
+
+import "github.com/phimtorr/phimtor/server/admin/uri"
+
+templ CreateShowForm() {
+	@layout("Create Show") {
+		<h1>Create a Show</h1>
+		<article>
+			<form method="POST" action={ templ.SafeURL(uri.CreateShow()) }>
+				<fieldset>
+					<label>
+						Show type
+						<select name="showType" required>
+							<option value="movie">Movie</option>
+							<option value="series">Series</option>
+						</select>
+					</label>
+					<label>
+						Title
+						<input type="text" name="title" required/>
+					</label>
+					<label>
+						OriginalTitle
+						<input type="text" name="originalTitle" required/>
+					</label>
+					<label>
+						Poster Link
+						<input type="url" name="posterLink" required/>
+					</label>
+					<label>
+						Description
+						<textarea name="description" required></textarea>
+					</label>
+					<label>
+						Release Year
+						<input type="number" name="releaseYear" required/>
+					</label>
+					<label>
+						Score
+						<input type="number" step="0.1" name="score" required/>
+					</label>
+					<label>
+						Duration
+						<input type="number" name="durationInMinutes" required/>
+						minutes
+					</label>
+					<label>
+						Quatity
+						<select name="quality">
+							<option value="HD">HD</option>
+							<option value="Full HD">Full HD</option>
+							<option value="4K">4K</option>
+						</select>
+					</label>
+					<label>
+						Total Episodes
+						<input type="number" name="totalEpisodes"/>
+					</label>
+					<button type="submit">Create</button>
+				</fieldset>
+			</form>
+		</article>
+	}
+}
+
+type Show struct {
+	ID                int64
+	Type              string
+	Title             string
+	OriginalTitle     string
+	PosterLink        string
+	Description       string
+	ReleaseYear       int
+	Score             float64
+	DurationInMinutes int
+	Quality           string
+	TotalEpisodes     int
+
+	VideoID int64
+}
+
+templ ViewShow(show Show) {
+	@layout("Show | " + show.Title) {
+		<article>
+			<header>
+				<h1>{ show.Title }</h1>
+				<h2>{ show.OriginalTitle }</h2>
+			</header>
+			<figure>
+				<img src={ show.PosterLink } alt={ show.Title }/>
+			</figure>
+			<section>
+				<p>{ show.Description }</p>
+				<dl>
+					<dt>Release Year</dt>
+					<dd>{ toString(show.ReleaseYear) }</dd>
+					<dt>Score</dt>
+					<dd>{ toString(show.Score) }</dd>
+					<dt>Duration</dt>
+					<dd>{ toString(show.DurationInMinutes) } minutes</dd>
+					<dt>Quality</dt>
+					<dd>{ show.Quality }</dd>
+					<dt>Total Episodes</dt>
+					<dd>{ toString(show.TotalEpisodes) }</dd>
+				</dl>
+			</section>
+			<footer>
+				<a href={ templ.SafeURL(uri.UpdateShow(show.ID)) }>Edit</a>
+			</footer>
+		</article>
+		<article>
+			if show.VideoID != 0 {
+				<section
+					hx-get={ uri.ViewVideo(show.VideoID) }
+					hx-trigger="load"
+				></section>
+			}
+		</article>
+	}
+}
+
+templ UpdateShowForm(show Show) {
+	@layout("Update Show") {
+		<h1>Update Show</h1>
+		<article>
+			<form method="POST">
+				<fieldset>
+					<label>
+						Title
+						<input type="text" name="title" value={ show.Title } required/>
+					</label>
+					<label>
+						OriginalTitle
+						<input type="text" name="originalTitle" value={ show.OriginalTitle } required/>
+					</label>
+					<label>
+						Poster Link
+						<input type="url" name="posterLink" value={ show.PosterLink } required/>
+					</label>
+					<label>
+						Description
+						<textarea name="description" required>{ show.Description }</textarea>
+					</label>
+					<label>
+						Release Year
+						<input type="number" name="releaseYear" value={ toString(show.ReleaseYear) } required/>
+					</label>
+					<label>
+						Score
+						<input type="number" step="0.1" name="score" value={ toString(show.Score) } required/>
+					</label>
+					<label>
+						Duration
+						<input type="number" name="durationInMinutes" value={ toString(show.DurationInMinutes) } required/>
+						minutes
+					</label>
+					if show.Type == "series" {
+						<label>
+							Total Episodes
+							<input type="number" name="totalEpisodes" value={ toString(show.TotalEpisodes) } required/>
+						</label>
+					} else {
+						<label>
+							Quatity
+							<select name="quality">
+								<option value="HD" selected?={ show.Quality == "HD" }>HD</option>
+								<option value="Full HD" selected?={ show.Quality == "Full HD" }>Full HD</option>
+								<option value="4K" selected?={ show.Quality == "4K" }>4K</option>
+							</select>
+						</label>
+					}
+					<button type="submit">Update</button>
+				</fieldset>
+			</form>
+		</article>
+	}
+}
