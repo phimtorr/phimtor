@@ -31,6 +31,7 @@ func NewHTTPServer(db *sql.DB) HTTPServer {
 }
 
 func (s HTTPServer) Register(r chi.Router) {
+	r.Get("/", errHandlerFunc(s.handler.Home))
 	r.Get("/shows", errHandlerFunc(s.handler.ListShows))
 
 	r.Get("/shows/create", templ.Handler(ui.CreateShowForm()).ServeHTTP)
