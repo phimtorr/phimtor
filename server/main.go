@@ -12,7 +12,6 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/phimtorr/phimtor/common/logs"
-	"github.com/phimtorr/phimtor/common/strval"
 	"github.com/phimtorr/phimtor/server/auth"
 	"github.com/phimtorr/phimtor/server/migrations"
 	"github.com/phimtorr/phimtor/server/pkg/database"
@@ -21,7 +20,7 @@ import (
 )
 
 func main() {
-	logs.Init(strval.MustBool(os.Getenv("LOCAL_ENV")))
+	logs.Init()
 
 	firebaseApp := newFirebaseApp()
 

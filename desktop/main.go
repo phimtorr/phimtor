@@ -7,13 +7,12 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/phimtorr/phimtor/common/logs"
-	"github.com/phimtorr/phimtor/common/strval"
 	"github.com/phimtorr/phimtor/desktop/build"
 	"github.com/phimtorr/phimtor/desktop/server"
 )
 
 func main() {
-	logs.Init(strval.MustBool(build.IsLocal))
+	logs.Init()
 
 	aServer := server.NewServer(build.AppName)
 	defer aServer.Close()

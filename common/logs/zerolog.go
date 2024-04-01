@@ -14,14 +14,10 @@ var (
 	once sync.Once
 )
 
-func Init(isLocalEnv bool) {
+func Init() {
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 
-	logger := zerolog.New(os.Stderr)
-
-	if isLocalEnv {
-		logger = zerolog.New(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339})
-	}
+	logger := zerolog.New(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339})
 
 	logger = logger.
 		Level(zerolog.DebugLevel).

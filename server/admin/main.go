@@ -6,14 +6,13 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/phimtorr/phimtor/common/logs"
-	"github.com/phimtorr/phimtor/common/strval"
 	adminHttp "github.com/phimtorr/phimtor/server/admin/http"
 	"github.com/phimtorr/phimtor/server/pkg/database"
 	"github.com/rs/zerolog/log"
 )
 
 func main() {
-	logs.Init(strval.MustBool(os.Getenv("LOCAL_ENV")))
+	logs.Init()
 
 	db := database.NewMySqlDB()
 	httpServer := adminHttp.NewHTTPServer(db)
