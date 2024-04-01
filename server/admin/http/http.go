@@ -1,20 +1,19 @@
-package admin
+package http
 
 import (
 	"database/sql"
 	"net/http"
 
+	"github.com/phimtorr/phimtor/server/admin/http/handler"
+	"github.com/phimtorr/phimtor/server/admin/http/ui"
+	"github.com/phimtorr/phimtor/server/admin/repository"
+
 	"github.com/phimtorr/phimtor/server/admin/s3"
 
 	"github.com/a-h/templ"
-	"github.com/phimtorr/phimtor/server/admin/ui"
-
-	"github.com/phimtorr/phimtor/server/repository"
-
 	"github.com/friendsofgo/errors"
 	"github.com/go-chi/chi/v5"
 	commonErrors "github.com/phimtorr/phimtor/common/errors"
-	"github.com/phimtorr/phimtor/server/admin/handler"
 	"github.com/rs/zerolog/log"
 )
 
@@ -25,7 +24,7 @@ type HTTPServer struct {
 func NewHTTPServer(db *sql.DB) HTTPServer {
 	return HTTPServer{
 		handler: handler.New(
-			repository.NewAdminRepository(db),
+			repository.NewRepository(db),
 			s3.NewService(),
 		),
 	}

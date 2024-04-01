@@ -5,12 +5,11 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/phimtorr/phimtor/server/admin/uri"
-
-	"github.com/go-chi/chi/v5"
-	"github.com/phimtorr/phimtor/server/admin/ui"
+	"github.com/phimtorr/phimtor/server/admin/http/ui"
+	"github.com/phimtorr/phimtor/server/admin/http/uri"
 
 	"github.com/friendsofgo/errors"
+	"github.com/go-chi/chi/v5"
 	commonErrors "github.com/phimtorr/phimtor/common/errors"
 )
 

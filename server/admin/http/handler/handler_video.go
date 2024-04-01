@@ -4,10 +4,11 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/phimtorr/phimtor/server/admin/http/ui"
+
 	"github.com/friendsofgo/errors"
 	"github.com/go-chi/chi/v5"
 	commonErrors "github.com/phimtorr/phimtor/common/errors"
-	"github.com/phimtorr/phimtor/server/admin/ui"
 )
 
 func (h *Handler) ViewVideo(w http.ResponseWriter, r *http.Request) error {
@@ -113,11 +114,6 @@ func (h *Handler) CreateSubtitle(w http.ResponseWriter, r *http.Request) error {
 
 	file, fileHeader, err := r.FormFile("file")
 	fileKey := strconv.FormatInt(videoID, 10) + "/" + language + "/" + fileHeader.Filename
-
-	fileContent := make([]byte, fileHeader.Size)
-	if _, err := file.Read(fileContent); err != nil {
-		return errors.Wrap(err, "read file")
-	}
 
 	objectURL, err := h.fileService.UploadFile(r.Context(), fileKey, file)
 	if err != nil {

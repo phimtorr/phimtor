@@ -3,15 +3,16 @@ package repository
 import (
 	"context"
 
-	"github.com/phimtorr/phimtor/server/admin/handler"
+	"github.com/phimtorr/phimtor/server/admin/http/handler"
+	"github.com/phimtorr/phimtor/server/admin/http/ui"
+
 	"github.com/volatiletech/sqlboiler/v4/boil"
 
-	"github.com/phimtorr/phimtor/server/admin/ui"
 	"github.com/phimtorr/phimtor/server/repository/dbmodels"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
-func (r AdminRepository) GetVideo(ctx context.Context, id int64) (ui.Video, error) {
+func (r Repository) GetVideo(ctx context.Context, id int64) (ui.Video, error) {
 	dbVideos, err := dbmodels.Videos(
 		dbmodels.VideoWhere.ID.EQ(id),
 		qm.Load(dbmodels.VideoRels.TorrentLinks),
@@ -55,7 +56,7 @@ func toUIVideo(vid *dbmodels.Video) ui.Video {
 	}
 }
 
-func (r AdminRepository) CreateTorrent(ctx context.Context, torrent handler.TorrentToCreate) (int64, error) {
+func (r Repository) CreateTorrent(ctx context.Context, torrent handler.TorrentToCreate) (int64, error) {
 	dbTorrentLink := &dbmodels.TorrentLink{
 		VideoID:   torrent.VideoID,
 		Name:      torrent.Name,
@@ -69,7 +70,7 @@ func (r AdminRepository) CreateTorrent(ctx context.Context, torrent handler.Torr
 	return dbTorrentLink.ID, nil
 }
 
-func (r AdminRepository) DeleteTorrent(ctx context.Context, videoID, id int64) error {
+func (r Repository) DeleteTorrent(ctx context.Context, videoID, id int64) error {
 	_, err := dbmodels.TorrentLinks(
 		dbmodels.TorrentLinkWhere.ID.EQ(id),
 		dbmodels.TorrentLinkWhere.VideoID.EQ(videoID),
@@ -77,7 +78,7 @@ func (r AdminRepository) DeleteTorrent(ctx context.Context, videoID, id int64) e
 	return err
 }
 
-func (r AdminRepository) GetSubtitle(ctx context.Context, videoID, id int64) (ui.Subtitle, error) {
+func (r Repository) GetSubtitle(ctx context.Context, videoID, id int64) (ui.Subtitle, error) {
 	dbSubtitle, err := dbmodels.Subtitles(
 		dbmodels.SubtitleWhere.ID.EQ(id),
 		dbmodels.SubtitleWhere.VideoID.EQ(videoID),
@@ -95,7 +96,7 @@ func (r AdminRepository) GetSubtitle(ctx context.Context, videoID, id int64) (ui
 	}, nil
 }
 
-func (r AdminRepository) CreateSubtitle(ctx context.Context, subtitle handler.SubtitleToCreate) (int64, error) {
+func (r Repository) CreateSubtitle(ctx context.Context, subtitle handler.SubtitleToCreate) (int64, error) {
 	dbSubtitle := &dbmodels.Subtitle{
 		VideoID:  subtitle.VideoID,
 		Language: subtitle.Language,
@@ -110,7 +111,7 @@ func (r AdminRepository) CreateSubtitle(ctx context.Context, subtitle handler.Su
 	return dbSubtitle.ID, nil
 }
 
-func (r AdminRepository) DeleteSubtitle(ctx context.Context, videoID, id int64) error {
+func (r Repository) DeleteSubtitle(ctx context.Context, videoID, id int64) error {
 	_, err := dbmodels.Subtitles(
 		dbmodels.SubtitleWhere.ID.EQ(id),
 		dbmodels.SubtitleWhere.VideoID.EQ(videoID),

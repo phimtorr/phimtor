@@ -5,35 +5,36 @@ import (
 	"database/sql"
 	"math"
 
+	"github.com/phimtorr/phimtor/server/admin/http/handler"
+	ui2 "github.com/phimtorr/phimtor/server/admin/http/ui"
+	"github.com/phimtorr/phimtor/server/repository"
+
 	"github.com/friendsofgo/errors"
-	"github.com/phimtorr/phimtor/server/admin/handler"
 	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 
 	"github.com/phimtorr/phimtor/server/repository/dbmodels"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
-
-	"github.com/phimtorr/phimtor/server/admin/ui"
 )
 
-func (r AdminRepository) ListShowDisplays(ctx context.Context, page, pageSize int) ([]ui.ShowDisplay, ui.Pagination, error) {
+func (r Repository) ListShowDisplays(ctx context.Context, page, pageSize int) ([]ui2.ShowDisplay, ui2.Pagination, error) {
 	dbShows, err := dbmodels.Shows(
 		qm.OrderBy(dbmodels.ShowColumns.UpdatedAt+" DESC"),
 		qm.Limit(pageSize),
 		qm.Offset((page-1)*pageSize),
 	).All(ctx, r.db)
 	if err != nil {
-		return nil, ui.Pagination{}, err
+		return nil, ui2.Pagination{}, err
 	}
 
 	count, err := dbmodels.Shows().Count(ctx, r.db)
 	if err != nil {
-		return nil, ui.Pagination{}, err
+		return nil, ui2.Pagination{}, err
 	}
 
-	shows := make([]ui.ShowDisplay, len(dbShows))
+	shows := make([]ui2.ShowDisplay, len(dbShows))
 	for i, dbShow := range dbShows {
-		shows[i] = ui.ShowDisplay{
+		shows[i] = ui2.ShowDisplay{
 			ID:            dbShow.ID,
 			Title:         dbShow.Title,
 			OriginalTitle: dbShow.OriginalTitle,
@@ -43,7 +44,7 @@ func (r AdminRepository) ListShowDisplays(ctx context.Context, page, pageSize in
 
 	totalPages := int(math.Ceil(float64(count) / float64(pageSize)))
 
-	return shows, ui.Pagination{
+	return shows, ui2.Pagination{
 		CurrentPage:  page,
 		TotalPages:   totalPages,
 		TotalRecords: int(count),
@@ -51,9 +52,9 @@ func (r AdminRepository) ListShowDisplays(ctx context.Context, page, pageSize in
 
 }
 
-func (r AdminRepository) CreateShow(ctx context.Context, show handler.ShowToCreate) (int64, error) {
+func (r Repository) CreateShow(ctx context.Context, show handler.ShowToCreate) (int64, error) {
 	var id int64
-	err := WithTx(ctx, r.db, func(tx *sql.Tx) error {
+	err := repository.WithTx(ctx, r.db, func(tx *sql.Tx) error {
 		var videoID int64
 		if show.ShowType == "movie" {
 			vd := &dbmodels.Video{}
@@ -88,7 +89,7 @@ func (r AdminRepository) CreateShow(ctx context.Context, show handler.ShowToCrea
 	return id, err
 }
 
-func (r AdminRepository) UpdateShow(ctx context.Context, show handler.ShowToUpdate) error {
+func (r Repository) UpdateShow(ctx context.Context, show handler.ShowToUpdate) error {
 	dbShow, err := dbmodels.FindShow(ctx, r.db, show.ID)
 	if err != nil {
 		return errors.Wrap(err, "finding show")
@@ -113,13 +114,13 @@ func (r AdminRepository) UpdateShow(ctx context.Context, show handler.ShowToUpda
 	return nil
 }
 
-func (r AdminRepository) GetShow(ctx context.Context, id int64) (ui.Show, error) {
+func (r Repository) GetShow(ctx context.Context, id int64) (ui2.Show, error) {
 	dbShow, err := dbmodels.FindShow(ctx, r.db, id)
 	if err != nil {
-		return ui.Show{}, errors.Wrap(err, "finding show")
+		return ui2.Show{}, errors.Wrap(err, "finding show")
 	}
 
-	show := ui.Show{
+	show := ui2.Show{
 		ID:                dbShow.ID,
 		Title:             dbShow.Title,
 		OriginalTitle:     dbShow.OriginalTitle,

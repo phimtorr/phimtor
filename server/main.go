@@ -5,10 +5,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/phimtorr/phimtor/server/admin/uri"
-
-	"github.com/phimtorr/phimtor/server/admin"
-
 	firebase "firebase.google.com/go/v4"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -36,16 +32,10 @@ func main() {
 
 	repo := repository.NewRepository(db)
 	httpServer := ports.NewHttpServer(repo)
-	adminHttpServer := admin.NewHTTPServer(db)
-
-	adminR := chi.NewRouter()
-	adminHttpServer.Register(adminR)
 
 	r := chi.NewRouter()
 	setMiddlewares(r)
 	setAuthMiddleware(r, firebaseApp)
-
-	r.Mount(uri.Prefix, adminR)
 
 	handler := ports.HandlerFromMuxWithBaseURL(httpServer, r, "/api/v1")
 

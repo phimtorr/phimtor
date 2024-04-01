@@ -5,12 +5,14 @@ package ui
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import "context"
-import "io"
-import "bytes"
+import (
+	"bytes"
+	"context"
+	"io"
 
-import "github.com/phimtorr/phimtor/server/admin/uri"
+	"github.com/a-h/templ"
+	uri2 "github.com/phimtorr/phimtor/server/admin/http/uri"
+)
 
 func CreateShowForm() templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
@@ -35,7 +37,7 @@ func CreateShowForm() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var3 templ.SafeURL = templ.SafeURL(uri.CreateShow())
+			var templ_7745c5c3_Var3 templ.SafeURL = templ.SafeURL(uri2.CreateShow())
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var3)))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -229,7 +231,7 @@ func ViewShow(show Show) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var16 templ.SafeURL = templ.SafeURL(uri.UpdateShow(show.ID))
+			var templ_7745c5c3_Var16 templ.SafeURL = templ.SafeURL(uri2.UpdateShow(show.ID))
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var16)))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -244,7 +246,7 @@ func ViewShow(show Show) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var17 string
-				templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(uri.ViewVideo(show.VideoID))
+				templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(uri2.ViewVideo(show.VideoID))
 				if templ_7745c5c3_Err != nil {
 					return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/ui/view_show.templ`, Line: 114, Col: 41}
 				}

@@ -3,21 +3,21 @@ package handler
 import (
 	"context"
 
-	"github.com/phimtorr/phimtor/server/admin/ui"
+	ui2 "github.com/phimtorr/phimtor/server/admin/http/ui"
 )
 
 type Repository interface {
-	ListShowDisplays(ctx context.Context, page int, pageSize int) ([]ui.ShowDisplay, ui.Pagination, error)
+	ListShowDisplays(ctx context.Context, page int, pageSize int) ([]ui2.ShowDisplay, ui2.Pagination, error)
 
 	CreateShow(ctx context.Context, show ShowToCreate) (int64, error)
 	UpdateShow(ctx context.Context, show ShowToUpdate) error
-	GetShow(ctx context.Context, id int64) (ui.Show, error)
+	GetShow(ctx context.Context, id int64) (ui2.Show, error)
 
-	GetVideo(ctx context.Context, id int64) (ui.Video, error)
+	GetVideo(ctx context.Context, id int64) (ui2.Video, error)
 	CreateTorrent(ctx context.Context, torrent TorrentToCreate) (int64, error)
 	DeleteTorrent(ctx context.Context, videoID, id int64) error
 
-	GetSubtitle(ctx context.Context, videoID, id int64) (ui.Subtitle, error)
+	GetSubtitle(ctx context.Context, videoID, id int64) (ui2.Subtitle, error)
 	CreateSubtitle(ctx context.Context, subtitle SubtitleToCreate) (int64, error)
 	DeleteSubtitle(ctx context.Context, videoID, id int64) error
 }

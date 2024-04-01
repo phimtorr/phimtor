@@ -5,12 +5,14 @@ package ui
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import "context"
-import "io"
-import "bytes"
+import (
+	"bytes"
+	"context"
+	"io"
 
-import "github.com/phimtorr/phimtor/server/admin/uri"
+	"github.com/a-h/templ"
+	"github.com/phimtorr/phimtor/server/admin/http/uri"
+)
 
 type Video struct {
 	ID        int64

@@ -4,8 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/phimtorr/phimtor/server/admin/http/ui"
+
 	"github.com/friendsofgo/errors"
-	"github.com/phimtorr/phimtor/server/admin/ui"
 )
 
 const (
