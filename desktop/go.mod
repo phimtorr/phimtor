@@ -5,11 +5,11 @@ go 1.21.6
 replace github.com/phimtorr/phimtor/common => ../common
 
 require (
-	github.com/YOMIkio/lorca v0.2.1-0.20240217024234-0316cc3e2995
 	github.com/a-h/templ v0.2.646
 	github.com/adrg/xdg v0.4.0
 	github.com/anacrolix/torrent v1.54.1
 	github.com/asticode/go-astisub v0.26.2
+	github.com/chrisngyn/lorca v0.0.1
 	github.com/friendsofgo/errors v0.9.2
 	github.com/gabriel-vasile/mimetype v1.4.2
 	github.com/go-chi/chi/v5 v5.0.12
@@ -20,6 +20,7 @@ require (
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 	github.com/rs/cors v1.8.3
 	github.com/rs/zerolog v1.32.0
+	golang.org/x/sync v0.6.0
 	golang.org/x/text v0.14.0
 	google.golang.org/api v0.168.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -111,7 +112,6 @@ require (
 	golang.org/x/image v0.15.0 // indirect
 	golang.org/x/net v0.21.0 // indirect
 	golang.org/x/oauth2 v0.17.0 // indirect
-	golang.org/x/sync v0.6.0 // indirect
 	golang.org/x/sys v0.17.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect

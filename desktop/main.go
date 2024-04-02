@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/YOMIkio/lorca"
+	"github.com/chrisngyn/lorca"
 	"github.com/rs/zerolog/log"
 
 	"github.com/phimtorr/phimtor/common/logs"
