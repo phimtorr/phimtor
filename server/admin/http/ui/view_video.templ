@@ -66,6 +66,7 @@ templ ViewTorrents(videoID int64, torrents []Torrent) {
 		<section>
 			<h4>Add torrent</h4>
 			<form
+				hx-encoding="multipart/form-data"
 				hx-post={ uri.CreateTorrent(videoID) }
 				hx-target="closest article"
 				hx-swap="outerHTML"
@@ -74,10 +75,16 @@ templ ViewTorrents(videoID int64, torrents []Torrent) {
 					Name
 					<input type="text" name="name" required/>
 				</label>
-				<label>
-					Link
-					<input type="url" name="link" required/>
-				</label>
+				<div class="grid">
+					<label>
+						Link
+						<input type="url" name="link"/>
+					</label>
+					<label>
+						File
+						<input type="file" name="file" accept=".torrent"/>
+					</label>
+				</div>
 				<label>
 					File Index
 					<input type="number" name="fileIndex" value="0"/>
@@ -162,8 +169,8 @@ templ ViewSubtitles(videoID int64, subtitles []Subtitle) {
 					<input type="text" name="owner" required/>
 				</label>
 				<label>
-					Link
-					<input type="file" name="file" required/>
+					File
+					<input type="file" name="file" required accept=".srt,.vtt"/>
 				</label>
 				<button type="submit">Add</button>
 			</form>
