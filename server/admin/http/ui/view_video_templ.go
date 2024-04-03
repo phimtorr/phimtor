@@ -163,20 +163,20 @@ func ViewTorrents(videoID int64, torrents []Torrent) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</tbody></table></section><section><h4>Add torrent</h4><form hx-post=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</tbody></table></section><section><h4>Add torrent</h4><form hx-encoding=\"multipart/form-data\" hx-post=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(uri.CreateTorrent(videoID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/view_video.templ`, Line: 69, Col: 40}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/view_video.templ`, Line: 70, Col: 40}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"closest article\" hx-swap=\"outerHTML\"><label>Name <input type=\"text\" name=\"name\" required></label> <label>Link <input type=\"url\" name=\"link\" required></label> <label>File Index <input type=\"number\" name=\"fileIndex\" value=\"0\"></label> <label>Priority <input type=\"number\" name=\"priority\" value=\"0\"></label> <button type=\"submit\">Add</button></form></section></article>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"closest article\" hx-swap=\"outerHTML\"><label>Name <input type=\"text\" name=\"name\" required></label><div class=\"grid\"><label>Link <input type=\"url\" name=\"link\"></label> <label>File <input type=\"file\" name=\"file\" accept=\".torrent\"></label></div><label>File Index <input type=\"number\" name=\"fileIndex\" value=\"0\"></label> <label>Priority <input type=\"number\" name=\"priority\" value=\"0\"></label> <button type=\"submit\">Add</button></form></section></article>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -221,7 +221,7 @@ func ViewSubtitles(videoID int64, subtitles []Subtitle) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(toString(sub.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/view_video.templ`, Line: 124, Col: 29}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/view_video.templ`, Line: 131, Col: 29}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {
@@ -234,7 +234,7 @@ func ViewSubtitles(videoID int64, subtitles []Subtitle) templ.Component {
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(sub.Language)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/view_video.templ`, Line: 125, Col: 25}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/view_video.templ`, Line: 132, Col: 25}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
@@ -247,7 +247,7 @@ func ViewSubtitles(videoID int64, subtitles []Subtitle) templ.Component {
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(sub.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/view_video.templ`, Line: 126, Col: 21}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/view_video.templ`, Line: 133, Col: 21}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 			if templ_7745c5c3_Err != nil {
@@ -260,7 +260,7 @@ func ViewSubtitles(videoID int64, subtitles []Subtitle) templ.Component {
 			var templ_7745c5c3_Var14 string
 			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(sub.Owner)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/view_video.templ`, Line: 127, Col: 22}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/view_video.templ`, Line: 134, Col: 22}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 			if templ_7745c5c3_Err != nil {
@@ -273,7 +273,7 @@ func ViewSubtitles(videoID int64, subtitles []Subtitle) templ.Component {
 			var templ_7745c5c3_Var15 string
 			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(sub.Link)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/view_video.templ`, Line: 128, Col: 21}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/view_video.templ`, Line: 135, Col: 21}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 			if templ_7745c5c3_Err != nil {
@@ -286,7 +286,7 @@ func ViewSubtitles(videoID int64, subtitles []Subtitle) templ.Component {
 			var templ_7745c5c3_Var16 string
 			templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(uri.DeleteSubtitle(videoID, sub.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/view_video.templ`, Line: 131, Col: 56}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/view_video.templ`, Line: 138, Col: 56}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 			if templ_7745c5c3_Err != nil {
@@ -304,13 +304,13 @@ func ViewSubtitles(videoID int64, subtitles []Subtitle) templ.Component {
 		var templ_7745c5c3_Var17 string
 		templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(uri.CreateSubtitle(videoID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/view_video.templ`, Line: 145, Col: 41}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/view_video.templ`, Line: 152, Col: 41}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"closest article\" hx-swap=\"outerHTML\"><label>Language <select name=\"language\" required><option value=\"vi\">Vietnamese</option> <option value=\"en\">English</option></select></label> <label>Name <input type=\"text\" name=\"name\" required></label> <label>Owner <input type=\"text\" name=\"owner\" required></label> <label>Link <input type=\"file\" name=\"file\" required></label> <button type=\"submit\">Add</button></form></section></article>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"closest article\" hx-swap=\"outerHTML\"><label>Language <select name=\"language\" required><option value=\"vi\">Vietnamese</option> <option value=\"en\">English</option></select></label> <label>Name <input type=\"text\" name=\"name\" required></label> <label>Owner <input type=\"text\" name=\"owner\" required></label> <label>File <input type=\"file\" name=\"file\" required accept=\".srt,.vtt\"></label> <button type=\"submit\">Add</button></form></section></article>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

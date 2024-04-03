@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/phimtorr/phimtor/server/admin/http/ui"
 
@@ -31,7 +32,7 @@ func (h *Handler) CreateTorrent(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	if err := r.ParseForm(); err != nil {
+	if err := r.ParseMultipartForm(10 << 20); err != nil {
 		return errors.Wrap(err, "parsing form")
 	}
 
@@ -39,7 +40,21 @@ func (h *Handler) CreateTorrent(w http.ResponseWriter, r *http.Request) error {
 	if name == "" {
 		return commonErrors.NewIncorrectInputError("empty-name", "empty name")
 	}
+
 	link := r.Form.Get("link")
+	if strings.TrimSpace(link) == "" {
+		file, fileHeader, err := r.FormFile("file")
+		if err != nil {
+			return errors.Wrap(err, "get file")
+		}
+
+		fileKey := strconv.FormatInt(videoID, 10) + "/torrents/" + fileHeader.Filename
+		link, err = h.fileService.UploadFile(r.Context(), fileKey, file)
+		if err != nil {
+			return errors.Wrap(err, "upload file")
+		}
+	}
+
 	if link == "" {
 		return commonErrors.NewIncorrectInputError("empty-link", "empty link")
 	}
