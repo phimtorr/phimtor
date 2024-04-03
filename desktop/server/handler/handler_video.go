@@ -46,9 +46,6 @@ func (h *Handler) GetVideo(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "add torrent from link")
 	}
 
-	// This step is for speed up the download!
-	h.torManager.CancelOthers(infoHash)
-
 	return ui.Video(video, infoHash, selectedTorrent, selectedSubtitle.Name).Render(r.Context(), w)
 }
 

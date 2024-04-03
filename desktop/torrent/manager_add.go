@@ -15,6 +15,9 @@ func (m *Manager) AddFromLink(torrentLink string) (InfoHash, error) {
 		err error
 	)
 
+	// This for speed up download new torrent
+	m.DropAll()
+
 	if strings.HasPrefix(torrentLink, "magnet:") {
 		tor, err = m.client.AddMagnet(torrentLink)
 		if err != nil {
