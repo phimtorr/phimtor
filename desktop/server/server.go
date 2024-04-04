@@ -2,10 +2,13 @@ package server
 
 import (
 	"errors"
-	"github.com/phimtorr/phimtor/desktop/auth"
-	"github.com/phimtorr/phimtor/desktop/build"
 	"net"
 	"net/http"
+	"time"
+
+	"github.com/phimtorr/phimtor/desktop/auth"
+	"github.com/phimtorr/phimtor/desktop/build"
+	"github.com/phimtorr/phimtor/desktop/updater"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -60,6 +63,10 @@ func (s *Server) Start() int {
 
 	authService := auth.NewFirebaseAuth(build.FirebaseAPIKey)
 	apiClient := client.NewClient(authService)
+
+	udSvc := updater.NewUpdater(build.Version, 30*time.Minute, apiClient)
+	go udSvc.Start()
+	s.closeFns = append(s.closeFns, newCloseFn("updater", udSvc.Stop))
 
 	httpHandler := handler.New(torManager, settingsStorage, apiClient, authService)
 

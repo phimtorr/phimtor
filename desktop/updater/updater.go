@@ -3,7 +3,7 @@ package updater
 import (
 	"context"
 	"net/http"
-	"os"
+	"runtime"
 	"time"
 
 	"github.com/friendsofgo/errors"
@@ -52,6 +52,8 @@ func NewUpdater(currentVersion string, intervalDuration time.Duration, versionFe
 func (u *Updater) Start() {
 	defer close(u.stopped)
 
+	u.doUpdateIfNeed()
+
 	ticker := time.NewTicker(u.intervalDuration)
 	defer ticker.Stop()
 
@@ -81,6 +83,9 @@ func (u *Updater) doUpdateIfNeed() {
 		return
 	}
 
+	logger.Debug().Str("currentVersion", u.currentVersion).Str("newVersion", version).Msg("Update available")
+	logger.Debug().Msg("Updating...")
+
 	url := generateUpdateURL()
 	err = doUpdate(url)
 	if err != nil {
@@ -90,11 +95,13 @@ func (u *Updater) doUpdateIfNeed() {
 
 	// It avoids infinite loop of updates
 	u.currentVersion = version
+
+	logger.Info().Msg("Updated successfully")
 }
 
 func generateUpdateURL() string {
-	goos := os.Getenv("GOOS")
-	url := build.ServerAddr + "public/desktop-binaries/" + goos + "/" + build.AppName
+	goos := runtime.GOOS
+	url := build.ServerAddr + "/public/desktop-binaries/" + goos + "/" + build.AppName
 	if goos == "windows" {
 		url += ".exe"
 	}
@@ -117,7 +124,8 @@ func doUpdate(url string) error {
 	return nil
 }
 
-func (u *Updater) Stop() {
+func (u *Updater) Stop() error {
 	close(u.done)
 	<-u.stopped
+	return nil
 }
