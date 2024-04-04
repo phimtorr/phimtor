@@ -12,13 +12,13 @@ SHORT_VERSION=${VERSION%.*}
 readonly APP=PhimTor
 readonly APP_DIR="$WORKING_DIR/bin/$APP"
 
-mkdir -p "$APP_DIR/usr/bin"
+mkdir -p "$APP_DIR/opt/$APP"
 mkdir -p "$APP_DIR/usr/share/applications"
 mkdir -p "$APP_DIR/usr/share/icons/hicolor/1024x1024/apps"
 mkdir -p "$APP_DIR/usr/share/icons/hicolor/256x256/apps"
 mkdir -p "$APP_DIR/DEBIAN"
 
-"$SCRIPT_DIR/build.sh" "$APP_DIR/usr/bin/$APP"
+"$SCRIPT_DIR/build.sh" "$APP_DIR/opt/$APP/$APP"
 
 cp "$SCRIPT_DIR/icons/icon.png" "$APP_DIR/usr/share/icons/hicolor/1024x1024/apps/${APP}.png"
 cp "$SCRIPT_DIR/icons/icon.png" "$APP_DIR/usr/share/icons/hicolor/256x256/apps/${APP}.png"
@@ -28,7 +28,7 @@ cat > "$APP_DIR/usr/share/applications/${APP}.desktop" << EOF
 Version=1.0
 Type=Application
 Name=$APP
-Exec=$APP
+Exec=/opt/$APP/$APP
 Icon=$APP
 Terminal=false
 StartupWMClass=PhimTor

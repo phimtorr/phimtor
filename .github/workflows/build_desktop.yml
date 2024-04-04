@@ -96,7 +96,7 @@ jobs:
           name: desktop_binaries_${{runner.os}}
           path: |
             ${{github.workspace}}/desktop/bin/source/PhimTor.app/Contents/MacOS/*
-            ${{github.workspace}}/desktop/bin/PhimTor/usr/bin/*
+            ${{github.workspace}}/desktop/bin/PhimTor/opt/PhimTor/*
             ${{github.workspace}}\desktop\bin\*.exe
 
       # Upload build assets

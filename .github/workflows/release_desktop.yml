@@ -81,6 +81,6 @@ jobs:
           ssh server 'mkdir -p ${{ vars.WORKING_DIR }}/desktop_binaries/linux'
           ssh server 'mkdir -p ${{ vars.WORKING_DIR }}/desktop_binaries/darwin'
           scp desktop_binaries/PhimTor.exe server:${{ vars.WORKING_DIR }}/desktop_binaries/windows/
-          scp desktop_binaries/phimtor/desktop/bin/PhimTor/usr/bin/PhimTor server:${{ vars.WORKING_DIR }}/desktop_binaries/linux/
+          scp desktop_binaries/phimtor/desktop/bin/PhimTor/opt/PhimTor/PhimTor server:${{ vars.WORKING_DIR }}/desktop_binaries/linux/
           scp desktop_binaries/phimtor/desktop/bin/source/PhimTor.app/Contents/MacOS/PhimTor server:${{ vars.WORKING_DIR }}/desktop_binaries/darwin/
         shell: bash
