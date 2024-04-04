@@ -61,3 +61,26 @@ jobs:
           ssh server 'rm -rf ${{ vars.WORKING_DIR }}/desktop_app/*'
           find desktop_app -name "*.exe" -o -name "*.pkg" -o -name "*.deb" -o -name "*.dmg" | xargs -I{} scp {} server:${{ vars.WORKING_DIR }}/desktop_app/
         shell: bash
+
+
+      - name: Download binaries
+        uses: actions/download-artifact@v4
+        with:
+          pattern: desktop_binaries_*
+          merge-multiple: true
+          path: desktop_binaries
+
+      - run: |
+          ls -lR desktop_binaries
+
+      - name: Deploy binaries
+        run: |
+          ssh server 'mkdir -p ${{ vars.WORKING_DIR }}/desktop_binaries'
+          ssh server 'rm -rf ${{ vars.WORKING_DIR }}/desktop_binaries/*'
+          ssh server 'mkdir -p ${{ vars.WORKING_DIR }}/desktop_binaries/windows'
+          ssh server 'mkdir -p ${{ vars.WORKING_DIR }}/desktop_binaries/linux'
+          ssh server 'mkdir -p ${{ vars.WORKING_DIR }}/desktop_binaries/darwin'
+          scp desktop_binaries/PhimTor.exe server:${{ vars.WORKING_DIR }}/desktop_binaries/windows/
+          scp desktop_binaries/phimtor/desktop/bin/PhimTor/usr/bin/PhimTor server:${{ vars.WORKING_DIR }}/desktop_binaries/linux/
+          scp desktop_binaries/phimtor/desktop/bin/source/PhimTor.app/Contents/MacOS/PhimTor server:${{ vars.WORKING_DIR }}/desktop_binaries/darwin/
+        shell: bash
