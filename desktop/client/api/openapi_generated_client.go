@@ -100,6 +100,9 @@ type ClientInterface interface {
 	// SearchShows request
 	SearchShows(ctx context.Context, params *SearchShowsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetVersion request
+	GetVersion(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetVideo request
 	GetVideo(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
@@ -142,6 +145,18 @@ func (c *Client) ListShows(ctx context.Context, params *ListShowsParams, reqEdit
 
 func (c *Client) SearchShows(ctx context.Context, params *SearchShowsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSearchShowsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetVersion(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetVersionRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -374,6 +389,33 @@ func NewSearchShowsRequest(server string, params *SearchShowsParams) (*http.Requ
 	return req, nil
 }
 
+// NewGetVersionRequest generates requests for GetVersion
+func NewGetVersionRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/version")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetVideoRequest generates requests for GetVideo
 func NewGetVideoRequest(server string, id int64) (*http.Request, error) {
 	var err error
@@ -462,6 +504,9 @@ type ClientWithResponsesInterface interface {
 
 	// SearchShowsWithResponse request
 	SearchShowsWithResponse(ctx context.Context, params *SearchShowsParams, reqEditors ...RequestEditorFn) (*SearchShowsResponse, error)
+
+	// GetVersionWithResponse request
+	GetVersionWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetVersionResponse, error)
 
 	// GetVideoWithResponse request
 	GetVideoWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*GetVideoResponse, error)
@@ -573,6 +618,30 @@ func (r SearchShowsResponse) StatusCode() int {
 	return 0
 }
 
+type GetVersionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Version string `json:"version"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r GetVersionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetVersionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetVideoResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -633,6 +702,15 @@ func (c *ClientWithResponses) SearchShowsWithResponse(ctx context.Context, param
 		return nil, err
 	}
 	return ParseSearchShowsResponse(rsp)
+}
+
+// GetVersionWithResponse request returning *GetVersionResponse
+func (c *ClientWithResponses) GetVersionWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetVersionResponse, error) {
+	rsp, err := c.GetVersion(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetVersionResponse(rsp)
 }
 
 // GetVideoWithResponse request returning *GetVideoResponse
@@ -808,6 +886,34 @@ func ParseSearchShowsResponse(rsp *http.Response) (*SearchShowsResponse, error) 
 			return nil, err
 		}
 		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetVersionResponse parses an HTTP response from a GetVersionWithResponse call
+func ParseGetVersionResponse(rsp *http.Response) (*GetVersionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetVersionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Version string `json:"version"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	}
 

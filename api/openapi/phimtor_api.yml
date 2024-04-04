@@ -11,6 +11,23 @@ info:
     email: chien.nm196@gmail.com
 
 paths:
+  /version:
+    get:
+      operationId: getVersion
+      summary: Get version
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                title: GetVersionResponse
+                type: object
+                properties:
+                  version:
+                    type: string
+                required:
+                  - version
   /shows:
     get:
       operationId: listShows

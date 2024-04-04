@@ -41,7 +41,7 @@ jobs:
       # Build server
       - name: Build server
         run: |
-          cd server && go build -o server && chmod +x server
+          cd server && go build -o server -ldflags "-s -w -X github.com/phimtorr/phimtor/server/version.Version=$VERSION" && chmod +x server
         shell: bash
 
       # Upload artifacts

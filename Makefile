@@ -11,7 +11,6 @@ tools:
 	#npm install -g @openapitools/openapi-generator-cli
 
 
-
 .PHONY: openapi
 openapi: openapi-http openapi-client
 

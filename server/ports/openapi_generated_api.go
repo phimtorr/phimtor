@@ -25,6 +25,9 @@ type ServerInterface interface {
 	// Search shows
 	// (GET /shows/search)
 	SearchShows(w http.ResponseWriter, r *http.Request, params SearchShowsParams)
+	// Get version
+	// (GET /version)
+	GetVersion(w http.ResponseWriter, r *http.Request)
 	// Get video by id
 	// (GET /videos/{id})
 	GetVideo(w http.ResponseWriter, r *http.Request, id int64)
@@ -55,6 +58,12 @@ func (_ Unimplemented) ListShows(w http.ResponseWriter, r *http.Request, params 
 // Search shows
 // (GET /shows/search)
 func (_ Unimplemented) SearchShows(w http.ResponseWriter, r *http.Request, params SearchShowsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// Get version
+// (GET /version)
+func (_ Unimplemented) GetVersion(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -203,6 +212,21 @@ func (siw *ServerInterfaceWrapper) SearchShows(w http.ResponseWriter, r *http.Re
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.SearchShows(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// GetVersion operation middleware
+func (siw *ServerInterfaceWrapper) GetVersion(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetVersion(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -362,6 +386,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/shows/search", wrapper.SearchShows)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/version", wrapper.GetVersion)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/videos/{id}", wrapper.GetVideo)
