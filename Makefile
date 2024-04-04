@@ -16,7 +16,7 @@ openapi: openapi-http openapi-client
 
 .PHONY: openapi-http
 openapi-http:
-	@./scripts/openapi-http.sh phimtor_api server/ports ports
+	@./scripts/openapi-http.sh phimtor_api server/http http
 
 .PHONY: openapi-client
 openapi-client:

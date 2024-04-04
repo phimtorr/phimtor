@@ -6,11 +6,11 @@ import (
 
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 
-	"github.com/phimtorr/phimtor/server/ports"
+	"github.com/phimtorr/phimtor/server/http"
 	"github.com/phimtorr/phimtor/server/repository/dbmodels"
 )
 
-func (r Repository) GetVideo(ctx context.Context, id int64) (ports.Video, error) {
+func (r Repository) GetVideo(ctx context.Context, id int64) (http.Video, error) {
 	dbVideo, err := dbmodels.Videos(
 		dbmodels.VideoWhere.ID.EQ(id),
 		qm.Load(dbmodels.VideoRels.TorrentLinks),
@@ -20,13 +20,13 @@ func (r Repository) GetVideo(ctx context.Context, id int64) (ports.Video, error)
 		qm.Load(qm.Rels(dbmodels.VideoRels.Episode, dbmodels.EpisodeRels.Show)),
 	).One(ctx, r.db)
 	if err != nil {
-		return ports.Video{}, err
+		return http.Video{}, err
 	}
 	return toHTTPVideo(dbVideo), nil
 }
 
-func toHTTPVideo(dbVid *dbmodels.Video) ports.Video {
-	return ports.Video{
+func toHTTPVideo(dbVid *dbmodels.Video) http.Video {
+	return http.Video{
 		Id:           dbVid.ID,
 		Subtitles:    toHTTPSubtitles(dbVid.R.Subtitles),
 		Title:        toVideoTitle(dbVid),
@@ -34,27 +34,27 @@ func toHTTPVideo(dbVid *dbmodels.Video) ports.Video {
 	}
 }
 
-func toHTTPTorrentLinks(dbLinks dbmodels.TorrentLinkSlice) []ports.TorrentLink {
-	var links []ports.TorrentLink
+func toHTTPTorrentLinks(dbLinks dbmodels.TorrentLinkSlice) []http.TorrentLink {
+	var links []http.TorrentLink
 	for _, link := range dbLinks {
-		links = append(links, ports.TorrentLink{
+		links = append(links, http.TorrentLink{
 			Link:      link.Link,
 			Name:      link.Name,
 			FileIndex: link.FileIndex,
 			Priority:  link.Priority,
 		})
 	}
-	slices.SortStableFunc(links, func(a, b ports.TorrentLink) int {
+	slices.SortStableFunc(links, func(a, b http.TorrentLink) int {
 		// sort by priority, descending
 		return b.Priority - a.Priority
 	})
 	return links
 }
 
-func toHTTPSubtitles(dbSubs dbmodels.SubtitleSlice) []ports.Subtitle {
-	var subs []ports.Subtitle
+func toHTTPSubtitles(dbSubs dbmodels.SubtitleSlice) []http.Subtitle {
+	var subs []http.Subtitle
 	for _, sub := range dbSubs {
-		subs = append(subs, ports.Subtitle{
+		subs = append(subs, http.Subtitle{
 			Language: sub.Language,
 			Link:     sub.Link,
 			Name:     sub.Name,

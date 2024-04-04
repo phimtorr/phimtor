@@ -9,7 +9,7 @@ import (
 	"github.com/friendsofgo/errors"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 
-	"github.com/phimtorr/phimtor/server/ports"
+	"github.com/phimtorr/phimtor/server/http"
 	"github.com/phimtorr/phimtor/server/repository/dbmodels"
 )
 
@@ -19,7 +19,7 @@ const (
 	pageSizeMax     = 24
 )
 
-func (r Repository) ListShows(ctx context.Context, params ports.ListShowsParams) ([]ports.Show, ports.Pagination, error) {
+func (r Repository) ListShows(ctx context.Context, params http.ListShowsParams) ([]http.Show, http.Pagination, error) {
 	page := unPointer(params.Page)
 	pageSize := unPointer(params.PageSize)
 	showType := unPointer(params.Type)
@@ -42,18 +42,18 @@ func (r Repository) ListShows(ctx context.Context, params ports.ListShowsParams)
 	shows, err := dbmodels.Shows(pagingQueryMods...).
 		All(ctx, r.db)
 	if err != nil {
-		return nil, ports.Pagination{}, errors.Wrap(err, "get shows")
+		return nil, http.Pagination{}, errors.Wrap(err, "get shows")
 	}
 
 	count, err := dbmodels.Shows(queryMods...).Count(ctx, r.db)
 	if err != nil {
-		return nil, ports.Pagination{}, errors.Wrap(err, "count shows")
+		return nil, http.Pagination{}, errors.Wrap(err, "count shows")
 	}
 
 	return toHTTPShows(shows), toHTTPPagination(page, pageSize, count), nil
 }
 
-func (r Repository) SearchShow(ctx context.Context, params ports.SearchShowsParams) ([]ports.Show, ports.Pagination, error) {
+func (r Repository) SearchShow(ctx context.Context, params http.SearchShowsParams) ([]http.Show, http.Pagination, error) {
 	query := params.Query
 	page := unPointer(params.Page)
 
@@ -61,7 +61,7 @@ func (r Repository) SearchShow(ctx context.Context, params ports.SearchShowsPara
 	pageSize := pageSizeDefault
 
 	if query == "" {
-		return nil, ports.Pagination{}, commonErrors.NewIncorrectInputError("empty-query", "query is empty")
+		return nil, http.Pagination{}, commonErrors.NewIncorrectInputError("empty-query", "query is empty")
 	}
 
 	var queryMods []qm.QueryMod
@@ -74,12 +74,12 @@ func (r Repository) SearchShow(ctx context.Context, params ports.SearchShowsPara
 
 	shows, err := dbmodels.Shows(pagingQueryMods...).All(ctx, r.db)
 	if err != nil {
-		return nil, ports.Pagination{}, errors.Wrap(err, "get shows")
+		return nil, http.Pagination{}, errors.Wrap(err, "get shows")
 	}
 
 	count, err := dbmodels.Shows(queryMods...).Count(ctx, r.db)
 	if err != nil {
-		return nil, ports.Pagination{}, errors.Wrap(err, "count shows")
+		return nil, http.Pagination{}, errors.Wrap(err, "count shows")
 	}
 
 	return toHTTPShows(shows), toHTTPPagination(page, pageSize, count), nil
@@ -93,16 +93,16 @@ func unPointer[T any](v *T) T {
 	return *v
 }
 
-func toHTTPShows(shows []*dbmodels.Show) []ports.Show {
-	var res []ports.Show
+func toHTTPShows(shows []*dbmodels.Show) []http.Show {
+	var res []http.Show
 	for _, show := range shows {
 		res = append(res, toHTTPBasicInfo(show))
 	}
 	return res
 }
 
-func toHTTPBasicInfo(show *dbmodels.Show) ports.Show {
-	return ports.Show{
+func toHTTPBasicInfo(show *dbmodels.Show) http.Show {
+	return http.Show{
 		CurrentEpisode:    show.CurrentEpisode,
 		DurationInMinutes: show.DurationInMinutes,
 		Id:                show.ID,
@@ -111,14 +111,14 @@ func toHTTPBasicInfo(show *dbmodels.Show) ports.Show {
 		Quantity:          show.Quantity,
 		ReleaseYear:       show.ReleaseYear,
 		Score:             float32(show.Score),
-		Type:              ports.ShowType(show.Type),
+		Type:              http.ShowType(show.Type),
 		Title:             show.Title,
 		TotalEpisodes:     show.TotalEpisodes,
 	}
 }
 
-func toHTTPPagination(page, pageSize int, total int64) ports.Pagination {
-	return ports.Pagination{
+func toHTTPPagination(page, pageSize int, total int64) http.Pagination {
+	return http.Pagination{
 		Page:         page,
 		TotalPages:   int(math.Ceil(float64(total) / float64(pageSize))),
 		TotalResults: total,
