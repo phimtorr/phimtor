@@ -25,7 +25,7 @@ jobs:
           fi
           echo Version: $VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo $VERSION > server/version
+          echo $VERSION > server/VERSION.txt
         shell: bash
 
       # Setup Golang
@@ -51,4 +51,4 @@ jobs:
           name: server_artifact
           path: |
             server/server
-            server/version
+            server/VERSION.txt
