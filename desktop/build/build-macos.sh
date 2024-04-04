@@ -14,7 +14,10 @@ readonly APP_DIR="$WORKING_DIR/bin/source/${APP_NAME}.app"
 
 mkdir -p $APP_DIR/Contents/{MacOS,Resources}
 
-"$SCRIPT_DIR/build.sh" "$APP_DIR/Contents/MacOS/$APP_NAME"
+env GOARCH=amd64 "$SCRIPT_DIR/build.sh" "$WORKING_DIR/${APP_NAME}.amd64"
+env GOARCH=arm64 "$SCRIPT_DIR/build.sh" "$WORKING_DIR/${APP_NAME}.arm64"
+
+lipo -create -output "$APP_DIR/Contents/MacOS/${APP_NAME}" "$WORKING_DIR/${APP_NAME}.amd64" "$WORKING_DIR/${APP_NAME}.arm64"
 
 cat > $APP_DIR/Contents/Info.plist << EOF
 <?xml version="1.0" encoding="UTF-8"?>
