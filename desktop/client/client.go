@@ -81,6 +81,15 @@ func (c *Client) GetVideo(ctx context.Context, id int64) (api.Video, error) {
 	return resp.JSON200.Video, nil
 }
 
+func (c *Client) GetVersion(ctx context.Context) (string, error) {
+	resp, err := c.GetVersionWithResponse(ctx)
+	if isNotResponseOk(resp, err) {
+		return "", handleError(nil, nil, err)
+	}
+
+	return resp.JSON200.Version, nil
+}
+
 type response interface {
 	StatusCode() int
 }
