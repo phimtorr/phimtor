@@ -3,11 +3,13 @@ package ui
 import "github.com/phimtorr/phimtor/desktop/setting"
 import "github.com/phimtorr/phimtor/desktop/i18n"
 import "github.com/phimtorr/phimtor/desktop/server/uri"
+import "github.com/phimtorr/phimtor/desktop/build"
 
 templ Settings(settings setting.Settings) {
 	@layout(i18n.MustT(ctx, "Settings.Title")) {
 		<div class="pb-8 pt-4">
 			<h1 class="text-2xl font-bold">{ i18n.T(ctx, "Settings.Title") }</h1>
+			<small class="text-sm italic">Version: { build.Version }</small>
 		</div>
 		<div class="rounded-sm p-4 bg-stone-700">
 			<div class="mt-4 border-b border-gray-400">
