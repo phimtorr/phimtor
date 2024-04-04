@@ -9,31 +9,31 @@ on:
       - master
 
 jobs:
-  build-desktop:
+  build_desktop:
     uses: ./.github/workflows/build_desktop.yml
     with:
       server_address: "https://dev.phimtor.net"
       firebase_api_key: "AIzaSyD0OPqFBC2tYvj74wMWvXqoPixSryet2lQ"
 
-  build-server:
+  build_server:
     uses: ./.github/workflows/build_server.yml
 
-  release-desktop:
-    needs: [ build-desktop ]
+  release_desktop:
+    needs: [ build_desktop ]
     uses: ./.github/workflows/release_desktop.yml
     with:
-      artifact_pattern: ${{ needs.build.outputs.artifact_pattern }}
+      artifact_pattern: ${{ needs.build_desktop.outputs.artifact_pattern }}
       environment: development
     secrets:
       SSH_HOST: ${{ secrets.SSH_HOST }}
       SSH_USER: ${{ secrets.SSH_USER }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
-  deploy-server:
-    needs: [ build-server, release-desktop ]
+  deploy_server:
+    needs: [ build_server, release_desktop ]
     uses: ./.github/workflows/deploy_server.yml
     with:
-      artifact_name: ${{ needs.build.outputs.artifact_name }}
+      artifact_name: ${{ needs.build_server.outputs.artifact_name }}
       environment: development
       service_name: "phimtor.server.dev.service"
     secrets:
