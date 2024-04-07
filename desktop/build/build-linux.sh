@@ -13,6 +13,7 @@ readonly APP=PhimTor
 readonly APP_DIR="$WORKING_DIR/bin/$APP"
 
 mkdir -p "$APP_DIR/opt/$APP"
+chmod -R 777 "$APP_DIR/opt/$APP"
 mkdir -p "$APP_DIR/usr/share/applications"
 mkdir -p "$APP_DIR/usr/share/icons/hicolor/1024x1024/apps"
 mkdir -p "$APP_DIR/usr/share/icons/hicolor/256x256/apps"
