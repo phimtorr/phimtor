@@ -46,7 +46,7 @@ func (h *Handler) GetVideo(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "add torrent from link")
 	}
 
-	return ui.Video(video, infoHash, selectedTorrent, selectedSubtitle.Name).Render(r.Context(), w)
+	return ui.Video(video, infoHash, selectedTorrent, selectedSubtitle).Render(r.Context(), w)
 }
 
 func getSelectedTorrentLink(torrentLinked []api.TorrentLink, torrentName string) api.TorrentLink {

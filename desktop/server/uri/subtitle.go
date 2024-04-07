@@ -2,14 +2,13 @@ package uri
 
 import (
 	"fmt"
-	"net/url"
 )
 
-func SelectSubtitle(videoID int64, subtitleName string) string {
-	if subtitleName == "" {
+func SelectSubtitle(videoID int64, subtitleID int64) string {
+	if subtitleID == 0 {
 		return UnselectSubtitle(videoID)
 	}
-	return fmt.Sprintf("/videos/%d/subtitles/%s", videoID, url.QueryEscape(subtitleName))
+	return fmt.Sprintf("/videos/%d/subtitles/%d", videoID, subtitleID)
 }
 
 func UnselectSubtitle(videoID int64) string {
@@ -24,6 +23,6 @@ func AdjustSubtitle(videoID int64, adjustMilliseconds int) string {
 	return fmt.Sprintf("/videos/%d/subtitles/adjust?ms=%d", videoID, adjustMilliseconds)
 }
 
-func DownloadSubtitle(videoID int64, subtitleName string) string {
-	return fmt.Sprintf("/videos/%d/subtitles/%s/download", videoID, url.QueryEscape(subtitleName))
+func DownloadSubtitle(videoID int64, subtitleID int64) string {
+	return fmt.Sprintf("/videos/%d/subtitles/%d/download", videoID, subtitleID)
 }

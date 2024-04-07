@@ -6,7 +6,7 @@ import "github.com/phimtorr/phimtor/desktop/torrent"
 import "github.com/phimtorr/phimtor/desktop/server/uri"
 import "github.com/phimtorr/phimtor/desktop/i18n"
 
-templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.TorrentLink, selectedSubtitleName string) {
+templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.TorrentLink, selectedSubtitle api.Subtitle) {
 	@layout(video.Title) {
 		<section class="w-full space-y-2">
 			<video
@@ -64,7 +64,7 @@ templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.Torrent
 		</section>
 		<section
 			hx-trigger="load"
-			hx-post={ uri.SelectSubtitle(video.Id, selectedSubtitleName) }
+			hx-post={ uri.SelectSubtitle(video.Id, selectedSubtitle.Id) }
 			hx-swap="outerHTML"
 		></section>
 	}
@@ -254,7 +254,7 @@ templ subtitle(videoID int64, sub api.Subtitle, isSelected bool) {
 templ subtitleSelectButton(videoID int64, sub api.Subtitle) {
 	<button
 		class="rounded bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-700 text-sm"
-		hx-post={ uri.SelectSubtitle(videoID, sub.Name) }
+		hx-post={ uri.SelectSubtitle(videoID, sub.Id) }
 		hx-swap="outerHTML"
 		hx-target="#subtitleSection"
 		hx-indicator=".subtitle-indicator"
@@ -278,7 +278,7 @@ templ unselecteSubtitleButton(videoID int64) {
 templ subtitleDownloadButton(videoID int64, sub api.Subtitle) {
 	<button
 		class="rounded bg-stone-600 px-4 py-2 font-bold text-white hover:bg-stone-700 text-sm"
-		hx-post={ uri.DownloadSubtitle(videoID, sub.Name) }
+		hx-post={ uri.DownloadSubtitle(videoID, sub.Id) }
 		hx-swap="none"
 	>
 		{ i18n.T(ctx, "Subtitle.Action.Download") }
