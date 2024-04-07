@@ -9,8 +9,9 @@ require (
 	github.com/adrg/xdg v0.4.0
 	github.com/anacrolix/torrent v1.54.1
 	github.com/asticode/go-astisub v0.26.2
-	github.com/chrisngyn/lorca v0.0.1
+	github.com/chrisngyn/lorca v0.0.2-0.20240407030924-02653d86e33f
 	github.com/friendsofgo/errors v0.9.2
+	github.com/fynelabs/selfupdate v0.2.0
 	github.com/gabriel-vasile/mimetype v1.4.2
 	github.com/go-chi/chi/v5 v5.0.12
 	github.com/ncruces/zenity v0.10.11
@@ -61,7 +62,6 @@ require (
 	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/edsrzf/mmap-go v1.1.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
-	github.com/fynelabs/selfupdate v0.2.0 // indirect
 	github.com/go-llsqlite/adapter v0.0.0-20230927005056-7f5ce7f0c916 // indirect
 	github.com/go-llsqlite/crawshaw v0.4.0 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
