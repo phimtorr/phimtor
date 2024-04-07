@@ -105,6 +105,7 @@ type Subtitle struct {
 	Name     string
 	Owner    string
 	Link     string
+	Priority int
 	FileKey  string
 }
 
@@ -120,6 +121,7 @@ templ ViewSubtitles(videoID int64, subtitles []Subtitle) {
 						<th>ID</th>
 						<th>Language</th>
 						<th>Name</th>
+						<th>Priority</th>
 						<th>Owner</th>
 						<th>Link</th>
 						<th>Action</th>
@@ -131,6 +133,7 @@ templ ViewSubtitles(videoID int64, subtitles []Subtitle) {
 							<td>{ toString(sub.ID) }</td>
 							<td>{ sub.Language }</td>
 							<td>{ sub.Name }</td>
+							<td>{ toString(sub.Priority) }</td>
 							<td>{ sub.Owner }</td>
 							<td>{ sub.Link }</td>
 							<td>
@@ -172,6 +175,10 @@ templ ViewSubtitles(videoID int64, subtitles []Subtitle) {
 					File
 					<input type="file" name="file" required accept=".srt,.vtt"/>
 				</label>
+				<lable>
+					Priority
+					<input type="number" name="priority" value="0" />
+				</lable>
 				<button type="submit">Add</button>
 			</form>
 		</section>
