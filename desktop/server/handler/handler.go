@@ -66,13 +66,13 @@ func (h *Handler) Register(r chi.Router) {
 
 	// subtitles
 	// select subtitle
-	r.Post("/videos/{videoID}/subtitles/{subtitleName}", errHandlerFunc(h.SelectSubtitle))
+	r.Post("/videos/{videoID}/subtitles/{subtitleID}", errHandlerFunc(h.SelectSubtitle))
 	// unset subtitle
 	r.Post("/videos/{videoID}/subtitles", errHandlerFunc(h.UnselectSubtitle))
 	// upload file
 	r.Post("/videos/{videoID}/subtitles/upload", errHandlerFunc(h.UploadSubtitle))
 	r.Post("/videos/{videoID}/subtitles/adjust", errHandlerFunc(h.AdjustSubtitle))
-	r.Post("/videos/{videoID}/subtitles/{subtitleName}/download", errHandlerFunc(h.DownloadSubtitle))
+	r.Post("/videos/{videoID}/subtitles/{subtitleID}/download", errHandlerFunc(h.DownloadSubtitle))
 	// settings
 	r.Get("/settings", errHandlerFunc(h.GetSettings))
 	r.Post("/settings", errHandlerFunc(h.UpdateSetting))

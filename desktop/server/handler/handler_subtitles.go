@@ -5,14 +5,12 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
 	"strconv"
 	"time"
 
 	"github.com/friendsofgo/errors"
 	"github.com/go-chi/chi/v5"
 	commonErrors "github.com/phimtorr/phimtor/common/errors"
-
 	"github.com/pkg/browser"
 	"github.com/rs/zerolog/log"
 
@@ -27,7 +25,7 @@ func (h *Handler) SelectSubtitle(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	subtitleName, err := parseSubtitleName(chi.URLParam(r, "subtitleName"))
+	subtitleID, err := parseSubtitleID(chi.URLParam(r, "subtitleID"))
 	if err != nil {
 		return err
 	}
@@ -37,9 +35,9 @@ func (h *Handler) SelectSubtitle(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "get video")
 	}
 
-	selectedSubtitle, found := findSubtitle(video.Subtitles, subtitleName)
+	selectedSubtitle, found := findSubtitle(video.Subtitles, subtitleID)
 	if !found {
-		return commonErrors.NewIncorrectInputError("subtitle-not-found", fmt.Sprintf("subtitle not found: %s", subtitleName))
+		return commonErrors.NewIncorrectInputError("subtitle-not-found", fmt.Sprintf("subtitle id not found: %d", subtitleID))
 	}
 
 	fileName, originalContent, err := subtitle.GetFileFromLink(selectedSubtitle.Link)
@@ -61,9 +59,9 @@ func (h *Handler) SelectSubtitle(w http.ResponseWriter, r *http.Request) error {
 	}).Render(r.Context(), w)
 }
 
-func findSubtitle(subtitles []api.Subtitle, subtitleName string) (api.Subtitle, bool) {
+func findSubtitle(subtitles []api.Subtitle, subtitleID int64) (api.Subtitle, bool) {
 	for _, s := range subtitles {
-		if s.Name == subtitleName {
+		if s.Id == subtitleID {
 			return s, true
 		}
 	}
@@ -89,7 +87,7 @@ func (h *Handler) DownloadSubtitle(w http.ResponseWriter, r *http.Request) error
 		return err
 	}
 
-	subtitleName, err := parseSubtitleName(chi.URLParam(r, "subtitleName"))
+	subtitleID, err := parseSubtitleID(chi.URLParam(r, "subtitleID"))
 	if err != nil {
 		return err
 	}
@@ -99,9 +97,9 @@ func (h *Handler) DownloadSubtitle(w http.ResponseWriter, r *http.Request) error
 		return errors.Wrap(err, "get video")
 	}
 
-	selectedSubtitle, found := findSubtitle(video.Subtitles, subtitleName)
+	selectedSubtitle, found := findSubtitle(video.Subtitles, subtitleID)
 	if !found {
-		return commonErrors.NewIncorrectInputError("subtitle-not-found", fmt.Sprintf("subtitle not found: %s", subtitleName))
+		return commonErrors.NewIncorrectInputError("subtitle-not-found", fmt.Sprintf("subtitle id not found: %d", subtitleID))
 	}
 
 	if err := browser.OpenURL(selectedSubtitle.Link); err != nil {
@@ -202,13 +200,13 @@ func parseVideoID(videoIDRaw string) (int64, error) {
 }
 
 var (
-	ErrInvalidSubtitleName = commonErrors.NewIncorrectInputError("invalid-subtitle-name", "invalid subtitle name")
+	ErrInvalidSubtitleID = commonErrors.NewIncorrectInputError("invalid-subtitle-id", "invalid subtitle id")
 )
 
-func parseSubtitleName(subtitleNameRaw string) (string, error) {
-	subtitleName, err := url.QueryUnescape(subtitleNameRaw)
+func parseSubtitleID(subtitleIDRaw string) (int64, error) {
+	subtitleID, err := strconv.ParseInt(subtitleIDRaw, 10, 64)
 	if err != nil {
-		return "", errors.Wrapf(ErrInvalidSubtitleName, "parse subtitle_name=%s, err=%v", subtitleName, err)
+		return 0, errors.Wrapf(ErrInvalidSubtitleID, "parse subtitleID=%s, err=%v", subtitleIDRaw, err)
 	}
-	return subtitleName, nil
+	return subtitleID, nil
 }
