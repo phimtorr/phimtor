@@ -3,7 +3,6 @@ package handler
 import (
 	"fmt"
 	"net/http"
-	"net/url"
 	"strconv"
 	"time"
 
@@ -28,7 +27,7 @@ func (h *Handler) GetVideo(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	torrentName, err := parseTorrentName(r.URL.Query().Get("torrent"))
+	torrentID, err := parseTorrentID(r.URL.Query().Get("torrentID"))
 	if err != nil {
 		return err
 	}
@@ -38,7 +37,7 @@ func (h *Handler) GetVideo(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "get video")
 	}
 
-	selectedTorrent := getSelectedTorrentLink(video.TorrentLinks, torrentName)
+	selectedTorrent := getSelectedTorrentLink(video.TorrentLinks, torrentID)
 	selectedSubtitle := getSelectedSubtitle(video.Subtitles)
 
 	infoHash, err := h.torManager.AddFromLink(selectedTorrent.Link)
@@ -49,9 +48,9 @@ func (h *Handler) GetVideo(w http.ResponseWriter, r *http.Request) error {
 	return ui.Video(video, infoHash, selectedTorrent, selectedSubtitle).Render(r.Context(), w)
 }
 
-func getSelectedTorrentLink(torrentLinked []api.TorrentLink, torrentName string) api.TorrentLink {
+func getSelectedTorrentLink(torrentLinked []api.TorrentLink, torrentID int64) api.TorrentLink {
 	for _, t := range torrentLinked {
-		if t.Name == torrentName {
+		if t.Id == torrentID {
 			return t
 		}
 	}
@@ -153,15 +152,18 @@ func parseID(idRaw string) (int64, error) {
 }
 
 var (
-	ErrInvalidTorrentName = commonErrors.NewIncorrectInputError("invalid-torrent-name", "invalid torrent name")
+	ErrInvalidTorrentID = commonErrors.NewIncorrectInputError("invalid-torrent-id", "invalid torrent id")
 )
 
-func parseTorrentName(torrentNameRaw string) (string, error) {
-	torrentName, err := url.QueryUnescape(torrentNameRaw)
-	if err != nil {
-		return "", errors.Wrapf(ErrInvalidTorrentName, "parse torrent_name=%s, err=%v", torrentName, err)
+func parseTorrentID(torrentIDRaw string) (int64, error) {
+	if torrentIDRaw == "" {
+		return 0, nil
 	}
-	return torrentName, nil
+	id, err := strconv.ParseInt(torrentIDRaw, 10, 64)
+	if err != nil {
+		return 0, errors.Wrapf(ErrInvalidTorrentID, "parse torrent_id=%s, err=%v", torrentIDRaw, err)
+	}
+	return id, nil
 }
 
 var (
