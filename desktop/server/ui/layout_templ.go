@@ -41,7 +41,7 @@ func layout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><style>\n\t\t\t\t.htmx-indicator {\n\t\t\t\t\tdisplay: none;\n\t\t\t\t}\n\t\t\t\t.htmx-request .htmx-indicator {\n\t\t\t\t\tdisplay: inline;\n\t\t\t\t}\n\t\t\t\t.htmx-request.htmx-indicator {\n\t\t\t\t\tdisplay: inline;\n\t\t\t\t}\n\t\t\t</style></head><body class=\"box-border flex flex-col min-h-screen w-full bg-stone-900 h-screen text-slate-100\" hx-ext=\"response-targets\"><nav class=\"flex items-center justify-between bg-stone-800 px-4 py-4 border-b border-gray-600\"><div class=\"flex flex-shrink-0 items-center\"><span class=\"text-xl font-bold\">PhimTor</span></div><div class=\"flex-grow px-4\"><form class=\"max-w-md mx-auto\" method=\"GET\" action=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><style>\n\t\t\t\t.htmx-indicator {\n\t\t\t\t\tdisplay: none;\n\t\t\t\t}\n\t\t\t\t.htmx-request .htmx-indicator {\n\t\t\t\t\tdisplay: inline;\n\t\t\t\t}\n\t\t\t\t.htmx-request.htmx-indicator {\n\t\t\t\t\tdisplay: inline;\n\t\t\t\t}\n\t\t\t</style><!-- Google tag (gtag.js) --><script async src=\"https://www.googletagmanager.com/gtag/js?id=G-8LBFCJJVY0\"></script><script>\n\t\t\t\twindow.dataLayer = window.dataLayer || [];\n\t\t\t\tfunction gtag(){dataLayer.push(arguments);}\n\t\t\t\tgtag('js', new Date());\n\n\t\t\t\tgtag('config', 'G-8LBFCJJVY0');\n\t\t\t</script></head><body class=\"box-border flex flex-col min-h-screen w-full bg-stone-900 h-screen text-slate-100\" hx-ext=\"response-targets\"><nav class=\"flex items-center justify-between bg-stone-800 px-4 py-4 border-b border-gray-600\"><div class=\"flex flex-shrink-0 items-center\"><span class=\"text-xl font-bold\">PhimTor</span></div><div class=\"flex-grow px-4\"><form class=\"max-w-md mx-auto\" method=\"GET\" action=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -57,7 +57,7 @@ func layout(title string) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.MustT(ctx, "Search.SearchBar.Placeholder"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/layout.templ`, Line: 46, Col: 268}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/layout.templ`, Line: 55, Col: 268}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -70,7 +70,7 @@ func layout(title string) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "Search.SearchBar.Button"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/layout.templ`, Line: 47, Col: 238}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/layout.templ`, Line: 56, Col: 238}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -136,7 +136,7 @@ func topRightMenu() templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(auth.CurrentUser(ctx).DisplayName)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/layout.templ`, Line: 71, Col: 45}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/layout.templ`, Line: 80, Col: 45}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
@@ -219,7 +219,7 @@ func navLink(link string, messageID string) templ.Component {
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, messageID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/layout.templ`, Line: 89, Col: 85}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/layout.templ`, Line: 98, Col: 85}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {

@@ -29,6 +29,15 @@ templ layout(title string) {
 					display: inline;
 				}
 			</style>
+			<!-- Google tag (gtag.js) -->
+			<script async src="https://www.googletagmanager.com/gtag/js?id=G-8LBFCJJVY0"></script>
+			<script>
+				window.dataLayer = window.dataLayer || [];
+				function gtag(){dataLayer.push(arguments);}
+				gtag('js', new Date());
+
+				gtag('config', 'G-8LBFCJJVY0');
+			</script>
 		</head>
 		<body class="box-border flex flex-col min-h-screen w-full bg-stone-900 h-screen text-slate-100" hx-ext="response-targets">
 			<nav class="flex items-center justify-between bg-stone-800 px-4 py-4 border-b border-gray-600">
