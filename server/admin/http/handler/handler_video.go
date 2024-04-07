@@ -135,6 +135,12 @@ func (h *Handler) CreateSubtitle(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "upload file")
 	}
 
+	priority, err := strconv.Atoi(r.Form.Get("priority"))
+	if err != nil {
+		return commonErrors.NewIncorrectInputError("invalid-priority",
+			errors.Wrap(err, "invalid priority").Error())
+	}
+
 	if _, err := h.repo.CreateSubtitle(r.Context(), SubtitleToCreate{
 		VideoID:  videoID,
 		Language: language,
@@ -142,6 +148,7 @@ func (h *Handler) CreateSubtitle(w http.ResponseWriter, r *http.Request) error {
 		Owner:    owner,
 		Link:     objectURL,
 		FileKey:  fileKey,
+		Priority: priority,
 	}); err != nil {
 		return errors.Wrap(err, "create subtitle")
 	}

@@ -411,6 +411,9 @@ components:
     TorrentLink:
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
         name:
           type: string
         link:
@@ -420,6 +423,7 @@ components:
         priority:
           type: integer
       required:
+        - id
         - name
         - link
         - fileIndex
@@ -428,6 +432,9 @@ components:
     Subtitle:
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
         language:
           type: string
         name:
@@ -436,9 +443,12 @@ components:
           type: string
         link:
           type: string
+        priority:
+          type: integer
       required:
+        - id
         - language
         - name
         - owner
         - link
-
+        - priority

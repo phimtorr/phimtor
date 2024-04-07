@@ -13,7 +13,7 @@ templ Shows(shows []ShowDisplay, pag Pagination) {
 	@layout("Shows") {
 		<h1>Shows</h1>
 		<section>
-			<a href={ templ.SafeURL(uri.CreateShow()) }>Create Show</a>
+			<a role="button" href={ templ.SafeURL(uri.CreateShow()) }>Create Show</a>
 		</section>
 		<section>
 			<article>
@@ -36,7 +36,7 @@ templ Shows(shows []ShowDisplay, pag Pagination) {
 								</td>
 								<td><img src={ s.Poster } alt={ s.Title } style="width: 150px;"/></td>
 								<td>
-									<a href={ templ.SafeURL(uri.ViewShow(s.ID)) }>View</a>
+									<a role="button" href={ templ.SafeURL(uri.ViewShow(s.ID)) }>View</a>
 									<button class="contrast">Delete</button>
 								</td>
 							</tr>

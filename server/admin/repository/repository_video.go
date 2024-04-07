@@ -39,14 +39,7 @@ func toUIVideo(vid *dbmodels.Video) ui.Video {
 
 	subtitles := make([]ui.Subtitle, 0, len(vid.R.Subtitles))
 	for _, s := range vid.R.Subtitles {
-		subtitles = append(subtitles, ui.Subtitle{
-			ID:       s.ID,
-			Language: s.Language,
-			Name:     s.Name,
-			Owner:    s.Owner,
-			Link:     s.Link,
-			FileKey:  s.FileKey,
-		})
+		subtitles = append(subtitles, toUISubtitle(s))
 	}
 
 	return ui.Video{
@@ -86,14 +79,7 @@ func (r Repository) GetSubtitle(ctx context.Context, videoID, id int64) (ui.Subt
 	if err != nil {
 		return ui.Subtitle{}, err
 	}
-	return ui.Subtitle{
-		ID:       dbSubtitle.ID,
-		Language: dbSubtitle.Language,
-		Name:     dbSubtitle.Name,
-		Owner:    dbSubtitle.Owner,
-		Link:     dbSubtitle.Link,
-		FileKey:  dbSubtitle.FileKey,
-	}, nil
+	return toUISubtitle(dbSubtitle), nil
 }
 
 func (r Repository) CreateSubtitle(ctx context.Context, subtitle handler.SubtitleToCreate) (int64, error) {
@@ -103,6 +89,7 @@ func (r Repository) CreateSubtitle(ctx context.Context, subtitle handler.Subtitl
 		Name:     subtitle.Name,
 		Owner:    subtitle.Owner,
 		Link:     subtitle.Link,
+		Priority: subtitle.Priority,
 		FileKey:  subtitle.FileKey,
 	}
 	if err := dbSubtitle.Insert(ctx, r.db, boil.Infer()); err != nil {
@@ -117,4 +104,16 @@ func (r Repository) DeleteSubtitle(ctx context.Context, videoID, id int64) error
 		dbmodels.SubtitleWhere.VideoID.EQ(videoID),
 	).DeleteAll(ctx, r.db)
 	return err
+}
+
+func toUISubtitle(sub *dbmodels.Subtitle) ui.Subtitle {
+	return ui.Subtitle{
+		ID:       sub.ID,
+		Language: sub.Language,
+		Name:     sub.Name,
+		Owner:    sub.Owner,
+		Link:     sub.Link,
+		FileKey:  sub.FileKey,
+		Priority: sub.Priority,
+	}
 }

@@ -78,15 +78,18 @@ type ShowType string
 
 // Subtitle defines model for Subtitle.
 type Subtitle struct {
+	Id       int64  `json:"id"`
 	Language string `json:"language"`
 	Link     string `json:"link"`
 	Name     string `json:"name"`
 	Owner    string `json:"owner"`
+	Priority int    `json:"priority"`
 }
 
 // TorrentLink defines model for TorrentLink.
 type TorrentLink struct {
 	FileIndex int    `json:"fileIndex"`
+	Id        int64  `json:"id"`
 	Link      string `json:"link"`
 	Name      string `json:"name"`
 	Priority  int    `json:"priority"`
