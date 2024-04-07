@@ -38,6 +38,7 @@ func toHTTPTorrentLinks(dbLinks dbmodels.TorrentLinkSlice) []http.TorrentLink {
 	var links []http.TorrentLink
 	for _, link := range dbLinks {
 		links = append(links, http.TorrentLink{
+			Id:        link.ID,
 			Link:      link.Link,
 			Name:      link.Name,
 			FileIndex: link.FileIndex,
@@ -55,6 +56,7 @@ func toHTTPSubtitles(dbSubs dbmodels.SubtitleSlice) []http.Subtitle {
 	var subs []http.Subtitle
 	for _, sub := range dbSubs {
 		subs = append(subs, http.Subtitle{
+			Id:       sub.ID,
 			Language: sub.Language,
 			Link:     sub.Link,
 			Name:     sub.Name,
