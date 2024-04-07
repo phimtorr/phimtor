@@ -59,8 +59,13 @@ func toHTTPSubtitles(dbSubs dbmodels.SubtitleSlice) []http.Subtitle {
 			Link:     sub.Link,
 			Name:     sub.Name,
 			Owner:    sub.Owner,
+			Priority: sub.Priority,
 		})
 	}
+	slices.SortStableFunc(subs, func(a, b http.Subtitle) int {
+		// sort by priority, descending
+		return b.Priority - a.Priority
+	})
 	return subs
 }
 

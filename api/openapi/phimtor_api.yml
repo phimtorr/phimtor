@@ -436,9 +436,11 @@ components:
           type: string
         link:
           type: string
+        priority:
+          type: integer
       required:
         - language
         - name
         - owner
         - link
-
+        - priority

@@ -82,6 +82,7 @@ type Subtitle struct {
 	Link     string `json:"link"`
 	Name     string `json:"name"`
 	Owner    string `json:"owner"`
+	Priority int    `json:"priority"`
 }
 
 // TorrentLink defines model for TorrentLink.
