@@ -1,0 +1,54 @@
+name: Build Admin
+
+on:
+  workflow_call:
+    outputs:
+      artifact_name:
+        description: 'Name of the artifact'
+        value: admin_artifact
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+
+      # Store the version, stripping any v-prefix
+      - name: Write release version
+        run: |
+          VERSION=$(git describe --tags --always --match='v[0-9]*.[0-9]*.[0-9]*' 2> /dev/null | sed 's/^.//')
+          if [ -z "$VERSION" ] || ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-.+)*$ ]]; then
+            VERSION="0.0.0-$(git rev-parse --short HEAD)"
+          fi
+          echo Version: $VERSION
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo $VERSION > server/admin/VERSION.txt
+        shell: bash
+
+      # Setup Golang
+      - name: Setup Golang
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.21
+          check-latest: true
+          cache-dependency-path: server/go.mod
+      - run: go version
+        shell: bash
+
+      # Build server
+      - name: Build server
+        run: |
+          cd server/admin && go build -o admin -ldflags "-s -w" && chmod +x admin
+        shell: bash
+
+      # Upload artifacts
+      - name: Upload server
+        uses: actions/upload-artifact@v4
+        with:
+          name: admin_artifact
+          path: |
+            server/admin/admin
+            server/admin/VERSION.txt

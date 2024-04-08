@@ -1,11 +1,14 @@
 package main
 
 import (
+	"context"
 	"net/http"
 	"os"
 
+	firebase "firebase.google.com/go/v4"
 	"github.com/go-chi/chi/v5"
 	"github.com/phimtorr/phimtor/common/logs"
+	"github.com/phimtorr/phimtor/server/admin/auth"
 	adminHttp "github.com/phimtorr/phimtor/server/admin/http"
 	"github.com/phimtorr/phimtor/server/pkg/database"
 	"github.com/rs/zerolog/log"
@@ -14,10 +17,22 @@ import (
 func main() {
 	logs.Init()
 
+	firebaseApp := newFirebaseApp()
+	authClient, err := firebaseApp.Auth(context.Background())
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to create auth client")
+	}
+
+	authService := auth.NewAuth(authClient)
+
 	db := database.NewMySqlDB()
 	httpServer := adminHttp.NewHTTPServer(db)
 
 	r := chi.NewRouter()
+
+	r.Use(authService.Middleware)
+
+	authService.Register(r)
 	httpServer.Register(r)
 
 	addr := ":" + os.Getenv("HTTP_PORT")
@@ -25,4 +40,13 @@ func main() {
 	if err := http.ListenAndServe(addr, r); err != nil {
 		log.Fatal().Err(err).Msg("Stopped HTTP server")
 	}
+}
+
+func newFirebaseApp() *firebase.App {
+	// must set GOOGLE_APPLICATION_CREDENTIALS
+	app, err := firebase.NewApp(context.Background(), nil)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to create firebase app")
+	}
+	return app
 }

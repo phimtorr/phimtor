@@ -7,7 +7,6 @@ import (
 	"github.com/phimtorr/phimtor/server/admin/http/handler"
 	"github.com/phimtorr/phimtor/server/admin/http/ui"
 	"github.com/phimtorr/phimtor/server/admin/repository"
-
 	"github.com/phimtorr/phimtor/server/admin/s3"
 
 	"github.com/a-h/templ"
@@ -17,12 +16,12 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type HTTPServer struct {
+type Server struct {
 	handler *handler.Handler
 }
 
-func NewHTTPServer(db *sql.DB) HTTPServer {
-	return HTTPServer{
+func NewHTTPServer(db *sql.DB) Server {
+	return Server{
 		handler: handler.New(
 			repository.NewRepository(db),
 			s3.NewService(),
@@ -30,7 +29,7 @@ func NewHTTPServer(db *sql.DB) HTTPServer {
 	}
 }
 
-func (s HTTPServer) Register(r chi.Router) {
+func (s Server) Register(r chi.Router) {
 	r.Get("/", errHandlerFunc(s.handler.Home))
 	r.Get("/shows", errHandlerFunc(s.handler.ListShows))
 
