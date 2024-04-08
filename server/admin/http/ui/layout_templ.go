@@ -36,7 +36,7 @@ func layout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><script src=\"https://unpkg.com/htmx.org@1.9.11\" integrity=\"sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0\" crossorigin=\"anonymous\"></script></head><body><header class=\"container\"><nav><ul><li><strong>PhimTor Admin</strong></li></ul><ul><li><a href=\"/\">Home</a></li></ul></nav></header><main class=\"container\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><script src=\"https://unpkg.com/htmx.org@1.9.11\" integrity=\"sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0\" crossorigin=\"anonymous\"></script></head><body><header class=\"container\"><nav><ul><li><strong>PhimTor Admin</strong></li></ul><ul><li><a href=\"/\">Home</a></li><li><a href=\"/logout\">Logout</a></li></ul></nav></header><main class=\"container\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -104,7 +104,7 @@ func pagination(p Pagination, genLinkFn func(int) string) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(toString(i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/layout.templ`, Line: 48, Col: 61}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/layout.templ`, Line: 49, Col: 61}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -131,7 +131,7 @@ func pagination(p Pagination, genLinkFn func(int) string) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(toString(p.CurrentPage))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/layout.templ`, Line: 50, Col: 100}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/layout.templ`, Line: 51, Col: 100}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -158,7 +158,7 @@ func pagination(p Pagination, genLinkFn func(int) string) templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(toString(i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/layout.templ`, Line: 52, Col: 61}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `admin/http/ui/layout.templ`, Line: 53, Col: 61}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
