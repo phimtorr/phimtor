@@ -15,12 +15,6 @@ jobs:
       server_address: "https://dev.phimtor.net"
       firebase_api_key: "AIzaSyD0OPqFBC2tYvj74wMWvXqoPixSryet2lQ"
 
-  build_server:
-    uses: ./.github/workflows/build_server.yml
-
-  build_admin:
-    uses: ./.github/workflows/build_admin.yml
-
   release_desktop:
     needs: [ build_desktop ]
     uses: ./.github/workflows/release_desktop.yml
@@ -31,6 +25,13 @@ jobs:
       SSH_HOST: ${{ secrets.SSH_HOST }}
       SSH_USER: ${{ secrets.SSH_USER }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+  build_server:
+    uses: ./.github/workflows/build_server.yml
+
+  build_admin:
+    uses: ./.github/workflows/build_admin.yml
+
 
   deploy_server:
     needs: [ build_server, release_desktop ]

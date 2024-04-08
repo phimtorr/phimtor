@@ -28,6 +28,9 @@ jobs:
   build_server:
     uses: ./.github/workflows/build_server.yml
 
+  build_admin:
+    uses: ./.github/workflows/build_admin.yml
+
   deploy_server:
     needs: [ build_server, release_desktop ]
     uses: ./.github/workflows/deploy_server.yml
@@ -35,6 +38,18 @@ jobs:
       artifact_name: ${{ needs.build_server.outputs.artifact_name }}
       environment: production
       service_name: "phimtor.server.prod.service"
+    secrets:
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+  deploy_admin:
+    needs: [ build_admin ]
+    uses: ./.github/workflows/deploy_admin.yml
+    with:
+      artifact_name: ${{ needs.build_admin.outputs.artifact_name }}
+      environment: production
+      service_name: "phimtor.admin.prod.service"
     secrets:
       SSH_HOST: ${{ secrets.SSH_HOST }}
       SSH_USER: ${{ secrets.SSH_USER }}
