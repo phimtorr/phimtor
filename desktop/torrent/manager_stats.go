@@ -11,7 +11,7 @@ type Stats struct {
 }
 
 func (m *Manager) Stats(infoHash InfoHash, fileIndex int) Stats {
-	tor, ok := m.getTorrent(infoHash)
+	tor, ok := m.GetTorrent(infoHash)
 	if !ok {
 		return Stats{}
 	}

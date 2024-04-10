@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/friendsofgo/errors"
@@ -45,7 +46,36 @@ func (h *Handler) GetVideo(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "add torrent from link")
 	}
 
-	return ui.Video(video, infoHash, selectedTorrent, selectedSubtitle).Render(r.Context(), w)
+	videoIndex, err := h.findVideoIndex(infoHash, selectedTorrent.FileIndex)
+	if err != nil {
+		return errors.Wrap(err, "find video index")
+
+	}
+
+	return ui.Video(video, infoHash, selectedTorrent, videoIndex, selectedSubtitle).Render(r.Context(), w)
+}
+
+func (h *Handler) findVideoIndex(infoHash torrent.InfoHash, configuredIndex int) (int, error) {
+	tor, ok := h.torManager.GetTorrent(infoHash)
+	if !ok {
+		return 0, fmt.Errorf("torrent not found")
+	}
+	files := tor.Files()
+	if isVideoFile(files[configuredIndex].DisplayPath()) {
+		return configuredIndex, nil
+	}
+
+	for i, file := range files {
+		if isVideoFile(file.DisplayPath()) {
+			return i, nil
+		}
+	}
+
+	return 0, fmt.Errorf("video file not found")
+}
+
+func isVideoFile(path string) bool {
+	return strings.HasSuffix(path, ".mp4") || strings.HasSuffix(path, ".mkv") || strings.HasSuffix(path, ".avi")
 }
 
 func getSelectedTorrentLink(torrentLinked []api.TorrentLink, torrentID int64) api.TorrentLink {

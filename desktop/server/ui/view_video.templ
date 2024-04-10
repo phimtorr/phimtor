@@ -6,7 +6,7 @@ import "github.com/phimtorr/phimtor/desktop/torrent"
 import "github.com/phimtorr/phimtor/desktop/server/uri"
 import "github.com/phimtorr/phimtor/desktop/i18n"
 
-templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.TorrentLink, selectedSubtitle api.Subtitle) {
+templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.TorrentLink, fileIndex int, selectedSubtitle api.Subtitle) {
 	@layout(video.Title) {
 		<section class="w-full space-y-2">
 			<video
@@ -19,21 +19,21 @@ templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.Torrent
 				crossorigin="anonymous"
 			>
 				<source
-					src={ uri.GetStream(infoHash, selectedLink.FileIndex) }
+					src={ uri.GetStream(infoHash, fileIndex) }
 					type="video/mp4"
 				/>
 				<div id="subtitleTrack"></div>
 				Your browser does not support the video tag.
 			</video>
 			<section
-				hx-get={ uri.GetStats(infoHash, selectedLink.FileIndex) }
+				hx-get={ uri.GetStats(infoHash, fileIndex) }
 				hx-trigger="every 2s"
 				hx-sync="this:abort"
 			></section>
 			<div class="flex items-center justify-between space-x-2">
 				<h1 class="my-2 text-2xl font-bold">{ video.Title }</h1>
 				@secondaryButton(templ.Attributes{
-					"hx-post": uri.OpenInVLC(infoHash, selectedLink.FileIndex),
+					"hx-post": uri.OpenInVLC(infoHash, fileIndex),
 					"hx-swap": "none",
 					"hx-sync": "this:drop",
 					"onclick":  "document.getElementById('video').pause()", // Pause the video before opening in VLC
