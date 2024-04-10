@@ -70,5 +70,8 @@ func Normalize(fileName string, content []byte, addDuration time.Duration) ([]by
 		return nil, fmt.Errorf("write subtitle: %w", err)
 	}
 
-	return []byte(html.UnescapeString(buf.String())), nil
+	webVTTContent := html.UnescapeString(buf.String())
+	webVTTContent = strings.ReplaceAll(webVTTContent, "{\\an8}", "")
+
+	return []byte(webVTTContent), nil
 }
