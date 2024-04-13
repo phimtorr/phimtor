@@ -6,7 +6,7 @@ import "github.com/phimtorr/phimtor/desktop/i18n"
 
 templ Movie(movie api.Movie) {
 	@layout(movie.Title) {
-		<section class="flex bg-stone-700 p-4 rounded-sm h-full">
+		<section class="flex h-full">
 			<div class="">
 				<img
 					class="object-cover max-h-full"
@@ -21,7 +21,7 @@ templ Movie(movie api.Movie) {
 					<p class="mb-2">{ movie.Description }</p>
 					<p class="mb-2">{i18n.T(ctx, "Movies.ReleaseYear")}: { toString(movie.ReleaseYear) }</p>
 					<p class="mb-2">IMDB: { toString(movie.Score) }</p>
-					<p class="mb-2">{i18n.T(ctx, "Movies.Duration")}: { toString(movie.DurationInMinutes) }m</p>
+					<p class="mb-2">{i18n.T(ctx, "Movies.Duration")}: { durationCount(movie.DurationInMinutes) }</p>
 				</div>
 				<div class="mt-4 box-border">
 					@primaryButtonLink(uri.GetVideo(movie.VideoId), many(span(i18n.T(ctx, "Movies.Action.WatchNow"))))

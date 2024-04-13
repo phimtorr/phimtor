@@ -33,7 +33,7 @@ func Movie(movie api.Movie) templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"flex bg-stone-700 p-4 rounded-sm h-full\"><div class=\"\"><img class=\"object-cover max-h-full\" src=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"flex h-full\"><div class=\"\"><img class=\"object-cover max-h-full\" src=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -155,15 +155,15 @@ func Movie(movie api.Movie) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var12 string
-			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(toString(movie.DurationInMinutes))
+			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(durationCount(movie.DurationInMinutes))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_movie.templ`, Line: 24, Col: 90}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_movie.templ`, Line: 24, Col: 95}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("m</p></div><div class=\"mt-4 box-border\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></div><div class=\"mt-4 box-border\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

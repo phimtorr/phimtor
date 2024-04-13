@@ -6,7 +6,7 @@ import "github.com/phimtorr/phimtor/desktop/i18n"
 
 templ Series( series api.Series) {
 	@layout(series.Title) {
-		<section class="flex bg-stone-700 p-4 rounded-sm h-full">
+		<section class="flex h-full">
 			<div class="">
 				<img
 					class="object-cover max-h-full"
@@ -21,7 +21,7 @@ templ Series( series api.Series) {
 					<p class="mb-2">{ series.Description }</p>
 					<p class="mb-2">{i18n.T(ctx, "Series.ReleaseYear")}: { toString(series.ReleaseYear) }</p>
 					<p class="mb-2">TMBb: { toString(series.Score) }</p>
-					<p class="mb-2">{i18n.T(ctx, "Movies.Duration")}: { toString(series.DurationInMinutes) }m</p>
+					<p class="mb-2">{i18n.T(ctx, "Movies.Duration")}: { durationCount(series.DurationInMinutes) }</p>
 				</div>
 				<div class="mt-4 box-border space-x-2 space-y-2">
 					for _, e := range series.Episodes {
