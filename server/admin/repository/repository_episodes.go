@@ -48,7 +48,27 @@ func (r Repository) CreateEpisode(ctx context.Context, episode handler.EpisodeTo
 		}
 
 		if err := dbEpisode.Insert(ctx, tx, boil.Infer()); err != nil {
-			return err
+			return errors.Wrap(err, "inserting episode")
+		}
+
+		// update current episode's show
+		dbShow, err := dbmodels.Shows(
+			dbmodels.ShowWhere.ID.EQ(episode.ShowID),
+		).One(ctx, tx)
+		if err != nil {
+			return errors.Wrap(err, "get show")
+		}
+
+		count, err := dbmodels.Episodes(
+			dbmodels.EpisodeWhere.ShowID.EQ(episode.ShowID),
+		).Count(ctx, tx)
+		if err != nil {
+			return errors.Wrap(err, "count episodes")
+		}
+
+		dbShow.CurrentEpisode = int(count)
+		if _, err := dbShow.Update(ctx, tx, boil.Whitelist(dbmodels.ShowColumns.CurrentEpisode)); err != nil {
+			return errors.Wrap(err, "update show")
 		}
 
 		id = dbEpisode.ID
