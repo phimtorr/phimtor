@@ -28,3 +28,7 @@ func ListEpisodes(id int64) string {
 func CreateEpisode(id int64) string {
 	return "/shows/" + strconv.FormatInt(id, 10) + "/episodes/create"
 }
+
+func ViewEpisode(id, episodeID int64) string {
+	return "/shows/" + strconv.FormatInt(id, 10) + "/episodes/" + strconv.FormatInt(episodeID, 10) + "/view"
+}

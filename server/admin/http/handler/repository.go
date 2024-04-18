@@ -15,6 +15,7 @@ type Repository interface {
 
 	ListEpisodes(ctx context.Context, showID int64) ([]ui.Episode, error)
 	CreateEpisode(ctx context.Context, episode EpisodeToCreate) (int64, error)
+	GetEpisode(ctx context.Context, showID, id int64) (ui.Episode, error)
 
 	GetVideo(ctx context.Context, id int64) (ui.Video, error)
 	CreateTorrent(ctx context.Context, torrent TorrentToCreate) (int64, error)

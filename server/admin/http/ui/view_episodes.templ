@@ -25,7 +25,7 @@ templ Episodes(showID int64, episodes []Episode) {
 					<tr>
 						<td>{ toString(e.ID) }</td>
 						<td>{ e.Name }</td>
-						<td><a role="button" href="#">View</a></td>
+						<td><a role="button" href={ templ.SafeURL(uri.ViewEpisode(showID, e.ID)) }>View</a></td>
 					</tr>
 				}
 			</tbody>
@@ -42,6 +42,19 @@ templ CreateEpisodeForm(showID int64) {
 				<input type="text" id="name" name="name" required/>
 				<button type="submit">Create</button>
 			</form>
+		</article>
+	}
+}
+
+templ ViewEpisode(show Show, episode Episode) {
+	@layout("View Episode | " + show.Title + " | " + episode.Name) {
+		<h1>{ show.Title } - { episode.Name }</h1>
+        <a role="button" href={ templ.SafeURL(uri.ViewShow(show.ID)) }>Back</a>
+		<article>
+			<section
+				hx-get={ uri.ViewVideo(episode.VideoID) }
+				hx-trigger="load"
+			></section>
 		</article>
 	}
 }

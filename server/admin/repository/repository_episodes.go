@@ -60,3 +60,19 @@ func (r Repository) CreateEpisode(ctx context.Context, episode handler.EpisodeTo
 
 	return id, nil
 }
+
+func (r Repository) GetEpisode(ctx context.Context, showID, id int64) (ui.Episode, error) {
+	dbEpisode, err := dbmodels.Episodes(
+		dbmodels.EpisodeWhere.ID.EQ(id),
+		dbmodels.EpisodeWhere.ShowID.EQ(showID),
+	).One(ctx, r.db)
+	if err != nil {
+		return ui.Episode{}, err
+	}
+
+	return ui.Episode{
+		ID:      dbEpisode.ID,
+		Name:    dbEpisode.Name,
+		VideoID: dbEpisode.VideoID,
+	}, nil
+}

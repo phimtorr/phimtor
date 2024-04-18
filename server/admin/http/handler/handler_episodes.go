@@ -60,3 +60,27 @@ func (h *Handler) CreateEpisode(w http.ResponseWriter, r *http.Request) error {
 	redirect(w, r, uri.ViewShow(showID))
 	return nil
 }
+
+func (h *Handler) ViewEpisode(w http.ResponseWriter, r *http.Request) error {
+	showID, err := parseID(chi.URLParam(r, "id"))
+	if err != nil {
+		return err
+	}
+
+	episodeID, err := parseID(chi.URLParam(r, "episodeID"))
+	if err != nil {
+		return err
+	}
+
+	show, err := h.repo.GetShow(r.Context(), showID)
+	if err != nil {
+		return errors.Wrap(err, "getting show")
+	}
+
+	episode, err := h.repo.GetEpisode(r.Context(), showID, episodeID)
+	if err != nil {
+		return errors.Wrap(err, "getting episode")
+	}
+
+	return ui.ViewEpisode(show, episode).Render(r.Context(), w)
+}
