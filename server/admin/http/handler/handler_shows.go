@@ -91,7 +91,6 @@ func (h *Handler) CreateShow(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	redirect(w, r, uri.ViewShow(id))
-
 	return nil
 }
 

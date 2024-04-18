@@ -105,7 +105,7 @@ templ ViewShow(show Show) {
 				</dl>
 			</section>
 			<footer>
-				<a href={ templ.SafeURL(uri.UpdateShow(show.ID)) }>Edit</a>
+				<a role="button" href={ templ.SafeURL(uri.UpdateShow(show.ID)) }>Edit</a>
 			</footer>
 		</article>
 		<article>
@@ -114,6 +114,12 @@ templ ViewShow(show Show) {
 					hx-get={ uri.ViewVideo(show.VideoID) }
 					hx-trigger="load"
 				></section>
+			} else {
+				<section
+					hx-get={uri.ListEpisodes(show.ID)}
+					hx-trigger="load"
+				>
+				</section>
 			}
 		</article>
 	}

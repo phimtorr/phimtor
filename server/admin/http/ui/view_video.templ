@@ -9,12 +9,14 @@ type Video struct {
 }
 
 templ ViewVideo(video Video) {
-	<header>
-		<h2>Video</h2>
-	</header>
 	<section>
-		@ViewTorrents(video.ID, video.Torrents)
-		@ViewSubtitles(video.ID, video.Subtitles)
+		<header>
+			<h2>Video</h2>
+		</header>
+		<section>
+			@ViewTorrents(video.ID, video.Torrents)
+			@ViewSubtitles(video.ID, video.Subtitles)
+		</section>
 	</section>
 }
 
@@ -177,7 +179,7 @@ templ ViewSubtitles(videoID int64, subtitles []Subtitle) {
 				</label>
 				<lable>
 					Priority
-					<input type="number" name="priority" value="0" />
+					<input type="number" name="priority" value="0"/>
 				</lable>
 				<button type="submit">Add</button>
 			</form>
