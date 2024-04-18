@@ -39,6 +39,11 @@ func (s Server) Register(r chi.Router) {
 	r.Get("/shows/{id}/update", errHandlerFunc(s.handler.ViewUpdateShowForm))
 	r.Post("/shows/{id}/update", errHandlerFunc(s.handler.UpdateShow))
 
+	r.Get("/shows/{id}/episodes", errHandlerFunc(s.handler.ListEpisodes))
+	r.Get("/shows/{id}/episodes/create", errHandlerFunc(s.handler.ViewCreateEpisodeForm))
+	r.Post("/shows/{id}/episodes/create", errHandlerFunc(s.handler.CreateEpisode))
+	r.Get("/shows/{id}/episodes/{episodeID}/view", errHandlerFunc(s.handler.ViewEpisode))
+
 	r.Get("/videos/{id}", errHandlerFunc(s.handler.ViewVideo))
 	r.Post("/videos/{id}/torrents/create", errHandlerFunc(s.handler.CreateTorrent))
 	r.Delete("/videos/{id}/torrents/{torrentID}", errHandlerFunc(s.handler.DeleteTorrent))

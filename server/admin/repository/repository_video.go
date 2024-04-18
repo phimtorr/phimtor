@@ -5,10 +5,8 @@ import (
 
 	"github.com/phimtorr/phimtor/server/admin/http/handler"
 	"github.com/phimtorr/phimtor/server/admin/http/ui"
-
-	"github.com/volatiletech/sqlboiler/v4/boil"
-
 	"github.com/phimtorr/phimtor/server/repository/dbmodels"
+	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 

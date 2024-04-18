@@ -20,3 +20,15 @@ func ViewShow(id int64) string {
 func UpdateShow(id int64) string {
 	return "/shows/" + strconv.FormatInt(id, 10) + "/update"
 }
+
+func ListEpisodes(id int64) string {
+	return "/shows/" + strconv.FormatInt(id, 10) + "/episodes"
+}
+
+func CreateEpisode(id int64) string {
+	return "/shows/" + strconv.FormatInt(id, 10) + "/episodes/create"
+}
+
+func ViewEpisode(id, episodeID int64) string {
+	return "/shows/" + strconv.FormatInt(id, 10) + "/episodes/" + strconv.FormatInt(episodeID, 10) + "/view"
+}
