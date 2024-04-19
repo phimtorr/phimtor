@@ -14,7 +14,6 @@ type Storage struct {
 	configFilePath string
 	mu             sync.RWMutex
 	settings       Settings
-	newDataDir     string
 }
 
 func NewStorage(appName string) *Storage {

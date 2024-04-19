@@ -2,24 +2,31 @@ package auth
 
 import (
 	"context"
+
+	"github.com/rs/zerolog/log"
+
 	"github.com/friendsofgo/errors"
 	"google.golang.org/api/identitytoolkit/v1"
 	"google.golang.org/api/option"
-	"sync"
 )
 
-type FirebaseAuth struct {
-	apiKey string
-	svc    *identitytoolkit.Service
-
-	mu          sync.RWMutex
-	currentUser User
-	cred        credentials
+type Storage interface {
+	GetCredentials() Credentials
+	SetCredentials(creds Credentials) error
 }
 
-func NewFirebaseAuth(apiKey string) *FirebaseAuth {
+type FirebaseAuth struct {
+	apiKey  string
+	svc     *identitytoolkit.Service
+	storage Storage
+}
+
+func NewFirebaseAuth(apiKey string, storage Storage) *FirebaseAuth {
 	if apiKey == "" {
 		panic("apiKey is required")
+	}
+	if storage == nil {
+		panic("storage is required")
 	}
 	svc, err := identitytoolkit.NewService(context.Background(), option.WithAPIKey(apiKey))
 	if err != nil {
@@ -27,8 +34,9 @@ func NewFirebaseAuth(apiKey string) *FirebaseAuth {
 	}
 
 	return &FirebaseAuth{
-		apiKey: apiKey,
-		svc:    svc,
+		apiKey:  apiKey,
+		svc:     svc,
+		storage: storage,
 	}
 }
 
@@ -42,11 +50,11 @@ func (a *FirebaseAuth) SignIn(ctx context.Context, email, password string) error
 		return errors.Wrap(err, "sign in")
 	}
 
-	a.setUser(User{
+	user := User{
 		Email:       resp.Email,
 		DisplayName: resp.DisplayName,
-	})
-	a.setCredentials(newCredentials(resp.IdToken, resp.ExpiresIn, resp.RefreshToken))
+	}
+	a.setCredentials(NewCredentials(user, resp.IdToken, resp.ExpiresIn, resp.RefreshToken))
 	return nil
 }
 
@@ -60,45 +68,30 @@ func (a *FirebaseAuth) SignUp(ctx context.Context, email, password, displayName 
 		return errors.Wrap(err, "sign up")
 	}
 
-	a.setUser(User{
+	user := User{
 		Email:       resp.Email,
 		DisplayName: resp.DisplayName,
-	})
-	a.setCredentials(newCredentials(resp.IdToken, resp.ExpiresIn, resp.RefreshToken))
+	}
+	a.setCredentials(NewCredentials(user, resp.IdToken, resp.ExpiresIn, resp.RefreshToken))
 	return nil
 }
 
 func (a *FirebaseAuth) SignOut() {
-	a.setUser(User{})
-	a.setCredentials(credentials{})
+	a.setCredentials(Credentials{})
 }
 
-func (a *FirebaseAuth) setUser(user User) {
-	a.mu.Lock()
-	defer a.mu.Unlock()
-
-	a.currentUser = user
+func (a *FirebaseAuth) setCredentials(cred Credentials) {
+	if err := a.storage.SetCredentials(cred); err != nil {
+		log.Warn().Err(err).Msg("Save credentials failed")
+	}
 }
 
-func (a *FirebaseAuth) setCredentials(cred credentials) {
-	a.mu.Lock()
-	defer a.mu.Unlock()
-
-	a.cred = cred
-}
-
-func (a *FirebaseAuth) currentCredentials() credentials {
-	a.mu.RLock()
-	defer a.mu.RUnlock()
-
-	return a.cred
+func (a *FirebaseAuth) currentCredentials() Credentials {
+	return a.storage.GetCredentials()
 }
 
 func (a *FirebaseAuth) CurrentUser() User {
-	a.mu.RLock()
-	defer a.mu.RUnlock()
-
-	return a.currentUser
+	return a.currentCredentials().User
 }
 
 func (a *FirebaseAuth) GetJWTToken(ctx context.Context) (string, error) {
@@ -106,7 +99,7 @@ func (a *FirebaseAuth) GetJWTToken(ctx context.Context) (string, error) {
 		return "", errors.Wrap(err, "refresh ID token")
 	}
 
-	return a.currentCredentials().idToken, nil
+	return a.currentCredentials().IDToken, nil
 }
 
 func (a *FirebaseAuth) refreshIDTokenIfNeed(ctx context.Context) error {
@@ -114,11 +107,12 @@ func (a *FirebaseAuth) refreshIDTokenIfNeed(ctx context.Context) error {
 		return nil
 	}
 
-	resp, err := refreshToken(ctx, a.apiKey, a.currentCredentials().refreshToken)
+	resp, err := refreshToken(ctx, a.apiKey, a.currentCredentials().RefreshToken)
 	if err != nil {
 		return err
 	}
 
-	a.setCredentials(newCredentials(resp.IDToken, resp.ExpiresIn, resp.RefreshToken))
+	user := a.currentCredentials().User
+	a.setCredentials(NewCredentials(user, resp.IDToken, resp.ExpiresIn, resp.RefreshToken))
 	return nil
 }

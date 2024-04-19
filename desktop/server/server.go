@@ -61,7 +61,7 @@ func (s *Server) Start() int {
 	torManager := torrent.NewManager(settings.GetCurrentDataDir())
 	s.closeFns = append(s.closeFns, newCloseFn("torManager", torManager.Close))
 
-	authService := auth.NewFirebaseAuth(build.FirebaseAPIKey)
+	authService := auth.NewFirebaseAuth(build.FirebaseAPIKey, auth.NewFileStorage(s.appName))
 	apiClient := client.NewClient(authService)
 
 	udSvc := updater.NewUpdater(build.Version, 30*time.Minute, apiClient)
