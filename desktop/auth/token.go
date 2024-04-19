@@ -4,11 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/friendsofgo/errors"
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/friendsofgo/errors"
 )
 
 const (
@@ -18,7 +19,7 @@ const (
 // tokenResponse is a type that represents the response body received from Google Token Service
 type tokenResponse struct {
 	// Probably 3600 (seconds)
-	ExpiresIn    int64  `json:"expires_in" description:"The number of second in which the ID token expires"`
+	ExpiresIn    int64  `json:"expires_in,omitempty,string" description:"The number of second in which the ID token expires"`
 	TokenType    string `json:"token_type" description:"The type of the access token; always Bearer"`
 	RefreshToken string `json:"refresh_token" description:"The refresh token provided in the request or a new refresh token"`
 	IDToken      string `json:"id_token" description:"The ID token"`
