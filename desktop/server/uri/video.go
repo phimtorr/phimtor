@@ -2,6 +2,7 @@ package uri
 
 import (
 	"fmt"
+	"net/url"
 
 	"github.com/phimtorr/phimtor/desktop/torrent"
 )
@@ -14,8 +15,8 @@ func GetVideoWithTorrentID(id int64, torrentID int64) string {
 	return fmt.Sprintf("/videos/%d?torrentID=%d", id, torrentID)
 }
 
-func GetStream(infoHash torrent.InfoHash, fileIndex int) string {
-	return fmt.Sprintf("/stream/%s/%d", infoHash, fileIndex)
+func GetStream(infoHash torrent.InfoHash, fileIndex int, fileName string) string {
+	return fmt.Sprintf("/stream/%s/%d/%s", infoHash, fileIndex, url.QueryEscape(fileName))
 }
 
 func OpenInVLC(infoHash torrent.InfoHash, fileIndex int) string {

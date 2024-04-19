@@ -49,10 +49,14 @@ func (h *Handler) GetVideo(w http.ResponseWriter, r *http.Request) error {
 	videoIndex, err := h.findVideoIndex(infoHash, selectedTorrent.FileIndex)
 	if err != nil {
 		return errors.Wrap(err, "find video index")
-
 	}
 
-	return ui.Video(video, infoHash, selectedTorrent, videoIndex, selectedSubtitle).Render(r.Context(), w)
+	file, err := h.torManager.GetFile(infoHash, videoIndex)
+	if err != nil {
+		return errors.Wrap(err, "get file")
+	}
+
+	return ui.Video(video, infoHash, selectedTorrent, videoIndex, file.DisplayPath(), selectedSubtitle).Render(r.Context(), w)
 }
 
 func (h *Handler) findVideoIndex(infoHash torrent.InfoHash, configuredIndex int) (int, error) {
@@ -144,7 +148,12 @@ func (h *Handler) OpenInVLC(w http.ResponseWriter, r *http.Request) error {
 		protocol = "https"
 	}
 
-	streamURL := protocol + "://" + r.Host + uri.GetStream(infoHash, fileIndex)
+	file, err := h.torManager.GetFile(infoHash, fileIndex)
+	if err != nil {
+		return errors.Wrap(err, "get file")
+	}
+
+	streamURL := protocol + "://" + r.Host + uri.GetStream(infoHash, fileIndex, file.DisplayPath())
 
 	if err := vlc.OpenURL(streamURL); err != nil {
 		return errors.Wrap(err, "open url in vlc")

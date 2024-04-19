@@ -6,7 +6,7 @@ import "github.com/phimtorr/phimtor/desktop/torrent"
 import "github.com/phimtorr/phimtor/desktop/server/uri"
 import "github.com/phimtorr/phimtor/desktop/i18n"
 
-templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.TorrentLink, fileIndex int, selectedSubtitle api.Subtitle) {
+templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.TorrentLink, fileIndex int, fileName string, selectedSubtitle api.Subtitle) {
 	@layout(video.Title) {
 		<section class="w-full space-y-2">
 			<video
@@ -19,7 +19,7 @@ templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.Torrent
 				crossorigin="anonymous"
 			>
 				<source
-					src={ uri.GetStream(infoHash, fileIndex) }
+					src={ uri.GetStream(infoHash, fileIndex, fileName) }
 					type="video/mp4"
 				/>
 				<div id="subtitleTrack"></div>

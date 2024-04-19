@@ -16,7 +16,7 @@ import "github.com/phimtorr/phimtor/desktop/torrent"
 import "github.com/phimtorr/phimtor/desktop/server/uri"
 import "github.com/phimtorr/phimtor/desktop/i18n"
 
-func Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.TorrentLink, fileIndex int, selectedSubtitle api.Subtitle) templ.Component {
+func Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.TorrentLink, fileIndex int, fileName string, selectedSubtitle api.Subtitle) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -40,9 +40,9 @@ func Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.TorrentL
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
-			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(uri.GetStream(infoHash, fileIndex))
+			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(uri.GetStream(infoHash, fileIndex, fileName))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_video.templ`, Line: 22, Col: 45}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_video.templ`, Line: 22, Col: 55}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {

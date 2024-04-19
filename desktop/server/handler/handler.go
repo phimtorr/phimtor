@@ -60,7 +60,7 @@ func (h *Handler) Register(r chi.Router) {
 	r.Get("/series/{id}", errHandlerFunc(h.GetSeries))
 
 	r.Get("/videos/{id}", errHandlerFunc(h.GetVideo))
-	r.Get("/stream/{infoHash}/{fileIndex}", errHandlerFunc(h.Stream))
+	r.Get("/stream/{infoHash}/{fileIndex}/{fileName}", errHandlerFunc(h.Stream))
 	r.Post("/open-in-vlc/{infoHash}/{fileIndex}", errHandlerFunc(h.OpenInVLC))
 	r.Get("/stats/{infoHash}/{fileIndex}", errHandlerFunc(h.Stats))
 
