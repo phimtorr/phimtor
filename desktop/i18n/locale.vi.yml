@@ -100,4 +100,7 @@ Video:
   Action:
     OpenInVLC: "Mở bằng VLC"
 
+Action:
+  Back: "Quay lại"
+
 

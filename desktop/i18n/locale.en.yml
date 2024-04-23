@@ -101,5 +101,6 @@ Video:
   Action:
     OpenInVLC: "Open in VLC"
 
-
+Action:
+  Back: "Back"
 
