@@ -5,6 +5,7 @@ import "github.com/phimtorr/phimtor/desktop/client/api"
 import "github.com/phimtorr/phimtor/desktop/torrent"
 import "github.com/phimtorr/phimtor/desktop/server/uri"
 import "github.com/phimtorr/phimtor/desktop/i18n"
+import "strings"
 
 templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.TorrentLink, fileIndex int, fileName string, selectedSubtitle api.Subtitle) {
 	@layout(video.Title) {
@@ -47,6 +48,11 @@ templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.Torrent
 						htmxIndicator(),
 					),
 				)
+			</div>
+			<div id="notification" class="text-sm italic my-2 font-light">
+				if !strings.HasSuffix(fileName, ".mp4") {
+					<p>*{ i18n.T(ctx, "Notification.NotSupportedVideo") }</p>
+				}
 			</div>
 		</section>
 		<section class="w-full mt-4">

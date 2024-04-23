@@ -103,4 +103,7 @@ Video:
 Action:
   Back: "Quay lại"
 
+Notification:
+  NotSupportedVideo: "Nếu xem không có tiếng thì hãy mở bằng VLC. Sau đó tải phụ đề  và thêm vào thủ công."
+
 
