@@ -396,7 +396,7 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Sub
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div class=\"grid grid-cols-1 gap-1 text-sm md:grid-cols-2\"><div class=\"col-span-1 flex flex-col rounded-sm px-1 py-3 hover:bg-stone-700\"><h4 class=\"mb-1 text-sm font-thin\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div class=\"grid grid-cols-1 gap-1 text-sm md:grid-cols-2\"><div class=\"col-span-1 flex flex-col rounded-sm px-1 py-3 hover:bg-stone-800\"><h4 class=\"mb-1 text-sm font-thin\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -448,7 +448,7 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Sub
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"> <button class=\"m-1 rounded bg-stone-900 px-4 py-2 hover:bg-red-700\" hx-post=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"> <button class=\"m-1 rounded bg-stone-600 px-4 py-2 hover:bg-red-700\" hx-post=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -474,7 +474,7 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Sub
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button> <button class=\"m-1 rounded bg-stone-900 px-4 py-2 hover:bg-red-700\" hx-post=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button> <button class=\"m-1 rounded bg-stone-600 px-4 py-2 hover:bg-red-700\" hx-post=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -500,7 +500,7 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Sub
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("ms</p><button class=\"ml-2 rounded bg-stone-900 px-4 py-2 hover:bg-red-700\" hx-post=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("ms</p><button class=\"ml-2 rounded bg-stone-600 px-4 py-2 hover:bg-red-700\" hx-post=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -513,7 +513,7 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Sub
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#subtitleSection\" hx-swap=\"outerHTML\" hx-indicator=\".subtitle-indicator\"><i icon=\"fa-solid fa-forward\"></i> +0.5s</button></div></div><div class=\"col-span-1 flex flex-col rounded-sm px-1 py-3 hover:bg-stone-700\"><h4 class=\"mb-1 text-sm font-thin\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#subtitleSection\" hx-swap=\"outerHTML\" hx-indicator=\".subtitle-indicator\"><i icon=\"fa-solid fa-forward\"></i> +0.5s</button></div></div><div class=\"col-span-1 flex flex-col rounded-sm px-1 py-3 hover:bg-stone-800\"><h4 class=\"mb-1 text-sm font-thin\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
