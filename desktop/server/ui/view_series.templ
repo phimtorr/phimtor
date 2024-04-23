@@ -4,8 +4,11 @@ import "github.com/phimtorr/phimtor/desktop/client/api"
 import "github.com/phimtorr/phimtor/desktop/server/uri"
 import "github.com/phimtorr/phimtor/desktop/i18n"
 
-templ Series( series api.Series) {
+templ Series(series api.Series) {
 	@layout(series.Title) {
+		<div class="my-2 flex items-center justify-end">
+			@backButton()
+		</div>
 		<section class="flex h-full">
 			<div class="">
 				<img
@@ -19,9 +22,9 @@ templ Series( series api.Series) {
 					<h1 class="mb-2 text-2xl font-bold">{ series.Title }</h1>
 					<h2 class="mb-2 italic">{ series.OriginalTitle }</h2>
 					<p class="mb-2">{ series.Description }</p>
-					<p class="mb-2">{i18n.T(ctx, "Series.ReleaseYear")}: { toString(series.ReleaseYear) }</p>
+					<p class="mb-2">{ i18n.T(ctx, "Series.ReleaseYear") }: { toString(series.ReleaseYear) }</p>
 					<p class="mb-2">TMBb: { toString(series.Score) }</p>
-					<p class="mb-2">{i18n.T(ctx, "Movies.Duration")}: { durationCount(series.DurationInMinutes) }</p>
+					<p class="mb-2">{ i18n.T(ctx, "Movies.Duration") }: { durationCount(series.DurationInMinutes) }</p>
 				</div>
 				<div class="mt-4 box-border space-x-2 space-y-2">
 					for _, e := range series.Episodes {

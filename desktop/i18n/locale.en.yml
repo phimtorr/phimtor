@@ -101,5 +101,8 @@ Video:
   Action:
     OpenInVLC: "Open in VLC"
 
+Action:
+  Back: "Back"
 
-
+Notification:
+  NotSupportedVideo: "If there is no sound, please open in VLC. Then download the subtitle and add it manually."
