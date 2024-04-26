@@ -558,7 +558,7 @@ func SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Sub
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h4><input type=\"file\" name=\"fileInput\" accept=\".vtt, .srt, application/x-subrip, text/vtt\" class=\"rounded border border-gray-400 bg-stone-700 text-stone-100 file:mr-5 file:rounded-l file:border-[0px] file:bg-stone-700 file:p-4 file:text-stone-100 hover:border-red-700 hover:file:cursor-pointer hover:file:bg-stone-800 hover:file:text-red-700\" hx-encoding=\"multipart/form-data\" hx-post=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h4><input type=\"file\" name=\"fileInput\" accept=\".vtt, .srt, application/x-subrip, text/vtt, .ass\" class=\"rounded border border-gray-400 bg-stone-700 text-stone-100 file:mr-5 file:rounded-l file:border-[0px] file:bg-stone-700 file:p-4 file:text-stone-100 hover:border-red-700 hover:file:cursor-pointer hover:file:bg-stone-800 hover:file:text-red-700\" hx-encoding=\"multipart/form-data\" hx-post=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
