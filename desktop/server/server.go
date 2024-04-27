@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/phimtorr/phimtor/desktop/memstorage"
+
 	"github.com/phimtorr/phimtor/desktop/auth"
 	"github.com/phimtorr/phimtor/desktop/build"
 	"github.com/phimtorr/phimtor/desktop/updater"
@@ -68,7 +70,9 @@ func (s *Server) Start() int {
 	go udSvc.Start()
 	s.closeFns = append(s.closeFns, newCloseFn("updater", udSvc.Stop))
 
-	httpHandler := handler.New(torManager, settingsStorage, apiClient, authService)
+	memStorage := memstorage.New(10e7) // 10 MB
+
+	httpHandler := handler.New(torManager, settingsStorage, apiClient, authService, memStorage)
 
 	router := newChiRouter(settingsStorage, authService)
 	httpHandler.Register(router)

@@ -2,6 +2,7 @@ package memstorage
 
 import (
 	"sync"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -16,8 +17,9 @@ type Storage struct {
 }
 
 type Item struct {
-	FileName string
-	Content  []byte
+	FileName     string
+	Content      []byte
+	DateModified time.Time
 }
 
 // New create new storage.
@@ -40,8 +42,9 @@ func (s *Storage) Save(fileName string, content []byte) (uuid.UUID, error) {
 
 	id := uuid.New()
 	s.data[id] = Item{
-		FileName: fileName,
-		Content:  content,
+		FileName:     fileName,
+		Content:      content,
+		DateModified: time.Now(),
 	}
 	s.itemIDs = append(s.itemIDs, id)
 	s.currentSize += fileSize

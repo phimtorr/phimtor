@@ -3,6 +3,8 @@ package handler
 import (
 	"net/http"
 
+	"github.com/phimtorr/phimtor/desktop/memstorage"
+
 	"github.com/friendsofgo/errors"
 	commonErrors "github.com/phimtorr/phimtor/common/errors"
 
@@ -22,6 +24,7 @@ type Handler struct {
 	settingsStorage *setting.Storage
 	apiClient       *client.Client
 	authService     *auth.FirebaseAuth
+	memStorage      *memstorage.Storage
 }
 
 func New(
@@ -29,6 +32,7 @@ func New(
 	settingsStorage *setting.Storage,
 	apiClient *client.Client,
 	authService *auth.FirebaseAuth,
+	memStorage *memstorage.Storage,
 ) *Handler {
 	if torManager == nil {
 		panic("torrent manager is required")
@@ -42,11 +46,15 @@ func New(
 	if authService == nil {
 		panic("authService is required")
 	}
+	if memStorage == nil {
+		panic("memStorage is required")
+	}
 	return &Handler{
 		torManager:      torManager,
 		settingsStorage: settingsStorage,
 		apiClient:       apiClient,
 		authService:     authService,
+		memStorage:      memStorage,
 	}
 }
 
@@ -86,6 +94,9 @@ func (h *Handler) Register(r chi.Router) {
 	r.Post("/sign-up", errHandlerFunc(h.SignUp))
 
 	r.HandleFunc("/sign-out", h.SignOut)
+
+	// mem files
+	r.Get("/mem-files/{id}/{fileName}", errHandlerFunc(h.ServeMemoryFile))
 }
 
 func errHandlerFunc(h func(w http.ResponseWriter, r *http.Request) error) http.HandlerFunc {

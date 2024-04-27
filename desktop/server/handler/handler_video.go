@@ -5,21 +5,15 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/friendsofgo/errors"
-	commonErrors "github.com/phimtorr/phimtor/common/errors"
-
 	"github.com/go-chi/chi/v5"
-
-	"github.com/phimtorr/phimtor/desktop/server/uri"
-	"github.com/phimtorr/phimtor/desktop/vlc"
-
-	"github.com/gabriel-vasile/mimetype"
-
+	commonErrors "github.com/phimtorr/phimtor/common/errors"
 	"github.com/phimtorr/phimtor/desktop/client/api"
 	"github.com/phimtorr/phimtor/desktop/server/ui"
+	"github.com/phimtorr/phimtor/desktop/server/uri"
 	"github.com/phimtorr/phimtor/desktop/torrent"
+	"github.com/phimtorr/phimtor/desktop/vlc"
 )
 
 func (h *Handler) GetVideo(w http.ResponseWriter, r *http.Request) error {
@@ -101,36 +95,6 @@ func getSelectedSubtitle(subtitles []api.Subtitle) api.Subtitle {
 		}
 	}
 	return subtitles[0]
-}
-
-func (h *Handler) Stream(w http.ResponseWriter, r *http.Request) error {
-	infoHash, err := parseInfoHash(chi.URLParam(r, "infoHash"))
-	if err != nil {
-		return err
-	}
-	fileIndex, err := parseFileIndex(chi.URLParam(r, "fileIndex"))
-	if err != nil {
-		return err
-	}
-
-	file, err := h.torManager.GetFile(infoHash, fileIndex)
-	if err != nil {
-		return errors.Wrap(err, "get file")
-	}
-
-	file.Download()
-	reader := file.NewReader()
-	reader.SetResponsive()
-
-	mime, err := mimetype.DetectReader(reader)
-	if err != nil {
-		return errors.Wrap(err, "detect mime type")
-	} else {
-		w.Header().Set("Content-Type", mime.String())
-	}
-
-	http.ServeContent(w, r, file.DisplayPath(), time.Time{}, reader)
-	return nil
 }
 
 func (h *Handler) OpenInVLC(w http.ResponseWriter, r *http.Request) error {
