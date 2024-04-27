@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/google/uuid"
-
 	"github.com/phimtorr/phimtor/desktop/torrent"
 )
 
@@ -27,8 +25,4 @@ func OpenInVLC(infoHash torrent.InfoHash, fileIndex int) string {
 
 func GetStats(infoHash torrent.InfoHash, fileIndex int) string {
 	return fmt.Sprintf("/stats/%s/%d", infoHash, fileIndex)
-}
-
-func GetMemFile(id uuid.UUID, fileName string) string {
-	return fmt.Sprintf("/mem-files/%s/%s", id, url.QueryEscape(fileName))
 }

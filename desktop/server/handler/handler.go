@@ -3,20 +3,17 @@ package handler
 import (
 	"net/http"
 
-	"github.com/phimtorr/phimtor/desktop/memstorage"
-
-	"github.com/friendsofgo/errors"
-	commonErrors "github.com/phimtorr/phimtor/common/errors"
-
 	"github.com/a-h/templ"
+	"github.com/friendsofgo/errors"
 	"github.com/go-chi/chi/v5"
+	commonErrors "github.com/phimtorr/phimtor/common/errors"
 	"github.com/phimtorr/phimtor/desktop/auth"
-	"github.com/phimtorr/phimtor/desktop/server/ui"
-	"github.com/rs/zerolog/log"
-
 	"github.com/phimtorr/phimtor/desktop/client"
+	"github.com/phimtorr/phimtor/desktop/server/state"
+	"github.com/phimtorr/phimtor/desktop/server/ui"
 	"github.com/phimtorr/phimtor/desktop/setting"
 	"github.com/phimtorr/phimtor/desktop/torrent"
+	"github.com/rs/zerolog/log"
 )
 
 type Handler struct {
@@ -24,7 +21,8 @@ type Handler struct {
 	settingsStorage *setting.Storage
 	apiClient       *client.Client
 	authService     *auth.FirebaseAuth
-	memStorage      *memstorage.Storage
+
+	state *state.State
 }
 
 func New(
@@ -32,7 +30,6 @@ func New(
 	settingsStorage *setting.Storage,
 	apiClient *client.Client,
 	authService *auth.FirebaseAuth,
-	memStorage *memstorage.Storage,
 ) *Handler {
 	if torManager == nil {
 		panic("torrent manager is required")
@@ -46,15 +43,12 @@ func New(
 	if authService == nil {
 		panic("authService is required")
 	}
-	if memStorage == nil {
-		panic("memStorage is required")
-	}
 	return &Handler{
 		torManager:      torManager,
 		settingsStorage: settingsStorage,
 		apiClient:       apiClient,
 		authService:     authService,
-		memStorage:      memStorage,
+		state:           state.New(),
 	}
 }
 
@@ -95,8 +89,17 @@ func (h *Handler) Register(r chi.Router) {
 
 	r.HandleFunc("/sign-out", h.SignOut)
 
-	// mem files
-	r.Get("/mem-files/{id}/{fileName}", errHandlerFunc(h.ServeMemoryFile))
+	// UPnP
+	r.Route("/upnp/videos/{id}", func(r chi.Router) {
+		r.Get("/", errHandlerFunc(h.ViewUPnP))
+
+		r.Get("/torrents", errHandlerFunc(h.UPnPListTorrents))
+		r.Post("/torrents/{torrentID}", errHandlerFunc(h.UPnSetTorrent))
+
+		r.Get("/subtitles", errHandlerFunc(h.UPnPListSubtitles))
+		r.Post("/subtitles/{subtitleID}", errHandlerFunc(h.UPnPSetSubtitle))
+		r.Post("/subtitles/upload", errHandlerFunc(h.UPnPUploadSubtitle))
+	})
 }
 
 func errHandlerFunc(h func(w http.ResponseWriter, r *http.Request) error) http.HandlerFunc {
