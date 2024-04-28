@@ -3,6 +3,7 @@ package ui
 import "github.com/phimtorr/phimtor/desktop/client/api"
 import "github.com/phimtorr/phimtor/desktop/server/uri"
 import "github.com/phimtorr/phimtor/desktop/i18n"
+import "github.com/huin/goupnp/dcps/av1"
 
 templ UPnP(video api.Video) {
 	@layout("UPnP | " + video.Title) {
@@ -22,6 +23,7 @@ templ UPnP(video api.Video) {
 				hx-target-error="find .errors"
 			>
 				@errorPlaceHolder()
+				<p class="text-sm italic">Loading Torrents</p>
 			</section>
 			<section
 				hx-get={ uri.UPnPListSubtitles(video.Id) }
@@ -30,6 +32,16 @@ templ UPnP(video api.Video) {
 				hx-target-error="find .errors"
 			>
 				@errorPlaceHolder()
+				<p class="text-sm italic">Loading Subtitles</p>
+			</section>
+			<section
+				hx-get={ uri.UPnPDevices() }
+				hx-trigger="load"
+				hx-swap="outerHTML"
+				hx-target-error="find .errors"
+			>
+				@errorPlaceHolder()
+				<p class="text-sm italic">Loading Devices</p>
 			</section>
 		</section>
 	}
@@ -127,4 +139,45 @@ func upnpSubName(sub api.Subtitle) string {
 		prefix = "[Eng] "
 	}
 	return prefix + sub.Name
+}
+
+
+templ UPnPDevices(devices []*av1.AVTransport1, selectedUDN string) {
+	<section id="devices"
+		hx-indicator=".device-indicator"
+		hx-target-error="#device-errors"
+	>
+		<div class="flex items-center justify-between">
+			<h3 class="my-4 text-xl font-bold">
+				<span class="border-b-2 border-red-700 pb-1">Devices</span>
+			</h3>
+			<div class="inline-flex items-center space-x-2">
+				@secondaryButton(templ.Attributes{
+					"hx-post":      uri.UPnPScanDevices(),
+					"hx-swap":      "outerHTML",
+					"hx-target":    "closest section",
+				}, span("Scan"))
+				@htmxIndicatorWithClassName("device-indicator")
+			</div>
+		</div>
+		@errorPlaceHolderWithID("device-errors")
+		<div class="flex flex-wrap space-x-2 space-y-2">
+			if len(devices) == 0 {
+				<p>No devices available</p>
+			}
+			for _, d := range devices {
+				if d.RootDevice.Device.UDN == selectedUDN {
+					@primaryButton(d.RootDevice.Device.FriendlyName, templ.Attributes{
+						"disabled": "true",
+					})
+				} else {
+					@secondaryButton(templ.Attributes{
+						"hx-post":      uri.UPnPSelectDevice(d.RootDevice.Device.UDN),
+						"hx-swap":      "outerHTML",
+						"hx-target":    "closest section",
+					}, span(d.RootDevice.Device.FriendlyName))
+				}
+			}
+		</div>
+	</section>
 }

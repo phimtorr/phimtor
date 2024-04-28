@@ -14,6 +14,7 @@ require (
 	github.com/fynelabs/selfupdate v0.2.0
 	github.com/gabriel-vasile/mimetype v1.4.2
 	github.com/go-chi/chi/v5 v5.0.12
+	github.com/huin/goupnp v1.3.0
 	github.com/ncruces/zenity v0.10.11
 	github.com/nicksnyder/go-i18n/v2 v2.4.0
 	github.com/oapi-codegen/runtime v1.1.1
@@ -21,7 +22,7 @@ require (
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 	github.com/rs/cors v1.8.3
 	github.com/rs/zerolog v1.32.0
-	golang.org/x/sync v0.6.0
+	golang.org/x/sync v0.7.0
 	golang.org/x/text v0.14.0
 	google.golang.org/api v0.168.0
 	gopkg.in/yaml.v3 v3.0.1

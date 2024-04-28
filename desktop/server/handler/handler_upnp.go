@@ -165,6 +165,47 @@ func (h *Handler) UPnPUploadSubtitle(w http.ResponseWriter, r *http.Request) err
 	return ui.UPnPSubtitles(id, video.Subtitles, 0, fileName).Render(r.Context(), w)
 }
 
+func (h *Handler) ListAvailableDevices(w http.ResponseWriter, r *http.Request) error {
+	if err := h.upnpService.Scan(r.Context()); err != nil {
+		return errors.Wrap(err, "scan devices")
+	}
+
+	clients := h.upnpService.GetAvailableClients()
+	selectedUDN := h.upnpService.GetSelectedDeviceUDN()
+
+	return ui.UPnPDevices(clients, selectedUDN).Render(r.Context(), w)
+}
+
+func (h *Handler) SelectDevice(w http.ResponseWriter, r *http.Request) error {
+	udn := chi.URLParam(r, "udn")
+	if udn == "" {
+		return commonErrors.NewIncorrectInputError("empty-udn", "empty udn")
+	}
+
+	if err := h.upnpService.SelectDevice(r.Context(), udn); err != nil {
+		return errors.Wrap(err, "select device")
+
+	}
+
+	clients := h.upnpService.GetAvailableClients()
+	selectedUDN := h.upnpService.GetSelectedDeviceUDN()
+
+	return ui.UPnPDevices(clients, selectedUDN).Render(r.Context(), w)
+
+}
+
+func (h *Handler) ScanDevices(w http.ResponseWriter, r *http.Request) error {
+	if err := h.upnpService.Scan(r.Context()); err != nil {
+		return errors.Wrap(err, "scan devices")
+	}
+
+	clients := h.upnpService.GetAvailableClients()
+	selectedUDN := h.upnpService.GetSelectedDeviceUDN()
+
+	return ui.UPnPDevices(clients, selectedUDN).Render(r.Context(), w)
+
+}
+
 func (h *Handler) UPnPPlay(w http.ResponseWriter, r *http.Request) error {
 
 	return nil

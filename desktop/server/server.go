@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/phimtorr/phimtor/desktop/upnp"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/rs/cors"
@@ -63,11 +65,17 @@ func (s *Server) Start() int {
 	authService := auth.NewFirebaseAuth(build.FirebaseAPIKey, auth.NewFileStorage(s.appName))
 	apiClient := client.NewClient(authService)
 
-	udSvc := updater.NewUpdater(build.Version, 30*time.Minute, apiClient)
-	go udSvc.Start()
-	s.closeFns = append(s.closeFns, newCloseFn("updater", udSvc.Stop))
+	updaterSvc := updater.NewUpdater(build.Version, 30*time.Minute, apiClient)
+	go updaterSvc.Start()
+	s.closeFns = append(s.closeFns, newCloseFn("updater", updaterSvc.Stop))
 
-	httpHandler := handler.New(torManager, settingsStorage, apiClient, authService)
+	upnpSvc := upnp.NewUPnP(torManager)
+	if err := upnpSvc.Run(); err != nil {
+		log.Fatal().Err(err).Msg("Failed to start UPnP server")
+	}
+	s.closeFns = append(s.closeFns, newCloseFn("upnp", upnpSvc.Close))
+
+	httpHandler := handler.New(torManager, settingsStorage, apiClient, authService, upnpSvc)
 
 	router := newChiRouter(settingsStorage, authService)
 	httpHandler.Register(router)

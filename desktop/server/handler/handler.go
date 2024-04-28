@@ -3,6 +3,8 @@ package handler
 import (
 	"net/http"
 
+	"github.com/phimtorr/phimtor/desktop/upnp"
+
 	"github.com/a-h/templ"
 	"github.com/friendsofgo/errors"
 	"github.com/go-chi/chi/v5"
@@ -21,6 +23,7 @@ type Handler struct {
 	settingsStorage *setting.Storage
 	apiClient       *client.Client
 	authService     *auth.FirebaseAuth
+	upnpService     *upnp.UPnP
 
 	state *state.State
 }
@@ -30,6 +33,7 @@ func New(
 	settingsStorage *setting.Storage,
 	apiClient *client.Client,
 	authService *auth.FirebaseAuth,
+	upnpService *upnp.UPnP,
 ) *Handler {
 	if torManager == nil {
 		panic("torrent manager is required")
@@ -43,11 +47,15 @@ func New(
 	if authService == nil {
 		panic("authService is required")
 	}
+	if upnpService == nil {
+		panic("upnpService is required")
+	}
 	return &Handler{
 		torManager:      torManager,
 		settingsStorage: settingsStorage,
 		apiClient:       apiClient,
 		authService:     authService,
+		upnpService:     upnpService,
 		state:           state.New(),
 	}
 }
@@ -100,6 +108,12 @@ func (h *Handler) Register(r chi.Router) {
 		r.Post("/subtitles/{subtitleID}", errHandlerFunc(h.UPnPSetSubtitle))
 		r.Post("/subtitles/upload", errHandlerFunc(h.UPnPUploadSubtitle))
 	})
+	r.Route("/upnp/devices", func(r chi.Router) {
+		r.Get("/", errHandlerFunc(h.ListAvailableDevices))
+		r.Post("/{udn}", errHandlerFunc(h.SelectDevice))
+		r.Post("/scan", errHandlerFunc(h.ScanDevices))
+	})
+
 }
 
 func errHandlerFunc(h func(w http.ResponseWriter, r *http.Request) error) http.HandlerFunc {

@@ -25,3 +25,15 @@ func UPnPSetSubtitle(videoID int64, subtitleID int64) string {
 func UPnPUploadSubtitle(videoID int64) string {
 	return fmt.Sprintf("/upnp/videos/%d/subtitles/upload", videoID)
 }
+
+func UPnPDevices() string {
+	return "/upnp/devices"
+}
+
+func UPnPSelectDevice(udn string) string {
+	return fmt.Sprintf("/upnp/devices/%s", udn)
+}
+
+func UPnPScanDevices() string {
+	return "/upnp/devices/scan"
+}
