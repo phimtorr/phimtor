@@ -2,13 +2,8 @@ package server
 
 import (
 	"errors"
-	"net"
 	"net/http"
 	"time"
-
-	"github.com/phimtorr/phimtor/desktop/auth"
-	"github.com/phimtorr/phimtor/desktop/build"
-	"github.com/phimtorr/phimtor/desktop/updater"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -16,13 +11,17 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/phimtorr/phimtor/common/logs"
+	"github.com/phimtorr/phimtor/desktop/auth"
+	"github.com/phimtorr/phimtor/desktop/build"
 	"github.com/phimtorr/phimtor/desktop/client"
 	"github.com/phimtorr/phimtor/desktop/data"
 	"github.com/phimtorr/phimtor/desktop/i18n"
+	"github.com/phimtorr/phimtor/desktop/net"
 	"github.com/phimtorr/phimtor/desktop/server/handler"
 	"github.com/phimtorr/phimtor/desktop/server/ui/style"
 	"github.com/phimtorr/phimtor/desktop/setting"
 	"github.com/phimtorr/phimtor/desktop/torrent"
+	"github.com/phimtorr/phimtor/desktop/updater"
 )
 
 type closeFn struct {
@@ -73,9 +72,11 @@ func (s *Server) Start() int {
 	router := newChiRouter(settingsStorage, authService)
 	httpHandler.Register(router)
 
-	ln, cleanUp := createListener()
+	ln, listenPort, cleanUp, err := net.CreateListener()
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to create listener")
+	}
 	s.closeFns = append(s.closeFns, newCloseFn("listener", cleanUp))
-	listenPort := ln.Addr().(*net.TCPAddr).Port
 
 	httpServer := &http.Server{
 		Handler: router,
@@ -122,19 +123,4 @@ func setCommonMiddlewares(router *chi.Mux) {
 
 	router.Use(cors.AllowAll().Handler)
 	router.Use(middleware.NoCache)
-}
-
-func createListener() (l net.Listener, close func() error) {
-	l, err := net.Listen("tcp", ":0")
-	if err != nil {
-		panic(err)
-	}
-	return l, func() error {
-		err := l.Close()
-		var opErr *net.OpError
-		if errors.As(err, &opErr) && opErr.Op == "close" {
-			return nil
-		}
-		return err
-	}
 }
