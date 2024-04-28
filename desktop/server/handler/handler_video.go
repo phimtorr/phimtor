@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
 
 	"github.com/friendsofgo/errors"
 	"github.com/go-chi/chi/v5"
@@ -40,40 +39,12 @@ func (h *Handler) GetVideo(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "add torrent from link")
 	}
 
-	videoIndex, err := h.findVideoIndex(infoHash, selectedTorrent.FileIndex)
-	if err != nil {
-		return errors.Wrap(err, "find video index")
-	}
-
-	file, err := h.torManager.GetFile(infoHash, videoIndex)
+	file, err := h.torManager.GetVideoFile(infoHash, selectedTorrent.FileIndex)
 	if err != nil {
 		return errors.Wrap(err, "get file")
 	}
 
-	return ui.Video(video, infoHash, selectedTorrent, videoIndex, file.DisplayPath(), selectedSubtitle).Render(r.Context(), w)
-}
-
-func (h *Handler) findVideoIndex(infoHash torrent.InfoHash, configuredIndex int) (int, error) {
-	tor, ok := h.torManager.GetTorrent(infoHash)
-	if !ok {
-		return 0, fmt.Errorf("torrent not found")
-	}
-	files := tor.Files()
-	if isVideoFile(files[configuredIndex].DisplayPath()) {
-		return configuredIndex, nil
-	}
-
-	for i, file := range files {
-		if isVideoFile(file.DisplayPath()) {
-			return i, nil
-		}
-	}
-
-	return 0, fmt.Errorf("video file not found")
-}
-
-func isVideoFile(path string) bool {
-	return strings.HasSuffix(path, ".mp4") || strings.HasSuffix(path, ".mkv") || strings.HasSuffix(path, ".avi")
+	return ui.Video(video, infoHash, selectedTorrent, file.DisplayPath(), selectedSubtitle).Render(r.Context(), w)
 }
 
 func getSelectedTorrentLink(torrentLinked []api.TorrentLink, torrentID int64) api.TorrentLink {
@@ -112,7 +83,7 @@ func (h *Handler) OpenInVLC(w http.ResponseWriter, r *http.Request) error {
 		protocol = "https"
 	}
 
-	file, err := h.torManager.GetFile(infoHash, fileIndex)
+	file, err := h.torManager.GetVideoFile(infoHash, fileIndex)
 	if err != nil {
 		return errors.Wrap(err, "get file")
 	}
@@ -137,7 +108,7 @@ func (h *Handler) Stats(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	stats := h.torManager.Stats(infoHash, fileIndex)
+	stats := h.torManager.StatsVideoFile(infoHash, fileIndex)
 
 	return ui.VideoStatistics(stats).Render(r.Context(), w)
 }

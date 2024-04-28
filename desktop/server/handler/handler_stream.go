@@ -16,5 +16,5 @@ func (h *Handler) Stream(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	return h.torManager.StreamFile(w, r, infoHash, fileIndex)
+	return h.torManager.StreamVideoFile(w, r, infoHash, fileIndex)
 }
