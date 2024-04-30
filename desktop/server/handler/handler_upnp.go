@@ -5,12 +5,12 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/phimtorr/phimtor/desktop/server/ui"
-
 	"github.com/friendsofgo/errors"
 	"github.com/go-chi/chi/v5"
 	commonErrors "github.com/phimtorr/phimtor/common/errors"
 	"github.com/phimtorr/phimtor/desktop/client/api"
+	"github.com/phimtorr/phimtor/desktop/server/ui"
+	"github.com/phimtorr/phimtor/desktop/server/uri"
 	"github.com/phimtorr/phimtor/desktop/subtitle"
 	"github.com/rs/zerolog/log"
 )
@@ -68,7 +68,8 @@ func (h *Handler) UPnSetTorrent(w http.ResponseWriter, r *http.Request) error {
 
 	h.SetTorrentState(TorrentState{SelectedTorrent: selectedTorrent})
 
-	return ui.UPnPTorrents(video.Id, video.TorrentLinks, selectedTorrent).Render(r.Context(), w)
+	http.Redirect(w, r, uri.UPnPListTorrents(video.Id), http.StatusSeeOther)
+	return nil
 }
 
 func (h *Handler) UPnPListSubtitles(w http.ResponseWriter, r *http.Request) error {
@@ -125,18 +126,14 @@ func (h *Handler) UPnPSetSubtitle(w http.ResponseWriter, r *http.Request) error 
 		OriginalContent: originalContent,
 	})
 
-	return ui.UPnPSubtitles(video.Id, video.Subtitles, selectedSubtitle.Id, selectedSubtitle.Name).Render(r.Context(), w)
+	http.Redirect(w, r, uri.UPnPListSubtitles(video.Id), http.StatusSeeOther)
+	return nil
 }
 
 func (h *Handler) UPnPUploadSubtitle(w http.ResponseWriter, r *http.Request) error {
 	id, err := parseID(chi.URLParam(r, "id"))
 	if err != nil {
 		return err
-	}
-
-	video, err := h.apiClient.GetVideo(r.Context(), id)
-	if err != nil {
-		return errors.Wrap(err, "get video")
 	}
 
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
@@ -165,10 +162,12 @@ func (h *Handler) UPnPUploadSubtitle(w http.ResponseWriter, r *http.Request) err
 		OriginalContent: originalContent,
 	})
 
-	return ui.UPnPSubtitles(id, video.Subtitles, 0, fileName).Render(r.Context(), w)
+	http.Redirect(w, r, uri.UPnPListSubtitles(id), http.StatusSeeOther)
+	return nil
+
 }
 
-func (h *Handler) ListAvailableDevices(w http.ResponseWriter, r *http.Request) error {
+func (h *Handler) UPnPListDevices(w http.ResponseWriter, r *http.Request) error {
 	clients := h.upnpService.GetAvailableClients()
 	if len(clients) == 0 {
 		if err := h.upnpService.Scan(r.Context()); err != nil {
@@ -180,7 +179,7 @@ func (h *Handler) ListAvailableDevices(w http.ResponseWriter, r *http.Request) e
 	return ui.UPnPDevices(h.upnpService.GetAvailableClients(), selectedUDN).Render(r.Context(), w)
 }
 
-func (h *Handler) SelectDevice(w http.ResponseWriter, r *http.Request) error {
+func (h *Handler) UPnPSelectDevice(w http.ResponseWriter, r *http.Request) error {
 	udn := chi.URLParam(r, "udn")
 	if udn == "" {
 		return commonErrors.NewIncorrectInputError("empty-udn", "empty udn")
@@ -191,11 +190,8 @@ func (h *Handler) SelectDevice(w http.ResponseWriter, r *http.Request) error {
 
 	}
 
-	clients := h.upnpService.GetAvailableClients()
-	selectedUDN := h.upnpService.GetSelectedDeviceUDN()
-
-	return ui.UPnPDevices(clients, selectedUDN).Render(r.Context(), w)
-
+	http.Redirect(w, r, uri.UPnPListDevices(), http.StatusSeeOther)
+	return nil
 }
 
 func (h *Handler) ScanDevices(w http.ResponseWriter, r *http.Request) error {
@@ -203,11 +199,8 @@ func (h *Handler) ScanDevices(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "scan devices")
 	}
 
-	clients := h.upnpService.GetAvailableClients()
-	selectedUDN := h.upnpService.GetSelectedDeviceUDN()
-
-	return ui.UPnPDevices(clients, selectedUDN).Render(r.Context(), w)
-
+	http.Redirect(w, r, uri.UPnPListDevices(), http.StatusSeeOther)
+	return nil
 }
 
 func (h *Handler) UPnPPlay(w http.ResponseWriter, r *http.Request) error {

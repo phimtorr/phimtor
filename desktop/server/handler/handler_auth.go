@@ -20,7 +20,7 @@ func (h *Handler) SignIn(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "sign in")
 	}
 
-	redirect(w, r, uri.Home())
+	fullyRedirect(w, r, uri.Home())
 	return nil
 }
 
@@ -57,11 +57,11 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "sign up")
 	}
 
-	redirect(w, r, uri.Home())
+	fullyRedirect(w, r, uri.Home())
 	return nil
 }
 
 func (h *Handler) SignOut(w http.ResponseWriter, r *http.Request) {
 	h.authService.SignOut()
-	redirect(w, r, uri.Home())
+	fullyRedirect(w, r, uri.Home())
 }

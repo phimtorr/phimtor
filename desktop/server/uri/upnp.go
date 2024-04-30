@@ -26,7 +26,7 @@ func UPnPUploadSubtitle(videoID int64) string {
 	return fmt.Sprintf("/upnp/videos/%d/subtitles/upload", videoID)
 }
 
-func UPnPDevices() string {
+func UPnPListDevices() string {
 	return "/upnp/devices"
 }
 

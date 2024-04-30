@@ -36,7 +36,7 @@ templ UPnP(video api.Video) {
 				<p class="text-sm italic">Loading Subtitles</p>
 			</section>
 			<section
-				hx-get={ uri.UPnPDevices() }
+				hx-get={ uri.UPnPListDevices() }
 				hx-trigger="load"
 				hx-swap="outerHTML"
 				hx-target-error="find .errors"

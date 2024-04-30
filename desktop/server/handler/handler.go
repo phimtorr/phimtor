@@ -109,8 +109,8 @@ func (h *Handler) Register(r chi.Router) {
 		r.Post("/subtitles/upload", errHandlerFunc(h.UPnPUploadSubtitle))
 	})
 	r.Route("/upnp/devices", func(r chi.Router) {
-		r.Get("/", errHandlerFunc(h.ListAvailableDevices))
-		r.Post("/{udn}", errHandlerFunc(h.SelectDevice))
+		r.Get("/", errHandlerFunc(h.UPnPListDevices))
+		r.Post("/{udn}", errHandlerFunc(h.UPnPSelectDevice))
 		r.Post("/scan", errHandlerFunc(h.ScanDevices))
 	})
 	r.Route("/upnp/actions", func(r chi.Router) {
@@ -148,7 +148,7 @@ func handleError(w http.ResponseWriter, r *http.Request, msg string, slug string
 	http.Error(w, msg+": "+err.Error(), status)
 }
 
-func redirect(w http.ResponseWriter, r *http.Request, url string) {
+func fullyRedirect(w http.ResponseWriter, r *http.Request, url string) {
 	if r.Header.Get("HX-Request") == "true" {
 		w.Header().Set("HX-Redirect", url)
 		w.WriteHeader(http.StatusOK)
