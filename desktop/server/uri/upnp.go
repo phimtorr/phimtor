@@ -37,3 +37,7 @@ func UPnPSelectDevice(udn string) string {
 func UPnPScanDevices() string {
 	return "/upnp/devices/scan"
 }
+
+func UPnPPlay() string {
+	return "/upnp/actions/play"
+}

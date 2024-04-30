@@ -16,3 +16,7 @@ func InfoHashFromString(infoHashHex string) (InfoHash, error) {
 	err := infoHash.FromHexString(infoHashHex)
 	return InfoHash(infoHash), err
 }
+
+func (i InfoHash) IsZero() bool {
+	return i.String() == InfoHash{}.String()
+}

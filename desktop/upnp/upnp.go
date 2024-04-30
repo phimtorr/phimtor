@@ -8,12 +8,13 @@ import (
 	"slices"
 	"strconv"
 	"sync"
+	"time"
+
+	"github.com/gabriel-vasile/mimetype"
 
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/phimtorr/phimtor/common/logs"
 	"github.com/rs/cors"
-
-	"github.com/phimtorr/phimtor/desktop/subtitle"
 
 	"github.com/friendsofgo/errors"
 	"github.com/go-chi/chi/v5"
@@ -50,7 +51,7 @@ func (u *UPnP) Run() error {
 	r.Use(cors.AllowAll().Handler)
 	r.Use(middleware.NoCache)
 
-	r.Get("/torrents/{infoHash}/{fileIndex}/{fileName}", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/torrents/{infoHash}/{fileIndex}/{fileName}", func(w http.ResponseWriter, r *http.Request) {
 		infoHash, err := parseInfoHash(chi.URLParam(r, "infoHash"))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -62,13 +63,33 @@ func (u *UPnP) Run() error {
 			return
 		}
 
-		if err := u.torManager.StreamVideoFile(w, r, infoHash, fileIndex); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+		file, err := u.torManager.GetVideoFile(infoHash, fileIndex)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
+
+		file.Download()
+		reader := file.NewReader()
+		reader.SetResponsive()
+
+		mime, err := mimetype.DetectReader(reader)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		} else {
+			w.Header().Set("Content-Type", mime.String())
+		}
+
+		w.Header().Set("Content-Length", fmt.Sprintf("%d", file.FileInfo().Length))
+		w.Header().Set("transferMode.dlna.org", "Streaming")
+		w.Header().Set("realTimeInfo.dlna.org", "DLNA.ORG_TLAG=*")
+		w.Header().Set("contentFeatures.dlna.org", buildContentFeatures(mime.String()))
+
+		http.ServeContent(w, r, file.DisplayPath(), time.Time{}, reader)
 	})
 
-	r.Get("/subtitles/{fileName}", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/subtitles/{fileName}", func(w http.ResponseWriter, r *http.Request) {
 		fileName, err := url.QueryUnescape(chi.URLParam(r, "fileName"))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -83,14 +104,9 @@ func (u *UPnP) Run() error {
 			return
 		}
 
-		content, err := subtitle.NormalizeToSRT(u.state.SubtitleFileName, u.state.SubtitleContent)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
 		w.Header().Set("Content-Type", "text/srt")
-		_, _ = w.Write(content)
+		w.Header().Set("transferMode.dlna.org", "Interactive")
+		_, _ = w.Write(u.state.SubtitleContent)
 	})
 
 	ln, listenPort, cleanUp, err := net.CreateListener()
@@ -148,4 +164,18 @@ func parseFileIndex(fileIndexRaw string) (int, error) {
 		return 0, errors.Wrap(ErrInvalidFileIndex, fmt.Sprintf("parse file_index=%s, err=%v", fileIndexRaw, err))
 	}
 	return fileIndex, nil
+}
+
+func (u *UPnP) Reset() {
+	u.mu.Lock()
+	defer u.mu.Unlock()
+
+	u.state.Reset()
+}
+
+func (u *UPnP) GetState() State {
+	u.mu.RLock()
+	defer u.mu.RUnlock()
+
+	return u.state
 }

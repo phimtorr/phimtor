@@ -26,6 +26,9 @@ func (h *Handler) ViewUPnP(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "get video")
 	}
 
+	// Clear the state
+	h.upnpService.Reset()
+
 	return ui.UPnP(video).Render(r.Context(), w)
 }
 
@@ -166,14 +169,15 @@ func (h *Handler) UPnPUploadSubtitle(w http.ResponseWriter, r *http.Request) err
 }
 
 func (h *Handler) ListAvailableDevices(w http.ResponseWriter, r *http.Request) error {
-	if err := h.upnpService.Scan(r.Context()); err != nil {
-		return errors.Wrap(err, "scan devices")
-	}
-
 	clients := h.upnpService.GetAvailableClients()
+	if len(clients) == 0 {
+		if err := h.upnpService.Scan(r.Context()); err != nil {
+			return errors.Wrap(err, "scan devices")
+		}
+	}
 	selectedUDN := h.upnpService.GetSelectedDeviceUDN()
 
-	return ui.UPnPDevices(clients, selectedUDN).Render(r.Context(), w)
+	return ui.UPnPDevices(h.upnpService.GetAvailableClients(), selectedUDN).Render(r.Context(), w)
 }
 
 func (h *Handler) SelectDevice(w http.ResponseWriter, r *http.Request) error {
@@ -207,8 +211,16 @@ func (h *Handler) ScanDevices(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (h *Handler) UPnPPlay(w http.ResponseWriter, r *http.Request) error {
+	selectedTorrent, _ := h.GetTorrentState()
+	selectedSubtitle, _ := h.GetSubtitleState()
 
-	return nil
+	if err := h.upnpService.Play(r.Context(), selectedTorrent.SelectedTorrent, selectedSubtitle.FileName, selectedSubtitle.OriginalContent); err != nil {
+		return errors.Wrap(err, "play")
+	}
+
+	state := h.upnpService.GetState()
+
+	return ui.UPnPController(state.InfoHash, state.FileIndex).Render(r.Context(), w)
 }
 
 func (h *Handler) UPnPStop(w http.ResponseWriter, r *http.Request) error {

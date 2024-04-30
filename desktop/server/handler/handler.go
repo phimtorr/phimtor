@@ -113,6 +113,9 @@ func (h *Handler) Register(r chi.Router) {
 		r.Post("/{udn}", errHandlerFunc(h.SelectDevice))
 		r.Post("/scan", errHandlerFunc(h.ScanDevices))
 	})
+	r.Route("/upnp/actions", func(r chi.Router) {
+		r.Post("/play", errHandlerFunc(h.UPnPPlay))
+	})
 
 }
 
