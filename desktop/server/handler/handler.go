@@ -146,7 +146,14 @@ func errHandlerFunc(h func(w http.ResponseWriter, r *http.Request) error) http.H
 }
 
 func handleError(w http.ResponseWriter, r *http.Request, msg string, slug string, err error, status int) {
-	log.Ctx(r.Context()).Error().Err(err).Msg(msg)
+	log.Ctx(r.Context()).Error().
+		Str("slug", slug).
+		Err(err).
+		Msg(msg)
+
+	if r.Header.Get("HX-Request") == "true" {
+		w.Header().Set("HX-Reswap", "innerHTML")
+	}
 	http.Error(w, msg+": "+err.Error(), status)
 }
 
