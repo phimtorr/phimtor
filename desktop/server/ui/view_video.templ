@@ -40,7 +40,7 @@ templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.Torrent
 					"hx-post": uri.OpenInVLC(infoHash, selectedLink.FileIndex),
 					"hx-swap": "none",
 					"hx-sync": "this:drop",
-					"onclick":  "document.getElementById('video').pause()", // Pause the video before opening in VLC
+					"onclick": "document.getElementById('video').pause()", // Pause the video before opening in VLC
 				},
 					many(
 						span(i18n.T(ctx, "Video.Action.OpenInVLC")),
@@ -82,26 +82,30 @@ templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.Torrent
 }
 
 templ VideoStatistics(stats torrent.Stats) {
-	<div class="text-sm font-thin">
-		<div class="flex flex-wrap justify-end items-center  space-x-2">
-			<p>Total Peers: { toString(stats.TotalPeers) }</p>
-			<p>Active Peers: { toString(stats.ActivePeers) }</p>
-			<p>Pending Peers: { toString(stats.PendingPeers) }</p>
-			<p>Connected Seeders: { toString(stats.ConnectedSeeders) }</p>
-			<p>Haft Open Peers: { toString(stats.HalfOpenPeers) }</p>
-		</div>
-		<div>
-			<div class="flex items-center justify-end">
-				<p>Downloaded: { percent(stats.BytesCompleted, stats.Length) }</p>
+	if stats.IsZero() {
+		<span></span>
+	} else {
+		<div class="text-sm font-thin">
+			<div class="flex flex-wrap justify-end items-center  space-x-2">
+				<p>Total Peers: { toString(stats.TotalPeers) }</p>
+				<p>Active Peers: { toString(stats.ActivePeers) }</p>
+				<p>Pending Peers: { toString(stats.PendingPeers) }</p>
+				<p>Connected Seeders: { toString(stats.ConnectedSeeders) }</p>
+				<p>Haft Open Peers: { toString(stats.HalfOpenPeers) }</p>
 			</div>
-			<div class="w-full bg-gray-700 rounded-full h-1 mb-4 ">
-				<div
-					class="bg-red-700 h-1 rounded-full"
-					{ templ.Attributes{"style": fmt.Sprintf("width: %s", percent(stats.BytesCompleted, stats.Length))}... }
-				></div>
+			<div>
+				<div class="flex items-center justify-end">
+					<p>Downloaded: { byteCounter(stats.BytesCompleted) }/{ byteCounter(stats.Length) } ({ percent(stats.BytesCompleted, stats.Length) })</p>
+				</div>
+				<div class="w-full bg-gray-700 rounded-full h-1 mb-4 ">
+					<div
+						class="bg-red-700 h-1 rounded-full"
+						{ templ.Attributes{"style": fmt.Sprintf("width: %s", percent(stats.BytesCompleted, stats.Length))}... }
+					></div>
+				</div>
 			</div>
 		</div>
-	</div>
+	}
 }
 
 func percent(value, total int64) string {

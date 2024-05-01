@@ -10,6 +10,10 @@ type Stats struct {
 	BytesCompleted   int64
 }
 
+func (s Stats) IsZero() bool {
+	return s == Stats{}
+}
+
 func (m *Manager) Stats(infoHash InfoHash, fileIndex int) Stats {
 	tor, ok := m.GetTorrent(infoHash)
 	if !ok {
