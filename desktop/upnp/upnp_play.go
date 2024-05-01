@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"path/filepath"
 
+	"github.com/huin/goupnp/soap"
+
 	"github.com/rs/zerolog/log"
 
 	"github.com/friendsofgo/errors"
@@ -68,6 +70,15 @@ func (u *UPnP) Play(ctx context.Context, torrentLink api.TorrentLink, subFileNam
 	}
 
 	err = client.PlayCtx(ctx, 0, "1")
+	var soapError *soap.SOAPFaultError
+	if errors.As(err, &soapError) {
+		// When call play, the TV still play but return Action Failed error. I don't know why.
+		// So, I just ignore this error.
+		if soapError.Detail.UPnPError.ErrorDescription == "Action Failed" {
+			return nil
+		}
+	}
+
 	if err != nil {
 		return errors.Wrap(err, "play")
 	}
