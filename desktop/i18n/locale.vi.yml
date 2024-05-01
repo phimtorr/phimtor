@@ -51,12 +51,14 @@ Movies:
   IMDB: "IMDB"
   Action:
     WatchNow: "Xem ngay"
+    WatchViaUPnP: "Xem qua TV"
 
 Series:
   ReleaseYear: "Năm phát hành"
   Duration: "Thời lượng"
   Action:
     WatchNow: "Xem ngay"
+    WatchViaUPnP: "Xem qua TV"
 
 Search:
   SearchBar:
@@ -105,5 +107,18 @@ Action:
 
 Notification:
   NotSupportedVideo: "Nếu xem không có tiếng thì hãy mở bằng VLC. Sau đó tải phụ đề  và thêm vào thủ công."
+
+UPnP:
+  Messages:
+    Announcement: "Tính năng đang phát triển, có thể thu phí trong tương lai!"
+    LoadingTorrents: "Đang tải danh sách torrent..."
+    LoadingSubtitles : "Đang tải danh sách phụ đề..."
+    LoadingDevices: "Đang tìm thiết bị UPnP..."
+    NoDevices: "Không tìm thấy thiết bị UPnP"
+  Title:
+    Torrents: "Danh sách torrent"
+    Subtitles: "Danh sách phụ đề"
+    Devices: "Thiết bị UPnP"
+    Controller: "Điều khiển"
 
 

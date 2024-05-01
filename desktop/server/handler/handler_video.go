@@ -4,22 +4,15 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
-	"time"
 
 	"github.com/friendsofgo/errors"
-	commonErrors "github.com/phimtorr/phimtor/common/errors"
-
 	"github.com/go-chi/chi/v5"
-
-	"github.com/phimtorr/phimtor/desktop/server/uri"
-	"github.com/phimtorr/phimtor/desktop/vlc"
-
-	"github.com/gabriel-vasile/mimetype"
-
+	commonErrors "github.com/phimtorr/phimtor/common/errors"
 	"github.com/phimtorr/phimtor/desktop/client/api"
 	"github.com/phimtorr/phimtor/desktop/server/ui"
+	"github.com/phimtorr/phimtor/desktop/server/uri"
 	"github.com/phimtorr/phimtor/desktop/torrent"
+	"github.com/phimtorr/phimtor/desktop/vlc"
 )
 
 func (h *Handler) GetVideo(w http.ResponseWriter, r *http.Request) error {
@@ -46,40 +39,12 @@ func (h *Handler) GetVideo(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "add torrent from link")
 	}
 
-	videoIndex, err := h.findVideoIndex(infoHash, selectedTorrent.FileIndex)
-	if err != nil {
-		return errors.Wrap(err, "find video index")
-	}
-
-	file, err := h.torManager.GetFile(infoHash, videoIndex)
+	file, err := h.torManager.GetVideoFile(infoHash, selectedTorrent.FileIndex)
 	if err != nil {
 		return errors.Wrap(err, "get file")
 	}
 
-	return ui.Video(video, infoHash, selectedTorrent, videoIndex, file.DisplayPath(), selectedSubtitle).Render(r.Context(), w)
-}
-
-func (h *Handler) findVideoIndex(infoHash torrent.InfoHash, configuredIndex int) (int, error) {
-	tor, ok := h.torManager.GetTorrent(infoHash)
-	if !ok {
-		return 0, fmt.Errorf("torrent not found")
-	}
-	files := tor.Files()
-	if isVideoFile(files[configuredIndex].DisplayPath()) {
-		return configuredIndex, nil
-	}
-
-	for i, file := range files {
-		if isVideoFile(file.DisplayPath()) {
-			return i, nil
-		}
-	}
-
-	return 0, fmt.Errorf("video file not found")
-}
-
-func isVideoFile(path string) bool {
-	return strings.HasSuffix(path, ".mp4") || strings.HasSuffix(path, ".mkv") || strings.HasSuffix(path, ".avi")
+	return ui.Video(video, infoHash, selectedTorrent, file.DisplayPath(), selectedSubtitle).Render(r.Context(), w)
 }
 
 func getSelectedTorrentLink(torrentLinked []api.TorrentLink, torrentID int64) api.TorrentLink {
@@ -103,36 +68,6 @@ func getSelectedSubtitle(subtitles []api.Subtitle) api.Subtitle {
 	return subtitles[0]
 }
 
-func (h *Handler) Stream(w http.ResponseWriter, r *http.Request) error {
-	infoHash, err := parseInfoHash(chi.URLParam(r, "infoHash"))
-	if err != nil {
-		return err
-	}
-	fileIndex, err := parseFileIndex(chi.URLParam(r, "fileIndex"))
-	if err != nil {
-		return err
-	}
-
-	file, err := h.torManager.GetFile(infoHash, fileIndex)
-	if err != nil {
-		return errors.Wrap(err, "get file")
-	}
-
-	file.Download()
-	reader := file.NewReader()
-	reader.SetResponsive()
-
-	mime, err := mimetype.DetectReader(reader)
-	if err != nil {
-		return errors.Wrap(err, "detect mime type")
-	} else {
-		w.Header().Set("Content-Type", mime.String())
-	}
-
-	http.ServeContent(w, r, file.DisplayPath(), time.Time{}, reader)
-	return nil
-}
-
 func (h *Handler) OpenInVLC(w http.ResponseWriter, r *http.Request) error {
 	infoHash, err := parseInfoHash(chi.URLParam(r, "infoHash"))
 	if err != nil {
@@ -148,7 +83,7 @@ func (h *Handler) OpenInVLC(w http.ResponseWriter, r *http.Request) error {
 		protocol = "https"
 	}
 
-	file, err := h.torManager.GetFile(infoHash, fileIndex)
+	file, err := h.torManager.GetVideoFile(infoHash, fileIndex)
 	if err != nil {
 		return errors.Wrap(err, "get file")
 	}
@@ -173,7 +108,7 @@ func (h *Handler) Stats(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	stats := h.torManager.Stats(infoHash, fileIndex)
+	stats := h.torManager.StatsVideoFile(infoHash, fileIndex)
 
 	return ui.VideoStatistics(stats).Render(r.Context(), w)
 }

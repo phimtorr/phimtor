@@ -3,18 +3,19 @@ package handler
 import (
 	"net/http"
 
-	"github.com/friendsofgo/errors"
-	commonErrors "github.com/phimtorr/phimtor/common/errors"
+	"github.com/phimtorr/phimtor/desktop/upnp"
 
 	"github.com/a-h/templ"
+	"github.com/friendsofgo/errors"
 	"github.com/go-chi/chi/v5"
+	commonErrors "github.com/phimtorr/phimtor/common/errors"
 	"github.com/phimtorr/phimtor/desktop/auth"
-	"github.com/phimtorr/phimtor/desktop/server/ui"
-	"github.com/rs/zerolog/log"
-
 	"github.com/phimtorr/phimtor/desktop/client"
+	"github.com/phimtorr/phimtor/desktop/server/state"
+	"github.com/phimtorr/phimtor/desktop/server/ui"
 	"github.com/phimtorr/phimtor/desktop/setting"
 	"github.com/phimtorr/phimtor/desktop/torrent"
+	"github.com/rs/zerolog/log"
 )
 
 type Handler struct {
@@ -22,6 +23,9 @@ type Handler struct {
 	settingsStorage *setting.Storage
 	apiClient       *client.Client
 	authService     *auth.FirebaseAuth
+	upnpService     *upnp.UPnP
+
+	state *state.State
 }
 
 func New(
@@ -29,6 +33,7 @@ func New(
 	settingsStorage *setting.Storage,
 	apiClient *client.Client,
 	authService *auth.FirebaseAuth,
+	upnpService *upnp.UPnP,
 ) *Handler {
 	if torManager == nil {
 		panic("torrent manager is required")
@@ -42,11 +47,16 @@ func New(
 	if authService == nil {
 		panic("authService is required")
 	}
+	if upnpService == nil {
+		panic("upnpService is required")
+	}
 	return &Handler{
 		torManager:      torManager,
 		settingsStorage: settingsStorage,
 		apiClient:       apiClient,
 		authService:     authService,
+		upnpService:     upnpService,
+		state:           state.New(),
 	}
 }
 
@@ -86,6 +96,29 @@ func (h *Handler) Register(r chi.Router) {
 	r.Post("/sign-up", errHandlerFunc(h.SignUp))
 
 	r.HandleFunc("/sign-out", h.SignOut)
+
+	// UPnP
+	r.Route("/upnp/videos/{id}", func(r chi.Router) {
+		r.Get("/", errHandlerFunc(h.ViewUPnP))
+
+		r.Get("/torrents", errHandlerFunc(h.UPnPListTorrents))
+		r.Post("/torrents/{torrentID}", errHandlerFunc(h.UPnSetTorrent))
+
+		r.Get("/subtitles", errHandlerFunc(h.UPnPListSubtitles))
+		r.Post("/subtitles/{subtitleID}", errHandlerFunc(h.UPnPSetSubtitle))
+		r.Post("/subtitles/upload", errHandlerFunc(h.UPnPUploadSubtitle))
+	})
+	r.Route("/upnp/devices", func(r chi.Router) {
+		r.Get("/", errHandlerFunc(h.UPnPListDevices))
+		r.Post("/{udn}", errHandlerFunc(h.UPnPSelectDevice))
+		r.Post("/scan", errHandlerFunc(h.ScanDevices))
+	})
+	r.Route("/upnp/actions", func(r chi.Router) {
+		r.Post("/play", errHandlerFunc(h.UPnPPlay))
+		r.Post("/pause", errHandlerFunc(h.UPnPPause))
+		r.Post("/stop", errHandlerFunc(h.UPnPStop))
+	})
+
 }
 
 func errHandlerFunc(h func(w http.ResponseWriter, r *http.Request) error) http.HandlerFunc {
@@ -113,11 +146,18 @@ func errHandlerFunc(h func(w http.ResponseWriter, r *http.Request) error) http.H
 }
 
 func handleError(w http.ResponseWriter, r *http.Request, msg string, slug string, err error, status int) {
-	log.Ctx(r.Context()).Error().Err(err).Msg(msg)
+	log.Ctx(r.Context()).Error().
+		Str("slug", slug).
+		Err(err).
+		Msg(msg)
+
+	if r.Header.Get("HX-Request") == "true" {
+		w.Header().Set("HX-Reswap", "innerHTML")
+	}
 	http.Error(w, msg+": "+err.Error(), status)
 }
 
-func redirect(w http.ResponseWriter, r *http.Request, url string) {
+func fullyRedirect(w http.ResponseWriter, r *http.Request, url string) {
 	if r.Header.Get("HX-Request") == "true" {
 		w.Header().Set("HX-Redirect", url)
 		w.WriteHeader(http.StatusOK)

@@ -1,0 +1,28 @@
+<DIDL-Lite xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/"
+           xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:sec="http://www.sec.co.kr/"
+           xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/">
+    <item id="1" parentID="0" restricted="1">
+        {{- if .SubURL -}}
+        <sec:CaptionInfo sec:type="srt">
+            {{- .SubURL -}}
+        </sec:CaptionInfo>
+        <sec:CaptionInfoEx sec:type="srt">
+            {{- .SubURL -}}
+        </sec:CaptionInfoEx>
+        {{- end -}}
+        <dc:title>
+            {{- .Title -}}
+        </dc:title>
+        <upnp:class>object.item.videoItem.movie</upnp:class>
+        <res
+                protocolInfo="http-get:*:{{- .MimeType -}}:{{- .ContentFeatures -}}"
+        >
+            {{- .VideoURL -}}
+        </res>
+        {{- if .SubURL -}}
+        <res protocolInfo="http-get:*:text/srt:*">
+            {{- .SubURL -}}
+        </res>
+        {{- end -}}
+    </item>
+</DIDL-Lite>

@@ -1,7 +1,13 @@
 package ui
 
 templ errorPlaceHolder() {
-	<div class="mt-4">
-		<div id="errors" class="c text-red-700"></div>
+	@errorPlaceHolderWithID("errors")
+}
+
+templ errorPlaceHolderWithID(id string) {
+	<div class="mt-4 text-red-700">
+		<div id={ id } class="errors text-red-700">
+			<p></p>
+		</div>
 	</div>
 }

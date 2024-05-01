@@ -7,7 +7,7 @@ import "github.com/phimtorr/phimtor/desktop/server/uri"
 import "github.com/phimtorr/phimtor/desktop/i18n"
 import "strings"
 
-templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.TorrentLink, fileIndex int, fileName string, selectedSubtitle api.Subtitle) {
+templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.TorrentLink, fileName string, selectedSubtitle api.Subtitle) {
 	@layout(video.Title) {
 		<div class="my-2 flex items-center justify-end">
 			@backButton()
@@ -23,24 +23,24 @@ templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.Torrent
 				crossorigin="anonymous"
 			>
 				<source
-					src={ uri.GetStream(infoHash, fileIndex, fileName) }
+					src={ uri.GetStream(infoHash, selectedLink.FileIndex, fileName) }
 					type="video/mp4"
 				/>
 				<div id="subtitleTrack"></div>
 				Your browser does not support the video tag.
 			</video>
 			<section
-				hx-get={ uri.GetStats(infoHash, fileIndex) }
+				hx-get={ uri.GetStats(infoHash, selectedLink.FileIndex) }
 				hx-trigger="every 2s"
 				hx-sync="this:abort"
 			></section>
 			<div class="flex items-center justify-between space-x-2">
 				<h1 class="my-2 text-2xl font-bold">{ video.Title }</h1>
 				@secondaryButton(templ.Attributes{
-					"hx-post": uri.OpenInVLC(infoHash, fileIndex),
+					"hx-post": uri.OpenInVLC(infoHash, selectedLink.FileIndex),
 					"hx-swap": "none",
 					"hx-sync": "this:drop",
-					"onclick":  "document.getElementById('video').pause()", // Pause the video before opening in VLC
+					"onclick": "document.getElementById('video').pause()", // Pause the video before opening in VLC
 				},
 					many(
 						span(i18n.T(ctx, "Video.Action.OpenInVLC")),
@@ -82,26 +82,30 @@ templ Video(video api.Video, infoHash torrent.InfoHash, selectedLink api.Torrent
 }
 
 templ VideoStatistics(stats torrent.Stats) {
-	<div class="text-sm font-thin">
-		<div class="flex flex-wrap justify-end items-center  space-x-2">
-			<p>Total Peers: { toString(stats.TotalPeers) }</p>
-			<p>Active Peers: { toString(stats.ActivePeers) }</p>
-			<p>Pending Peers: { toString(stats.PendingPeers) }</p>
-			<p>Connected Seeders: { toString(stats.ConnectedSeeders) }</p>
-			<p>Haft Open Peers: { toString(stats.HalfOpenPeers) }</p>
-		</div>
-		<div>
-			<div class="flex items-center justify-end">
-				<p>Downloaded: { percent(stats.BytesCompleted, stats.Length) }</p>
+	if stats.IsZero() {
+		<span></span>
+	} else {
+		<div class="text-sm font-thin">
+			<div class="flex flex-wrap justify-end items-center  space-x-2">
+				<p>Total Peers: { toString(stats.TotalPeers) }</p>
+				<p>Active Peers: { toString(stats.ActivePeers) }</p>
+				<p>Pending Peers: { toString(stats.PendingPeers) }</p>
+				<p>Connected Seeders: { toString(stats.ConnectedSeeders) }</p>
+				<p>Haft Open Peers: { toString(stats.HalfOpenPeers) }</p>
 			</div>
-			<div class="w-full bg-gray-700 rounded-full h-1 mb-4 ">
-				<div
-					class="bg-red-700 h-1 rounded-full"
-					{ templ.Attributes{"style": fmt.Sprintf("width: %s", percent(stats.BytesCompleted, stats.Length))}... }
-				></div>
+			<div>
+				<div class="flex items-center justify-end">
+					<p>Downloaded: { byteCounter(stats.BytesCompleted) }/{ byteCounter(stats.Length) } ({ percent(stats.BytesCompleted, stats.Length) })</p>
+				</div>
+				<div class="w-full bg-gray-700 rounded-full h-1 mb-4 ">
+					<div
+						class="bg-red-700 h-1 rounded-full"
+						{ templ.Attributes{"style": fmt.Sprintf("width: %s", percent(stats.BytesCompleted, stats.Length))}... }
+					></div>
+				</div>
 			</div>
 		</div>
-	</div>
+	}
 }
 
 func percent(value, total int64) string {
@@ -203,7 +207,7 @@ templ SubtitleSection(videoID int64, availableSubtitles []api.Subtitle, state Su
 				<input
 					type="file"
 					name="fileInput"
-					accept=".vtt, .srt, application/x-subrip, text/vtt"
+					accept=".vtt, .srt, application/x-subrip, text/vtt, .ass"
 					class="rounded border border-gray-400 bg-stone-700 text-stone-100 file:mr-5 file:rounded-l file:border-[0px] file:bg-stone-700 file:p-4 file:text-stone-100 hover:border-red-700 hover:file:cursor-pointer hover:file:bg-stone-800 hover:file:text-red-700"
 					hx-encoding="multipart/form-data"
 					hx-post={ uri.UploadSubtitle(videoID) }

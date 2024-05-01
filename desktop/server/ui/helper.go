@@ -26,3 +26,17 @@ func toBase64(data []byte) string {
 func toBase64Src(mineType string, content []byte) string {
 	return fmt.Sprintf("data:%s;base64,%s", mineType, toBase64(content))
 }
+
+func byteCounter(b int64) string {
+	const unit = 1000
+	if b < unit {
+		return fmt.Sprintf("%d B", b)
+	}
+	div, exp := int64(unit), 0
+	for n := b / unit; n >= unit; n /= unit {
+		div *= unit
+		exp++
+	}
+	return fmt.Sprintf("%.1f %cB",
+		float64(b)/float64(div), "kMGTPE"[exp])
+}

@@ -75,3 +75,36 @@ func Normalize(fileName string, content []byte, addDuration time.Duration) ([]by
 
 	return []byte(webVTTContent), nil
 }
+
+func NormalizeToSRT(fileName string, content []byte) ([]byte, error) {
+	var (
+		sub *astisub.Subtitles
+		err error
+	)
+
+	reader := bytes.NewReader(content)
+
+	fileExt := path.Ext(fileName)
+	if fileExt == ".srt" {
+		return content, nil
+	}
+	switch strings.Trim(fileExt, ".") {
+	case "vtt":
+		sub, err = astisub.ReadFromWebVTT(reader)
+	case "ssa", "ass":
+		sub, err = astisub.ReadFromSSA(reader)
+	default:
+		return nil, fmt.Errorf("not supported file extension %s", fileExt)
+	}
+
+	if err != nil {
+		return nil, fmt.Errorf("read subtitle: %w", err)
+	}
+
+	buf := &bytes.Buffer{}
+	if err := sub.WriteToSRT(buf); err != nil {
+		return nil, fmt.Errorf("write subtitle: %w", err)
+	}
+
+	return buf.Bytes(), nil
+}

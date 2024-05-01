@@ -38,7 +38,7 @@ func (h *Handler) UpdateSetting(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "update setting")
 	}
 
-	redirect(w, r, uri.GetSettings())
+	fullyRedirect(w, r, uri.GetSettings())
 	return nil
 }
 
@@ -60,13 +60,13 @@ func (h *Handler) ChangeDataDir(w http.ResponseWriter, r *http.Request) error {
 		return s, nil
 	})
 	if errors.Is(err, zenity.ErrCanceled) {
-		redirect(w, r, uri.GetSettings())
+		fullyRedirect(w, r, uri.GetSettings())
 		return nil
 	}
 	if err != nil {
 		return errors.Wrap(err, "change data dir")
 	}
 
-	redirect(w, r, uri.GetSettings())
+	fullyRedirect(w, r, uri.GetSettings())
 	return nil
 }
