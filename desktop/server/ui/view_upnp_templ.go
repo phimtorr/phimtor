@@ -427,15 +427,42 @@ func UPnPController(infoHash torrent.InfoHash, fileIndex int) templ.Component {
 			templ_7745c5c3_Var14 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section id=\"controller\" hx-indicator=\".controller-indicator\" hx-target-error=\"#controller-errors\" class=\"mt-4\"><div class=\"flex space-x-2 items-center justify-center\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section id=\"controller\" hx-indicator=\".controller-indicator\" hx-target-error=\"#controller-errors\" hx-swap-error=\"innerHTML\" hx-on::trigger=\"document.getElementById(&#39;controller-errors&#39;).innerHTML = &#39;&#39;\" class=\"mt-4\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = htmxIndicatorWithClassName("controller-indicator").Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex space-x-2 items-center justify-center\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = secondaryButton(templ.Attributes{
-			"hx-post":   uri.UPnPPlay(),
-			"hx-swap":   "outerHTML",
-			"hx-target": "closest section",
+			"hx-post":        uri.UPnPPlay(),
+			"hx-swap":        "outerHTML",
+			"hx-target":      "closest section",
+			"hx-on::trigger": "document.getElementById('controller-errors').innerHTML = ''",
 		}, span("Play")).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = secondaryButton(templ.Attributes{
+			"hx-post":        uri.UPnPPause(),
+			"hx-swap":        "outerHTML",
+			"hx-target":      "closest section",
+			"hx-on::trigger": "document.getElementById('controller-errors').innerHTML = ''",
+		}, span("Pause")).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = secondaryButton(templ.Attributes{
+			"hx-post":        uri.UPnPStop(),
+			"hx-swap":        "outerHTML",
+			"hx-target":      "closest section",
+			"hx-on::trigger": "document.getElementById('controller-errors').innerHTML = ''",
+		}, span("Stop")).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -455,7 +482,7 @@ func UPnPController(infoHash torrent.InfoHash, fileIndex int) templ.Component {
 			var templ_7745c5c3_Var15 string
 			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(uri.GetStats(infoHash, fileIndex))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_upnp.templ`, Line: 203, Col: 46}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `server/ui/view_upnp.templ`, Line: 219, Col: 46}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 			if templ_7745c5c3_Err != nil {

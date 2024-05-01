@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"path/filepath"
 
+	"github.com/rs/zerolog/log"
+
 	"github.com/friendsofgo/errors"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/huin/goupnp/dcps/av1"
@@ -49,6 +51,10 @@ func (u *UPnP) Play(ctx context.Context, torrentLink api.TorrentLink, subFileNam
 			return errors.Wrap(err, "set subtitle")
 		}
 		subURL = u.buildSubtitleURL(client, u.state.SubtitleFileName)
+	}
+
+	if err := client.StopCtx(ctx, 0); err != nil {
+		log.Ctx(ctx).Warn().Err(err).Msg("Stop failed")
 	}
 
 	currentURIMetaData, err := buildCurrentURIMetaData(videoFileName, videoMimeType.String(), videoURL, subURL)

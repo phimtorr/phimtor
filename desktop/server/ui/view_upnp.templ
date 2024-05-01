@@ -188,14 +188,30 @@ templ UPnPController(infoHash torrent.InfoHash, fileIndex int) {
 	<section id="controller"
 		hx-indicator=".controller-indicator"
 		hx-target-error="#controller-errors"
+		hx-swap-error="innerHTML"
+		hx-on::trigger="document.getElementById('controller-errors').innerHTML = ''"
 		class="mt-4"
 	>
+	@htmxIndicatorWithClassName("controller-indicator")
 		<div class="flex space-x-2 items-center justify-center">
 			@secondaryButton(templ.Attributes{
 				"hx-post":      uri.UPnPPlay(),
 				"hx-swap":      "outerHTML",
 				"hx-target":    "closest section",
+				"hx-on::trigger": "document.getElementById('controller-errors').innerHTML = ''",
 			}, span("Play"))
+			@secondaryButton(templ.Attributes{
+				"hx-post":      uri.UPnPPause(),
+				"hx-swap":      "outerHTML",
+				"hx-target":    "closest section",
+				"hx-on::trigger": "document.getElementById('controller-errors').innerHTML = ''",
+			}, span("Pause"))
+			@secondaryButton(templ.Attributes{
+				"hx-post":      uri.UPnPStop(),
+				"hx-swap":      "outerHTML",
+				"hx-target":    "closest section",
+				"hx-on::trigger": "document.getElementById('controller-errors').innerHTML = ''",
+			}, span("Stop"))
 		</div>
 		@errorPlaceHolderWithID("controller-errors")
 		if !infoHash.IsZero() {

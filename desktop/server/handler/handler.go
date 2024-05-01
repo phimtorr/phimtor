@@ -115,6 +115,8 @@ func (h *Handler) Register(r chi.Router) {
 	})
 	r.Route("/upnp/actions", func(r chi.Router) {
 		r.Post("/play", errHandlerFunc(h.UPnPPlay))
+		r.Post("/pause", errHandlerFunc(h.UPnPPause))
+		r.Post("/stop", errHandlerFunc(h.UPnPStop))
 	})
 
 }

@@ -41,3 +41,11 @@ func UPnPScanDevices() string {
 func UPnPPlay() string {
 	return "/upnp/actions/play"
 }
+
+func UPnPPause() string {
+	return "/upnp/actions/pause"
+}
+
+func UPnPStop() string {
+	return "/upnp/actions/stop"
+}

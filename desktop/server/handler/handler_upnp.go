@@ -212,16 +212,23 @@ func (h *Handler) UPnPPlay(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	state := h.upnpService.GetState()
-
 	return ui.UPnPController(state.InfoHash, state.FileIndex).Render(r.Context(), w)
 }
 
 func (h *Handler) UPnPStop(w http.ResponseWriter, r *http.Request) error {
+	if err := h.upnpService.Stop(r.Context()); err != nil {
+		return errors.Wrap(err, "stop")
+	}
 
-	return nil
+	state := h.upnpService.GetState()
+	return ui.UPnPController(state.InfoHash, state.FileIndex).Render(r.Context(), w)
 }
 
 func (h *Handler) UPnPPause(w http.ResponseWriter, r *http.Request) error {
+	if err := h.upnpService.Pause(r.Context()); err != nil {
+		return errors.Wrap(err, "pause")
+	}
 
-	return nil
+	state := h.upnpService.GetState()
+	return ui.UPnPController(state.InfoHash, state.FileIndex).Render(r.Context(), w)
 }
