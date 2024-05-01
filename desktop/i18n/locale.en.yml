@@ -106,3 +106,16 @@ Action:
 
 Notification:
   NotSupportedVideo: "If there is no sound, please open in VLC. Then download the subtitle and add it manually."
+
+UPnP:
+  Messages:
+    Announcement: "This feature is still under development, fees may apply in the future."
+    LoadingTorrents: "Loading torrents..."
+    LoadingSubtitles : "Loading subtitles..."
+    LoadingDevices: "Loading UPnP devices..."
+    NoDevices: "No UPnP devices found"
+  Title:
+    Torrents: "Torrents"
+    Subtitles: "Subtitles"
+    Devices: "UPnP Devices"
+    Controller: "Controller"

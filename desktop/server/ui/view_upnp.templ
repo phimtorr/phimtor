@@ -8,8 +8,13 @@ import "github.com/phimtorr/phimtor/desktop/torrent"
 
 templ UPnP(video api.Video) {
 	@layout("UPnP | " + video.Title) {
-		<div class="my-2 flex items-center justify-end">
-			@backButton()
+		<div class="flex items-center justify-between">
+			<div>
+				<p class="text-sm italic font-semibold">*{ i18n.T(ctx, "UPnP.Messages.Announcement") }</p>
+			</div>
+			<div class="my-2 flex items-center justify-end">
+				@backButton()
+			</div>
 		</div>
 		<section class="flex flex-col h-full">
 			<section class="w-full space-y-2">
@@ -24,7 +29,7 @@ templ UPnP(video api.Video) {
 				hx-target-error="find .errors"
 			>
 				@errorPlaceHolder()
-				<p class="text-sm italic">Loading Torrents</p>
+				<p class="text-sm italic">{ i18n.T(ctx, "UPnP.Messages.LoadingTorrents") }</p>
 			</section>
 			<section
 				hx-get={ uri.UPnPListSubtitles(video.Id) }
@@ -33,7 +38,7 @@ templ UPnP(video api.Video) {
 				hx-target-error="find .errors"
 			>
 				@errorPlaceHolder()
-				<p class="text-sm italic">Loading Subtitles</p>
+				<p class="text-sm italic">{ i18n.T(ctx, "UPnP.Messages.LoadingSubtitles") }</p>
 			</section>
 			<section
 				hx-get={ uri.UPnPListDevices() }
@@ -42,7 +47,7 @@ templ UPnP(video api.Video) {
 				hx-target-error="find .errors"
 			>
 				@errorPlaceHolder()
-				<p class="text-sm italic">Loading Devices</p>
+				<p class="text-sm italic">{ i18n.T(ctx, "UPnP.Messages.LoadingDevices") }</p>
 			</section>
 			@UPnPController(torrent.InfoHash{}, 0)
 		</section>
@@ -50,13 +55,15 @@ templ UPnP(video api.Video) {
 }
 
 templ UPnPTorrents(videoID int64, torrents []api.TorrentLink, selectedTorrent api.TorrentLink) {
-	<section class="w-full mt-4" id="torrents"
+	<section
+		class="w-full mt-4"
+		id="torrents"
 		hx-indicator=".torrent-indicator"
 		hx-target-error="#torrent-errors"
 	>
 		<div class="flex items-center justify-between">
 			<h3 class="my-4 text-xl font-bold">
-				<span class="border-b-2 border-red-700 pb-1">Torrents</span>
+				<span class="border-b-2 border-red-700 pb-1">{ i18n.T(ctx, "UPnP.Title.Torrents") }</span>
 			</h3>
 			<div class="inline-flex items-center space-x-2">
 				@htmxIndicatorWithClassName("torrent-indicator")
@@ -64,7 +71,6 @@ templ UPnPTorrents(videoID int64, torrents []api.TorrentLink, selectedTorrent ap
 		</div>
 		@errorPlaceHolderWithID("torrent-errors")
 		<div class="flex flex-wrap gap-2 mt-4">
-			
 			for _, l := range torrents {
 				if l.Id == selectedTorrent.Id {
 					@primaryButton(l.Name, templ.Attributes{
@@ -72,9 +78,9 @@ templ UPnPTorrents(videoID int64, torrents []api.TorrentLink, selectedTorrent ap
 					})
 				} else {
 					@secondaryButton(templ.Attributes{
-						"hx-post":      uri.UPnPSetTorrent(videoID, l.Id),
-						"hx-swap":      "outerHTML",
-						"hx-target":    "closest section",
+						"hx-post":   uri.UPnPSetTorrent(videoID, l.Id),
+						"hx-swap":   "outerHTML",
+						"hx-target": "closest section",
 					}, span(l.Name))
 				}
 			}
@@ -83,13 +89,14 @@ templ UPnPTorrents(videoID int64, torrents []api.TorrentLink, selectedTorrent ap
 }
 
 templ UPnPSubtitles(videoID int64, subtitles []api.Subtitle, selectedID int64, seletedName string) {
-	<section id="subtitles"
+	<section
+		id="subtitles"
 		hx-indicator=".subtitle-indicator"
 		hx-target-error="#subtitle-errors"
 	>
 		<div class="flex items-center justify-between">
 			<h3 class="my-4 text-xl font-bold">
-				<span class="border-b-2 border-red-700 pb-1">{ i18n.T(ctx, "Subtitle.Title") }</span>
+				<span class="border-b-2 border-red-700 pb-1">{ i18n.T(ctx, "UPnP.Title.Subtitles") }</span>
 			</h3>
 			<div class="inline-flex items-center space-x-2">
 				<p class="pr-1 text-sm">{ seletedName }</p>
@@ -110,23 +117,39 @@ templ UPnPSubtitles(videoID int64, subtitles []api.Subtitle, selectedID int64, s
 				hx-post={ uri.UPnPUploadSubtitle(videoID) }
 				hx-swap="outerHTML"
 				hx-target="closest section"
-				
 			/>
 		</div>
-		<div class="flex flex-wrap space-x-2 space-y-2">
-			for _, sub := range subtitles {
-				if sub.Id == selectedID {
-					@primaryButton(upnpSubName(sub), templ.Attributes{
-						"disabled": "true",
-					})
-				} else {
-					@secondaryButton(templ.Attributes{
-						"hx-post":      uri.UPnPSetSubtitle(videoID, sub.Id),
-						"hx-swap":      "outerHTML",
-						"hx-target":    "closest section",
-					}, span(upnpSubName(sub)))
+		<div class="space-y-4">
+			<div class="flex flex-wrap gap-2">
+				for _, sub := range filterSubtitles(subtitles, "vi") {
+					if sub.Id == selectedID {
+						@primaryButton(upnpSubName(sub), templ.Attributes{
+							"disabled": "true",
+						})
+					} else {
+						@secondaryButton(templ.Attributes{
+							"hx-post":   uri.UPnPSetSubtitle(videoID, sub.Id),
+							"hx-swap":   "outerHTML",
+							"hx-target": "closest section",
+						}, span(upnpSubName(sub)))
+					}
 				}
-			}
+			</div>
+			<div class="flex flex-wrap gap-2">
+				for _, sub := range filterSubtitles(subtitles, "en") {
+					if sub.Id == selectedID {
+						@primaryButton(upnpSubName(sub), templ.Attributes{
+							"disabled": "true",
+						})
+					} else {
+						@secondaryButton(templ.Attributes{
+							"hx-post":   uri.UPnPSetSubtitle(videoID, sub.Id),
+							"hx-swap":   "outerHTML",
+							"hx-target": "closest section",
+						}, span(upnpSubName(sub)))
+					}
+				}
+			</div>
 		</div>
 	</section>
 }
@@ -143,21 +166,21 @@ func upnpSubName(sub api.Subtitle) string {
 	return prefix + sub.Name
 }
 
-
 templ UPnPDevices(devices []*av1.AVTransport1, selectedUDN string) {
-	<section id="devices"
+	<section
+		id="devices"
 		hx-indicator=".device-indicator"
 		hx-target-error="#device-errors"
 	>
 		<div class="flex items-center justify-between">
 			<h3 class="my-4 text-xl font-bold">
-				<span class="border-b-2 border-red-700 pb-1">Devices</span>
+				<span class="border-b-2 border-red-700 pb-1">{ i18n.T(ctx, "UPnP.Title.Devices") }</span>
 			</h3>
 			<div class="inline-flex items-center space-x-2">
 				@secondaryButton(templ.Attributes{
-					"hx-post":      uri.UPnPScanDevices(),
-					"hx-swap":      "outerHTML",
-					"hx-target":    "closest section",
+					"hx-post":   uri.UPnPScanDevices(),
+					"hx-swap":   "outerHTML",
+					"hx-target": "closest section",
 				}, span("Scan"))
 				@htmxIndicatorWithClassName("device-indicator")
 			</div>
@@ -165,7 +188,7 @@ templ UPnPDevices(devices []*av1.AVTransport1, selectedUDN string) {
 		@errorPlaceHolderWithID("device-errors")
 		<div class="flex flex-wrap space-x-2 space-y-2">
 			if len(devices) == 0 {
-				<p>No devices available</p>
+				<p>{ i18n.T(ctx, "UPnP.Messages.NoDevices") }</p>
 			}
 			for _, d := range devices {
 				if d.RootDevice.Device.UDN == selectedUDN {
@@ -174,9 +197,9 @@ templ UPnPDevices(devices []*av1.AVTransport1, selectedUDN string) {
 					})
 				} else {
 					@secondaryButton(templ.Attributes{
-						"hx-post":      uri.UPnPSelectDevice(d.RootDevice.Device.UDN),
-						"hx-swap":      "outerHTML",
-						"hx-target":    "closest section",
+						"hx-post":   uri.UPnPSelectDevice(d.RootDevice.Device.UDN),
+						"hx-swap":   "outerHTML",
+						"hx-target": "closest section",
 					}, span(d.RootDevice.Device.FriendlyName))
 				}
 			}
@@ -185,31 +208,40 @@ templ UPnPDevices(devices []*av1.AVTransport1, selectedUDN string) {
 }
 
 templ UPnPController(infoHash torrent.InfoHash, fileIndex int) {
-	<section id="controller"
+	<section
+		id="controller"
 		hx-indicator=".controller-indicator"
 		hx-target-error="#controller-errors"
 		hx-swap-error="innerHTML"
 		hx-on::trigger="document.getElementById('controller-errors').innerHTML = ''"
 		class="mt-4"
 	>
-	@htmxIndicatorWithClassName("controller-indicator")
+		<div class="flex items-center justify-between">
+			<h3 class="my-4 text-xl font-bold">
+				<span class="border-b-2 border-red-700 pb-1">{ i18n.T(ctx, "UPnP.Title.Controller") }</span>
+			</h3>
+			<div class="inline-flex items-center space-x-2">
+				@htmxIndicatorWithClassName("controller-indicator")
+			</div>
+		</div>
+		@htmxIndicatorWithClassName("controller-indicator")
 		<div class="flex space-x-2 items-center justify-center">
 			@secondaryButton(templ.Attributes{
-				"hx-post":      uri.UPnPPlay(),
-				"hx-swap":      "outerHTML",
-				"hx-target":    "closest section",
+				"hx-post":        uri.UPnPPlay(),
+				"hx-swap":        "outerHTML",
+				"hx-target":      "closest section",
 				"hx-on::trigger": "document.getElementById('controller-errors').innerHTML = ''",
 			}, span("Play"))
 			@secondaryButton(templ.Attributes{
-				"hx-post":      uri.UPnPPause(),
-				"hx-swap":      "outerHTML",
-				"hx-target":    "closest section",
+				"hx-post":        uri.UPnPPause(),
+				"hx-swap":        "outerHTML",
+				"hx-target":      "closest section",
 				"hx-on::trigger": "document.getElementById('controller-errors').innerHTML = ''",
 			}, span("Pause"))
 			@secondaryButton(templ.Attributes{
-				"hx-post":      uri.UPnPStop(),
-				"hx-swap":      "outerHTML",
-				"hx-target":    "closest section",
+				"hx-post":        uri.UPnPStop(),
+				"hx-swap":        "outerHTML",
+				"hx-target":      "closest section",
 				"hx-on::trigger": "document.getElementById('controller-errors').innerHTML = ''",
 			}, span("Stop"))
 		</div>
