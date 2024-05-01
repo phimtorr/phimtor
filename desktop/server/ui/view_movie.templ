@@ -26,8 +26,9 @@ templ Movie(movie api.Movie) {
 					<p class="mb-2">IMDB: { toString(movie.Score) }</p>
 					<p class="mb-2">{ i18n.T(ctx, "Movies.Duration") }: { durationCount(movie.DurationInMinutes) }</p>
 				</div>
-				<div class="mt-4 box-border">
+				<div class="flex space-x-2 mt-4 box-border">
 					@primaryButtonLink(uri.GetVideo(movie.VideoId), many(span(i18n.T(ctx, "Movies.Action.WatchNow"))))
+					@secondaryButtonLink(uri.UPnPView(movie.VideoId), many(span(i18n.T(ctx, "Movies.Action.WatchViaUPnP"))))
 				</div>
 			</div>
 		</section>

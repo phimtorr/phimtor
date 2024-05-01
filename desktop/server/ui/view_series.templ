@@ -26,9 +26,16 @@ templ Series(series api.Series) {
 					<p class="mb-2">TMBb: { toString(series.Score) }</p>
 					<p class="mb-2">{ i18n.T(ctx, "Movies.Duration") }: { durationCount(series.DurationInMinutes) }</p>
 				</div>
+				<h3 class="mt-4 font-bold text-xl">{ i18n.T(ctx, "Series.Action.WatchNow") }</h3>
 				<div class="mt-4 box-border space-x-2 space-y-2">
 					for _, e := range series.Episodes {
 						@secondaryButtonLink(uri.GetVideo(e.VideoId), span(e.Name))
+					}
+				</div>
+				<h3 class="mt-4 font-bold text-xl">{ i18n.T(ctx, "Series.Action.WatchViaUPnP") }</h3>
+				<div class="mt-4 box-border space-x-2 space-y-2">
+					for _, e := range series.Episodes {
+						@secondaryButtonLink(uri.UPnPView(e.VideoId), span(e.Name))
 					}
 				</div>
 			</div>

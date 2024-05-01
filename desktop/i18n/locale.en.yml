@@ -51,12 +51,14 @@ Movies:
   IMDB: "IMDB"
   Action:
     WatchNow: "Watch Now"
+    WatchViaUPnP: "Watch via UPnP"
 
 Series:
   ReleaseYear: "Release Year"
   Duration: "Duration"
   Action:
     WatchNow: "Watch Now"
+    WatchViaUPnP: "Watch via UPnP"
 
 Search:
   SearchBar:

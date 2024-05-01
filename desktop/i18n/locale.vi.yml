@@ -51,12 +51,14 @@ Movies:
   IMDB: "IMDB"
   Action:
     WatchNow: "Xem ngay"
+    WatchViaUPnP: "Xem qua TV"
 
 Series:
   ReleaseYear: "Năm phát hành"
   Duration: "Thời lượng"
   Action:
     WatchNow: "Xem ngay"
+    WatchViaUPnP: "Xem qua TV"
 
 Search:
   SearchBar:
