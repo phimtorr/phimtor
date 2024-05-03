@@ -36,7 +36,7 @@ func (r Repository) ListShows(ctx context.Context, params http.ListShowsParams) 
 	pagingQueryMods := append(queryMods,
 		qm.Limit(pageSize),
 		qm.Offset((page-1)*pageSize),
-		qm.OrderBy(dbmodels.ShowColumns.CreatedAt+" DESC"),
+		qm.OrderBy(dbmodels.ShowColumns.UpdatedAt+" DESC"),
 	)
 
 	shows, err := dbmodels.Shows(pagingQueryMods...).
