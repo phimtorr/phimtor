@@ -7,11 +7,12 @@ import (
 
 	firebase "firebase.google.com/go/v4"
 	"github.com/go-chi/chi/v5"
+	"github.com/rs/zerolog/log"
+
 	"github.com/phimtorr/phimtor/common/logs"
 	"github.com/phimtorr/phimtor/server/admin/auth"
 	adminHttp "github.com/phimtorr/phimtor/server/admin/http"
 	"github.com/phimtorr/phimtor/server/pkg/database"
-	"github.com/rs/zerolog/log"
 )
 
 func main() {
@@ -26,7 +27,7 @@ func main() {
 	authService := auth.NewAuth(authClient)
 
 	db := database.NewMySqlDB()
-	httpServer := adminHttp.NewHTTPServer(db)
+	httpServer := adminHttp.NewHTTPServer(db, authClient)
 
 	r := chi.NewRouter()
 

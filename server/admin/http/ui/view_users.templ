@@ -1,0 +1,59 @@
+package ui
+
+import "firebase.google.com/go/v4/auth"
+import "github.com/phimtorr/phimtor/server/admin/http/uri"
+
+templ ListUsers(users []*auth.ExportedUserRecord, nextPageToken string) {
+	@layout("Users") {
+		<h1>Users</h1>
+		<section>
+			<article>
+				<table>
+					<thead>
+						<tr>
+							<th>UID</th>
+							<th>Display Name</th>
+							<th>Email</th>
+							<th>Role</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						for _, u := range users {
+							<tr>
+								<td>{ u.UID }</td>
+								<td>{ u.DisplayName }</td>
+								<td>{ u.Email }</td>
+								<td>
+									if isAdmin(u) {
+										<span>Admin</span>
+									}
+								</td>
+								<td></td>
+							</tr>
+						}
+					</tbody>
+					<tfoot>
+						if nextPageToken != "" {
+							<a role="button" href={ templ.SafeURL(uri.ListUsers(nextPageToken)) }>Next</a>
+						}
+					</tfoot>
+				</table>
+			</article>
+		</section>
+	}
+}
+
+func isAdmin(u *auth.ExportedUserRecord) bool {
+	v, ok := u.CustomClaims["is_admin"]
+	if !ok {
+		return false
+	}
+
+	b, ok := v.(bool)
+	if !ok {
+		return false
+	}
+
+	return b
+}
