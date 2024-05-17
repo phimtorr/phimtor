@@ -6,3 +6,7 @@ func ListUsers(nextPageToken string) string {
 	}
 	return "/users?nextPageToken=" + nextPageToken
 }
+
+func ViewUser(uid string) string {
+	return "/users/" + uid
+}

@@ -55,6 +55,7 @@ func (s Server) Register(r chi.Router) {
 	r.Delete("/videos/{id}/subtitles/{subtitleID}", errHandlerFunc(s.handler.DeleteSubtitle))
 
 	r.Get("/users", errHandlerFunc(s.handler.ListUsers))
+	r.Get("/users/{uid}", errHandlerFunc(s.handler.ViewUser))
 }
 
 func errHandlerFunc(h func(w http.ResponseWriter, r *http.Request) error) http.HandlerFunc {
