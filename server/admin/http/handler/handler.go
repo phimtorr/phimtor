@@ -4,6 +4,8 @@ import (
 	"context"
 	"io"
 	"net/http"
+
+	"firebase.google.com/go/v4/auth"
 )
 
 type FileService interface {
@@ -14,9 +16,10 @@ type FileService interface {
 type Handler struct {
 	repo        Repository
 	fileService FileService
+	authClient  *auth.Client
 }
 
-func New(repo Repository, fileService FileService) *Handler {
+func New(repo Repository, fileService FileService, authClient *auth.Client) *Handler {
 	if repo == nil {
 		panic("nil repository")
 
@@ -24,10 +27,14 @@ func New(repo Repository, fileService FileService) *Handler {
 	if fileService == nil {
 		panic("nil file service")
 	}
+	if authClient == nil {
+		panic("nil auth client")
+	}
 
 	return &Handler{
 		repo:        repo,
 		fileService: fileService,
+		authClient:  authClient,
 	}
 }
 

@@ -1,5 +1,7 @@
 package ui
 
+import "github.com/phimtorr/phimtor/server/admin/http/uri"
+
 templ layout(title string) {
 	<!DOCTYPE html>
 	<html lang="en">
@@ -23,7 +25,8 @@ templ layout(title string) {
 						<li><strong>PhimTor Admin</strong></li>
 					</ul>
 					<ul>
-						<li><a href="/">Home</a></li>
+						<li><a href={ templ.SafeURL(uri.ListShows(1)) }>Shows</a></li>
+						<li><a href={ templ.SafeURL(uri.ListUsers("")) }>Users</a></li>
 						<li><a href="/logout">Logout</a></li>
 					</ul>
 				</nav>

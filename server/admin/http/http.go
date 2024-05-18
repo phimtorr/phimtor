@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"net/http"
 
+	"firebase.google.com/go/v4/auth"
+
 	"github.com/phimtorr/phimtor/server/admin/http/handler"
 	"github.com/phimtorr/phimtor/server/admin/http/ui"
 	"github.com/phimtorr/phimtor/server/admin/repository"
@@ -12,19 +14,21 @@ import (
 	"github.com/a-h/templ"
 	"github.com/friendsofgo/errors"
 	"github.com/go-chi/chi/v5"
-	commonErrors "github.com/phimtorr/phimtor/common/errors"
 	"github.com/rs/zerolog/log"
+
+	commonErrors "github.com/phimtorr/phimtor/common/errors"
 )
 
 type Server struct {
 	handler *handler.Handler
 }
 
-func NewHTTPServer(db *sql.DB) Server {
+func NewHTTPServer(db *sql.DB, authClient *auth.Client) Server {
 	return Server{
 		handler: handler.New(
 			repository.NewRepository(db),
 			s3.NewService(),
+			authClient,
 		),
 	}
 }
@@ -49,6 +53,9 @@ func (s Server) Register(r chi.Router) {
 	r.Delete("/videos/{id}/torrents/{torrentID}", errHandlerFunc(s.handler.DeleteTorrent))
 	r.Post("/videos/{id}/subtitles/create", errHandlerFunc(s.handler.CreateSubtitle))
 	r.Delete("/videos/{id}/subtitles/{subtitleID}", errHandlerFunc(s.handler.DeleteSubtitle))
+
+	r.Get("/users", errHandlerFunc(s.handler.ListUsers))
+	r.Get("/users/{uid}", errHandlerFunc(s.handler.ViewUser))
 }
 
 func errHandlerFunc(h func(w http.ResponseWriter, r *http.Request) error) http.HandlerFunc {

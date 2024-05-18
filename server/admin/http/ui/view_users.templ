@@ -1,0 +1,126 @@
+package ui
+
+import "firebase.google.com/go/v4/auth"
+import "github.com/phimtorr/phimtor/server/admin/http/uri"
+
+templ ListUsers(users []*auth.ExportedUserRecord, nextPageToken string) {
+	@layout("Users") {
+		<h1>Users</h1>
+		<section>
+			<article>
+				<table>
+					<thead>
+						<tr>
+							<th>UID</th>
+							<th>Display Name</th>
+							<th>Email</th>
+							<th>Role</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						for _, u := range users {
+							<tr>
+								<td>{ u.UID }</td>
+								<td>{ u.DisplayName }</td>
+								<td>{ u.Email }</td>
+								<td>
+									if isAdmin(u) {
+										<span>Admin</span>
+									}
+								</td>
+								<td>
+									<a role="button" href={ templ.SafeURL(uri.ViewUser(u.UID)) }>View</a>
+								</td>
+							</tr>
+						}
+					</tbody>
+					<tfoot>
+						if nextPageToken != "" {
+							<a role="button" href={ templ.SafeURL(uri.ListUsers(nextPageToken)) }>Next</a>
+						}
+					</tfoot>
+				</table>
+			</article>
+		</section>
+	}
+}
+
+func isAdmin(u *auth.ExportedUserRecord) bool {
+	v, ok := u.CustomClaims["is_admin"]
+	if !ok {
+		return false
+	}
+
+	b, ok := v.(bool)
+	if !ok {
+		return false
+	}
+
+	return b
+}
+
+templ ViewUser(user *auth.UserRecord) {
+	@layout("User | " + user.UserInfo.DisplayName ) {
+		<h1>User</h1>
+		<section>
+			<article>
+				<h2>{ user.UID }</h2>
+				<dl>
+					<dt>Display Name</dt>
+					<dd>{ user.DisplayName }</dd>
+					<dt>Email</dt>
+					<dd>{ user.Email }</dd>
+					<dt>Phone Number</dt>
+					<dd>{ user.PhoneNumber }</dd>
+					<dt>Photo URL</dt>
+					<dd>{ user.PhotoURL }</dd>
+					<dt>Email Verified</dt>
+					<dd>{ toString(user.EmailVerified) }</dd>
+					<dt>Disabled</dt>
+					<dd>{ toString(user.Disabled) }</dd>
+					<dt>Metadata</dt>
+					<dd>
+						<dl>
+							<dt>Creation Time</dt>
+							<dd>{ toString(user.UserMetadata.CreationTimestamp) }</dd>
+							<dt>Last Sign-In Time</dt>
+							<dd>{ toString(user.UserMetadata.LastLogInTimestamp) }</dd>
+						</dl>
+					</dd>
+					<dt>Provider User Info</dt>
+					<dd>
+						<dl>
+							for _, p := range user.ProviderUserInfo {
+								<dt>{ p.ProviderID }</dt>
+								<dd>
+									<dl>
+										<dt>UID</dt>
+										<dd>{ p.UID }</dd>
+										<dt>Email</dt>
+										<dd>{ p.Email }</dd>
+										<dt>Phone Number</dt>
+										<dd>{ p.PhoneNumber }</dd>
+										<dt>Display Name</dt>
+										<dd>{ p.DisplayName }</dd>
+										<dt>Photo URL</dt>
+										<dd>{ p.PhotoURL }</dd>
+									</dl>
+								</dd>
+							}
+						</dl>
+					</dd>
+					<dt>Custom Claims</dt>
+					<dd>
+						<dl>
+							for k, v := range user.CustomClaims {
+								<dt>{ k }</dt>
+								<dd>{ toString(v) }</dd>
+							}
+						</dl>
+					</dd>
+				</dl>
+			</article>
+		</section>
+	}
+}
