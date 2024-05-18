@@ -101,20 +101,23 @@ templ navLink(link string, messageID string) {
 
 templ sideBarMenu() {
 	<ul>
-		@sideBarLink(uri.Home(), "fa-film")
+		@sideBarLink(uri.Home(), "fa-film", i18n.MustT(ctx, "Nav.Home"))
 	</ul>
 	<ul>
-		@sideBarLink(uri.GetSettings(), "fa-gear")
+		@sideBarLink(uri.GetSettings(), "fa-gear",  i18n.MustT(ctx, "Nav.Settings"))
 	</ul>
 }
 
-templ sideBarLink(link string, iconName string) {
+templ sideBarLink(link string, iconName, name string) {
 	<li
 		if isCurrentPage(ctx, link) {
 			class="text-red-700"
 		}
 	>
-		<a class="hover:text-red-700" href={ templ.SafeURL(link) }><i class={ "fa-solid", iconName }></i></a>
+		<a class="hover:text-red-700 flex flex-col items-center justify-between space-y-2" href={ templ.SafeURL(link) }>
+			<i class={ "fa-solid", iconName }></i>
+			<span>{ name }</span>
+		</a>
 	</li>
 }
 
