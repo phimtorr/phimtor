@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:phimtorapp/views/show_card.dart';
+import 'package:phimtor_app/views/show_card.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
