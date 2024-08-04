@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:phimtorapp/views/home_view.dart';
+import 'package:phimtor_app/views/home_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
