@@ -1,5 +1,5 @@
-name: phimtorapp
-description: "A new Flutter project."
+name: torrent_example
+description: "Demonstrates how to use the torrent plugin."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -31,10 +31,20 @@ dependencies:
   flutter:
     sdk: flutter
 
+  torrent:
+    # When depending on this package from a real application you should use:
+    #   torrent: ^x.y.z
+    # See https://dart.dev/tools/pub/dependencies#version-constraints
+    # The example app is bundled with the plugin so we use a path dependency on
+    # the parent directory to use the current plugin's version.
+    path: ../
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
+  media_kit: ^1.1.10                             # Primary package.
+  media_kit_video: ^1.2.4                        # For video rendering.
+  media_kit_libs_video: ^1.0.4                   # Native video dependencies.
 
 dev_dependencies:
   flutter_test:
@@ -45,9 +55,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.0
-  torrent:
-    path: ./torrent
+  flutter_lints: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
