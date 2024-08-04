@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:phimtor_app/services/preferences/preferences_service.dart';
 import 'package:phimtor_app/views/home_view.dart';
+import 'package:phimtor_app/views/settings_view.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await PreferencesService.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -41,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 0:
         page = const HomeView();
       case 1:
-        page = const SettingView();
+        page = const SettingsView();
       default:
         throw UnimplementedError("no widget for index $selectIndex");
     }
@@ -79,18 +82,5 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       );
     });
-  }
-}
-
-class SettingView extends StatelessWidget {
-  const SettingView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Setting"),
-      ),
-    );
   }
 }
