@@ -39,6 +39,10 @@ dependencies:
   path_provider: ^2.1.4
   path: ^1.9.0
   file_picker: ^8.0.0+1
+  torrent:
+    path: ./torrent
+  phimtor_openapi_client:
+    path: ./phimtor_openapi_client
 
 dev_dependencies:
   flutter_test:
@@ -50,10 +54,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^3.0.0
-  torrent:
-    path: ./torrent
-  phimtor_openapi_client:
-    path: ./phimtor_openapi_client
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

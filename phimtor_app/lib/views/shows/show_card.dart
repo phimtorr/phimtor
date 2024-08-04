@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:phimtor_openapi_client/api.dart';
 
 class ShowCard extends StatelessWidget {
-  final String title;
-  final String? originalTitle;
-  final String imageUrl;
+  final ModelShow show;
 
   const ShowCard({
     super.key,
-    required this.title,
-    this.originalTitle,
-    required this.imageUrl,
+    required this.show,
   });
 
   factory ShowCard.fake() {
-    return const ShowCard(
-      title: "Bộ Chiến Tranh Bất Lịch Sự",
-      originalTitle: "The Ministry of Ungentlemanly Warfare",
-      imageUrl: "https://image.tmdb.org/t/p/w300/avbU7Msx1O7387Lnh4N81Bq4gfC.jpg",
+    return ShowCard(
+      show: ModelShow(
+        id: 1,
+        title: "Bộ Chiến Tranh Bất Lịch Sự",
+        originalTitle: "The Ministry of Ungentlemanly Warfare",
+        posterLink:
+            "https://image.tmdb.org/t/p/w300/avbU7Msx1O7387Lnh4N81Bq4gfC.jpg",
+        type: ShowType.movie,
+        releaseYear: 2022,
+        score: 8.5,
+        durationInMinutes: 120,
+        quantity: "4K",
+        totalEpisodes: 1,
+        currentEpisode: 1,
+      ),
     );
   }
 
@@ -30,7 +38,7 @@ class ShowCard extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: Image.network(
-              imageUrl,
+              show.posterLink,
               width: 150,
               height: 200,
               fit: BoxFit.cover,
@@ -38,7 +46,7 @@ class ShowCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            title,
+            show.title,
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -46,10 +54,10 @@ class ShowCard extends StatelessWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          if (originalTitle != null) ...[
+          if (show.originalTitle != "") ...[
             const SizedBox(height: 4),
             Text(
-              originalTitle!,
+              show.originalTitle,
               style: const TextStyle(
                 fontSize: 14,
                 color: Colors.grey,

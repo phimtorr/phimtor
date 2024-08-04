@@ -264,7 +264,7 @@ packages:
     source: hosted
     version: "2.3.0"
   phimtor_openapi_client:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       path: phimtor_openapi_client
       relative: true
@@ -396,7 +396,7 @@ packages:
     source: hosted
     version: "0.7.0"
   torrent:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       path: torrent
       relative: true
