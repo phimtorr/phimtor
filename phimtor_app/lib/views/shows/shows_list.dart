@@ -9,7 +9,7 @@ class ShowsList extends StatelessWidget {
     required this.shows,
   });
 
-  static const minHeight = 350.0; // for not overflow
+  static const minHeight = 315.0; // for not overflow
 
   @override
   Widget build(BuildContext context) {
