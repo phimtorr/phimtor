@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phimtor_app/views/shows/movie_detail_view.dart';
+import 'package:phimtor_app/views/shows/series_detail_view.dart';
 import 'package:phimtor_openapi_client/api.dart';
 
 class ShowCard extends StatelessWidget {
@@ -82,8 +83,16 @@ class ShowCard extends StatelessWidget {
               title: show.title,
             ),
           ));
-        } else {
-          print("Not support yet");
+          return;
+        }
+        if (show.type == ShowType.series) {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => SeriesDetailView(
+              seriesId: show.id,
+              title: show.title,
+            ),
+          ));
+          return;
         }
       },
     );
