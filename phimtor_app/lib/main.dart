@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:phimtor_app/lifecycle_manager.dart';
 import 'package:phimtor_app/views/home_view.dart';
 import 'package:phimtor_app/views/settings_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  MediaKit.ensureInitialized();
   runApp(const MyApp());
 }
 
