@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phimtor_app/services/phimtor/phimtor_service.dart';
+import 'package:phimtor_app/views/video_view.dart';
 import 'package:phimtor_openapi_client/api.dart';
 
 class SeriesDetailView extends StatelessWidget {
@@ -88,7 +89,14 @@ class SeriesDetailView extends StatelessWidget {
                       children: List.generate(series.totalEpisodes, (index) {
                         final episode = index + 1;
                         return ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => VideoView(
+                                videoId: series.episodes[episode - 1].videoId,
+                                title: "${series.title} - Episode $episode",
+                              ),
+                            ));
+                          },
                           child: Text("Episode $episode"),
                         );
                       }),

@@ -74,7 +74,7 @@ typedef struct { void *data; GoInt len; GoInt cap; } GoSlice;
 extern "C" {
 #endif
 
-extern GoInt Start(GoString dataDir, GoUint8 deleteAfterClose, GoUint8 debug);
+extern GoInt Start(GoString dataDir, GoUint8 debug);
 extern void Stop();
 
 #ifdef __cplusplus

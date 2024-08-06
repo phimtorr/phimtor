@@ -57,12 +57,11 @@ class LibTorrent {
     return _torrentApi;
   }
 
-  void start(String dataDir, bool deleteAfterClose) {
+  void start(String dataDir) {
     final dataDirGoString = dataDir.toGoString();
 
     final listenPort = _torrent.Start(
       dataDirGoString,
-      deleteAfterClose ? 1 : 0,
       0,
     );
 

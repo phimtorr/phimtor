@@ -29,20 +29,17 @@ class TorrentBindings {
 
   int Start(
     GoString dataDir,
-    int deleteAfterDrop,
     int debug,
   ) {
     return _Start(
       dataDir,
-      deleteAfterDrop,
       debug,
     );
   }
 
   late final _StartPtr =
-      _lookup<ffi.NativeFunction<GoInt Function(GoString, GoUint8, GoUint8)>>(
-          'Start');
-  late final _Start = _StartPtr.asFunction<int Function(GoString, int, int)>();
+      _lookup<ffi.NativeFunction<GoInt Function(GoString, GoUint8)>>('Start');
+  late final _Start = _StartPtr.asFunction<int Function(GoString, int)>();
 
   void Stop() {
     return _Stop();
