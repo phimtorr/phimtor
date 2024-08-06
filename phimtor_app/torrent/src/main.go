@@ -19,12 +19,11 @@ var (
 )
 
 //export Start
-func Start(dataDir string, deleteAfterClose bool, debug bool) int {
-	slog.Info("Starting torrent server", slog.String("dataDir", dataDir), slog.Bool("deleteAfterClose", deleteAfterClose), slog.Bool("debug", debug))
+func Start(dataDir string, debug bool) int {
+	slog.Info("Starting torrent server", slog.String("dataDir", dataDir), slog.Bool("debug", debug))
 	config := torrent.Config{
-		DataDir:         dataDir,
-		DeleteAfterDrop: deleteAfterClose,
-		Debug:           debug,
+		DataDir: dataDir,
+		Debug:   debug,
 	}
 	_torManager = torrent.NewManager(config)
 

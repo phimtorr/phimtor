@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phimtor_app/services/phimtor/phimtor_service.dart';
+import 'package:phimtor_app/views/video_view.dart';
 import 'package:phimtor_openapi_client/api.dart';
 
 class MovieDetailView extends StatelessWidget {
@@ -88,7 +89,14 @@ class MovieDetailView extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => VideoView(
+                            videoId: movie.videoId,
+                            title: movie.title,
+                          ),
+                        ));
+                      },
                       label: const Text("Watch now"),
                       icon: const Icon(Icons.play_arrow),
                     ),

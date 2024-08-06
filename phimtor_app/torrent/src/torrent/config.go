@@ -3,9 +3,8 @@ package torrent
 import "errors"
 
 type Config struct {
-	DataDir         string
-	DeleteAfterDrop bool
-	Debug           bool
+	DataDir string
+	Debug   bool
 }
 
 func (c Config) validate() error {

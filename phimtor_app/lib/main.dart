@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:phimtor_app/services/preferences/preferences_service.dart';
+import 'package:phimtor_app/lifecycle_manager.dart';
 import 'package:phimtor_app/views/home_view.dart';
 import 'package:phimtor_app/views/settings_view.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await PreferencesService.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -15,13 +14,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Phim Tor',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
-        useMaterial3: true,
+    return LifecycleManager(
+      child: MaterialApp(
+        title: 'Phim Tor',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+          useMaterial3: true,
+        ),
+        home: const MyHomePage(),
       ),
-      home: const MyHomePage(),
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:torrent/torrent.dart' as torrent;
@@ -18,11 +20,11 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  
+  static const dataDirPath = '/home/chrisngyn/Desktop/test/';
 
   @override
   void initState() {
-    torrent.LibTorrent().start('/home/chrisngyn/Desktop/test/', true);
+    torrent.LibTorrent().start(dataDirPath);
     
     super.initState();
   }
@@ -30,6 +32,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void dispose() {
     torrent.LibTorrent().stop();
+    Directory(dataDirPath).deleteSync(recursive: true);
     super.dispose();
   }
 
