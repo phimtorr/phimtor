@@ -25,7 +25,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     torrent.LibTorrent().start(dataDirPath);
-    
     super.initState();
   }
 
