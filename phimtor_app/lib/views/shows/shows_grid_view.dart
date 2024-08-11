@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:phimtor_app/views/shows/show_card.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
 
-typedef LoadMoreCallback = Future<List<phimtor_api.ModelShow>> Function(
-    int page, int pageSize);
+typedef LoadMoreCallback
+    = Future<(List<phimtor_api.ModelShow>, phimtor_api.Pagination)> Function(
+        int page, int pageSize);
 
 class ShowsGridView extends StatefulWidget {
   const ShowsGridView({
@@ -61,7 +62,8 @@ class _ShowsGridViewState extends State<ShowsGridView> {
         isLoading = true;
       });
 
-      final newShows = await widget.loadMore(currentPage, pageSize);
+      final (newShows, pagination) =
+          await widget.loadMore(currentPage, pageSize);
       if (newShows.length < pageSize) {
         setState(() {
           hasMore = false;
@@ -69,6 +71,7 @@ class _ShowsGridViewState extends State<ShowsGridView> {
       }
 
       setState(() {
+        totalItems = pagination.totalResults;
         shows.addAll(newShows);
         currentPage++;
       });
@@ -87,17 +90,29 @@ class _ShowsGridViewState extends State<ShowsGridView> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: GridView.builder(
-        controller: scrollController,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 5,
-          childAspectRatio: 0.7,
-        ),
-        itemCount: shows.length,
-        itemBuilder: (context, i) {
-          final show = shows[i];
-          return ShowCard(show: show);
-        },
+      body: Column(
+        children: [
+          if (totalItems == 0) const Center(child: Text('No items')),
+          if (totalItems != null && totalItems! > 0)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('Items: ${shows.length} / $totalItems'),
+            ),
+          Expanded(
+            child: GridView.builder(
+              controller: scrollController,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 5,
+                childAspectRatio: 0.7,
+              ),
+              itemCount: shows.length,
+              itemBuilder: (context, i) {
+                final show = shows[i];
+                return ShowCard(show: show);
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

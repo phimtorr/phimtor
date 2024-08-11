@@ -44,18 +44,14 @@ class SearchSection extends StatefulWidget {
 class _SearchSectionState extends State<SearchSection> {
   final _searchController = TextEditingController();
 
-  Future<List<ModelShow>> _loadSearch(int page, int pageSize) async {
-    final query = _searchController.text;
-    if (query.isEmpty) {
-      return [];
-    }
+  Future<(List<ModelShow>, Pagination)> _loadSearch(int page, int pageSize) async {
     final resp = await phimtor_api.PhimtorService()
         .defaultApi
         .searchShows(_searchController.text, page: page);
     if (resp == null) {
       throw Exception("Null response");
     }
-    return resp.shows;
+    return (resp.shows, resp.pagination);
   }
 
   @override
@@ -97,14 +93,14 @@ class _SearchSectionState extends State<SearchSection> {
 class MoviesSection extends StatelessWidget {
   const MoviesSection({super.key});
 
-  Future<List<ModelShow>> _loadMovies(int page, int pageSize) async {
+  Future<(List<ModelShow>, Pagination)> _loadMovies(int page, int pageSize) async {
     final resp = await phimtor_api.PhimtorService()
         .defaultApi
         .listShows(page: page, pageSize: pageSize, type: ShowType.movie);
     if (resp == null) {
       throw Exception("Null response");
     }
-    return resp.shows;
+    return (resp.shows, resp.pagination);
   }
 
   @override
@@ -164,14 +160,14 @@ class MoviesSection extends StatelessWidget {
 class TVSeriesSection extends StatelessWidget {
   const TVSeriesSection({super.key});
 
-  Future<List<ModelShow>> _loadSeries(int page, int pageSize) async {
+  Future<(List<ModelShow>, Pagination)> _loadSeries(int page, int pageSize) async {
     final resp = await phimtor_api.PhimtorService()
         .defaultApi
         .listShows(page: page, pageSize: pageSize, type: ShowType.series);
     if (resp == null) {
       throw Exception("Null response");
     }
-    return resp.shows;
+    return (resp.shows, resp.pagination);
   }
 
   @override
