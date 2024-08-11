@@ -45,7 +45,10 @@ class _VideoPlayerState extends State<VideoPlayer> {
       }
     });
 
-    updateVideoStreamUrl();
+    Future.delayed(Duration.zero, () async {
+      await updateVideoStreamUrl();
+      await updateSubtitle();
+    });
   }
 
   @override
@@ -56,10 +59,13 @@ class _VideoPlayerState extends State<VideoPlayer> {
   }
 
   @override
-  void didUpdateWidget(covariant VideoPlayer oldWidget) {
+  void didUpdateWidget(covariant VideoPlayer oldWidget) async {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.torrentLink != widget.torrentLink) {
-      updateVideoStreamUrl();
+      await updateVideoStreamUrl();
+    }
+    if (oldWidget.subtitle != widget.subtitle) {
+      await updateSubtitle();
     }
   }
 
@@ -103,6 +109,23 @@ class _VideoPlayerState extends State<VideoPlayer> {
         isLoading = false;
       });
     }
+  }
+
+  Future<void> updateSubtitle() async {
+    print("updateSubtitle ${widget.subtitle.toString()}");
+    if (widget.subtitle == null) {
+      player.setSubtitleTrack(SubtitleTrack.no());
+      return;
+    }
+    final subtitle = widget.subtitle!;
+    final subtitleUrl = subtitle.link;
+    player.setSubtitleTrack(
+      SubtitleTrack.uri(
+        subtitleUrl,
+        title: subtitle.name,
+        language: subtitle.language,
+      ),
+    );
   }
 
   @override
