@@ -35,7 +35,7 @@ func toHTTPVideo(dbVid *dbmodels.Video) http.Video {
 }
 
 func toHTTPTorrentLinks(dbLinks dbmodels.TorrentLinkSlice) []http.TorrentLink {
-	var links []http.TorrentLink
+	links := make([]http.TorrentLink, 0, len(dbLinks))
 	for _, link := range dbLinks {
 		links = append(links, http.TorrentLink{
 			Id:        link.ID,
@@ -53,7 +53,7 @@ func toHTTPTorrentLinks(dbLinks dbmodels.TorrentLinkSlice) []http.TorrentLink {
 }
 
 func toHTTPSubtitles(dbSubs dbmodels.SubtitleSlice) []http.Subtitle {
-	var subs []http.Subtitle
+	subs := make([]http.Subtitle, 0, len(dbSubs))
 	for _, sub := range dbSubs {
 		subs = append(subs, http.Subtitle{
 			Id:       sub.ID,
