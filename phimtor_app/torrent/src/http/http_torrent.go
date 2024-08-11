@@ -80,9 +80,10 @@ func (s *Server) GetTorrentStats(w http.ResponseWriter, r *http.Request, infoHas
 		respondError(w, r, err, http.StatusBadRequest)
 		return
 	}
+
 	stats := s.torManager.Stats(ih, fileIndex)
 
-	render.Respond(w, r, stats)
+	render.Respond(w, r, toHTTPStats(stats))
 }
 
 func toHTTPTorrents(torrents []*gotorrent.Torrent) []Torrent {
@@ -114,5 +115,17 @@ func toHTTPFile(f *gotorrent.File) File {
 	return File{
 		Name: f.Path(),
 		Size: f.Length(),
+	}
+}
+
+func toHTTPStats(stats torrent.Stats) Stats {
+	return Stats{
+		ActivePeers:    stats.ActivePeers,
+		BytesCompleted: stats.BytesCompleted,
+		ConnectedPeers: stats.ConnectedSeeders,
+		HalfOpenPeers:  stats.HalfOpenPeers,
+		Length:         stats.Length,
+		PendingPeers:   stats.PendingPeers,
+		TotalPeers:     stats.TotalPeers,
 	}
 }
