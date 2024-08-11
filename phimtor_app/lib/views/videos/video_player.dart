@@ -47,7 +47,6 @@ class _VideoPlayerState extends State<VideoPlayer> {
 
     Future.delayed(Duration.zero, () async {
       await updateVideoStreamUrl();
-      await updateSubtitle();
     });
   }
 
@@ -59,14 +58,16 @@ class _VideoPlayerState extends State<VideoPlayer> {
   }
 
   @override
-  void didUpdateWidget(covariant VideoPlayer oldWidget) async {
+  void didUpdateWidget(covariant VideoPlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.torrentLink != widget.torrentLink) {
-      await updateVideoStreamUrl();
-    }
-    if (oldWidget.subtitle != widget.subtitle) {
-      await updateSubtitle();
-    }
+    Future.delayed(Duration.zero, () async {
+      if (oldWidget.torrentLink != widget.torrentLink) {
+        await updateVideoStreamUrl();
+      }
+      if (oldWidget.subtitle != widget.subtitle) {
+        await updateSubtitle();
+      }
+    });
   }
 
   Future<void> updateVideoStreamUrl() async {
@@ -99,6 +100,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
       _videoStreamUrl = videoStreamUrl;
 
       player.open(Media(videoStreamUrl));
+      await updateSubtitle();
     } on Exception catch (e) {
       debugPrint('Failed to open video: $e');
       setState(() {
@@ -112,7 +114,6 @@ class _VideoPlayerState extends State<VideoPlayer> {
   }
 
   Future<void> updateSubtitle() async {
-    print("updateSubtitle ${widget.subtitle.toString()}");
     if (widget.subtitle == null) {
       player.setSubtitleTrack(SubtitleTrack.no());
       return;
