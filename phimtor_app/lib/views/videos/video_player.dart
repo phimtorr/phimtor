@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:phimtor_app/services/preferences/preferences_service.dart';
+import 'package:phimtor_app/views/videos/stats_section.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
 import 'package:torrent/torrent.dart' as torrent;
 
@@ -25,15 +26,11 @@ class _VideoPlayerState extends State<VideoPlayer> {
   late final player = Player();
   late final controller = VideoController(player);
 
-  late final Timer _timer;
-
   bool isLoading = false;
   Exception? error;
   String? _infoHash;
   int? _videoIndex;
   String? _videoStreamUrl;
-
-  torrent.Stats? _stats;
 
   @override
   void initState() {
@@ -53,10 +50,6 @@ class _VideoPlayerState extends State<VideoPlayer> {
       }
     });
 
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
-      await updateStats();
-    });
-
     Future.delayed(Duration.zero, () async {
       await updateVideoStreamUrl();
     });
@@ -64,7 +57,6 @@ class _VideoPlayerState extends State<VideoPlayer> {
 
   @override
   void dispose() {
-    _timer.cancel();
     player.dispose();
     // remove torrent here
     super.dispose();
@@ -144,26 +136,8 @@ class _VideoPlayerState extends State<VideoPlayer> {
     );
   }
 
-  Future<void> updateStats() async {
-    if (isLoading) {
-      return;
-    }
-    if (_infoHash == null) {
-      return;
-    }
-    if (_videoIndex == null) {
-      return;
-    }
-    final stats = await torrent.LibTorrent()
-        .torrentApi
-        .getTorrentStats(_infoHash!, _videoIndex!);
-    setState(() {
-      _stats = stats;
-    });
-  }
-
-  bool isStatsAvailable() {
-    return _stats != null && _stats!.length > 0;
+  bool isTorrentIsAdded() {
+    return _infoHash != null && _videoIndex != null;
   }
 
   @override
@@ -191,8 +165,11 @@ class _VideoPlayerState extends State<VideoPlayer> {
             ),
           ),
         ),
-        if (isStatsAvailable()) const SizedBox(height: 8),
-        if (isStatsAvailable()) Text('Total peer: ${_stats!.totalPeers}'),
+        if (isTorrentIsAdded())
+          StatsSection(
+            infoHash: _infoHash!,
+            videoIndex: _videoIndex!,
+          ),
       ],
     );
   }
