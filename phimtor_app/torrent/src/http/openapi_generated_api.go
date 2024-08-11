@@ -19,15 +19,18 @@ type ServerInterface interface {
 	// Stream video file
 	// (GET /stream/{infoHash}/videos/{fileIndex}/{fileName})
 	StreamVideoFile(w http.ResponseWriter, r *http.Request, infoHash InfoHash, fileIndex FileIndex, fileName FileName)
+	// Drop all torrents
+	// (DELETE /torrents)
+	DropAllTorrents(w http.ResponseWriter, r *http.Request, params DropAllTorrentsParams)
 	// List torrents
 	// (GET /torrents)
 	ListTorrents(w http.ResponseWriter, r *http.Request)
 	// Add torrent
 	// (POST /torrents)
 	AddTorrent(w http.ResponseWriter, r *http.Request, params AddTorrentParams)
-	// Delete torrent
-	// (DELETE /torrents/{infoHash})
-	DeleteTorrent(w http.ResponseWriter, r *http.Request, infoHash InfoHash)
+	// Get torrent stats
+	// (GET /torrents/{infoHash}//{fileIndex}/stats)
+	GetTorrentStats(w http.ResponseWriter, r *http.Request, infoHash InfoHash, fileIndex FileIndex)
 }
 
 // Unimplemented server implementation that returns http.StatusNotImplemented for each endpoint.
@@ -46,6 +49,12 @@ func (_ Unimplemented) StreamVideoFile(w http.ResponseWriter, r *http.Request, i
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// Drop all torrents
+// (DELETE /torrents)
+func (_ Unimplemented) DropAllTorrents(w http.ResponseWriter, r *http.Request, params DropAllTorrentsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // List torrents
 // (GET /torrents)
 func (_ Unimplemented) ListTorrents(w http.ResponseWriter, r *http.Request) {
@@ -58,9 +67,9 @@ func (_ Unimplemented) AddTorrent(w http.ResponseWriter, r *http.Request, params
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// Delete torrent
-// (DELETE /torrents/{infoHash})
-func (_ Unimplemented) DeleteTorrent(w http.ResponseWriter, r *http.Request, infoHash InfoHash) {
+// Get torrent stats
+// (GET /torrents/{infoHash}//{fileIndex}/stats)
+func (_ Unimplemented) GetTorrentStats(w http.ResponseWriter, r *http.Request, infoHash InfoHash, fileIndex FileIndex) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -161,6 +170,34 @@ func (siw *ServerInterfaceWrapper) StreamVideoFile(w http.ResponseWriter, r *htt
 	handler.ServeHTTP(w, r.WithContext(ctx))
 }
 
+// DropAllTorrents operation middleware
+func (siw *ServerInterfaceWrapper) DropAllTorrents(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DropAllTorrentsParams
+
+	// ------------- Optional query parameter "delete" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "delete", r.URL.Query(), &params.Delete)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "delete", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DropAllTorrents(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
 // ListTorrents operation middleware
 func (siw *ServerInterfaceWrapper) ListTorrents(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -212,8 +249,8 @@ func (siw *ServerInterfaceWrapper) AddTorrent(w http.ResponseWriter, r *http.Req
 	handler.ServeHTTP(w, r.WithContext(ctx))
 }
 
-// DeleteTorrent operation middleware
-func (siw *ServerInterfaceWrapper) DeleteTorrent(w http.ResponseWriter, r *http.Request) {
+// GetTorrentStats operation middleware
+func (siw *ServerInterfaceWrapper) GetTorrentStats(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var err error
@@ -227,8 +264,17 @@ func (siw *ServerInterfaceWrapper) DeleteTorrent(w http.ResponseWriter, r *http.
 		return
 	}
 
+	// ------------- Path parameter "fileIndex" -------------
+	var fileIndex FileIndex
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "fileIndex", runtime.ParamLocationPath, chi.URLParam(r, "fileIndex"), &fileIndex)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "fileIndex", Err: err})
+		return
+	}
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.DeleteTorrent(w, r, infoHash)
+		siw.Handler.GetTorrentStats(w, r, infoHash, fileIndex)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -358,13 +404,16 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Get(options.BaseURL+"/stream/{infoHash}/videos/{fileIndex}/{fileName}", wrapper.StreamVideoFile)
 	})
 	r.Group(func(r chi.Router) {
+		r.Delete(options.BaseURL+"/torrents", wrapper.DropAllTorrents)
+	})
+	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/torrents", wrapper.ListTorrents)
 	})
 	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/torrents", wrapper.AddTorrent)
 	})
 	r.Group(func(r chi.Router) {
-		r.Delete(options.BaseURL+"/torrents/{infoHash}", wrapper.DeleteTorrent)
+		r.Get(options.BaseURL+"/torrents/{infoHash}//{fileIndex}/stats", wrapper.GetTorrentStats)
 	})
 
 	return r

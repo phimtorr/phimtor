@@ -1,3 +1,6 @@
+.PHONY: openapi
+openapi: openapi-http openapi-dart-client
+
 .PHONY: openapi-http
 openapi-http:
 	@./scripts/openapi-http.sh torrent_api src/http http

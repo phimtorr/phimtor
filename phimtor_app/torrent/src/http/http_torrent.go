@@ -6,6 +6,8 @@ import (
 
 	gotorrent "github.com/anacrolix/torrent"
 	"github.com/go-chi/render"
+
+	"torrent/torrent"
 )
 
 func (s *Server) ListTorrents(w http.ResponseWriter, r *http.Request) {
@@ -31,19 +33,12 @@ func (s *Server) AddTorrent(w http.ResponseWriter, r *http.Request, params AddTo
 		return
 	}
 
-	var torrentLink string
-	if requestBody.Url != nil {
-		torrentLink = *requestBody.Url
-	}
-	if requestBody.MagnetUri != nil {
-		torrentLink = *requestBody.MagnetUri
-	}
-	if torrentLink == "" {
-		respondError(w, r, errors.New("url or magnetUri is required"), http.StatusBadRequest)
+	if requestBody.Link == "" {
+		respondError(w, r, errors.New("link is required"), http.StatusBadRequest)
 		return
 	}
 
-	infoHash, err := s.torManager.AddFromLink(torrentLink, dropOthers, deleteOthers)
+	infoHash, err := s.torManager.AddFromLink(requestBody.Link, dropOthers, deleteOthers)
 	if err != nil {
 		respondError(w, r, err, http.StatusInternalServerError)
 		return
@@ -55,15 +50,39 @@ func (s *Server) AddTorrent(w http.ResponseWriter, r *http.Request, params AddTo
 		return
 	}
 
-	render.Respond(w, r, map[string]any{
-		"torrent": toHTTPTorrent(torr),
-	})
-
+	render.Respond(w, r, toHTTPTorrent(torr))
 }
 
-func (s *Server) DeleteTorrent(w http.ResponseWriter, r *http.Request, infoHash InfoHash) {
-	//TODO implement me
-	panic("implement me")
+func (s *Server) DropAllTorrents(w http.ResponseWriter, r *http.Request, params DropAllTorrentsParams) {
+	deleteAllTorrents := false
+	if params.Delete != nil {
+		deleteAllTorrents = *params.Delete
+	}
+
+	s.torManager.DropAll()
+	if !deleteAllTorrents {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+
+	err := s.torManager.DeleteAll()
+	if err != nil {
+		respondError(w, r, err, http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (s *Server) GetTorrentStats(w http.ResponseWriter, r *http.Request, infoHash InfoHash, fileIndex FileIndex) {
+	ih, err := torrent.InfoHashFromString(infoHash)
+	if err != nil {
+		respondError(w, r, err, http.StatusBadRequest)
+		return
+	}
+	stats := s.torManager.Stats(ih, fileIndex)
+
+	render.Respond(w, r, stats)
 }
 
 func toHTTPTorrents(torrents []*gotorrent.Torrent) []Torrent {

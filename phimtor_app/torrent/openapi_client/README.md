@@ -64,16 +64,17 @@ Class | Method | HTTP request | Description
 *StreamApi* | [**streamFile**](doc//StreamApi.md#streamfile) | **GET** /stream/{infoHash}/files/{fileIndex}/{fileName} | Stream file
 *StreamApi* | [**streamVideoFile**](doc//StreamApi.md#streamvideofile) | **GET** /stream/{infoHash}/videos/{fileIndex}/{fileName} | Stream video file
 *TorrentApi* | [**addTorrent**](doc//TorrentApi.md#addtorrent) | **POST** /torrents | Add torrent
-*TorrentApi* | [**deleteTorrent**](doc//TorrentApi.md#deletetorrent) | **DELETE** /torrents/{infoHash} | Delete torrent
+*TorrentApi* | [**dropAllTorrents**](doc//TorrentApi.md#dropalltorrents) | **DELETE** /torrents | Drop all torrents
+*TorrentApi* | [**getTorrentStats**](doc//TorrentApi.md#gettorrentstats) | **GET** /torrents/{infoHash}//{fileIndex}/stats | Get torrent stats
 *TorrentApi* | [**listTorrents**](doc//TorrentApi.md#listtorrents) | **GET** /torrents | List torrents
 
 
 ## Documentation For Models
 
- - [AddTorrent200Response](doc//AddTorrent200Response.md)
  - [AddTorrentRequest](doc//AddTorrentRequest.md)
  - [File](doc//File.md)
  - [ListTorrents200Response](doc//ListTorrents200Response.md)
+ - [Stats](doc//Stats.md)
  - [Torrent](doc//Torrent.md)
 
 

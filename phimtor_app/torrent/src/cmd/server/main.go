@@ -25,7 +25,6 @@ func main() {
 	slog.Info("Starting torrent server", slog.String("dataDir", dataDir))
 	config := torrent.Config{
 		DataDir:         dataDir,
-		DeleteAfterDrop: true,
 		Debug:           true,
 	}
 	_torManager = torrent.NewManager(config)

@@ -10,12 +10,13 @@ All URIs are relative to *http://localhost:8080*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**addTorrent**](TorrentApi.md#addtorrent) | **POST** /torrents | Add torrent
-[**deleteTorrent**](TorrentApi.md#deletetorrent) | **DELETE** /torrents/{infoHash} | Delete torrent
+[**dropAllTorrents**](TorrentApi.md#dropalltorrents) | **DELETE** /torrents | Drop all torrents
+[**getTorrentStats**](TorrentApi.md#gettorrentstats) | **GET** /torrents/{infoHash}//{fileIndex}/stats | Get torrent stats
 [**listTorrents**](TorrentApi.md#listtorrents) | **GET** /torrents | List torrents
 
 
 # **addTorrent**
-> AddTorrent200Response addTorrent(addTorrentRequest, dropOthers, deleteOthers)
+> Torrent addTorrent(addTorrentRequest, dropOthers, deleteOthers)
 
 Add torrent
 
@@ -48,7 +49,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**AddTorrent200Response**](AddTorrent200Response.md)
+[**Torrent**](Torrent.md)
 
 ### Authorization
 
@@ -61,24 +62,24 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **deleteTorrent**
-> deleteTorrent(infoHash)
+# **dropAllTorrents**
+> dropAllTorrents(delete)
 
-Delete torrent
+Drop all torrents
 
-Delete torrent
+Drop all torrents
 
 ### Example
 ```dart
 import 'package:openapi_client/api.dart';
 
 final api_instance = TorrentApi();
-final infoHash = infoHash_example; // String | Torrent info hash
+final delete = true; // bool | Delete torrents
 
 try {
-    api_instance.deleteTorrent(infoHash);
+    api_instance.dropAllTorrents(delete);
 } catch (e) {
-    print('Exception when calling TorrentApi->deleteTorrent: $e\n');
+    print('Exception when calling TorrentApi->dropAllTorrents: $e\n');
 }
 ```
 
@@ -86,7 +87,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **infoHash** | **String**| Torrent info hash | 
+ **delete** | **bool**| Delete torrents | [optional] 
 
 ### Return type
 
@@ -100,6 +101,51 @@ No authorization required
 
  - **Content-Type**: Not defined
  - **Accept**: Not defined
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getTorrentStats**
+> Stats getTorrentStats(infoHash, fileIndex)
+
+Get torrent stats
+
+Get torrent stats
+
+### Example
+```dart
+import 'package:openapi_client/api.dart';
+
+final api_instance = TorrentApi();
+final infoHash = infoHash_example; // String | Torrent info hash
+final fileIndex = 56; // int | File index
+
+try {
+    final result = api_instance.getTorrentStats(infoHash, fileIndex);
+    print(result);
+} catch (e) {
+    print('Exception when calling TorrentApi->getTorrentStats: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **infoHash** | **String**| Torrent info hash | 
+ **fileIndex** | **int**| File index | 
+
+### Return type
+
+[**Stats**](Stats.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

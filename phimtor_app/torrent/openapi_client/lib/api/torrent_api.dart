@@ -76,7 +76,7 @@ class TorrentApi {
   ///
   /// * [bool] deleteOthers:
   ///   Delete other torrents
-  Future<AddTorrent200Response?> addTorrent(AddTorrentRequest addTorrentRequest, { bool? dropOthers, bool? deleteOthers, }) async {
+  Future<Torrent?> addTorrent(AddTorrentRequest addTorrentRequest, { bool? dropOthers, bool? deleteOthers, }) async {
     final response = await addTorrentWithHttpInfo(addTorrentRequest,  dropOthers: dropOthers, deleteOthers: deleteOthers, );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -85,26 +85,25 @@ class TorrentApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'AddTorrent200Response',) as AddTorrent200Response;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'Torrent',) as Torrent;
     
     }
     return null;
   }
 
-  /// Delete torrent
+  /// Drop all torrents
   ///
-  /// Delete torrent
+  /// Drop all torrents
   ///
   /// Note: This method returns the HTTP [Response].
   ///
   /// Parameters:
   ///
-  /// * [String] infoHash (required):
-  ///   Torrent info hash
-  Future<Response> deleteTorrentWithHttpInfo(String infoHash,) async {
+  /// * [bool] delete:
+  ///   Delete torrents
+  Future<Response> dropAllTorrentsWithHttpInfo({ bool? delete, }) async {
     // ignore: prefer_const_declarations
-    final path = r'/torrents/{infoHash}'
-      .replaceAll('{infoHash}', infoHash);
+    final path = r'/torrents';
 
     // ignore: prefer_final_locals
     Object? postBody;
@@ -112,6 +111,10 @@ class TorrentApi {
     final queryParams = <QueryParam>[];
     final headerParams = <String, String>{};
     final formParams = <String, String>{};
+
+    if (delete != null) {
+      queryParams.addAll(_queryParams('', 'delete', delete));
+    }
 
     const contentTypes = <String>[];
 
@@ -127,19 +130,85 @@ class TorrentApi {
     );
   }
 
-  /// Delete torrent
+  /// Drop all torrents
   ///
-  /// Delete torrent
+  /// Drop all torrents
+  ///
+  /// Parameters:
+  ///
+  /// * [bool] delete:
+  ///   Delete torrents
+  Future<void> dropAllTorrents({ bool? delete, }) async {
+    final response = await dropAllTorrentsWithHttpInfo( delete: delete, );
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+  }
+
+  /// Get torrent stats
+  ///
+  /// Get torrent stats
+  ///
+  /// Note: This method returns the HTTP [Response].
   ///
   /// Parameters:
   ///
   /// * [String] infoHash (required):
   ///   Torrent info hash
-  Future<void> deleteTorrent(String infoHash,) async {
-    final response = await deleteTorrentWithHttpInfo(infoHash,);
+  ///
+  /// * [int] fileIndex (required):
+  ///   File index
+  Future<Response> getTorrentStatsWithHttpInfo(String infoHash, int fileIndex,) async {
+    // ignore: prefer_const_declarations
+    final path = r'/torrents/{infoHash}//{fileIndex}/stats'
+      .replaceAll('{infoHash}', infoHash)
+      .replaceAll('{fileIndex}', fileIndex.toString());
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// Get torrent stats
+  ///
+  /// Get torrent stats
+  ///
+  /// Parameters:
+  ///
+  /// * [String] infoHash (required):
+  ///   Torrent info hash
+  ///
+  /// * [int] fileIndex (required):
+  ///   File index
+  Future<Stats?> getTorrentStats(String infoHash, int fileIndex,) async {
+    final response = await getTorrentStatsWithHttpInfo(infoHash, fileIndex,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
     }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'Stats',) as Stats;
+    
+    }
+    return null;
   }
 
   /// List torrents

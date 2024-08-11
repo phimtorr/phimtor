@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
@@ -23,6 +25,8 @@ class _VideoPlayerState extends State<VideoPlayer> {
   late final player = Player();
   late final controller = VideoController(player);
 
+  late final Timer _timer;
+
   bool isLoading = false;
   Exception? error;
   String? _videoStreamUrl;
@@ -45,6 +49,10 @@ class _VideoPlayerState extends State<VideoPlayer> {
       }
     });
 
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+     // TODO: fetch staticals here
+    });
+
     Future.delayed(Duration.zero, () async {
       await updateVideoStreamUrl();
     });
@@ -52,6 +60,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
 
   @override
   void dispose() {
+    _timer.cancel();
     player.dispose();
     // remove torrent here
     super.dispose();
@@ -76,23 +85,23 @@ class _VideoPlayerState extends State<VideoPlayer> {
     });
     try {
       final torrentLink = widget.torrentLink;
-      final addTorrentResp = await torrent.LibTorrent().torrentApi.addTorrent(
+      final torrentFile = await torrent.LibTorrent().torrentApi.addTorrent(
           torrent.AddTorrentRequest(
-            url: torrentLink.link,
+            link: torrentLink.link,
           ),
           dropOthers: true,
           deleteOthers: PreferencesService.getInstance().deleteAfterClose);
-      if (addTorrentResp == null) {
+      if (torrentFile == null) {
         throw Exception('Failed to add torrent');
       }
 
       final videoIndex =
-          addTorrentResp.torrent.getVideoIndex(torrentLink.fileIndex);
+          torrentFile.getVideoIndex(torrentLink.fileIndex);
       final fileName =
-          addTorrentResp.torrent.files[videoIndex].name.split('/').last;
+          torrentFile.files[videoIndex].name.split('/').last;
 
       final videoStreamUrl = torrent.LibTorrent().getStreamVideoURL(
-        addTorrentResp.torrent.infoHash,
+        torrentFile.infoHash,
         videoIndex,
         fileName,
       );
