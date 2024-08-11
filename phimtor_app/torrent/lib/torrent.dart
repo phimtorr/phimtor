@@ -52,6 +52,7 @@ class LibTorrent {
 
   late final TorrentBindings _torrent;
   late final TorrentApi _torrentApi;
+  late final int _listenPort;
 
   TorrentApi get torrentApi {
     return _torrentApi;
@@ -60,19 +61,23 @@ class LibTorrent {
   void start(String dataDir) {
     final dataDirGoString = dataDir.toGoString();
 
-    final listenPort = _torrent.Start(
+    _listenPort = _torrent.Start(
       dataDirGoString,
       0,
     );
 
     _torrentApi =
-        TorrentApi(ApiClient(basePath: 'http://localhost:$listenPort'));
+        TorrentApi(ApiClient(basePath: 'http://localhost:$_listenPort'));
 
     // ffi2.calloc.free(dataDirGoString.p);
   }
 
   Future<void> stop() async {
     _torrent.Stop();
+  }
+
+  String getStreamVideoURL(String infoHash, int fileIndex, String fileName) {
+    return Uri.encodeFull('http://localhost:$_listenPort/stream/$infoHash/videos/$fileIndex/$fileName');
   }
 }
 

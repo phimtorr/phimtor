@@ -1,8 +1,8 @@
 import 'package:phimtor_app/constants/enviroment_vars.dart';
-import 'package:phimtor_openapi_client/api.dart';
+import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
 
 class PhimtorService {
-  final DefaultApi _defaultApi;
+  final phimtor_api.DefaultApi _defaultApi;
 
   static final PhimtorService _instance = PhimtorService._internal();
 
@@ -12,9 +12,9 @@ class PhimtorService {
 
   PhimtorService._internal()
       : _defaultApi =
-            DefaultApi(ApiClient(basePath: '${Constants.apiUrl}/api/v1'));
+            phimtor_api.DefaultApi(phimtor_api.ApiClient(basePath: '${Constants.apiUrl}/api/v1'));
 
-  DefaultApi get defaultApi {
+  phimtor_api.DefaultApi get defaultApi {
     return _defaultApi;
   }
 }
