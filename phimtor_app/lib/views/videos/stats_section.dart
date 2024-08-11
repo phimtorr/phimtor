@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:torrent/torrent.dart' as torrent;
+import 'package:pretty_bytes/pretty_bytes.dart';
 
 class StatsSection extends StatefulWidget {
   const StatsSection({
@@ -21,6 +22,7 @@ class _StatsSectionState extends State<StatsSection> {
   late final Timer _timer;
 
   torrent.Stats? _stats;
+  int _verlocityBytesPerSecond = 0;
 
   @override
   void initState() {
@@ -46,11 +48,23 @@ class _StatsSectionState extends State<StatsSection> {
   }
 
   Future<void> updateStats() async {
-    final stats = await torrent.LibTorrent()
+    final newStats = await torrent.LibTorrent()
         .torrentApi
         .getTorrentStats(widget.infoHash, widget.videoIndex);
+    if (newStats == null || newStats.isEmpty) {
+      resetStats();
+      return;
+    }
     setState(() {
-      _stats = stats;
+      _verlocityBytesPerSecond = newStats.bytesCompleted - ( _stats?.bytesCompleted ?? 0);
+      _stats = newStats;
+    });
+  }
+
+  void resetStats() {
+    setState(() {
+      _verlocityBytesPerSecond = 0;
+      _stats = null;
     });
   }
 
@@ -64,6 +78,16 @@ class _StatsSectionState extends State<StatsSection> {
       return const SizedBox();
     }
 
-    return Text("Stats: ${_stats!.bytesCompleted} bytes completed");
+    return Text("Stats: ${_stats!.prettyBytesCompleted} / ${_stats!.prettyLength} bytes completed");
+  }
+}
+
+extension on torrent.Stats {
+  bool get isEmpty => length == 0;
+  String get prettyBytesCompleted {
+    return prettyBytes(bytesCompleted.toDouble());
+  }
+  String get prettyLength {
+    return prettyBytes(length.toDouble());
   }
 }

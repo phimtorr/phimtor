@@ -438,6 +438,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+  pretty_bytes:
+    dependency: "direct main"
+    description:
+      name: pretty_bytes
+      sha256: "734559166aaf3b144a6b3c31474e91d5d8b89c07ed3048dc9e18cbece7370008"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.2.0"
   safe_local_storage:
     dependency: transitive
     description:
