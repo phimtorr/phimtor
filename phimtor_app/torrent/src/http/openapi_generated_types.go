@@ -18,7 +18,7 @@ type Stats struct {
 	ActivePeers int `json:"activePeers"`
 
 	// BytesCompleted Bytes completed
-	BytesCompleted int `json:"bytesCompleted"`
+	BytesCompleted int64 `json:"bytesCompleted"`
 
 	// ConnectedPeers Connected peers
 	ConnectedPeers int `json:"connectedPeers"`
@@ -27,7 +27,7 @@ type Stats struct {
 	HalfOpenPeers int `json:"halfOpenPeers"`
 
 	// Length Length
-	Length int `json:"length"`
+	Length int64 `json:"length"`
 
 	// PendingPeers Pending peers
 	PendingPeers int `json:"pendingPeers"`

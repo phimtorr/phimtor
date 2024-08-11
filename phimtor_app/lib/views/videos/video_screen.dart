@@ -47,13 +47,9 @@ class _VideoScreenState extends State<VideoScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.width * 9.0 / 16.0,
-            child: VideoPlayer(
-              torrentLink: _selectedTorrentLink!,
-              subtitle: _selectedSubtitle,
-            ),
+          VideoPlayer(
+            torrentLink: _selectedTorrentLink!,
+            subtitle: _selectedSubtitle,
           ),
           const SizedBox(height: 16),
           Padding(

@@ -257,9 +257,11 @@ components:
         length:
           type: integer
           description: "Length"
+          format: int64
         bytesCompleted:
           type: integer
           description: "Bytes completed"
+          format: int64
       required:
         - totalPeers
         - pendingPeers

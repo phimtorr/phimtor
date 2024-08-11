@@ -29,7 +29,11 @@ class _VideoPlayerState extends State<VideoPlayer> {
 
   bool isLoading = false;
   Exception? error;
+  String? _infoHash;
+  int? _videoIndex;
   String? _videoStreamUrl;
+
+  torrent.Stats? _stats;
 
   @override
   void initState() {
@@ -49,8 +53,8 @@ class _VideoPlayerState extends State<VideoPlayer> {
       }
     });
 
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-     // TODO: fetch staticals here
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
+      await updateStats();
     });
 
     Future.delayed(Duration.zero, () async {
@@ -95,10 +99,8 @@ class _VideoPlayerState extends State<VideoPlayer> {
         throw Exception('Failed to add torrent');
       }
 
-      final videoIndex =
-          torrentFile.getVideoIndex(torrentLink.fileIndex);
-      final fileName =
-          torrentFile.files[videoIndex].name.split('/').last;
+      final videoIndex = torrentFile.getVideoIndex(torrentLink.fileIndex);
+      final fileName = torrentFile.files[videoIndex].name.split('/').last;
 
       final videoStreamUrl = torrent.LibTorrent().getStreamVideoURL(
         torrentFile.infoHash,
@@ -106,7 +108,11 @@ class _VideoPlayerState extends State<VideoPlayer> {
         fileName,
       );
 
-      _videoStreamUrl = videoStreamUrl;
+      setState(() {
+        _infoHash = torrentFile.infoHash;
+        _videoIndex = videoIndex;
+        _videoStreamUrl = videoStreamUrl;
+      });
 
       player.open(Media(videoStreamUrl));
       await updateSubtitle();
@@ -138,6 +144,28 @@ class _VideoPlayerState extends State<VideoPlayer> {
     );
   }
 
+  Future<void> updateStats() async {
+    if (isLoading) {
+      return;
+    }
+    if (_infoHash == null) {
+      return;
+    }
+    if (_videoIndex == null) {
+      return;
+    }
+    final stats = await torrent.LibTorrent()
+        .torrentApi
+        .getTorrentStats(_infoHash!, _videoIndex!);
+    setState(() {
+      _stats = stats;
+    });
+  }
+
+  bool isStatsAvailable() {
+    return _stats != null && _stats!.length > 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -150,12 +178,22 @@ class _VideoPlayerState extends State<VideoPlayer> {
         child: Text('Error: $error'),
       );
     }
-    return AspectRatio(
-      aspectRatio: 16.0 / 9.0,
-      child: Video(
-        controller: controller,
-        controls: MaterialDesktopVideoControls,
-      ),
+    return Column(
+      children: [
+        SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.width * 9.0 / 16.0,
+          child: AspectRatio(
+            aspectRatio: 16.0 / 9.0,
+            child: Video(
+              controller: controller,
+              controls: MaterialDesktopVideoControls,
+            ),
+          ),
+        ),
+        if (isStatsAvailable()) const SizedBox(height: 8),
+        if (isStatsAvailable()) Text('Total peer: ${_stats!.totalPeers}'),
+      ],
     );
   }
 }
