@@ -83,8 +83,8 @@ paths:
                   torrents:
                     type: array
                     items:
-                        $ref: "#/components/schemas/Torrent"
-                required: ["torrents"]
+                      $ref: "#/components/schemas/Torrent"
+                required: [ "torrents" ]
         '500':
           description: "Internal server error"
 
@@ -115,44 +115,65 @@ paths:
               title: "AddTorrentRequest"
               type: object
               properties:
-                magnetUri:
+                link:
                   type: string
-                  description: "Magnet URI"
-                url:
-                  type: string
-                  description: "Torrent URL"
+                  description: "Torrent link or magnet"
+              required:
+                - link
       responses:
         '200':
-              description: "Torrent details"
-              content:
-                application/json:
-                  schema:
-                    type: object
-                    properties:
-                        torrent:
-                          $ref: "#/components/schemas/Torrent"
-                    required: ["torrent"]
+          description: "Torrent details"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Torrent"
         '400':
           description: "Invalid request"
         '500':
           description: "Internal server error"
 
-  /torrents/{infoHash}:
     delete:
-      operationId: deleteTorrent
+      operationId: dropAllTorrents
       tags:
         - torrent
-      summary: "Delete torrent"
-      description: "Delete torrent"
+      summary: "Drop all torrents"
+      description: "Drop all torrents"
       parameters:
-        - $ref: "#/components/parameters/infoHash"
+        - name: delete
+          in: query
+          description: "Delete torrents"
+          required: false
+          schema:
+            type: boolean
       responses:
         '204':
-          description: "Torrent deleted"
+          description: "Torrents dropped"
+        '500':
+          description: "Internal server error"
+
+
+  /torrents/{infoHash}//{fileIndex}/stats:
+    get:
+      operationId: getTorrentStats
+      tags:
+        - torrent
+      summary: "Get torrent stats"
+      description: "Get torrent stats"
+      parameters:
+        - $ref: "#/components/parameters/infoHash"
+        - $ref: "#/components/parameters/fileIndex"
+      responses:
+        '200':
+          description: "Torrent stats"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Stats"
         '404':
           description: "Torrent not found"
         '500':
           description: "Internal server error"
+
 
 components:
   parameters:
@@ -214,3 +235,36 @@ components:
       required:
         - name
         - size
+    
+    Stats:
+      type: object
+      properties:
+        totalPeers:
+          type: integer
+          description: "Total peers"
+        pendingPeers:
+          type: integer
+          description: "Pending peers"
+        activePeers:
+          type: integer
+          description: "Active peers"
+        connectedPeers:
+          type: integer
+          description: "Connected peers"
+        halfOpenPeers:
+          type: integer
+          description: "Half open peers"
+        length:
+          type: integer
+          description: "Length"
+        bytesCompleted:
+          type: integer
+          description: "Bytes completed"
+      required:
+        - totalPeers
+        - pendingPeers
+        - activePeers
+        - connectedPeers
+        - halfOpenPeers
+        - length
+        - bytesCompleted

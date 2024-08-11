@@ -21,17 +21,26 @@ void main() {
     //
     // Add torrent
     //
-    //Future<AddTorrent200Response> addTorrent(AddTorrentRequest addTorrentRequest, { bool dropOthers, bool deleteOthers }) async
+    //Future<Torrent> addTorrent(AddTorrentRequest addTorrentRequest, { bool dropOthers, bool deleteOthers }) async
     test('test addTorrent', () async {
       // TODO
     });
 
-    // Delete torrent
+    // Drop all torrents
     //
-    // Delete torrent
+    // Drop all torrents
     //
-    //Future deleteTorrent(String infoHash) async
-    test('test deleteTorrent', () async {
+    //Future dropAllTorrents({ bool delete }) async
+    test('test dropAllTorrents', () async {
+      // TODO
+    });
+
+    // Get torrent stats
+    //
+    // Get torrent stats
+    //
+    //Future<Stats> getTorrentStats(String infoHash, int fileIndex) async
+    test('test getTorrentStats', () async {
       // TODO
     });
 

@@ -13,54 +13,27 @@ part of openapi.api;
 class AddTorrentRequest {
   /// Returns a new [AddTorrentRequest] instance.
   AddTorrentRequest({
-    this.magnetUri,
-    this.url,
+    required this.link,
   });
 
-  /// Magnet URI
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  String? magnetUri;
-
-  /// Torrent URL
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  String? url;
+  /// Torrent link or magnet
+  String link;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is AddTorrentRequest &&
-    other.magnetUri == magnetUri &&
-    other.url == url;
+    other.link == link;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (magnetUri == null ? 0 : magnetUri!.hashCode) +
-    (url == null ? 0 : url!.hashCode);
+    (link.hashCode);
 
   @override
-  String toString() => 'AddTorrentRequest[magnetUri=$magnetUri, url=$url]';
+  String toString() => 'AddTorrentRequest[link=$link]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-    if (this.magnetUri != null) {
-      json[r'magnetUri'] = this.magnetUri;
-    } else {
-      json[r'magnetUri'] = null;
-    }
-    if (this.url != null) {
-      json[r'url'] = this.url;
-    } else {
-      json[r'url'] = null;
-    }
+      json[r'link'] = this.link;
     return json;
   }
 
@@ -83,8 +56,7 @@ class AddTorrentRequest {
       }());
 
       return AddTorrentRequest(
-        magnetUri: mapValueOfType<String>(json, r'magnetUri'),
-        url: mapValueOfType<String>(json, r'url'),
+        link: mapValueOfType<String>(json, r'link')!,
       );
     }
     return null;
@@ -132,6 +104,7 @@ class AddTorrentRequest {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
+    'link',
   };
 }
 

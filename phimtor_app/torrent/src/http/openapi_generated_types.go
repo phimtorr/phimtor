@@ -12,6 +12,30 @@ type File struct {
 	Size int64 `json:"size"`
 }
 
+// Stats defines model for Stats.
+type Stats struct {
+	// ActivePeers Active peers
+	ActivePeers int `json:"activePeers"`
+
+	// BytesCompleted Bytes completed
+	BytesCompleted int `json:"bytesCompleted"`
+
+	// ConnectedPeers Connected peers
+	ConnectedPeers int `json:"connectedPeers"`
+
+	// HalfOpenPeers Half open peers
+	HalfOpenPeers int `json:"halfOpenPeers"`
+
+	// Length Length
+	Length int `json:"length"`
+
+	// PendingPeers Pending peers
+	PendingPeers int `json:"pendingPeers"`
+
+	// TotalPeers Total peers
+	TotalPeers int `json:"totalPeers"`
+}
+
 // Torrent defines model for Torrent.
 type Torrent struct {
 	Files []File `json:"files"`
@@ -35,13 +59,16 @@ type FileName = string
 // InfoHash defines model for infoHash.
 type InfoHash = string
 
+// DropAllTorrentsParams defines parameters for DropAllTorrents.
+type DropAllTorrentsParams struct {
+	// Delete Delete torrents
+	Delete *bool `form:"delete,omitempty" json:"delete,omitempty"`
+}
+
 // AddTorrentJSONBody defines parameters for AddTorrent.
 type AddTorrentJSONBody struct {
-	// MagnetUri Magnet URI
-	MagnetUri *string `json:"magnetUri,omitempty"`
-
-	// Url Torrent URL
-	Url *string `json:"url,omitempty"`
+	// Link Torrent link or magnet
+	Link string `json:"link"`
 }
 
 // AddTorrentParams defines parameters for AddTorrent.

@@ -182,14 +182,14 @@ class ApiClient {
           return valueString == 'true' || valueString == '1';
         case 'DateTime':
           return value is DateTime ? value : DateTime.tryParse(value);
-        case 'AddTorrent200Response':
-          return AddTorrent200Response.fromJson(value);
         case 'AddTorrentRequest':
           return AddTorrentRequest.fromJson(value);
         case 'File':
           return File.fromJson(value);
         case 'ListTorrents200Response':
           return ListTorrents200Response.fromJson(value);
+        case 'Stats':
+          return Stats.fromJson(value);
         case 'Torrent':
           return Torrent.fromJson(value);
         default:

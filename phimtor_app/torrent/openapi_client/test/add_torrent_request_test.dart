@@ -16,15 +16,9 @@ void main() {
   // final instance = AddTorrentRequest();
 
   group('test AddTorrentRequest', () {
-    // Magnet URI
-    // String magnetUri
-    test('to test the property `magnetUri`', () async {
-      // TODO
-    });
-
-    // Torrent URL
-    // String url
-    test('to test the property `url`', () async {
+    // Torrent link or magnet
+    // String link
+    test('to test the property `link`', () async {
       // TODO
     });
 
