@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phimtor_app/services/phimtor/phimtor_service.dart';
-import 'package:phimtor_app/views/video_view.dart';
+import 'package:phimtor_app/views/videos/video_view.dart';
 import 'package:phimtor_openapi_client/api.dart';
 
 class SeriesDetailView extends StatelessWidget {

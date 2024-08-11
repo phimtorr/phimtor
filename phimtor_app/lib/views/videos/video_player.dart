@@ -1,123 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:phimtor_app/services/phimtor/phimtor_service.dart';
 import 'package:phimtor_app/services/preferences/preferences_service.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
 import 'package:torrent/torrent.dart' as torrent;
-
-class VideoView extends StatelessWidget {
-  final int videoId;
-  final String title;
-  const VideoView({
-    super.key,
-    required this.videoId,
-    required this.title,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
-      body: FutureBuilder<phimtor_api.Video>(
-        future: () async {
-          final resp = await PhimtorService().defaultApi.getVideo(videoId);
-          if (resp == null) {
-            throw Exception('Failed to get video');
-          }
-          return resp.video;
-        }(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          }
-          if (!snapshot.hasData) {
-            return const Center(
-              child: Text('No data'),
-            );
-          }
-          final video = snapshot.data!;
-          return VideoScreen(video: video);
-        },
-      ),
-    );
-  }
-}
-
-class VideoScreen extends StatefulWidget {
-  final phimtor_api.Video video;
-  const VideoScreen({super.key, required this.video});
-
-  @override
-  State<VideoScreen> createState() => _VideoScreenState();
-}
-
-class _VideoScreenState extends State<VideoScreen> {
-  phimtor_api.TorrentLink? _selectedTorrentLink;
-
-  @override
-  void initState() {
-    super.initState();
-
-    selectTorrentLink(widget.video.torrentLinks.first);
-  }
-
-  Future<void> selectTorrentLink(phimtor_api.TorrentLink torrentLink) async {
-    setState(() {
-      _selectedTorrentLink = torrentLink;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.width * 9.0 / 16.0,
-            child: VideoPlayer(
-              torrentLink: _selectedTorrentLink!,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text("Torrent links"),
-                Wrap(
-                  spacing: 8,
-                  children: widget.video.torrentLinks.map((link) {
-                    VoidCallback? onPressed;
-                    if (link != _selectedTorrentLink) {
-                      onPressed = () => selectTorrentLink(link);
-                    }
-                    return ElevatedButton(
-                      onPressed: onPressed,
-                      child: Text(link.name),
-                    );
-                  }).toList(),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class VideoPlayer extends StatefulWidget {
   const VideoPlayer({
@@ -233,7 +119,10 @@ class _VideoPlayerState extends State<VideoPlayer> {
     }
     return AspectRatio(
       aspectRatio: 16.0 / 9.0,
-      child: Video(controller: controller),
+      child: Video(
+        controller: controller,
+        controls: MaterialDesktopVideoControls,
+      ),
     );
   }
 }
