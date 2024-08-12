@@ -56,7 +56,8 @@ class _StatsSectionState extends State<StatsSection> {
       return;
     }
     setState(() {
-      _verlocityBytesPerSecond = newStats.bytesCompleted - ( _stats?.bytesCompleted ?? 0);
+      _verlocityBytesPerSecond =
+          newStats.bytesCompleted - (_stats?.bytesCompleted ?? 0);
       _stats = newStats;
     });
   }
@@ -78,7 +79,43 @@ class _StatsSectionState extends State<StatsSection> {
       return const SizedBox();
     }
 
-    return Text("Stats: ${_stats!.prettyBytesCompleted} / ${_stats!.prettyLength} bytes completed");
+    final textStyle = Theme.of(context).textTheme.labelSmall;
+
+    return Row(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Total peers: ${_stats!.totalPeers}", style: textStyle),
+            Text("Active: ${_stats!.activePeers}", style: textStyle),
+            Text("Connected: ${_stats!.connectedPeers}", style: textStyle),
+          ],
+        ),
+        const SizedBox(width: 8),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("", style: textStyle,), // Spacer
+            Text("Pending: ${_stats!.pendingPeers}", style: textStyle),
+            Text("Half open: ${_stats!.halfOpenPeers}", style: textStyle),
+          ],
+        ),
+        const SizedBox(width: 8),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+                'Downloaded: ${_stats!.prettyBytesCompleted} / ${_stats!.prettyLength}',
+                style: textStyle),
+            Text('Progress: ${_stats!.progressPercentage.toStringAsFixed(2)}%',
+                style: textStyle),
+            Text(
+                'Download speed: ${prettyBytes(_verlocityBytesPerSecond.toDouble())}/s',
+                style: textStyle),
+          ],
+        ),
+      ],
+    );
   }
 }
 
@@ -87,7 +124,12 @@ extension on torrent.Stats {
   String get prettyBytesCompleted {
     return prettyBytes(bytesCompleted.toDouble());
   }
+
   String get prettyLength {
     return prettyBytes(length.toDouble());
+  }
+
+  double get progressPercentage {
+    return bytesCompleted.toDouble() / length.toDouble() * 100;
   }
 }

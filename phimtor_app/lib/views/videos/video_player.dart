@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:phimtor_app/services/preferences/preferences_service.dart';
 import 'package:phimtor_app/views/videos/stats_section.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
 import 'package:torrent/torrent.dart' as torrent;
@@ -45,7 +44,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
       if (error.contains('Failed to open ')) {
         if (_videoStreamUrl != null) {
           await Future.delayed(const Duration(seconds: 3));
-          player.open(Media(_videoStreamUrl!));
+          openVideo();
         }
       }
     });
@@ -70,7 +69,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
         await updateVideoStreamUrl();
       }
       if (oldWidget.subtitle != widget.subtitle) {
-        await updateSubtitle();
+        updateSubtitle();
       }
     });
   }
@@ -86,7 +85,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
             link: torrentLink.link,
           ),
           dropOthers: true,
-          deleteOthers: PreferencesService.getInstance().deleteAfterClose);
+          deleteOthers: false);
       if (torrentFile == null) {
         throw Exception('Failed to add torrent');
       }
@@ -106,8 +105,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
         _videoStreamUrl = videoStreamUrl;
       });
 
-      player.open(Media(videoStreamUrl));
-      await updateSubtitle();
+      openVideo();
     } on Exception catch (e) {
       debugPrint('Failed to open video: $e');
       setState(() {
@@ -120,7 +118,14 @@ class _VideoPlayerState extends State<VideoPlayer> {
     }
   }
 
-  Future<void> updateSubtitle() async {
+  void openVideo() {
+    if (_videoStreamUrl != null) {
+      player.open(Media(_videoStreamUrl!));
+      updateSubtitle();
+    }
+  }
+
+  void updateSubtitle() {
     if (widget.subtitle == null) {
       player.setSubtitleTrack(SubtitleTrack.no());
       return;
@@ -165,11 +170,24 @@ class _VideoPlayerState extends State<VideoPlayer> {
             ),
           ),
         ),
-        if (isTorrentIsAdded())
-          StatsSection(
-            infoHash: _infoHash!,
-            videoIndex: _videoIndex!,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              if (isTorrentIsAdded())
+                StatsSection(
+                  infoHash: _infoHash!,
+                  videoIndex: _videoIndex!,
+                ),
+              if (widget.subtitle != null)
+                Text(
+                  "Subtitle: ${widget.subtitle!.name}",
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
+            ],
           ),
+        ),
       ],
     );
   }
