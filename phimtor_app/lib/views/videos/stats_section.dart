@@ -36,9 +36,9 @@ class _StatsSectionState extends State<StatsSection> {
   @override
   void didUpdateWidget(covariant StatsSection oldWidget) {
     super.didUpdateWidget(oldWidget);
-    setState(() {
-      _stats = null;
-    });
+    if (oldWidget.infoHash != widget.infoHash || oldWidget.videoIndex != widget.videoIndex) {
+      resetStats();
+    }
   }
 
   @override
