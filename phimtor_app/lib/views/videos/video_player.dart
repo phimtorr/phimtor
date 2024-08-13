@@ -15,7 +15,7 @@ class VideoPlayer extends StatefulWidget {
   });
 
   final phimtor_api.TorrentLink torrentLink;
-  final phimtor_api.Subtitle? subtitle;
+  final SubtitleTrack? subtitle;
 
   @override
   State<VideoPlayer> createState() => _VideoPlayerState();
@@ -126,19 +126,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
   }
 
   void updateSubtitle() {
-    if (widget.subtitle == null) {
-      player.setSubtitleTrack(SubtitleTrack.no());
-      return;
-    }
-    final subtitle = widget.subtitle!;
-    final subtitleUrl = subtitle.link;
-    player.setSubtitleTrack(
-      SubtitleTrack.uri(
-        subtitleUrl,
-        title: subtitle.name,
-        language: subtitle.language,
-      ),
-    );
+    player.setSubtitleTrack(widget.subtitle ?? SubtitleTrack.no());
   }
 
   bool isTorrentIsAdded() {
@@ -180,9 +168,9 @@ class _VideoPlayerState extends State<VideoPlayer> {
                   infoHash: _infoHash!,
                   videoIndex: _videoIndex!,
                 ),
-              if (widget.subtitle != null)
+              if (widget.subtitle != null && widget.subtitle!.id != "no")
                 Text(
-                  "Subtitle: ${widget.subtitle!.name}",
+                  "Subtitle: ${widget.subtitle!.title}",
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
             ],

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:phimtor_app/views/videos/subtitle_section.dart';
 import 'package:phimtor_app/views/videos/video_player.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
 
@@ -12,16 +14,13 @@ class VideoScreen extends StatefulWidget {
 
 class _VideoScreenState extends State<VideoScreen> {
   phimtor_api.TorrentLink? _selectedTorrentLink;
-  phimtor_api.Subtitle? _selectedSubtitle;
+  SubtitleTrack _subtitleTrack = SubtitleTrack.no();
 
   @override
   void initState() {
     super.initState();
-
+    
     selectTorrentLink(widget.video.torrentLinks.first);
-    if (widget.video.subtitles.getByLanguage("vi").isNotEmpty) {
-      selectSubtitle(widget.video.subtitles.first);
-    }
   }
 
   void selectTorrentLink(phimtor_api.TorrentLink torrentLink) {
@@ -30,26 +29,23 @@ class _VideoScreenState extends State<VideoScreen> {
     });
   }
 
-  void selectSubtitle(phimtor_api.Subtitle subtitle) {
+  void setSubtitleTrack(SubtitleTrack subtitleTrack) {
     setState(() {
-      _selectedSubtitle = subtitle;
+      _subtitleTrack = subtitleTrack;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     var titleStyle = Theme.of(context).textTheme.headlineMedium!;
-    var subtitleStyle = Theme.of(context).textTheme.headlineSmall!;
 
-    var vietnameseSubtitles = widget.video.subtitles.getByLanguage("vi");
-    var englishSubtitles = widget.video.subtitles.getByLanguage("en");
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           VideoPlayer(
             torrentLink: _selectedTorrentLink!,
-            subtitle: _selectedSubtitle,
+            subtitle: _subtitleTrack,
           ),
           const SizedBox(height: 16),
           Padding(
@@ -72,62 +68,15 @@ class _VideoScreenState extends State<VideoScreen> {
                   }).toList(),
                 ),
                 const SizedBox(height: 16),
-                if (widget.video.subtitles.isNotEmpty)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Subtitles", style: titleStyle),
-                      const SizedBox(height: 8),
-                      if (vietnameseSubtitles.isNotEmpty)
-                        Text("Vietnamese", style: subtitleStyle),
-                      Wrap(
-                        spacing: 8,
-                        children: widget.video.subtitles
-                            .getByLanguage("vi")
-                            .map((subtitle) {
-                          VoidCallback? onPressed;
-                          if (subtitle != _selectedSubtitle) {
-                            onPressed = () => selectSubtitle(subtitle);
-                          }
-                          return ElevatedButton(
-                            onPressed: onPressed,
-                            child: Text(subtitle.name),
-                          );
-                        }).toList(),
-                      ),
-                      const SizedBox(height: 8),
-                      if (englishSubtitles.isNotEmpty)
-                        Text("English", style: subtitleStyle),
-                      Wrap(
-                        spacing: 8,
-                        children: widget.video.subtitles
-                            .getByLanguage("en")
-                            .map((subtitle) {
-                          VoidCallback? onPressed;
-                          if (subtitle != _selectedSubtitle) {
-                            onPressed = () => selectSubtitle(subtitle);
-                          }
-                          return ElevatedButton(
-                            onPressed: onPressed,
-                            child: Text(subtitle.name),
-                          );
-                        }).toList(),
-                      ),
-                    ],
-                  ),
+                SubtitleSection(
+                  subtitles: widget.video.subtitles,
+                  onSelectSubtitle: setSubtitleTrack,
+                ),
               ],
             ),
           ),
         ],
       ),
     );
-  }
-}
-
-extension on List<phimtor_api.Subtitle> {
-  List<phimtor_api.Subtitle> getByLanguage(String language) {
-    var result = where((subtitle) => subtitle.language == language).toList();
-    result.sort((a, b) => b.priority.compareTo(a.priority));
-    return result;
   }
 }
