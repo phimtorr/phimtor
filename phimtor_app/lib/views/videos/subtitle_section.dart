@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:path/path.dart' as path;
+import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
 
@@ -90,11 +91,11 @@ class _SubtitleSectionState extends State<SubtitleSection> {
       children: [
         Row(
           children: [
-            Text("Subtitles", style: titleStyle),
+            Text(context.loc.subtitle, style: titleStyle),
             const Spacer(),
             ElevatedButton.icon(
               onPressed: selectNoSubtitle,
-              label: const Text("Unselect"),
+              label:  Text(context.loc.unselect_subtitle),
               icon: const Icon(Icons.subtitles_off),
             ),
           ],
@@ -102,12 +103,12 @@ class _SubtitleSectionState extends State<SubtitleSection> {
         const SizedBox(height: 8),
         ElevatedButton.icon(
           onPressed: selectSubtitleFile,
-          label: const Text("Select subtitle file"),
+          label:  Text(context.loc.select_subtitle_file),
           icon: const Icon(Icons.subtitles),
         ),
         const SizedBox(height: 8),
         if (widget.vietnameseSubtitles.isNotEmpty)
-          Text("Vietnamese", style: subtitleStyle),
+          Text(context.loc.subtitle_vietnamese, style: subtitleStyle),
         Wrap(
           spacing: 8,
           children: widget.vietnameseSubtitles.map<Widget>((subtitle) {
@@ -123,7 +124,7 @@ class _SubtitleSectionState extends State<SubtitleSection> {
         ),
         const SizedBox(height: 8),
         if (widget.englishSubtitles.isNotEmpty)
-          Text("English", style: subtitleStyle),
+          Text(context.loc.subtitle_english, style: subtitleStyle),
         Wrap(
           spacing: 8,
           children: widget.englishSubtitles.map<Widget>((subtitle) {

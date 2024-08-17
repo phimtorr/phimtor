@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:phimtor_app/services/phimtor/phimtor_service.dart';
 import 'package:phimtor_app/views/videos/video_view.dart';
 import 'package:phimtor_openapi_client/api.dart';
@@ -24,7 +25,7 @@ class SeriesDetailView extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}"));
+            return Center(child: Text(context.loc.error(snapshot.error.toString())));
           }
 
           final resp = snapshot.data as GetSeriesResponse;
@@ -59,22 +60,22 @@ class SeriesDetailView extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                        Text(
-                        "Release year: ${series.releaseYear}",
+                        "${context.loc.detail_release_year}: ${series.releaseYear}",
                         style: infoTextStyte,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "Score: ${series.score}",
+                        "${context.loc.detail_score}: ${series.score}",
                         style: infoTextStyte,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "Duration: ${series.durationInMinutes} minutes",
+                        context.loc.detail_duration(series.durationInMinutes),
                         style: infoTextStyte,
                       ),
                       const SizedBox(height: 8),
                       Text( 
-                        "Total episodes: ${series.totalEpisodes}",
+                        "${context.loc.detail_total_episodes}: ${series.totalEpisodes}",
                         style: infoTextStyte,
                       ),
                       const SizedBox(height: 8),
@@ -88,18 +89,18 @@ class SeriesDetailView extends StatelessWidget {
                       Wrap(
                         spacing: 8,
                         runSpacing: 8.0,
-                        children: List.generate(series.totalEpisodes, (index) {
-                          final episode = index + 1;
+                        children: List.generate(series.episodes.length, (i) {
+                          final episode = series.episodes[i];
                           return ElevatedButton(
                             onPressed: () {
                               Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => VideoView(
-                                  videoId: series.episodes[episode - 1].videoId,
-                                  title: "${series.title} - Episode $episode",
+                                  videoId: episode.videoId,
+                                  title: "${series.title} - ${episode.name}",
                                 ),
                               ));
                             },
-                            child: Text("Episode $episode"),
+                            child: Text(episode.name),
                           );
                         }),
                       ),

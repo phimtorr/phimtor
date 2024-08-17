@@ -1,0 +1,84 @@
+{
+    "@@locale": "en",
+
+    "title": "Phim Tor",
+
+    "load_more": "Load more",
+    "watch_now": "Watch now",
+    "select_subtitle_file": "Select subtitle file",
+    "unselect_subtitle": "Unselect subtitle",
+
+    "error": "Error: {error}",
+    "@error": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "no_data": "No data",
+
+    "home": "Home",
+    "setting": "Setting",
+
+    "search": "Search",
+    "search_hint": "Search by name",
+    "search_no_result": "No result found",
+    "search_result_title": "Search result for \"{query}\"",
+    "@search_result_title": {
+        "placeholders": {
+            "query": {
+                "type": "String"
+            }
+        }
+    },
+    "search_count": "Items {loaded} of {total}",
+    "@search_count": {
+        "placeholders": {
+            "loaded": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+
+    "movies": "Movies",
+    "tv_series": "TV Series",
+
+    "detail_release_year": "Release year",
+    "detail_score": "Score",
+    "detail_duration": "Duration: {duration} minutes",
+    "@detail_duration": {
+        "placeholders": {
+            "duration": {
+                "type": "int"
+            }
+        }
+    },
+    "detail_quality": "Quality",
+    "detail_total_episodes": "Total episodes",
+
+    "torrent_links": "Torrent links",
+    "subtitle": "Subtitle",
+    "subtitle_vietnamese": "Vietnamese",
+    "subtitle_english": "English",
+
+    "stats_total_peers": "Total peers",
+    "stats_active": "Active",
+    "stats_connected": "Connected",
+    "stats_pending": "Pending",
+    "stats_half_open": "Half open",
+    "stats_downloaded": "Downloaded",
+    "stats_progress": "Progress",
+    "stats_download_speed": "Download speed",
+
+    "setting_title": "Setting",
+    "setting_data_dir": "Data directory",
+    "setting_data_dir_changed_note": "Need to restart app to apply changes",
+    "setting_lang": "Language",
+    "setting_lang_en": "English",
+    "setting_lang_vi": "Vietnamese",
+    "setting_delete_after_close": "Delete data after close"
+}

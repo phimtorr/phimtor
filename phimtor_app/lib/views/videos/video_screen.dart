@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:phimtor_app/views/videos/subtitle_section.dart';
 import 'package:phimtor_app/views/videos/video_player.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
@@ -53,7 +54,7 @@ class _VideoScreenState extends State<VideoScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Torrent links", style: titleStyle),
+                Text(context.loc.torrent_links, style: titleStyle),
                 Wrap(
                   spacing: 8,
                   children: widget.video.torrentLinks.map((link) {

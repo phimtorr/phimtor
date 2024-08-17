@@ -1,5 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:phimtor_app/services/preferences/preferences_service.dart';
 
 class SettingsView extends StatefulWidget {
@@ -24,8 +25,7 @@ class _SettingsViewState extends State<SettingsView> {
   void updateDataDirPath() async {
     String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
     if (selectedDirectory != null) {
-      await PreferencesService.getInstance()
-          .setDataDirPath(selectedDirectory);
+      await PreferencesService.getInstance().setDataDirPath(selectedDirectory);
       setState(() {
         _dataDirPath = selectedDirectory;
       });
@@ -44,18 +44,30 @@ class _SettingsViewState extends State<SettingsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: Text(context.loc.setting_title),
       ),
       body: Column(
         children: [
           ListTile(
-            title: const Text('Data directory'),
-            subtitle: Text(_dataDirPath +
-                (_isDataDirPathChanged ? '\nNeed restart app to apply' : '')),
+            title: Text(context.loc.setting_data_dir),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(_dataDirPath),
+                if (_isDataDirPathChanged)
+                  Text(
+                    context.loc.setting_data_dir_changed_note,
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelMedium
+                        ?.merge(const TextStyle(fontStyle: FontStyle.italic)),
+                  ),
+              ],
+            ),
             onTap: updateDataDirPath,
           ),
           SwitchListTile(
-            title: const Text('Delete after close'),
+            title: Text(context.loc.setting_delete_after_close),
             value: _deleteAfterClose,
             onChanged: updateDeleteAfterClose,
           ),

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:torrent/torrent.dart' as torrent;
 import 'package:pretty_bytes/pretty_bytes.dart';
 
@@ -86,9 +87,9 @@ class _StatsSectionState extends State<StatsSection> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Total peers: ${_stats!.totalPeers}", style: textStyle),
-            Text("Active: ${_stats!.activePeers}", style: textStyle),
-            Text("Connected: ${_stats!.connectedPeers}", style: textStyle),
+            Text("${context.loc.stats_total_peers}: ${_stats!.totalPeers}", style: textStyle),
+            Text("${context.loc.stats_active}: ${_stats!.activePeers}", style: textStyle),
+            Text("${context.loc.stats_connected}: ${_stats!.connectedPeers}", style: textStyle),
           ],
         ),
         const SizedBox(width: 8),
@@ -96,8 +97,8 @@ class _StatsSectionState extends State<StatsSection> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text("", style: textStyle,), // Spacer
-            Text("Pending: ${_stats!.pendingPeers}", style: textStyle),
-            Text("Half open: ${_stats!.halfOpenPeers}", style: textStyle),
+            Text("${context.loc.stats_pending}: ${_stats!.pendingPeers}", style: textStyle),
+            Text("${context.loc.stats_half_open}: ${_stats!.halfOpenPeers}", style: textStyle),
           ],
         ),
         const SizedBox(width: 8),
@@ -105,12 +106,12 @@ class _StatsSectionState extends State<StatsSection> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-                'Downloaded: ${_stats!.prettyBytesCompleted} / ${_stats!.prettyLength}',
+                '${context.loc.stats_downloaded}: ${_stats!.prettyBytesCompleted} / ${_stats!.prettyLength}',
                 style: textStyle),
-            Text('Progress: ${_stats!.progressPercentage.toStringAsFixed(2)}%',
+            Text('${context.loc.stats_progress}: ${_stats!.progressPercentage.toStringAsFixed(2)}%',
                 style: textStyle),
             Text(
-                'Download speed: ${prettyBytes(_verlocityBytesPerSecond.toDouble())}/s',
+                '${context.loc.stats_download_speed}: ${prettyBytes(_verlocityBytesPerSecond.toDouble())}/s',
                 style: textStyle),
           ],
         ),
