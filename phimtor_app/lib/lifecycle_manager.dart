@@ -62,7 +62,7 @@ class _LifecycleManagerState extends State<LifecycleManager>
     torrent.LibTorrent().start(_dataDirPath);
 
     log("Initializing auth service");
-    await AuthService().ensureInitialized();
+    await AuthService().initialize();
   }
 
   void cleanUp() {
