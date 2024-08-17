@@ -80,5 +80,6 @@
     "setting_lang": "Language",
     "setting_lang_en": "English",
     "setting_lang_vi": "Vietnamese",
-    "setting_delete_after_close": "Delete data after close"
+    "setting_delete_after_close": "Delete data after close",
+    "setting_delete_after_close_note": "When enabled, all data will be deleted after closing the app. This will help you save storage space on your device."
 }
