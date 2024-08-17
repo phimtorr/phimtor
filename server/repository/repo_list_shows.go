@@ -94,7 +94,7 @@ func unPointer[T any](v *T) T {
 }
 
 func toHTTPShows(shows []*dbmodels.Show) []http.Show {
-	var res []http.Show
+	res := make([]http.Show, 0, len(shows))
 	for _, show := range shows {
 		res = append(res, toHTTPBasicInfo(show))
 	}

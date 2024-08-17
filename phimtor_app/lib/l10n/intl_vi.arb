@@ -1,0 +1,84 @@
+{
+    "@@locale": "vi",
+
+    "title": "Phim Tor",
+
+    "load_more": "Xem thêm",
+    "watch_now": "Xem ngay",
+    "select_subtitle_file": "Chọn file phụ đề",
+    "unselect_subtitle": "Bỏ chọn phụ đề",
+
+    "error": "Lỗi: {error}",
+    "@error": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "no_data": "Không có dữ liệu",
+
+    "home": "Trang chủ",
+    "setting": "Cài đặt",
+
+    "search": "Tìm kiếm",
+    "search_hint": "Tìm kiếm theo tên",
+    "search_result_title": "Tìm kiếm kết quả cho \"{query}\"",
+    "search_no_result": "Không tìm thấy kết quả",
+    "@search_result_title": {
+        "placeholders": {
+            "query": {
+                "type": "String"
+            }
+        }
+    },
+    "search_count": "Hiển thị {loaded} trên tổng số {total}",
+    "@search_count": {
+        "placeholders": {
+            "loaded": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+
+    "movies": "Phim lẻ",
+    "tv_series": "Phim bộ",
+
+    "detail_release_year": "Năm phát hành",
+    "detail_score": "Điểm",
+    "detail_duration": "Thời lượng {duration} phút",
+    "@detail_duration": {
+        "placeholders": {
+            "duration": {
+                "type": "int"
+            }
+        }
+    },
+    "detail_quality": "Chất lượng",
+    "detail_total_episodes": "Tổng số tập",
+
+    "torrent_links": "Nguồn torrent",
+    "subtitle": "Phụ đề",
+    "subtitle_vietnamese": "Tiếng Việt",
+    "subtitle_english": "Tiếng Anh",
+
+    "stats_total_peers": "Tổng số",
+    "stats_active": "Hoạt động",
+    "stats_connected": "Đã kết nối",
+    "stats_pending": "Chờ kết nối",
+    "stats_half_open": "Mở một nửa",
+    "stats_downloaded": "Đã tải",
+    "stats_progress": "Tiến trình",
+    "stats_download_speed": "Tốc độ tải",
+
+    "setting_title": "Cài đặt",
+    "setting_data_dir": "Thư mục lưu trữ phim",
+    "setting_data_dir_changed_note": "Cần khởi động lại ứng dụng để áp dụng thay đổi",
+    "setting_lang": "Ngôn ngữ",
+    "setting_lang_en": "Tiếng Anh",
+    "setting_lang_vi": "Tiếng Việt",
+    "setting_delete_after_close": "Xóa dữ liệu sau khi đóng"
+}

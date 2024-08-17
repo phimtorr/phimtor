@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:phimtor_app/lifecycle_manager.dart';
 import 'package:phimtor_app/views/home_view.dart';
 import 'package:phimtor_app/views/settings_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +20,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return LifecycleManager(
       child: MaterialApp(
-        title: 'Phim Tor',
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        title: "Phim Tor",
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
           useMaterial3: true,
@@ -58,14 +62,14 @@ class _MyHomePageState extends State<MyHomePage> {
           SafeArea(
             child: NavigationRail(
               extended: constraints.maxWidth > 600,
-              destinations: const [
+              destinations: [
                 NavigationRailDestination(
-                  icon: Icon(Icons.home),
-                  label: Text("Home"),
+                  icon: const Icon(Icons.home),
+                  label: Text(context.loc.home),
                 ),
                 NavigationRailDestination(
-                  icon: Icon(Icons.settings),
-                  label: Text("Setting"),
+                  icon: const Icon(Icons.settings),
+                  label: Text(context.loc.setting),
                 ),
               ],
               selectedIndex: selectIndex,

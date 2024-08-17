@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:phimtor_app/services/phimtor/phimtor_service.dart';
 import 'package:phimtor_app/views/videos/video_view.dart';
 import 'package:phimtor_openapi_client/api.dart';
@@ -29,7 +30,7 @@ class MovieDetailView extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}"));
+            return Center(child: Text(context.loc.error(snapshot.error.toString())));
           }
 
           final resp = snapshot.data as GetMovieResponse;
@@ -65,22 +66,22 @@ class MovieDetailView extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "Release year: ${movie.releaseYear}",
+                        "${context.loc.detail_release_year}: ${movie.releaseYear}",
                         style: infoTextStyte,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "Score: ${movie.score}",
+                        "${context.loc.detail_score}: ${movie.score}",
                         style: infoTextStyte,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "Duration: ${movie.durationInMinutes} minutes",
+                        context.loc.detail_duration(movie.durationInMinutes),
                         style: infoTextStyte,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "Quantity: ${movie.quantity}",
+                        "${context.loc.detail_quality}: ${movie.quantity}",
                         style: infoTextStyte,
                       ),
                       const SizedBox(height: 8),
@@ -98,7 +99,7 @@ class MovieDetailView extends StatelessWidget {
                             ),
                           ));
                         },
-                        label: const Text("Watch now"),
+                        label:  Text(context.loc.watch_now),
                         icon: const Icon(Icons.play_arrow),
                       ),
                     ],

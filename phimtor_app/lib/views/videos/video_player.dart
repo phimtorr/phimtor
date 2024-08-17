@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:phimtor_app/views/videos/stats_section.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
 import 'package:torrent/torrent.dart' as torrent;
@@ -142,7 +143,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
     }
     if (error != null) {
       return Center(
-        child: Text('Error: $error'),
+        child: Text(context.loc.error(error.toString())),
       );
     }
     return Column(
@@ -170,7 +171,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
                 ),
               if (widget.subtitle != null && widget.subtitle!.id != "no")
                 Text(
-                  "Subtitle: ${widget.subtitle!.title}",
+                  "${context.loc.subtitle}: ${widget.subtitle!.title}",
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
             ],

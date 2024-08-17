@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:phimtor_app/views/shows/show_card.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
 
@@ -92,11 +93,11 @@ class _ShowsGridViewState extends State<ShowsGridView> {
       ),
       body: Column(
         children: [
-          if (totalItems == 0) const Center(child: Text('No items')),
+          if (totalItems == 0)  Center(child: Text(context.loc.search_no_result)),
           if (totalItems != null && totalItems! > 0)
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text('Items: ${shows.length} / $totalItems'),
+              child: Text(context.loc.search_count(shows.length, totalItems!)),
             ),
           Expanded(
             child: GridView.builder(

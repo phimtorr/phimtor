@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:phimtor_app/services/phimtor/phimtor_service.dart';
 import 'package:phimtor_app/views/videos/video_screen.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
@@ -34,12 +35,12 @@ class VideoView extends StatelessWidget {
           }
           if (snapshot.hasError) {
             return Center(
-              child: Text('Error: ${snapshot.error}'),
+              child: Text(context.loc.error(snapshot.error.toString()) ),
             );
           }
           if (!snapshot.hasData) {
-            return const Center(
-              child: Text('No data'),
+            return  Center(
+              child: Text(context.loc.no_data),
             );
           }
           final video = snapshot.data!;
