@@ -80,5 +80,6 @@
     "setting_lang": "Ngôn ngữ",
     "setting_lang_en": "Tiếng Anh",
     "setting_lang_vi": "Tiếng Việt",
-    "setting_delete_after_close": "Xóa dữ liệu sau khi đóng"
+    "setting_delete_after_close": "Xóa dữ liệu sau khi đóng",
+    "setting_delete_after_close_note": "Dữ liệu phim download sẽ bị xóa sau khi đóng ứng dụng. Điều này giúp giải phóng dung lượng ổ cứng."
 }

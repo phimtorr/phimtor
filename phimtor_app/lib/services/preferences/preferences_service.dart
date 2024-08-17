@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:phimtor_app/utilities/platform/platform_utilities.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,6 +31,7 @@ class PreferencesService {
 
   static const _keyDataDirPath = 'data_dir_path';
   static const _keyDeleteAfterClose = 'delete_after_close';
+  static const _keyLocale = 'locale';
 
   Future<void> _ensureDataDirPathIsExisted() async {
     final dataDirPath = _prefs.getString(_keyDataDirPath);
@@ -85,5 +87,14 @@ class PreferencesService {
 
   bool get deleteAfterClose  {
     return _prefs.getBool(_keyDeleteAfterClose) ?? true;
+  }
+
+  Future<void> setLocale(Locale locale) async {
+    await _prefs.setString(_keyLocale, locale.languageCode);
+  }
+
+  Locale get locale {
+    final code =  _prefs.getString(_keyLocale) ?? 'vi';
+    return Locale(code);
   }
 }

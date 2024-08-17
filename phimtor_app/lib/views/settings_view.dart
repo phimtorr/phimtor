@@ -1,7 +1,9 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
+import 'package:phimtor_app/locale_provider.dart';
 import 'package:phimtor_app/services/preferences/preferences_service.dart';
+import 'package:provider/provider.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
@@ -42,12 +44,47 @@ class _SettingsViewState extends State<SettingsView> {
 
   @override
   Widget build(BuildContext context) {
+    final localeProvider = Provider.of<LocaleProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(context.loc.setting_title),
       ),
       body: Column(
         children: [
+          ListTile(
+            title: Text(context.loc.setting_lang),
+            subtitle: Text(getLanguageName(localeProvider.locale)),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text(context.loc.setting_lang),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ListTile(
+                          title: Text(context.loc.setting_lang_en),
+                          onTap: () {
+                            localeProvider.setLocale(const Locale("en"));
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        ListTile(
+                          title: Text(context.loc.setting_lang_vi),
+                          onTap: () {
+                            localeProvider.setLocale(const Locale("vi"));
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          ),
           ListTile(
             title: Text(context.loc.setting_data_dir),
             subtitle: Column(
@@ -68,11 +105,24 @@ class _SettingsViewState extends State<SettingsView> {
           ),
           SwitchListTile(
             title: Text(context.loc.setting_delete_after_close),
+            subtitle: Text(context.loc.setting_delete_after_close_note),
             value: _deleteAfterClose,
             onChanged: updateDeleteAfterClose,
           ),
         ],
       ),
     );
+  }
+}
+
+
+String getLanguageName(Locale locale) {
+  switch (locale.languageCode) {
+    case "en":
+      return "English";
+    case "vi":
+      return "Tiếng Việt";
+    default:
+      return "Unknown";
   }
 }
