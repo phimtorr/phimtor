@@ -50,3 +50,13 @@ class AuthStateNeedsVerification extends AuthState {
     this.needCooldown = false,
   });
 }
+
+class AuthStateForgotPassword extends AuthState {
+  final Exception? exception;
+  final bool emailSent;
+  const AuthStateForgotPassword({
+    required this.exception,
+    required super.isLoading,
+    required this.emailSent,
+  });
+}

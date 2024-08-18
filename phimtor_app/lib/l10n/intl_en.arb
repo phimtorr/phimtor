@@ -35,6 +35,7 @@
 
     "confirm_password": "Confirm password",
 
+    "login_view_forgot_password": "Forgot password?",
     "login_view_not_register_yet": "Not register yet? Register here!",
 
     "register_view_password_not_match": "Password not match",
@@ -52,6 +53,12 @@
     },
     "verify_email_resend": "Resend email",
     "verify_email_have_confirm": "Already confirmed? Login here!",
+
+    "forgot_password": "Forgot password",
+    "forgot_password_note": "Please enter your email to reset password",
+    "forgot_password_view_send_me_link": "Send me password reset link",
+    "forgot_password_view_back_to_login": "Back to login",
+
 
     "search": "Search",
     "search_hint": "Search by name",
