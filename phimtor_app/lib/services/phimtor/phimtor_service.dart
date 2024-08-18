@@ -29,7 +29,7 @@ class _FirebaseAuthentication implements phimtor_api.Authentication {
   Future<void> applyToParams(List<phimtor_api.QueryParam> queryParams,
       Map<String, String> headerParams) async {
     final token = await AuthService().authToken;
-    if (token != null) {
+    if (token != null && token.isNotEmpty) {
       headerParams['Authorization'] = 'Bearer $token';
     }
   }

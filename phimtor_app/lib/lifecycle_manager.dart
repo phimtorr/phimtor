@@ -97,7 +97,7 @@ class _LifecycleManagerState extends State<LifecycleManager>
   Widget build(BuildContext context) {
     if (_error != null) {
       return Center(
-        child: Text('Error: $_error'),
+        child: Text('Error: ${_error.toString()}'),
       );
     }
     if (!_isInitialized) {
