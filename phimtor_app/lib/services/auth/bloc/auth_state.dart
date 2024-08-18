@@ -44,5 +44,9 @@ class AuthStateRegistering extends AuthState {
 }
 
 class AuthStateNeedsVerification extends AuthState {
-  const AuthStateNeedsVerification({required super.isLoading});
+  final bool needCooldown;
+  const AuthStateNeedsVerification({
+    required super.isLoading,
+    this.needCooldown = false,
+  });
 }

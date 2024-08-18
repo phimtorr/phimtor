@@ -46,7 +46,9 @@ class AccountView extends StatelessWidget {
             }
 
             if (state is AuthStateNeedsVerification) {
-              return const VerifyEmailView();
+              return VerifyEmailView(
+                needCooldown: state.needCooldown,
+              );
             }
 
             if (state is AuthStateLoggedIn) {
@@ -58,9 +60,8 @@ class AccountView extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Logged in as ${state.user.email}${state.user.displayName != null
-                              ? " (${state.user.displayName})"
-                              : ""}"),
+                      Text(
+                          "Logged in as ${state.user.email}${state.user.displayName != null ? " (${state.user.displayName})" : ""}"),
                       const SizedBox(height: 8),
                       ElevatedButton(
                         onPressed: () {
