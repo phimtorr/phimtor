@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:phimtor_app/constants/enviroment_vars.dart';
 import 'package:phimtor_app/services/auth/auth_service.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
@@ -29,6 +30,7 @@ class _FirebaseAuthentication implements phimtor_api.Authentication {
   Future<void> applyToParams(List<phimtor_api.QueryParam> queryParams,
       Map<String, String> headerParams) async {
     final token = await AuthService().authToken;
+    debugPrint('Token: $token');
     if (token != null && token.isNotEmpty) {
       headerParams['Authorization'] = 'Bearer $token';
     }

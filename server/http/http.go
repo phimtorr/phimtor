@@ -6,19 +6,20 @@ import (
 	"github.com/friendsofgo/errors"
 
 	"github.com/go-chi/render"
-	commonErrors "github.com/phimtorr/phimtor/common/errors"
 	"github.com/rs/zerolog/log"
+
+	commonErrors "github.com/phimtorr/phimtor/common/errors"
 )
 
-type HttpServer struct {
+type Server struct {
 	repo Repository
 }
 
-func NewHttpServer(repository Repository) HttpServer {
+func NewHttpServer(repository Repository) Server {
 	if repository == nil {
 		panic("repository is nil")
 	}
-	return HttpServer{repo: repository}
+	return Server{repo: repository}
 }
 
 func respondError(w http.ResponseWriter, r *http.Request, err error) {
