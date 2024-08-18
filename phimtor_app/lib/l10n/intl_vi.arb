@@ -7,6 +7,9 @@
     "watch_now": "Xem ngay",
     "select_subtitle_file": "Chọn file phụ đề",
     "unselect_subtitle": "Bỏ chọn phụ đề",
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "register": "Đăng ký",
 
     "error": "Lỗi: {error}",
     "@error": {
@@ -22,14 +25,24 @@
     "account": "Tài khoản",
     "setting": "Cài đặt",
 
-    "login": "Đăng nhập",
-    "logout": "Đăng xuất",
     "email": "Email",
     "email_hint": "Nhập email của bạn",
     "email_invalid": "Email không hợp lệ",
     "password": "Mật khẩu",
     "password_hint": "Nhập mật khẩu của bạn",
     "password_invalid": "Mật khẩu không hợp lệ",
+
+    "confirm_password": "Xác nhận mật khẩu",
+
+    "login_view_not_register_yet": "Chưa có tài khoản? Đăng ký tại đây!",
+
+    "register_view_password_not_match": "Mật khẩu không khớp",
+    "register_view_already_have_account": "Đã có tài khoản? Đăng nhập tại đây!",
+
+    "verify_email": "Xác nhận email",
+    "verify_email_note": "Vui lòng kiểm tra email của bạn để xác nhận tài khoản",
+    "verify_email_resend": "Gửi lại email",
+    "verify_email_have_confirm": "Đã xác nhận? Đăng nhập tại đây!",
 
     "search": "Tìm kiếm",
     "search_hint": "Tìm kiếm theo tên",

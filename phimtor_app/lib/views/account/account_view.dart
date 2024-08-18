@@ -6,6 +6,8 @@ import 'package:phimtor_app/services/auth/bloc/auth_bloc.dart';
 import 'package:phimtor_app/services/auth/bloc/auth_event.dart';
 import 'package:phimtor_app/services/auth/bloc/auth_state.dart';
 import 'package:phimtor_app/views/account/login_view.dart';
+import 'package:phimtor_app/views/account/register_view.dart';
+import 'package:phimtor_app/views/account/verify_email_view.dart';
 
 class AccountView extends StatelessWidget {
   const AccountView({super.key});
@@ -31,12 +33,20 @@ class AccountView extends StatelessWidget {
           builder: (context, state) {
             if (state.isLoading) {
               return const Scaffold(
-                body: CircularProgressIndicator(),
+                body: Center(child: CircularProgressIndicator()),
               );
             }
 
             if (state is AuthStateLoggedOut) {
               return const LoginView();
+            }
+
+            if (state is AuthStateRegistering) {
+              return const RegisterView();
+            }
+
+            if (state is AuthStateNeedsVerification) {
+              return const VerifyEmailView();
             }
 
             if (state is AuthStateLoggedIn) {
@@ -63,7 +73,7 @@ class AccountView extends StatelessWidget {
             }
 
             return const Scaffold(
-              body: CircularProgressIndicator(),
+              body: Center(child: CircularProgressIndicator()),
             );
           },
         );
