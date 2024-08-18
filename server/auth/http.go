@@ -36,10 +36,15 @@ func (a FirebaseHttpMiddleware) Middleware(next http.Handler) http.Handler {
 			return
 		}
 
+		name := "Anonymous"
+		if token.Claims["name"] != nil {
+			name = token.Claims["name"].(string)
+		}
+
 		r = setUserToRequestContext(r, User{
 			UUID:        token.UID,
 			Email:       token.Claims["email"].(string),
-			DisplayName: token.Claims["name"].(string),
+			DisplayName: name,
 		})
 
 		next.ServeHTTP(w, r)

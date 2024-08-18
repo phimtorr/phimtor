@@ -57,12 +57,12 @@ class _LifecycleManagerState extends State<LifecycleManager>
     log("Initializing preferences service");
     await PreferencesService.ensureInitialized();
 
+     log("Initializing auth service");
+    await AuthService().initialize();
+
     _dataDirPath = PreferencesService.getInstance().dataDirPath;
     log("Starting libtorrent with dataDirPath: $_dataDirPath");
     torrent.LibTorrent().start(_dataDirPath);
-
-    log("Initializing auth service");
-    await AuthService().initialize();
   }
 
   void cleanUp() {

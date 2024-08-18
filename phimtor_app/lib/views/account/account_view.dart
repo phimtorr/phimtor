@@ -58,13 +58,14 @@ class AccountView extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Logged in as ${state.user.email}"),
+                      Text("Logged in as ${state.user.displayName} (${state.user.email})"),
+                      const SizedBox(height: 8),
                       ElevatedButton(
                         onPressed: () {
                           BlocProvider.of<AuthBloc>(context)
                               .add(const AuthEventLogOut());
                         },
-                        child: const Text("Logout"),
+                        child: Text(context.loc.logout),
                       ),
                     ],
                   ),

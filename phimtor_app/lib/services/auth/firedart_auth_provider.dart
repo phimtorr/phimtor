@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firedart/auth/exceptions.dart';
 import 'package:flutter/material.dart';
 import 'package:phimtor_app/firebase_options.dart';
 import 'package:phimtor_app/services/auth/auth_provider.dart';
@@ -19,6 +20,11 @@ class FiredartAuthProvider implements AuthProvider {
       DefaultFirebaseOptions.windows.apiKey,
       _tokenStore,
     );
+    try {
+      await syncCurrentUser();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   @override
@@ -37,6 +43,8 @@ class FiredartAuthProvider implements AuthProvider {
     try {
       final user = await FirebaseAuth.instance.getUser();
       _currentUser = AuthUser.fromFiredartUser(user);
+    } on SignedOutException {
+      _currentUser = null;
     } catch (e) {
       debugPrint(e.toString());
       rethrow;
