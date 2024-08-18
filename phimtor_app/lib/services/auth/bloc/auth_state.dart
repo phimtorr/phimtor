@@ -34,3 +34,15 @@ class AuthStateLoggedIn extends AuthState {
     required super.isLoading,
   });
 }
+
+class AuthStateRegistering extends AuthState {
+  final Exception? exception;
+  const AuthStateRegistering({
+    required this.exception,
+    required super.isLoading,
+  });
+}
+
+class AuthStateNeedsVerification extends AuthState {
+  const AuthStateNeedsVerification({required super.isLoading});
+}

@@ -48,9 +48,12 @@ class FiredartAuthProvider implements AuthProvider {
     required String email,
     required String password,
   }) async {
-    final user = await FirebaseAuth.instance.signIn(email, password);
+    await FirebaseAuth.instance.signIn(email, password);
     await syncCurrentUser();
-    return AuthUser.fromFiredartUser(user);
+    if (_currentUser == null) {
+      throw Exception("Failed to log in");
+    }
+    return _currentUser!;
   }
 
   @override
