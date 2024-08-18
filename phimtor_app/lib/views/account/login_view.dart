@@ -93,6 +93,14 @@ class _LoginViewState extends State<LoginView> {
               TextButton(
                 onPressed: () {
                   BlocProvider.of<AuthBloc>(context)
+                      .add(const AuthEventForgotPassword());
+                },
+                child: Text(context.loc.login_view_forgot_password),
+              ),
+              smallSpacer,
+              TextButton(
+                onPressed: () {
+                  BlocProvider.of<AuthBloc>(context)
                       .add(const AuthEventShouldRegister());
                 },
                 child: Text(context.loc.login_view_not_register_yet),

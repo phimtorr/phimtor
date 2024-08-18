@@ -5,6 +5,7 @@ import 'package:phimtor_app/services/auth/auth_service.dart';
 import 'package:phimtor_app/services/auth/bloc/auth_bloc.dart';
 import 'package:phimtor_app/services/auth/bloc/auth_event.dart';
 import 'package:phimtor_app/services/auth/bloc/auth_state.dart';
+import 'package:phimtor_app/views/account/forgot_password_view.dart';
 import 'package:phimtor_app/views/account/login_view.dart';
 import 'package:phimtor_app/views/account/register_view.dart';
 import 'package:phimtor_app/views/account/verify_email_view.dart';
@@ -49,6 +50,10 @@ class AccountView extends StatelessWidget {
               return VerifyEmailView(
                 needCooldown: state.needCooldown,
               );
+            }
+
+            if (state is AuthStateForgotPassword) {
+              return const ForgotPasswordView();
             }
 
             if (state is AuthStateLoggedIn) {
