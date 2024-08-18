@@ -12,7 +12,8 @@ class FirebaseAuthProvider implements AuthProvider {
     );
   }
 
-  AuthUser? get _currentUser {
+  @override
+  AuthUser? get currentUser {
     final user = FirebaseAuth.instance.currentUser;
     return user == null ? null : AuthUser.fromFirebaseUser(user);
   }
@@ -28,7 +29,7 @@ class FirebaseAuthProvider implements AuthProvider {
         password: password,
       );
 
-      final user = _currentUser;
+      final user = currentUser;
       if (user == null) {
         throw Exception('User not found after creation');
       }
@@ -36,11 +37,6 @@ class FirebaseAuthProvider implements AuthProvider {
     } catch (e) {
       rethrow;
     }
-  }
-
-  @override
-  Future<AuthUser?> get currentUser async {
-    return _currentUser;
   }
 
   @override
@@ -54,7 +50,7 @@ class FirebaseAuthProvider implements AuthProvider {
         password: password,
       );
 
-      final user = _currentUser;
+      final user = currentUser;
       if (user == null) {
         throw Exception('User not found after login');
       }

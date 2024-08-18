@@ -22,6 +22,15 @@
     "account": "Account",
     "setting": "Setting",
 
+    "login": "Login",
+    "logout": "Logout",
+    "email": "Email",
+    "email_hint": "Enter your email",
+    "email_invalid": "Invalid email",
+    "password": "Password",
+    "password_hint": "Enter your password",
+    "password_invalid": "Invalid password",
+
     "search": "Search",
     "search_hint": "Search by name",
     "search_no_result": "No result found",

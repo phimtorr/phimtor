@@ -22,6 +22,15 @@
     "account": "Tài khoản",
     "setting": "Cài đặt",
 
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "email": "Email",
+    "email_hint": "Nhập email của bạn",
+    "email_invalid": "Email không hợp lệ",
+    "password": "Mật khẩu",
+    "password_hint": "Nhập mật khẩu của bạn",
+    "password_invalid": "Mật khẩu không hợp lệ",
+
     "search": "Tìm kiếm",
     "search_hint": "Tìm kiếm theo tên",
     "search_result_title": "Tìm kiếm kết quả cho \"{query}\"",

@@ -26,7 +26,7 @@ class AuthService implements AuthProvider {
       authProvider.createUser(email: email, password: password);
 
   @override
-  Future<AuthUser?> get currentUser => authProvider.currentUser;
+  AuthUser? get currentUser => authProvider.currentUser;
   @override
   Future<void> initialize() => authProvider.initialize();
 

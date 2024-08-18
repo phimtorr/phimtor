@@ -10,13 +10,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class FiredartAuthProvider implements AuthProvider {
   late final TokenStore _tokenStore;
+  AuthUser? _currentUser;
 
-   @override
+  @override
   Future<void> initialize() async {
     _tokenStore = await PreferencesStore.create();
     FirebaseAuth.initialize(
       DefaultFirebaseOptions.windows.apiKey,
-     _tokenStore,
+      _tokenStore,
     );
   }
 
@@ -30,28 +31,33 @@ class FiredartAuthProvider implements AuthProvider {
   }
 
   @override
-  Future<AuthUser?> get currentUser async {
+  AuthUser? get currentUser => _currentUser;
+
+  Future<void> syncCurrentUser() async {
     try {
       final user = await FirebaseAuth.instance.getUser();
-      return AuthUser.fromFiredartUser(user);
+      _currentUser = AuthUser.fromFiredartUser(user);
     } catch (e) {
       debugPrint(e.toString());
-      return null;
+      rethrow;
     }
   }
 
- 
-
   @override
-  Future<AuthUser> logIn(
-      {required String email, required String password}) async {
+  Future<AuthUser> logIn({
+    required String email,
+    required String password,
+  }) async {
     final user = await FirebaseAuth.instance.signIn(email, password);
+    await syncCurrentUser();
     return AuthUser.fromFiredartUser(user);
   }
 
   @override
   Future<void> logOut() async {
     FirebaseAuth.instance.signOut();
+    _tokenStore.delete();
+    _currentUser = null;
   }
 
   @override
@@ -63,7 +69,7 @@ class FiredartAuthProvider implements AuthProvider {
   Future<void> sendPasswordReset({required String toEmail}) async {
     await FirebaseAuth.instance.resetPassword(toEmail);
   }
-  
+
   @override
   Future<String?> get authToken async {
     return _tokenStore.idToken;
