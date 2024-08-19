@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ ubuntu-latest ]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
     runs-on: ${{ matrix.os }}
     env:
       SERVER_ADDR: "https://phimtor.net"
@@ -73,14 +73,30 @@ jobs:
       # Windows
       - name: Build Windows
         if: runner.os == 'Windows'
-        run: flutter build windows
+        run:  scripts/build-windows.sh ${{ env.VERSION }} ${{ github.run_attempt }}
         shell: bash
+
+      - name: Archive Release
+        if: runner.os == 'Windows'
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          filename: MacRecoveryX-${{github.ref_name}}-windows.zip
+          directory: build/windows/runner/Release
 
       # MacOS
       - name: Build MacOS
         if: runner.os == 'macOS'
-        run: flutter build macos
+        run: scripts/build-macos.sh ${{ env.VERSION }} ${{ github.run_attempt }}
         shell: bash
+
+      - name: Archive Release
+        if: runner.os == 'macOS'
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          filename: MacRecoveryX-${{github.ref_name}}-macos.zip
+          directory: build/macos/Build/Products/Release
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
@@ -89,4 +105,6 @@ jobs:
           path: |
             ${{github.workspace}}/phimtor_app/build/*.AppImage
             ${{github.workspace}}\phimtor_app\build\*.exe 
+            ${{github.workspace}}/phimtor_app/build/macos/Build/Products/Release/*.zip
+            ${{github.workspace}}\phimtor_app\build\windows\runner\Release\*.zip
           
