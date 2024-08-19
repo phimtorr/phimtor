@@ -11,6 +11,8 @@ APP_DIR="$WORKING_DIR"/build/Phimtor.AppDir
 
 cd "$WORKING_DIR"
 
+echo "Working dir: $(pwd)"
+
 flutter build linux --release \
     --build-number=$BUILD_NUMBER \
     --build-name=$VERSION \
