@@ -5,31 +5,40 @@ cmake_minimum_required(VERSION 3.10)
 
 project(torrent_library VERSION 0.0.1)
 
+# Set output file name and build mode based on platform
+if (WIN32)
+    set(OUTPUT_FILE "libtorrent.dll")
+    set(BUILD_MODE "c-shared")
+else()
+    set(OUTPUT_FILE "libtorrent.so")
+    set(BUILD_MODE "c-shared")
+endif()
+
 add_custom_command(
-    OUTPUT ./include/libtorrent.so
+    OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/include/${OUTPUT_FILE}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    COMMAND go build -o ./include/libtorrent.so -buildmode=c-shared main.go
+    COMMAND go build -o ./include/${OUTPUT_FILE} -buildmode=${BUILD_MODE} main.go
     COMMENT "Building Go shared library"
 )
 
 add_custom_target(
     go_build ALL
-    DEPENDS ./include/libtorrent.so
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/include/${OUTPUT_FILE}
 )
 
 add_library(torrent STATIC IMPORTED GLOBAL)
 add_dependencies(torrent go_build)
 
 set_target_properties(torrent PROPERTIES
-    IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/include/libtorrent.so
+    IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/include/${OUTPUT_FILE}
     INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/build
     OUTPUT_NAME "torrent"
 )
 
 if (WIN32)
-set_target_properties(torrent PROPERTIES
-  WINDOWS_EXPORT_ALL_SYMBOLS ON
-)
+    set_target_properties(torrent PROPERTIES
+      WINDOWS_EXPORT_ALL_SYMBOLS ON
+    )
 endif (WIN32)
 
 # Creating a dummy target to apply compile definitions

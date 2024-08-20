@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        os: [ ubuntu-latest, windows-latest ]
     runs-on: ${{ matrix.os }}
     env:
       SERVER_ADDR: "https://phimtor.net"
@@ -82,7 +82,7 @@ jobs:
         with:
           type: 'zip'
           filename: MacRecoveryX-${{github.ref_name}}-windows.zip
-          directory: build/windows/runner/Release
+          directory: phimtor_app\build\windows\x64\runner\Release
 
       # MacOS
       - name: Build MacOS
@@ -96,7 +96,7 @@ jobs:
         with:
           type: 'zip'
           filename: MacRecoveryX-${{github.ref_name}}-macos.zip
-          directory: build/macos/Build/Products/Release
+          directory: phimtor_app/build/macos/Build/Products/Release/
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
@@ -106,5 +106,5 @@ jobs:
             ${{github.workspace}}/phimtor_app/build/*.AppImage
             ${{github.workspace}}\phimtor_app\build\*.exe 
             ${{github.workspace}}/phimtor_app/build/macos/Build/Products/Release/*.zip
-            ${{github.workspace}}\phimtor_app\build\windows\runner\Release\*.zip
+            ${{github.workspace}}\phimtor_app\build\windows\x64\runner\Release\*.zip
           
