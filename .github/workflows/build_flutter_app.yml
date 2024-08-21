@@ -49,6 +49,10 @@ jobs:
           go-version: 1.22
           check-latest: true
           cache-dependency-path: torrent/src/go.mod
+      
+      - name: Show go env
+        run: go env
+        shell: bash
 
       - name: Patch Linux
         if: runner.os == 'Linux'
