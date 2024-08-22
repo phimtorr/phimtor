@@ -43,9 +43,9 @@ dependencies:
     path: ./torrent
   phimtor_openapi_client:
     path: ./phimtor_openapi_client
-  media_kit: ^1.1.10                             # Primary package.
-  media_kit_video: ^1.2.4                        # For video rendering.
-  media_kit_libs_video: ^1.0.4                   # Native video dependencies.
+  media_kit: ^1.1.11 # Primary package.
+  media_kit_video: ^1.2.5 # For video rendering.
+  media_kit_libs_video: ^1.0.5 # Native video dependencies.
   pretty_bytes: ^6.2.0
   flutter_localizations:
     sdk: flutter
