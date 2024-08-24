@@ -1,0 +1,66 @@
+name: Release phimtor app
+
+on:
+  workflow_call:
+    inputs:
+      artifact_pattern:
+        description: 'Pattern to download the artifact'
+        required: true
+        type: string
+      environment:
+        description: 'Environment'
+        required: true
+        type: string
+    secrets:
+      SSH_HOST:
+        description: 'SSH host'
+        required: true
+      SSH_USER:
+        description: 'SSH user'
+        required: true
+      SSH_PRIVATE_KEY:
+        description: 'SSH private key'
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    env:
+      DEST_DIR: "phimtor_app"
+    steps:
+      - name: Install ssh key
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+          cat >>~/.ssh/config <<END
+          Host server
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/id_rsa
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        shell: bash
+
+      - name: Download desktop
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ${{ inputs.artifact_pattern }}
+          merge-multiple: true
+          path: desktop_app
+
+      - run: |
+          ls -lR desktop_app
+
+      - name: Deploy desktop
+        run: |
+          ssh server 'mkdir -p ${{ vars.WORKING_DIR }}/${{ env.DEST_DIR }}'
+          ssh server 'rm -rf ${{ vars.WORKING_DIR }}/${{ env.DEST_DIR }}/*'
+          find desktop_app -name "*.exe" -o -name "*.AppImage" -o -name "*.dmg" -o -name "VERSION.txt" | xargs -I{} scp {} server:${{ vars.WORKING_DIR }}/${{ env.DEST_DIR }}/
+        shell: bash
+

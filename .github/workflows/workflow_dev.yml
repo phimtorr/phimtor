@@ -6,10 +6,7 @@ permissions:
 on:
   push:
     branches:
-      - dev
-#  push:
-#    branches:
-#      - master
+      - master
 
 jobs:
   build_desktop:
@@ -23,6 +20,22 @@ jobs:
     uses: ./.github/workflows/release_desktop.yml
     with:
       artifact_pattern: ${{ needs.build_desktop.outputs.artifact_pattern }}
+      environment: development
+    secrets:
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+  build_flutter_app:
+    uses: ./.github/workflows/build_flutter_app.yml
+    with:
+      server_address: "https://dev.phimtor.net"
+
+  release_phimtor_app:
+    needs: [ build_flutter_app ]
+    uses: ./.github/workflows/release_phimtor_app.yml
+    with:
+      artifact_pattern: phimtor_app_*
       environment: development
     secrets:
       SSH_HOST: ${{ secrets.SSH_HOST }}

@@ -4,9 +4,12 @@ permissions:
   contents: write
 
 on:
-  push:
-    branches:
-      - master
+  workflow_call:
+    inputs:
+      server_address:
+        description: 'Address of the server'
+        required: true
+        type: string
 
 jobs:
   build:
@@ -16,7 +19,7 @@ jobs:
         os: [ ubuntu-latest, windows-latest ]
     runs-on: ${{ matrix.os }}
     env:
-      SERVER_ADDR: "https://phimtor.net"
+      SERVER_ADDR: ${{ inputs.server_address }}
     defaults:
       run:
         working-directory: phimtor_app
@@ -35,6 +38,11 @@ jobs:
           fi
           echo Version: $VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Write version file
+        if: runner.os == 'Linux'
+        run: echo $VERSION > ${{github.workspace}}/VERSION.txt
         shell: bash
 
       - name: Setup Flutter
@@ -93,21 +101,11 @@ jobs:
         run: scripts/build-macos.sh ${{ env.VERSION }} ${{ github.run_attempt }}
         shell: bash
 
-      - name: Archive Release
-        if: runner.os == 'macOS'
-        uses: thedoctor0/zip-release@master
-        with:
-          type: 'zip'
-          filename: MacRecoveryX-${{github.ref_name}}-macos.zip
-          directory: phimtor_app/build/macos/Build/Products/Release/
-
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: phimtor_app_${{ env.VERSION }}_${{ runner.os }}
+          name: phimtor_app_${{ runner.os }}
           path: |
             ${{github.workspace}}/phimtor_app/build/*.AppImage
             ${{github.workspace}}\phimtor_app\build\*.exe 
-            ${{github.workspace}}/phimtor_app/build/macos/Build/Products/Release/*.zip
-            ${{github.workspace}}\phimtor_app\build\windows\x64\runner\Release\*.zip
-          
+            ${{github.workspace}}/VERSION.txt
