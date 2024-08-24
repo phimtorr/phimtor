@@ -49,7 +49,7 @@ jobs:
           go-version: 1.22
           check-latest: true
           cache-dependency-path: torrent/src/go.mod
-      
+
       - name: Show go env
         run: go env
         shell: bash
@@ -77,16 +77,15 @@ jobs:
       # Windows
       - name: Build Windows
         if: runner.os == 'Windows'
-        run:  scripts/build-windows.sh ${{ env.VERSION }} ${{ github.run_attempt }}
+        run: scripts/build-windows.sh ${{ env.VERSION }} ${{ github.run_attempt }}
         shell: bash
 
-      - name: Archive Release
+      - name: Compile .ISS to .EXE Installer
         if: runner.os == 'Windows'
-        uses: thedoctor0/zip-release@master
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
-          type: 'zip'
-          filename: MacRecoveryX-${{github.ref_name}}-windows.zip
-          directory: phimtor_app\build\windows\x64\runner\Release
+          path: phimtor_app/windows/phimtor.iss
+          options: /DMyAppVersion=${{ env.VERSION }} /DWorkingDir="${{ github.workspace }}\phimtor_app"
 
       # MacOS
       - name: Build MacOS
