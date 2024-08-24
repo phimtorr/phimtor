@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:phimtor_app/constants/enviroment_vars.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:phimtor_app/lifecycle_manager.dart';
 import 'package:phimtor_app/locale_provider.dart';
@@ -97,6 +98,21 @@ class _MyHomePageState extends State<MyHomePage> {
               elevation: 5,
               backgroundColor:
                   Theme.of(context).colorScheme.surfaceContainerHigh,
+              trailing: Expanded(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Text(
+                      Constants.appVersion,
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelSmall
+                          ?.merge(const TextStyle(fontStyle: FontStyle.italic)),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
           Expanded(

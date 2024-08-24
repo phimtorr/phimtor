@@ -3,4 +3,8 @@ abstract class Constants {
     "API_URL",
     defaultValue: 'http://localhost:8080',
   );
+  static const String appVersion = String.fromEnvironment(
+    "APP_VERSION",
+    defaultValue: '0.0.1',
+  );
 }

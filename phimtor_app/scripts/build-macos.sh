@@ -10,4 +10,5 @@ WORKING_DIR=$(cd "$SCRIPT_DIR"/.. && pwd)
 flutter build macos --release \
     --build-number=$BUILD_NUMBER \
     --build-name=$VERSION \
-    --dart-define=API_URL=$SERVER_ADDR 
+    --dart-define=API_URL=$SERVER_ADDR \
+    --dart-define=APP_VERSION=$VERSION
