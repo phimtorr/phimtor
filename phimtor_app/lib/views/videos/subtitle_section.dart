@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:path/path.dart' as path;
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
+import 'package:phimtor_app/services/auth/auth_service.dart';
+import 'package:phimtor_app/utilities/dialogs/need_login_dialog.dart';
 
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
 
@@ -51,6 +53,17 @@ class _SubtitleSectionState extends State<SubtitleSection> {
     widget.onSelectSubtitle(subtitleTrack);
   }
 
+  Future<void> checkAndSelectSubtitle(
+      BuildContext context, phimtor_api.Subtitle subtitle) async {
+    if (subtitle.id != widget.vietnameseSubtitles.first.id &&
+        !AuthService().isVerifiedUser) {
+      await showNeedLoginDialog(context);
+      return;
+    }
+
+    selectSubtitle(subtitle);
+  }
+
   void selectSubtitleFile() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -95,7 +108,7 @@ class _SubtitleSectionState extends State<SubtitleSection> {
             const Spacer(),
             ElevatedButton.icon(
               onPressed: selectNoSubtitle,
-              label:  Text(context.loc.unselect_subtitle),
+              label: Text(context.loc.unselect_subtitle),
               icon: const Icon(Icons.subtitles_off),
             ),
           ],
@@ -114,7 +127,7 @@ class _SubtitleSectionState extends State<SubtitleSection> {
           children: widget.vietnameseSubtitles.map<Widget>((subtitle) {
             VoidCallback? onPressed;
             if (subtitle != _selectedSubtitle) {
-              onPressed = () => selectSubtitle(subtitle);
+              onPressed = () => checkAndSelectSubtitle(context, subtitle);
             }
             return ElevatedButton(
               onPressed: onPressed,
@@ -130,7 +143,7 @@ class _SubtitleSectionState extends State<SubtitleSection> {
           children: widget.englishSubtitles.map<Widget>((subtitle) {
             VoidCallback? onPressed;
             if (subtitle != _selectedSubtitle) {
-              onPressed = () => selectSubtitle(subtitle);
+              onPressed = () => checkAndSelectSubtitle(context, subtitle);
             }
             return ElevatedButton(
               onPressed: onPressed,
