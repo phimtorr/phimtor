@@ -3,6 +3,7 @@ import 'package:phimtor_app/constants/enviroment_vars.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:phimtor_app/services/updater/updater_service.dart';
 import 'package:phimtor_app/services/updater/updater_version.dart';
+import 'package:phimtor_app/utilities/dialogs/generic_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class VersionWidget extends StatelessWidget {
@@ -11,29 +12,20 @@ class VersionWidget extends StatelessWidget {
   Future<void> alertNewVesion(
       BuildContext context, UpdaterVersion version) async {
     // show dialog
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(context.loc.version_update_title),
-            content: Text(context.loc.version_update_message(version.version)),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text(context.loc.close),
-              ),
-              TextButton(
-                onPressed: () {
-                  launchUrl(version.binaryUrl);
-                  Navigator.of(context).pop();
-                },
-                child: Text(context.loc.download),
-              ),
-            ],
-          );
-        });
+    final ok = await showGenericDialog<bool>(
+      context: context,
+      title: context.loc.version_update_title,
+      content: context.loc.version_update_message(version.version),
+      optionsBuilder: () {
+        return {
+          context.loc.close: null,
+          context.loc.download: true,
+        };
+      },
+    );
+    if (ok == true) {
+      launchUrl(version.binaryUrl);
+    }
   }
 
   @override
@@ -55,7 +47,7 @@ class VersionWidget extends StatelessWidget {
             // ignore: use_build_context_synchronously
             alertNewVesion(context, version);
           });
-          
+
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
