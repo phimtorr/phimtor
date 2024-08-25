@@ -101,11 +101,11 @@ class _SubtitleSectionState extends State<SubtitleSection> {
           ],
         ),
         const SizedBox(height: 8),
-        ElevatedButton.icon(
-          onPressed: selectSubtitleFile,
-          label:  Text(context.loc.select_subtitle_file),
-          icon: const Icon(Icons.subtitles),
-        ),
+        // ElevatedButton.icon(
+        //   onPressed: selectSubtitleFile,
+        //   label:  Text(context.loc.select_subtitle_file),
+        //   icon: const Icon(Icons.subtitles),
+        // ),
         const SizedBox(height: 8),
         if (widget.vietnameseSubtitles.isNotEmpty)
           Text(context.loc.subtitle_vietnamese, style: subtitleStyle),
