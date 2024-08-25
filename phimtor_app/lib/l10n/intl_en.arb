@@ -13,6 +13,7 @@
     "has_new_version": "New version available",
     "download": "Download",
     "close": "Close",
+    "ok": "OK",
 
     "error": "Error: {error}",
     "@error": {
@@ -125,6 +126,9 @@
             }
         }
     },
+
+    "dialog_need_login_title": "Login required",
+    "dialog_need_login_message": "You need to login as a verifed user to use this feature!",
 
     "setting_title": "Setting",
     "setting_data_dir": "Data directory",

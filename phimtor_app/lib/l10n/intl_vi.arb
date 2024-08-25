@@ -13,6 +13,7 @@
     "has_new_version": "Có phiên bản mới",
     "download": "Tải về",
     "close": "Đóng",
+    "ok": "OK",
 
     "error": "Lỗi: {error}",
     "@error": {
@@ -123,6 +124,9 @@
             }
         }
     },
+
+    "dialog_need_login_title": "Cần đăng nhập",
+    "dialog_need_login_message": "Vui lòng đăng nhập bằng tài khoản đã xác minh để sử dụng tính năng này",
 
     "setting_title": "Cài đặt",
     "setting_data_dir": "Thư mục lưu trữ phim",
