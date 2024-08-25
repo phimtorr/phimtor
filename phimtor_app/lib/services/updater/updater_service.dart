@@ -69,15 +69,16 @@ class UpdaterService {
   }
 }
 
-String get binaryUrl {
+Uri get binaryUrl {
   if (Platform.isLinux) {
-    return "${Constants.apiUrl}/public/phimtor-app/PhimTor-x86_64.AppImage";
+    return Uri.parse(
+        "${Constants.apiUrl}/public/phimtor-app/PhimTor-x86_64.AppImage");
   }
   if (Platform.isWindows) {
-    return "${Constants.apiUrl}/public/phimtor-app/PhimTorSetup.exe";
+    return Uri.parse("${Constants.apiUrl}/public/phimtor-app/PhimTorSetup.exe");
   }
   if (Platform.isMacOS) {
-    return "${Constants.apiUrl}/public/phimtor-app/PhimTor.dmg";
+    return Uri.parse("${Constants.apiUrl}/public/phimtor-app/PhimTor.dmg");
   }
 
   throw UnsupportedError("Unsupported platform");

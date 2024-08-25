@@ -10,6 +10,9 @@
     "login": "Đăng nhập",
     "logout": "Đăng xuất",
     "register": "Đăng ký",
+    "has_new_version": "Có phiên bản mới",
+    "download": "Tải về",
+    "close": "Đóng",
 
     "error": "Lỗi: {error}",
     "@error": {
@@ -110,6 +113,16 @@
     "stats_downloaded": "Đã tải",
     "stats_progress": "Tiến trình",
     "stats_download_speed": "Tốc độ tải",
+
+    "version_update_title": "Có phiên bản mới",
+    "version_update_message": "Có phiên bản mới {version} đã sẵn sàng để cập nhật",
+    "@version_update_message": {
+        "placeholders": {
+            "version": {
+                "type": "String"
+            }
+        }
+    },
 
     "setting_title": "Cài đặt",
     "setting_data_dir": "Thư mục lưu trữ phim",
