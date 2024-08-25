@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
-import 'package:phimtor_app/constants/enviroment_vars.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:phimtor_app/lifecycle_manager.dart';
 import 'package:phimtor_app/locale_provider.dart';
 import 'package:phimtor_app/views/account/account_view.dart';
+import 'package:phimtor_app/views/components/version_widget.dart';
 import 'package:phimtor_app/views/home_view.dart';
 import 'package:phimtor_app/views/settings_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -98,18 +98,12 @@ class _MyHomePageState extends State<MyHomePage> {
               elevation: 5,
               backgroundColor:
                   Theme.of(context).colorScheme.surfaceContainerHigh,
-              trailing: Expanded(
+              trailing: const Expanded(
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Text(
-                      Constants.appVersion,
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelSmall
-                          ?.merge(const TextStyle(fontStyle: FontStyle.italic)),
-                    ),
+                    padding: EdgeInsets.only(bottom: 8.0),
+                    child: VersionWidget(),
                   ),
                 ),
               ),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 @immutable
 class UpdaterVersion {
   final String version;
-  final String binaryUrl;
+  final Uri binaryUrl;
 
   const UpdaterVersion({
     required this.version,

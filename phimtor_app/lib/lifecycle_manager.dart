@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:phimtor_app/services/auth/auth_service.dart';
 import 'package:phimtor_app/services/preferences/preferences_service.dart';
+import 'package:phimtor_app/services/updater/updater_service.dart';
 import 'package:torrent/torrent.dart' as torrent;
 
 class LifecycleManager extends StatefulWidget {
@@ -63,12 +64,18 @@ class _LifecycleManagerState extends State<LifecycleManager>
     _dataDirPath = PreferencesService.getInstance().dataDirPath;
     log("Starting libtorrent with dataDirPath: $_dataDirPath");
     torrent.LibTorrent().start(_dataDirPath);
+
+    log("Initializing updater service");
+    UpdaterService().initialize();
   }
 
   void cleanUp() {
     log("Stopping libtorrent");
     torrent.LibTorrent().stop();
     _deleteDataDirIfNeed();
+
+    log("Closing updater service");
+    UpdaterService().close();
   }
 
   void _deleteDataDirIfNeed() {

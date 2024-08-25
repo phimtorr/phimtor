@@ -10,6 +10,9 @@
     "login": "Login",
     "logout": "Logout",
     "register": "Register",
+    "has_new_version": "New version available",
+    "download": "Download",
+    "close": "Close",
 
     "error": "Error: {error}",
     "@error": {
@@ -112,6 +115,16 @@
     "stats_downloaded": "Downloaded",
     "stats_progress": "Progress",
     "stats_download_speed": "Download speed",
+
+    "version_update_title": "New version available",
+    "version_update_message": "New version {version} is available. Please update.",
+    "@version_update_message": {
+        "placeholders": {
+            "version": {
+                "type": "String"
+            }
+        }
+    },
 
     "setting_title": "Setting",
     "setting_data_dir": "Data directory",
