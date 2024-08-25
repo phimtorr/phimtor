@@ -85,6 +85,9 @@ class FiredartAuthProvider implements AuthProvider {
   Future<String?> get authToken async {
     return _tokenStore.idToken;
   }
+
+  @override
+  bool get isVerifiedUser => _currentUser?.emailVerified ?? false;
 }
 
 /// Stores tokens as preferences in Android and iOS.

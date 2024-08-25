@@ -46,4 +46,7 @@ class AuthService implements AuthProvider {
 
   @override
   Future<String?> get authToken => authProvider.authToken;
+
+  @override
+  bool get isVerifiedUser => authProvider.isVerifiedUser;
 }

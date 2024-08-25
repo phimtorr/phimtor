@@ -36,14 +36,16 @@ func (a FirebaseHttpMiddleware) Middleware(next http.Handler) http.Handler {
 			return
 		}
 
-		name := "Anonymous"
+		email := token.Claims["email"].(string) // always present
+
+		name := email
 		if token.Claims["name"] != nil {
 			name = token.Claims["name"].(string)
 		}
 
 		r = setUserToRequestContext(r, User{
 			UUID:        token.UID,
-			Email:       token.Claims["email"].(string),
+			Email:       email,
 			DisplayName: name,
 		})
 

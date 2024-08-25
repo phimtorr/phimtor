@@ -87,4 +87,10 @@ class FirebaseAuthProvider implements AuthProvider {
     }
     return user.getIdToken();
   }
+
+  @override
+  bool get isVerifiedUser {
+    final user = FirebaseAuth.instance.currentUser;
+    return user?.emailVerified ?? false;
+  }
 }
