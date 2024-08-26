@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:path/path.dart' as path;
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
-import 'package:phimtor_app/services/auth/auth_service.dart';
-import 'package:phimtor_app/utilities/dialogs/need_login_dialog.dart';
+import 'package:phimtor_app/views/components/buttons/need_verified_user_button.dart';
 
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
 
@@ -51,17 +50,6 @@ class _SubtitleSectionState extends State<SubtitleSection> {
       language: subtitle.language,
     );
     widget.onSelectSubtitle(subtitleTrack);
-  }
-
-  Future<void> checkAndSelectSubtitle(
-      BuildContext context, phimtor_api.Subtitle subtitle) async {
-    if (subtitle.id != widget.vietnameseSubtitles.first.id &&
-        !AuthService().isVerifiedUser) {
-      await showNeedLoginDialog(context);
-      return;
-    }
-
-    selectSubtitle(subtitle);
   }
 
   void selectSubtitleFile() async {
@@ -127,12 +115,19 @@ class _SubtitleSectionState extends State<SubtitleSection> {
           children: widget.vietnameseSubtitles.map<Widget>((subtitle) {
             VoidCallback? onPressed;
             if (subtitle != _selectedSubtitle) {
-              onPressed = () => checkAndSelectSubtitle(context, subtitle);
+              onPressed = () => selectSubtitle(subtitle);
             }
-            return ElevatedButton(
-              onPressed: onPressed,
-              child: Text(subtitle.name),
-            );
+            if (subtitle == widget.vietnameseSubtitles.first) {
+              return ElevatedButton(
+                onPressed: onPressed,
+                child: Text(subtitle.name),
+              );
+            } else {
+              return NeedVerifiedUserButton(
+                onPressed: onPressed,
+                child: Text(subtitle.name),
+              );
+            }
           }).toList(),
         ),
         const SizedBox(height: 8),
@@ -143,12 +138,19 @@ class _SubtitleSectionState extends State<SubtitleSection> {
           children: widget.englishSubtitles.map<Widget>((subtitle) {
             VoidCallback? onPressed;
             if (subtitle != _selectedSubtitle) {
-              onPressed = () => checkAndSelectSubtitle(context, subtitle);
+              onPressed = () => selectSubtitle(subtitle);
             }
-            return ElevatedButton(
-              onPressed: onPressed,
-              child: Text(subtitle.name),
-            );
+            if (subtitle == widget.englishSubtitles.first) {
+              return ElevatedButton(
+                onPressed: onPressed,
+                child: Text(subtitle.name),
+              );
+            } else {
+              return NeedVerifiedUserButton(
+                onPressed: onPressed,
+                child: Text(subtitle.name),
+              );
+            }
           }).toList(),
         ),
       ],

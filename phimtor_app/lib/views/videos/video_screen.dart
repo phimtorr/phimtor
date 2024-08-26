@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
-import 'package:phimtor_app/services/auth/auth_service.dart';
-import 'package:phimtor_app/utilities/dialogs/need_login_dialog.dart';
+import 'package:phimtor_app/views/components/buttons/need_verified_user_button.dart';
 import 'package:phimtor_app/views/videos/subtitle_section.dart';
 import 'package:phimtor_app/views/videos/video_player.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
@@ -38,19 +37,6 @@ class _VideoScreenState extends State<VideoScreen> {
     });
   }
 
-  Future<void> checkAndSelectTorrentLink(
-    BuildContext context,
-    phimtor_api.TorrentLink torrentLink,
-  ) async {
-    if (torrentLink.id != widget.video.torrentLinks.first.id &&
-        !AuthService().isVerifiedUser) {
-      await showNeedLoginDialog(context);
-      return;
-    }
-
-    selectTorrentLink(torrentLink);
-  }
-
   @override
   Widget build(BuildContext context) {
     var titleStyle = Theme.of(context).textTheme.headlineMedium!;
@@ -75,13 +61,20 @@ class _VideoScreenState extends State<VideoScreen> {
                   children: widget.video.torrentLinks.map((link) {
                     VoidCallback? onPressed;
                     if (link != _selectedTorrentLink) {
-                      onPressed =
-                          () => checkAndSelectTorrentLink(context, link);
+                      onPressed = () => selectTorrentLink(link);
                     }
-                    return ElevatedButton(
-                      onPressed: onPressed,
-                      child: Text(link.name),
-                    );
+
+                    if (link == widget.video.torrentLinks.first) {
+                      return ElevatedButton(
+                        onPressed: onPressed,
+                        child: Text(link.name),
+                      );
+                    } else {
+                      return NeedVerifiedUserButton(
+                        onPressed: onPressed,
+                        child: Text(link.name),
+                      );
+                    }
                   }).toList(),
                 ),
                 const SizedBox(height: 16),
