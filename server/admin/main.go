@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"os"
+	"time"
 
 	firebase "firebase.google.com/go/v4"
 	"github.com/go-chi/chi/v5"
@@ -14,6 +15,11 @@ import (
 	adminHttp "github.com/phimtorr/phimtor/server/admin/http"
 	"github.com/phimtorr/phimtor/server/pkg/database"
 )
+
+func init() {
+	loc, _ := time.LoadLocation("Asia/Ho_Chi_Minh")
+	time.Local = loc
+}
 
 func main() {
 	logs.Init()

@@ -10,3 +10,7 @@ func ListUsers(nextPageToken string) string {
 func ViewUser(uid string) string {
 	return "/users/" + uid
 }
+
+func UpdatePremium(uid string) string {
+	return "/users/" + uid + "/update-premium"
+}

@@ -56,6 +56,7 @@ func (s Server) Register(r chi.Router) {
 
 	r.Get("/users", errHandlerFunc(s.handler.ListUsers))
 	r.Get("/users/{uid}", errHandlerFunc(s.handler.ViewUser))
+	r.Post("/users/{uid}/update-premium", errHandlerFunc(s.handler.UpdatePremium))
 }
 
 func errHandlerFunc(h func(w http.ResponseWriter, r *http.Request) error) http.HandlerFunc {

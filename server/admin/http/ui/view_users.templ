@@ -83,9 +83,9 @@ templ ViewUser(user *auth.UserRecord) {
 					<dd>
 						<dl>
 							<dt>Creation Time</dt>
-							<dd>{ toString(user.UserMetadata.CreationTimestamp) }</dd>
+							<dd>{ millisecondsToDisplayTime(user.UserMetadata.CreationTimestamp) }</dd>
 							<dt>Last Sign-In Time</dt>
-							<dd>{ toString(user.UserMetadata.LastLogInTimestamp) }</dd>
+							<dd>{ millisecondsToDisplayTime(user.UserMetadata.LastLogInTimestamp) }</dd>
 						</dl>
 					</dd>
 					<dt>Provider User Info</dt>
@@ -117,10 +117,25 @@ templ ViewUser(user *auth.UserRecord) {
 								<dt>{ k }</dt>
 								<dd>{ toString(v) }</dd>
 							}
+							<dt>Is Admin</dt>
+							<dd>{ toString(user.CustomClaims["is_admin"]) }</dd>
+							<dt>Premium Until</dt>
+							<dd>{ secondsToDisplayTime(user.CustomClaims["premium_until"]) }</dd>
 						</dl>
 					</dd>
 				</dl>
 			</article>
 		</section>
+		<section>
+			<article>
+				<h3>Update premium</h3>
+				<form method="post" action={ templ.SafeURL(uri.UpdatePremium(user.UID)) }>
+					<label for="premium_until">Premium Until</label>
+					<input type="datetime-local" id="premium_until" name="premium_until" required />
+					<button type="submit">Update</button>
+				</form>
+			</article>
+		</section>
 	}
 }
+

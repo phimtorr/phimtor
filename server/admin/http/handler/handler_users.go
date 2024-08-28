@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
+	"time"
 
 	"firebase.google.com/go/v4/auth"
 	"github.com/go-chi/chi/v5"
@@ -32,4 +34,27 @@ func (h *Handler) ViewUser(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	return ui.ViewUser(user).Render(ctx, w)
+}
+
+func (h *Handler) UpdatePremium(w http.ResponseWriter, r *http.Request) error {
+	ctx := r.Context()
+	uid := chi.URLParam(r, "uid")
+
+	if err := r.ParseForm(); err != nil {
+		return fmt.Errorf("parse form: %w", err)
+	}
+
+	premiumUntilStr := r.Form.Get("premium_until")
+	premiumUntil, err := time.Parse("2006-01-02T15:04", premiumUntilStr)
+
+	if err != nil {
+		return fmt.Errorf("parse premium until: %w", err)
+	}
+
+	if err := h.authClient.SetCustomUserClaims(ctx, uid, map[string]interface{}{"premium_until": premiumUntil.Unix()}); err != nil {
+		return fmt.Errorf("set custom user claims: %w", err)
+	}
+
+	http.Redirect(w, r, "/users/"+uid, http.StatusFound)
+	return nil
 }
