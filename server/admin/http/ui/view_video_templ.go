@@ -338,7 +338,7 @@ func ViewSubtitles(videoID int64, subtitles []Subtitle) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"closest article\" hx-swap=\"outerHTML\"><label>Language <select name=\"language\" required><option value=\"vi\">Vietnamese</option> <option value=\"en\">English</option></select></label> <label>Name <input type=\"text\" name=\"name\" required></label> <label>Owner <input type=\"text\" name=\"owner\" required></label> <label>File <input type=\"file\" name=\"file\" required accept=\".srt,.vtt\"></label> <lable>Priority <input type=\"number\" name=\"priority\" value=\"0\"></lable> <button type=\"submit\">Add</button></form></section></article>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"closest article\" hx-swap=\"outerHTML\"><label>Language <select name=\"language\" required><option value=\"vi\">Vietnamese</option> <option value=\"en\">English</option></select></label> <label>Name <input type=\"text\" name=\"name\"></label> <label>Owner <input type=\"text\" name=\"owner\"></label> <label>File <input type=\"file\" name=\"file\" required accept=\".srt,.vtt\"></label> <lable>Priority <input type=\"number\" name=\"priority\" value=\"0\"></lable> <button type=\"submit\">Add</button></form></section></article>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

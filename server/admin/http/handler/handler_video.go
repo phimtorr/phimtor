@@ -124,11 +124,6 @@ func (h *Handler) CreateSubtitle(w http.ResponseWriter, r *http.Request) error {
 	if language == "" {
 		return commonErrors.NewIncorrectInputError("empty-language", "empty language")
 	}
-	name := r.Form.Get("name")
-	if name == "" {
-		return commonErrors.NewIncorrectInputError("empty-name", "empty name")
-	}
-	owner := r.Form.Get("owner")
 
 	file, fileHeader, err := r.FormFile("file")
 	fileKey := strconv.FormatInt(videoID, 10) + "/" + language + "/" + fileHeader.Filename
@@ -136,6 +131,13 @@ func (h *Handler) CreateSubtitle(w http.ResponseWriter, r *http.Request) error {
 	objectURL, err := h.fileService.UploadFile(r.Context(), fileKey, file)
 	if err != nil {
 		return errors.Wrap(err, "upload file")
+	}
+
+	name := strings.TrimSpace(r.Form.Get("name"))
+	owner := strings.TrimSpace(r.Form.Get("owner"))
+
+	if name == "" {
+		name = fileHeader.Filename
 	}
 
 	priority, err := strconv.Atoi(r.Form.Get("priority"))
