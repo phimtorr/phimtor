@@ -1,11 +1,11 @@
 import 'package:bloc/bloc.dart';
-import 'package:phimtor_app/services/auth/auth_provider.dart';
+import 'package:phimtor_app/services/auth/auth_service.dart';
 import 'package:phimtor_app/services/auth/bloc/auth_event.dart';
 import 'package:phimtor_app/services/auth/bloc/auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  static AuthState getInitialState(AuthProvider provider) {
-    final user = provider.currentUser;
+  static AuthState getInitialState(AuthService authService) {
+    final user = authService.currentUser;
     return user == null
         ? const AuthStateLoggedOut(exception: null, isLoading: false)
         : user.emailVerified == false
@@ -13,7 +13,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             : AuthStateLoggedIn(user: user, isLoading: false);
   }
 
-  AuthBloc(AuthProvider provider) : super(getInitialState(provider)) {
+  AuthBloc(AuthService authService) : super(getInitialState(authService)) {
     // Handle AuthEventLogIn
     on<AuthEventLogIn>((event, emit) async {
       emit(const AuthStateLoggedOut(
@@ -26,7 +26,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final password = event.password;
 
       try {
-        final user = await provider.logIn(email: email, password: password);
+        final user = await authService.logIn(email: email, password: password);
         if (user.emailVerified == false) {
           emit(const AuthStateNeedsVerification(isLoading: false));
           return;
@@ -49,7 +49,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ));
 
       try {
-        await provider.logOut();
+        await authService.logOut();
         emit(const AuthStateLoggedOut(
           exception: null,
           isLoading: false,
@@ -71,8 +71,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final password = event.password;
 
       try {
-        await provider.createUser(email: email, password: password);
-        await provider.sendEmailVerification();
+        await authService.createUser(email: email, password: password);
+        await authService.sendEmailVerification();
         emit(const AuthStateNeedsVerification(
           isLoading: false,
           needCooldown: true,
@@ -86,7 +86,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
 
     on<AuthEventSendEmailVerification>((event, emit) async {
-      await provider.sendEmailVerification();
+      await authService.sendEmailVerification();
       emit(state);
     });
 
@@ -111,7 +111,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       bool didSendEmail;
       Exception? exception;
       try {
-        await provider.sendPasswordReset(toEmail: email);
+        await authService.sendPasswordReset(toEmail: email);
         didSendEmail = true;
         exception = null;
       } on Exception catch (e) {
