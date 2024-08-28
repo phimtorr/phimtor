@@ -21,11 +21,12 @@ templ ViewVideo(video Video) {
 }
 
 type Torrent struct {
-	ID        int64
-	Name      string
-	Link      string
-	FileIndex int
-	Priority  int
+	ID        		int64
+	Name      		string
+	Link      		string
+	FileIndex 		int
+	Priority  		int
+	RequiredPremium bool
 }
 
 templ ViewTorrents(videoID int64, torrents []Torrent) {
@@ -42,6 +43,7 @@ templ ViewTorrents(videoID int64, torrents []Torrent) {
 						<th>Link</th>
 						<th>File Index</th>
 						<th>Priority</th>
+						<th>Required Premium</th>
 						<th>Action</th>
 					</tr>
 				</thead>
@@ -53,6 +55,7 @@ templ ViewTorrents(videoID int64, torrents []Torrent) {
 							<td>{ torrent.Link }</td>
 							<td>{ toString(torrent.FileIndex) }</td>
 							<td>{ toString(torrent.Priority) }</td>
+							<td>{ toString(torrent.RequiredPremium) }</td>
 							<td>
 								<button
 									hx-delete={ uri.DeleteTorrent(videoID, torrent.ID) }
@@ -94,6 +97,10 @@ templ ViewTorrents(videoID int64, torrents []Torrent) {
 				<label>
 					Priority
 					<input type="number" name="priority" value="0"/>
+				</label>
+				<label>
+					Required Premium
+					<input type="checkbox" name="requiredPremium"/>
 				</label>
 				<button type="submit">Add</button>
 			</form>

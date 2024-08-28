@@ -53,11 +53,12 @@ type ShowToUpdate struct {
 }
 
 type TorrentToCreate struct {
-	VideoID   int64
-	Name      string
-	Link      string
-	FileIndex int
-	Priority  int
+	VideoID         int64
+	Name            string
+	Link            string
+	FileIndex       int
+	Priority        int
+	RequiredPremium bool
 }
 
 type SubtitleToCreate struct {

@@ -3,11 +3,12 @@ package repository
 import (
 	"context"
 
+	"github.com/volatiletech/sqlboiler/v4/boil"
+	"github.com/volatiletech/sqlboiler/v4/queries/qm"
+
 	"github.com/phimtorr/phimtor/server/admin/http/handler"
 	"github.com/phimtorr/phimtor/server/admin/http/ui"
 	"github.com/phimtorr/phimtor/server/repository/dbmodels"
-	"github.com/volatiletech/sqlboiler/v4/boil"
-	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
 func (r Repository) GetVideo(ctx context.Context, id int64) (ui.Video, error) {
@@ -27,11 +28,12 @@ func toUIVideo(vid *dbmodels.Video) ui.Video {
 	torrents := make([]ui.Torrent, 0, len(vid.R.TorrentLinks))
 	for _, t := range vid.R.TorrentLinks {
 		torrents = append(torrents, ui.Torrent{
-			ID:        t.ID,
-			Name:      t.Name,
-			Link:      t.Link,
-			FileIndex: t.FileIndex,
-			Priority:  t.Priority,
+			ID:              t.ID,
+			Name:            t.Name,
+			Link:            t.Link,
+			FileIndex:       t.FileIndex,
+			Priority:        t.Priority,
+			RequiredPremium: t.RequiredPremium,
 		})
 	}
 
@@ -49,11 +51,12 @@ func toUIVideo(vid *dbmodels.Video) ui.Video {
 
 func (r Repository) CreateTorrent(ctx context.Context, torrent handler.TorrentToCreate) (int64, error) {
 	dbTorrentLink := &dbmodels.TorrentLink{
-		VideoID:   torrent.VideoID,
-		Name:      torrent.Name,
-		Link:      torrent.Link,
-		FileIndex: torrent.FileIndex,
-		Priority:  torrent.Priority,
+		VideoID:         torrent.VideoID,
+		Name:            torrent.Name,
+		Link:            torrent.Link,
+		FileIndex:       torrent.FileIndex,
+		Priority:        torrent.Priority,
+		RequiredPremium: torrent.RequiredPremium,
 	}
 	if err := dbTorrentLink.Insert(ctx, r.db, boil.Infer()); err != nil {
 		return 0, err

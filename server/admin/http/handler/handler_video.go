@@ -5,11 +5,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/phimtorr/phimtor/server/admin/http/ui"
-
 	"github.com/friendsofgo/errors"
 	"github.com/go-chi/chi/v5"
+
 	commonErrors "github.com/phimtorr/phimtor/common/errors"
+	"github.com/phimtorr/phimtor/server/admin/http/ui"
 )
 
 func (h *Handler) ViewVideo(w http.ResponseWriter, r *http.Request) error {
@@ -70,12 +70,15 @@ func (h *Handler) CreateTorrent(w http.ResponseWriter, r *http.Request) error {
 			errors.Wrap(err, "invalid priority").Error())
 	}
 
+	requiredPremium := r.Form.Get("requiredPremium") == "on"
+
 	if _, err := h.repo.CreateTorrent(r.Context(), TorrentToCreate{
-		VideoID:   videoID,
-		Name:      name,
-		Link:      link,
-		FileIndex: fileIndex,
-		Priority:  priority,
+		VideoID:         videoID,
+		Name:            name,
+		Link:            link,
+		FileIndex:       fileIndex,
+		Priority:        priority,
+		RequiredPremium: requiredPremium,
 	}); err != nil {
 		return errors.Wrap(err, "create torrent")
 	}
