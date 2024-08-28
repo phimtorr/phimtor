@@ -13,6 +13,7 @@ doc/ListShowsResponse.md
 doc/ModelShow.md
 doc/Movie.md
 doc/Pagination.md
+doc/PremiumTorrentLink.md
 doc/SearchShowsResponse.md
 doc/Series.md
 doc/ShowType.md
@@ -40,6 +41,7 @@ lib/model/list_shows_response.dart
 lib/model/model_show.dart
 lib/model/movie.dart
 lib/model/pagination.dart
+lib/model/premium_torrent_link.dart
 lib/model/search_shows_response.dart
 lib/model/series.dart
 lib/model/show_type.dart

@@ -16,6 +16,7 @@ class Video {
     required this.id,
     required this.title,
     this.torrentLinks = const [],
+    this.premiumTorrentLinks = const [],
     this.subtitles = const [],
   });
 
@@ -25,6 +26,8 @@ class Video {
 
   List<TorrentLink> torrentLinks;
 
+  List<PremiumTorrentLink> premiumTorrentLinks;
+
   List<Subtitle> subtitles;
 
   @override
@@ -32,6 +35,7 @@ class Video {
     other.id == id &&
     other.title == title &&
     _deepEquality.equals(other.torrentLinks, torrentLinks) &&
+    _deepEquality.equals(other.premiumTorrentLinks, premiumTorrentLinks) &&
     _deepEquality.equals(other.subtitles, subtitles);
 
   @override
@@ -40,16 +44,18 @@ class Video {
     (id.hashCode) +
     (title.hashCode) +
     (torrentLinks.hashCode) +
+    (premiumTorrentLinks.hashCode) +
     (subtitles.hashCode);
 
   @override
-  String toString() => 'Video[id=$id, title=$title, torrentLinks=$torrentLinks, subtitles=$subtitles]';
+  String toString() => 'Video[id=$id, title=$title, torrentLinks=$torrentLinks, premiumTorrentLinks=$premiumTorrentLinks, subtitles=$subtitles]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'id'] = this.id;
       json[r'title'] = this.title;
       json[r'torrentLinks'] = this.torrentLinks;
+      json[r'premiumTorrentLinks'] = this.premiumTorrentLinks;
       json[r'subtitles'] = this.subtitles;
     return json;
   }
@@ -76,6 +82,7 @@ class Video {
         id: mapValueOfType<int>(json, r'id')!,
         title: mapValueOfType<String>(json, r'title')!,
         torrentLinks: TorrentLink.listFromJson(json[r'torrentLinks']),
+        premiumTorrentLinks: PremiumTorrentLink.listFromJson(json[r'premiumTorrentLinks']),
         subtitles: Subtitle.listFromJson(json[r'subtitles']),
       );
     }
@@ -127,6 +134,7 @@ class Video {
     'id',
     'title',
     'torrentLinks',
+    'premiumTorrentLinks',
     'subtitles',
   };
 }

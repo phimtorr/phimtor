@@ -40,6 +40,7 @@ part 'model/list_shows_response.dart';
 part 'model/model_show.dart';
 part 'model/movie.dart';
 part 'model/pagination.dart';
+part 'model/premium_torrent_link.dart';
 part 'model/search_shows_response.dart';
 part 'model/series.dart';
 part 'model/show_type.dart';

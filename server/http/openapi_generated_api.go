@@ -4,6 +4,7 @@
 package http
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -97,6 +98,8 @@ func (siw *ServerInterfaceWrapper) GetMovie(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, []string{})
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetMovie(w, r, id)
 	}))
@@ -123,6 +126,8 @@ func (siw *ServerInterfaceWrapper) GetSeries(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, []string{})
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetSeries(w, r, id)
 	}))
@@ -139,6 +144,8 @@ func (siw *ServerInterfaceWrapper) ListShows(w http.ResponseWriter, r *http.Requ
 	ctx := r.Context()
 
 	var err error
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, []string{})
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params ListShowsParams
@@ -184,6 +191,8 @@ func (siw *ServerInterfaceWrapper) SearchShows(w http.ResponseWriter, r *http.Re
 
 	var err error
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, []string{})
+
 	// Parameter object where we will unmarshal all parameters from the context
 	var params SearchShowsParams
 
@@ -225,6 +234,8 @@ func (siw *ServerInterfaceWrapper) SearchShows(w http.ResponseWriter, r *http.Re
 func (siw *ServerInterfaceWrapper) GetVersion(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, []string{})
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetVersion(w, r)
 	}))
@@ -250,6 +261,8 @@ func (siw *ServerInterfaceWrapper) GetVideo(w http.ResponseWriter, r *http.Reque
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
 		return
 	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, []string{})
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetVideo(w, r, id)

@@ -9,4 +9,4 @@ sqlboiler:
 
 .PHONY: dependencies
 dependencies:
-	export $(cat .env | xargs) && docker compose up -d
+	export $(cat .env | grep -v "^#" | xargs) && docker compose up -d

@@ -10,66 +10,48 @@
 
 part of openapi.api;
 
-class TorrentLink {
-  /// Returns a new [TorrentLink] instance.
-  TorrentLink({
+class PremiumTorrentLink {
+  /// Returns a new [PremiumTorrentLink] instance.
+  PremiumTorrentLink({
     required this.id,
     required this.name,
-    required this.link,
-    required this.fileIndex,
     required this.priority,
-    required this.requirePremium,
   });
 
   int id;
 
   String name;
 
-  String link;
-
-  int fileIndex;
-
   int priority;
 
-  bool requirePremium;
-
   @override
-  bool operator ==(Object other) => identical(this, other) || other is TorrentLink &&
+  bool operator ==(Object other) => identical(this, other) || other is PremiumTorrentLink &&
     other.id == id &&
     other.name == name &&
-    other.link == link &&
-    other.fileIndex == fileIndex &&
-    other.priority == priority &&
-    other.requirePremium == requirePremium;
+    other.priority == priority;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (id.hashCode) +
     (name.hashCode) +
-    (link.hashCode) +
-    (fileIndex.hashCode) +
-    (priority.hashCode) +
-    (requirePremium.hashCode);
+    (priority.hashCode);
 
   @override
-  String toString() => 'TorrentLink[id=$id, name=$name, link=$link, fileIndex=$fileIndex, priority=$priority, requirePremium=$requirePremium]';
+  String toString() => 'PremiumTorrentLink[id=$id, name=$name, priority=$priority]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'id'] = this.id;
       json[r'name'] = this.name;
-      json[r'link'] = this.link;
-      json[r'fileIndex'] = this.fileIndex;
       json[r'priority'] = this.priority;
-      json[r'requirePremium'] = this.requirePremium;
     return json;
   }
 
-  /// Returns a new [TorrentLink] instance and imports its values from
+  /// Returns a new [PremiumTorrentLink] instance and imports its values from
   /// [value] if it's a [Map], null otherwise.
   // ignore: prefer_constructors_over_static_methods
-  static TorrentLink? fromJson(dynamic value) {
+  static PremiumTorrentLink? fromJson(dynamic value) {
     if (value is Map) {
       final json = value.cast<String, dynamic>();
 
@@ -78,29 +60,26 @@ class TorrentLink {
       // Note 2: this code is stripped in release mode!
       assert(() {
         requiredKeys.forEach((key) {
-          assert(json.containsKey(key), 'Required key "TorrentLink[$key]" is missing from JSON.');
-          assert(json[key] != null, 'Required key "TorrentLink[$key]" has a null value in JSON.');
+          assert(json.containsKey(key), 'Required key "PremiumTorrentLink[$key]" is missing from JSON.');
+          assert(json[key] != null, 'Required key "PremiumTorrentLink[$key]" has a null value in JSON.');
         });
         return true;
       }());
 
-      return TorrentLink(
+      return PremiumTorrentLink(
         id: mapValueOfType<int>(json, r'id')!,
         name: mapValueOfType<String>(json, r'name')!,
-        link: mapValueOfType<String>(json, r'link')!,
-        fileIndex: mapValueOfType<int>(json, r'fileIndex')!,
         priority: mapValueOfType<int>(json, r'priority')!,
-        requirePremium: mapValueOfType<bool>(json, r'requirePremium')!,
       );
     }
     return null;
   }
 
-  static List<TorrentLink> listFromJson(dynamic json, {bool growable = false,}) {
-    final result = <TorrentLink>[];
+  static List<PremiumTorrentLink> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <PremiumTorrentLink>[];
     if (json is List && json.isNotEmpty) {
       for (final row in json) {
-        final value = TorrentLink.fromJson(row);
+        final value = PremiumTorrentLink.fromJson(row);
         if (value != null) {
           result.add(value);
         }
@@ -109,12 +88,12 @@ class TorrentLink {
     return result.toList(growable: growable);
   }
 
-  static Map<String, TorrentLink> mapFromJson(dynamic json) {
-    final map = <String, TorrentLink>{};
+  static Map<String, PremiumTorrentLink> mapFromJson(dynamic json) {
+    final map = <String, PremiumTorrentLink>{};
     if (json is Map && json.isNotEmpty) {
       json = json.cast<String, dynamic>(); // ignore: parameter_assignments
       for (final entry in json.entries) {
-        final value = TorrentLink.fromJson(entry.value);
+        final value = PremiumTorrentLink.fromJson(entry.value);
         if (value != null) {
           map[entry.key] = value;
         }
@@ -123,14 +102,14 @@ class TorrentLink {
     return map;
   }
 
-  // maps a json object with a list of TorrentLink-objects as value to a dart map
-  static Map<String, List<TorrentLink>> mapListFromJson(dynamic json, {bool growable = false,}) {
-    final map = <String, List<TorrentLink>>{};
+  // maps a json object with a list of PremiumTorrentLink-objects as value to a dart map
+  static Map<String, List<PremiumTorrentLink>> mapListFromJson(dynamic json, {bool growable = false,}) {
+    final map = <String, List<PremiumTorrentLink>>{};
     if (json is Map && json.isNotEmpty) {
       // ignore: parameter_assignments
       json = json.cast<String, dynamic>();
       for (final entry in json.entries) {
-        map[entry.key] = TorrentLink.listFromJson(entry.value, growable: growable,);
+        map[entry.key] = PremiumTorrentLink.listFromJson(entry.value, growable: growable,);
       }
     }
     return map;
@@ -140,10 +119,7 @@ class TorrentLink {
   static const requiredKeys = <String>{
     'id',
     'name',
-    'link',
-    'fileIndex',
     'priority',
-    'requirePremium',
   };
 }
 

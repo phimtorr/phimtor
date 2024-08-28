@@ -1,4 +1,4 @@
-# phimtor_openapi_client.model.TorrentLink
+# phimtor_openapi_client.model.PremiumTorrentLink
 
 ## Load the model package
 ```dart
@@ -10,10 +10,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **int** |  | 
 **name** | **String** |  | 
-**link** | **String** |  | 
-**fileIndex** | **int** |  | 
 **priority** | **int** |  | 
-**requirePremium** | **bool** |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

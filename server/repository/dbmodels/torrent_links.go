@@ -23,79 +23,95 @@ import (
 
 // TorrentLink is an object representing the database table.
 type TorrentLink struct {
-	ID        int64     `boil:"id" json:"id" toml:"id" yaml:"id"`
-	VideoID   int64     `boil:"video_id" json:"video_id" toml:"video_id" yaml:"video_id"`
-	Name      string    `boil:"name" json:"name" toml:"name" yaml:"name"`
-	Link      string    `boil:"link" json:"link" toml:"link" yaml:"link"`
-	FileIndex int       `boil:"file_index" json:"file_index" toml:"file_index" yaml:"file_index"`
-	Priority  int       `boil:"priority" json:"priority" toml:"priority" yaml:"priority"`
-	CreatedAt time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	UpdatedAt time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
+	ID              int64     `boil:"id" json:"id" toml:"id" yaml:"id"`
+	VideoID         int64     `boil:"video_id" json:"video_id" toml:"video_id" yaml:"video_id"`
+	Name            string    `boil:"name" json:"name" toml:"name" yaml:"name"`
+	Link            string    `boil:"link" json:"link" toml:"link" yaml:"link"`
+	FileIndex       int       `boil:"file_index" json:"file_index" toml:"file_index" yaml:"file_index"`
+	Priority        int       `boil:"priority" json:"priority" toml:"priority" yaml:"priority"`
+	RequiredPremium bool      `boil:"required_premium" json:"required_premium" toml:"required_premium" yaml:"required_premium"`
+	CreatedAt       time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	UpdatedAt       time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
 
 	R *torrentLinkR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L torrentLinkL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var TorrentLinkColumns = struct {
-	ID        string
-	VideoID   string
-	Name      string
-	Link      string
-	FileIndex string
-	Priority  string
-	CreatedAt string
-	UpdatedAt string
+	ID              string
+	VideoID         string
+	Name            string
+	Link            string
+	FileIndex       string
+	Priority        string
+	RequiredPremium string
+	CreatedAt       string
+	UpdatedAt       string
 }{
-	ID:        "id",
-	VideoID:   "video_id",
-	Name:      "name",
-	Link:      "link",
-	FileIndex: "file_index",
-	Priority:  "priority",
-	CreatedAt: "created_at",
-	UpdatedAt: "updated_at",
+	ID:              "id",
+	VideoID:         "video_id",
+	Name:            "name",
+	Link:            "link",
+	FileIndex:       "file_index",
+	Priority:        "priority",
+	RequiredPremium: "required_premium",
+	CreatedAt:       "created_at",
+	UpdatedAt:       "updated_at",
 }
 
 var TorrentLinkTableColumns = struct {
-	ID        string
-	VideoID   string
-	Name      string
-	Link      string
-	FileIndex string
-	Priority  string
-	CreatedAt string
-	UpdatedAt string
+	ID              string
+	VideoID         string
+	Name            string
+	Link            string
+	FileIndex       string
+	Priority        string
+	RequiredPremium string
+	CreatedAt       string
+	UpdatedAt       string
 }{
-	ID:        "torrent_links.id",
-	VideoID:   "torrent_links.video_id",
-	Name:      "torrent_links.name",
-	Link:      "torrent_links.link",
-	FileIndex: "torrent_links.file_index",
-	Priority:  "torrent_links.priority",
-	CreatedAt: "torrent_links.created_at",
-	UpdatedAt: "torrent_links.updated_at",
+	ID:              "torrent_links.id",
+	VideoID:         "torrent_links.video_id",
+	Name:            "torrent_links.name",
+	Link:            "torrent_links.link",
+	FileIndex:       "torrent_links.file_index",
+	Priority:        "torrent_links.priority",
+	RequiredPremium: "torrent_links.required_premium",
+	CreatedAt:       "torrent_links.created_at",
+	UpdatedAt:       "torrent_links.updated_at",
 }
 
 // Generated where
 
+type whereHelperbool struct{ field string }
+
+func (w whereHelperbool) EQ(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
+func (w whereHelperbool) NEQ(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
+func (w whereHelperbool) LT(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
+func (w whereHelperbool) LTE(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
+func (w whereHelperbool) GT(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
+func (w whereHelperbool) GTE(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
+
 var TorrentLinkWhere = struct {
-	ID        whereHelperint64
-	VideoID   whereHelperint64
-	Name      whereHelperstring
-	Link      whereHelperstring
-	FileIndex whereHelperint
-	Priority  whereHelperint
-	CreatedAt whereHelpertime_Time
-	UpdatedAt whereHelpertime_Time
+	ID              whereHelperint64
+	VideoID         whereHelperint64
+	Name            whereHelperstring
+	Link            whereHelperstring
+	FileIndex       whereHelperint
+	Priority        whereHelperint
+	RequiredPremium whereHelperbool
+	CreatedAt       whereHelpertime_Time
+	UpdatedAt       whereHelpertime_Time
 }{
-	ID:        whereHelperint64{field: "`torrent_links`.`id`"},
-	VideoID:   whereHelperint64{field: "`torrent_links`.`video_id`"},
-	Name:      whereHelperstring{field: "`torrent_links`.`name`"},
-	Link:      whereHelperstring{field: "`torrent_links`.`link`"},
-	FileIndex: whereHelperint{field: "`torrent_links`.`file_index`"},
-	Priority:  whereHelperint{field: "`torrent_links`.`priority`"},
-	CreatedAt: whereHelpertime_Time{field: "`torrent_links`.`created_at`"},
-	UpdatedAt: whereHelpertime_Time{field: "`torrent_links`.`updated_at`"},
+	ID:              whereHelperint64{field: "`torrent_links`.`id`"},
+	VideoID:         whereHelperint64{field: "`torrent_links`.`video_id`"},
+	Name:            whereHelperstring{field: "`torrent_links`.`name`"},
+	Link:            whereHelperstring{field: "`torrent_links`.`link`"},
+	FileIndex:       whereHelperint{field: "`torrent_links`.`file_index`"},
+	Priority:        whereHelperint{field: "`torrent_links`.`priority`"},
+	RequiredPremium: whereHelperbool{field: "`torrent_links`.`required_premium`"},
+	CreatedAt:       whereHelpertime_Time{field: "`torrent_links`.`created_at`"},
+	UpdatedAt:       whereHelpertime_Time{field: "`torrent_links`.`updated_at`"},
 }
 
 // TorrentLinkRels is where relationship names are stored.
@@ -126,9 +142,9 @@ func (r *torrentLinkR) GetVideo() *Video {
 type torrentLinkL struct{}
 
 var (
-	torrentLinkAllColumns            = []string{"id", "video_id", "name", "link", "file_index", "priority", "created_at", "updated_at"}
+	torrentLinkAllColumns            = []string{"id", "video_id", "name", "link", "file_index", "priority", "required_premium", "created_at", "updated_at"}
 	torrentLinkColumnsWithoutDefault = []string{"video_id", "name", "link"}
-	torrentLinkColumnsWithDefault    = []string{"id", "file_index", "priority", "created_at", "updated_at"}
+	torrentLinkColumnsWithDefault    = []string{"id", "file_index", "priority", "required_premium", "created_at", "updated_at"}
 	torrentLinkPrimaryKeyColumns     = []string{"id"}
 	torrentLinkGeneratedColumns      = []string{}
 )

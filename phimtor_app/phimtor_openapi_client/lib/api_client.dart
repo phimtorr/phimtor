@@ -202,6 +202,8 @@ class ApiClient {
           return Movie.fromJson(value);
         case 'Pagination':
           return Pagination.fromJson(value);
+        case 'PremiumTorrentLink':
+          return PremiumTorrentLink.fromJson(value);
         case 'SearchShowsResponse':
           return SearchShowsResponse.fromJson(value);
         case 'Series':

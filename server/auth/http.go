@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"strings"
+	"time"
 
 	"firebase.google.com/go/v4/auth"
 )
@@ -37,6 +38,15 @@ func (a FirebaseHttpMiddleware) Middleware(next http.Handler) http.Handler {
 		}
 
 		email := token.Claims["email"].(string) // always present
+		var premiumUntil time.Time
+		if v, ok := token.Claims["premium_until"].(float64); ok {
+			premiumUntil = time.Unix(int64(v), 0)
+		}
+
+		emailVerified := false
+		if v, ok := token.Claims["email_verified"].(bool); ok {
+			emailVerified = v
+		}
 
 		name := email
 		if token.Claims["name"] != nil {
@@ -44,9 +54,11 @@ func (a FirebaseHttpMiddleware) Middleware(next http.Handler) http.Handler {
 		}
 
 		r = setUserToRequestContext(r, User{
-			UUID:        token.UID,
-			Email:       email,
-			DisplayName: name,
+			UUID:          token.UID,
+			Email:         email,
+			DisplayName:   name,
+			EmailVerified: emailVerified,
+			PremiumUntil:  premiumUntil,
 		})
 
 		next.ServeHTTP(w, r)
@@ -66,34 +78,4 @@ func (a FirebaseHttpMiddleware) tokenFromHeader(r *http.Request) string {
 func setUserToRequestContext(r *http.Request, u User) *http.Request {
 	ctx := context.WithValue(r.Context(), userContextKey, u)
 	return r.WithContext(ctx)
-}
-
-type User struct {
-	UUID  string
-	Email string
-
-	DisplayName string
-}
-
-var (
-	AnonymousUser = User{
-		UUID:        "anonymous",
-		Email:       "anonymous",
-		DisplayName: "Anonymous",
-	}
-)
-
-type ctxKey int
-
-const (
-	userContextKey ctxKey = iota
-)
-
-func UserFromCtx(ctx context.Context) User {
-	u, ok := ctx.Value(userContextKey).(User)
-	if ok {
-		return u
-	}
-
-	return AnonymousUser
 }
