@@ -51,7 +51,21 @@ func (h *Handler) UpdatePremium(w http.ResponseWriter, r *http.Request) error {
 		return fmt.Errorf("parse premium until: %w", err)
 	}
 
-	if err := h.authClient.SetCustomUserClaims(ctx, uid, map[string]interface{}{"premium_until": premiumUntil.Unix()}); err != nil {
+	user, err := h.authClient.GetUser(ctx, uid)
+	if err != nil {
+		return fmt.Errorf("get user: %w", err)
+	}
+
+	var claims map[string]interface{}
+	if user.CustomClaims != nil {
+		claims = user.CustomClaims
+	} else {
+		claims = make(map[string]interface{})
+	}
+
+	claims["premium_until"] = premiumUntil.Unix()
+
+	if err := h.authClient.SetCustomUserClaims(ctx, uid, claims); err != nil {
 		return fmt.Errorf("set custom user claims: %w", err)
 	}
 

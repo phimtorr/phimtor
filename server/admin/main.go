@@ -7,6 +7,7 @@ import (
 	"time"
 
 	firebase "firebase.google.com/go/v4"
+	firebaseAuth "firebase.google.com/go/v4/auth"
 	"github.com/go-chi/chi/v5"
 	"github.com/rs/zerolog/log"
 
@@ -29,6 +30,8 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to create auth client")
 	}
+
+	//setAdmin(authClient)
 
 	authService := auth.NewAuth(authClient)
 
@@ -56,4 +59,25 @@ func newFirebaseApp() *firebase.App {
 		log.Fatal().Err(err).Msg("Failed to create firebase app")
 	}
 	return app
+}
+
+func setAdmin(authClient *firebaseAuth.Client) {
+	uid := os.Getenv("ADMIN_UID")
+	user, err := authClient.GetUser(context.Background(), uid)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to get user")
+	}
+
+	var claims map[string]interface{}
+	if user.CustomClaims != nil {
+		claims = user.CustomClaims
+	} else {
+		claims = make(map[string]interface{})
+	}
+
+	claims["is_admin"] = true
+
+	if err := authClient.SetCustomUserClaims(context.Background(), uid, claims); err != nil {
+		log.Fatal().Err(err).Msg("Failed to set admin")
+	}
 }
