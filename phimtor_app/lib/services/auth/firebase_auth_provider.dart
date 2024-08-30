@@ -89,7 +89,7 @@ class FirebaseAuthProvider implements AuthProvider {
       return null;
     }
 
-    final tokenResult = await user.getIdTokenResult();
+    final tokenResult = await user.getIdTokenResult(true);
 
     return AuthUser.fromFirebaseUser(user, tokenResult.claims);
   }

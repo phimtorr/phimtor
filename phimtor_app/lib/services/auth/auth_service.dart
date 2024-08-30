@@ -32,7 +32,10 @@ class AuthService {
 
   AuthUser? get currentUser => _currentUser;
 
-  Future<void> initialize() => authProvider.initialize();
+  Future<void> initialize() async {
+    await authProvider.initialize();
+    await _syncCurrentUser();
+  }
 
   Future<AuthUser> logIn({
     required String email,

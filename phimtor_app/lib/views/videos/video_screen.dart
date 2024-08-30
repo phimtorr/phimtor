@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:phimtor_app/views/components/buttons/need_verified_user_button.dart';
+import 'package:phimtor_app/views/components/buttons/premium_button.dart';
 import 'package:phimtor_app/views/videos/subtitle_section.dart';
 import 'package:phimtor_app/views/videos/video_player.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
@@ -58,24 +59,32 @@ class _VideoScreenState extends State<VideoScreen> {
                 Text(context.loc.torrent_links, style: titleStyle),
                 Wrap(
                   spacing: 8,
-                  children: widget.video.torrentLinks.map((link) {
-                    VoidCallback? onPressed;
-                    if (link != _selectedTorrentLink) {
-                      onPressed = () => selectTorrentLink(link);
-                    }
+                  children: [
+                    ...widget.video.torrentLinks.map((link) {
+                      VoidCallback? onPressed;
+                      if (link != _selectedTorrentLink) {
+                        onPressed = () => selectTorrentLink(link);
+                      }
 
-                    if (link == widget.video.torrentLinks.first) {
-                      return ElevatedButton(
-                        onPressed: onPressed,
-                        child: Text(link.name),
+                      if (link == widget.video.torrentLinks.first) {
+                        return ElevatedButton(
+                          onPressed: onPressed,
+                          child: Text(link.name),
+                        );
+                      } else {
+                        return NeedVerifiedUserButton(
+                          onPressed: onPressed,
+                          child: Text(link.name),
+                        );
+                      }
+                    }),
+                    ...widget.video.premiumTorrentLinks.map((link) {
+                      return PremiumButton(
+                        onPressed: () {},
+                        label: Text(link.name),
                       );
-                    } else {
-                      return NeedVerifiedUserButton(
-                        onPressed: onPressed,
-                        child: Text(link.name),
-                      );
-                    }
-                  }).toList(),
+                    }),
+                  ],
                 ),
                 const SizedBox(height: 16),
                 SubtitleSection(
