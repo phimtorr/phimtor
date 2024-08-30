@@ -128,6 +128,9 @@
     "dialog_need_login_title": "Cần đăng nhập",
     "dialog_need_login_message": "Vui lòng đăng nhập bằng tài khoản đã xác minh để sử dụng tính năng này",
 
+    "dialog_upgrade_to_premium_title": "Nâng cấp lên tài khoản premium",
+    "dialog_upgrade_to_premium_message": "Bạn cần nâng cấp lên tài khoản premium để sử dụng tính năng này!",
+
     "account_title": "Tài khoản",
     "account_message": "Bạn đã đăng nhập với email {email}",
     "@account_message": {

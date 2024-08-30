@@ -60,4 +60,16 @@ class AuthService {
   Future<void> _syncCurrentUser() async {
     _currentUser = await authProvider.syncCurrentUser();
   }
+
+  bool get isPremiumUser {
+    if (_currentUser == null) {
+      return false;
+    }
+
+    if (_currentUser!.premiumUntil == null) {
+      return false;
+    }
+
+    return DateTime.now().isBefore(_currentUser!.premiumUntil!);
+  }
 }
