@@ -13,13 +13,7 @@ class FirebaseAuthProvider implements AuthProvider {
   }
 
   @override
-  AuthUser? get currentUser {
-    final user = FirebaseAuth.instance.currentUser;
-    return user == null ? null : AuthUser.fromFirebaseUser(user);
-  }
-
-  @override
-  Future<AuthUser> createUser({
+  Future<void> createUser({
     required String email,
     required String password,
   }) async {
@@ -29,18 +23,18 @@ class FirebaseAuthProvider implements AuthProvider {
         password: password,
       );
 
-      final user = currentUser;
+      final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
         throw Exception('User not found after creation');
       }
-      return user;
+      return;
     } catch (e) {
       rethrow;
     }
   }
 
   @override
-  Future<AuthUser> logIn({
+  Future<void> logIn({
     required String email,
     required String password,
   }) async {
@@ -50,11 +44,11 @@ class FirebaseAuthProvider implements AuthProvider {
         password: password,
       );
 
-      final user = currentUser;
+      final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
         throw Exception('User not found after login');
       }
-      return user;
+      return;
     } catch (e) {
       rethrow;
     }
@@ -89,8 +83,14 @@ class FirebaseAuthProvider implements AuthProvider {
   }
 
   @override
-  bool get isVerifiedUser {
+  Future<AuthUser?> syncCurrentUser() async {
     final user = FirebaseAuth.instance.currentUser;
-    return user?.emailVerified ?? false;
+    if (user == null) {
+      return null;
+    }
+
+    final tokenResult = await user.getIdTokenResult();
+
+    return AuthUser.fromFirebaseUser(user, tokenResult.claims);
   }
 }

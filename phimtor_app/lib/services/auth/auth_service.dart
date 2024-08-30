@@ -19,18 +19,34 @@ class AuthService {
             : FirebaseAuthProvider();
 
   final AuthProvider authProvider;
+  AuthUser? _currentUser;
 
-  Future<AuthUser> createUser(
-          {required String email, required String password}) =>
-      authProvider.createUser(email: email, password: password);
+  Future<AuthUser?> createUser({
+    required String email,
+    required String password,
+  }) async {
+    await authProvider.createUser(email: email, password: password);
+    await _syncCurrentUser();
+    return _currentUser;
+  }
 
-  AuthUser? get currentUser => authProvider.currentUser;
+  AuthUser? get currentUser => _currentUser;
+
   Future<void> initialize() => authProvider.initialize();
 
-  Future<AuthUser> logIn({required String email, required String password}) =>
-      authProvider.logIn(email: email, password: password);
+  Future<AuthUser> logIn({
+    required String email,
+    required String password,
+  }) async {
+    await authProvider.logIn(email: email, password: password);
+    await _syncCurrentUser();
+    return _currentUser!;
+  }
 
-  Future<void> logOut() => authProvider.logOut();
+  Future<void> logOut() async {
+    await authProvider.logOut();
+    await _syncCurrentUser();
+  }
 
   Future<void> sendEmailVerification() => authProvider.sendEmailVerification();
 
@@ -39,5 +55,9 @@ class AuthService {
 
   Future<String?> get authToken => authProvider.authToken;
 
-  bool get isVerifiedUser => authProvider.isVerifiedUser;
+  bool get isVerifiedUser => _currentUser?.emailVerified ?? false;
+
+  Future<void> _syncCurrentUser() async {
+    _currentUser = await authProvider.syncCurrentUser();
+  }
 }

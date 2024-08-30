@@ -1,8 +1,6 @@
 {
     "@@locale": "en",
-
     "title": "Phim Tor",
-
     "load_more": "Load more",
     "watch_now": "Watch now",
     "select_subtitle_file": "Select subtitle file",
@@ -14,7 +12,6 @@
     "download": "Download",
     "close": "Close",
     "ok": "OK",
-
     "error": "Error: {error}",
     "@error": {
         "placeholders": {
@@ -24,27 +21,20 @@
         }
     },
     "no_data": "No data",
-
     "home": "Home",
     "account": "Account",
     "setting": "Setting",
-
-   
     "email": "Email",
     "email_hint": "Enter your email",
     "email_invalid": "Invalid email",
     "password": "Password",
     "password_hint": "Enter your password",
     "password_invalid": "Invalid password",
-
     "confirm_password": "Confirm password",
-
     "login_view_forgot_password": "Forgot password?",
     "login_view_not_register_yet": "Not register yet? Register here!",
-
     "register_view_password_not_match": "Password not match",
     "register_view_already_have_account": "Already have an account? Login here!",
-
     "verify_email": "Verify email",
     "verify_email_note": "Please check your email to verify your account",
     "verify_email_resend_in": "Resend email in {time} seconds",
@@ -57,13 +47,10 @@
     },
     "verify_email_resend": "Resend email",
     "verify_email_have_confirm": "Already confirmed? Login here!",
-
     "forgot_password": "Forgot password",
     "forgot_password_note": "Please enter your email to reset password",
     "forgot_password_view_send_me_link": "Send me password reset link",
     "forgot_password_view_back_to_login": "Back to login",
-
-
     "search": "Search",
     "search_hint": "Search by name",
     "search_no_result": "No result found",
@@ -86,10 +73,8 @@
             }
         }
     },
-
     "movies": "Movies",
     "tv_series": "TV Series",
-
     "detail_release_year": "Release year",
     "detail_score": "Score",
     "detail_duration": "Duration: {duration} minutes",
@@ -102,12 +87,10 @@
     },
     "detail_quality": "Quality",
     "detail_total_episodes": "Total episodes",
-
     "torrent_links": "Torrent links",
     "subtitle": "Subtitle",
     "subtitle_vietnamese": "Vietnamese",
     "subtitle_english": "English",
-
     "stats_total_peers": "Total peers",
     "stats_active": "Active",
     "stats_connected": "Connected",
@@ -116,7 +99,6 @@
     "stats_downloaded": "Downloaded",
     "stats_progress": "Progress",
     "stats_download_speed": "Download speed",
-
     "version_update_title": "New version available",
     "version_update_message": "New version {version} is available. Please update.",
     "@version_update_message": {
@@ -126,10 +108,26 @@
             }
         }
     },
-
     "dialog_need_login_title": "Login required",
     "dialog_need_login_message": "You need to login as a verifed user to use this feature!",
-
+    "account_title": "Account",
+    "account_message": "You are logged in as {email}",
+    "@account_message": {
+        "placeholders": {
+            "email": {
+                "type": "String"
+            }
+        }
+    },
+    "account_preminum_expire": "Premium expire at {date}",
+    "@account_preminum_expire": {
+        "placeholders": {
+            "date": {
+                "type": "DateTime",
+                "format": "yMd"
+            }
+        }
+    },
     "setting_title": "Setting",
     "setting_data_dir": "Data directory",
     "setting_data_dir_changed_note": "Need to restart app to apply changes",

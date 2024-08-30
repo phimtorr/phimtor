@@ -11,7 +11,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class FiredartAuthProvider implements AuthProvider {
   late final TokenStore _tokenStore;
-  AuthUser? _currentUser;
 
   @override
   Future<void> initialize() async {
@@ -28,23 +27,22 @@ class FiredartAuthProvider implements AuthProvider {
   }
 
   @override
-  Future<AuthUser> createUser({
+  Future<void> createUser({
     required String email,
     required String password,
   }) async {
-    final user = await FirebaseAuth.instance.signUp(email, password);
-    return AuthUser.fromFiredartUser(user);
+    await FirebaseAuth.instance.signUp(email, password);
+    return;
   }
 
   @override
-  AuthUser? get currentUser => _currentUser;
-
-  Future<void> syncCurrentUser() async {
+  Future<AuthUser?> syncCurrentUser() async {
     try {
       final user = await FirebaseAuth.instance.getUser();
-      _currentUser = AuthUser.fromFiredartUser(user);
+      final token = _tokenStore.idToken;
+      return AuthUser.fromFiredartUser(user, token);
     } on SignedOutException {
-      _currentUser = null;
+      return null;
     } catch (e) {
       debugPrint(e.toString());
       rethrow;
@@ -52,23 +50,18 @@ class FiredartAuthProvider implements AuthProvider {
   }
 
   @override
-  Future<AuthUser> logIn({
+  Future<void> logIn({
     required String email,
     required String password,
   }) async {
     await FirebaseAuth.instance.signIn(email, password);
-    await syncCurrentUser();
-    if (_currentUser == null) {
-      throw Exception("Failed to log in");
-    }
-    return _currentUser!;
+    return;
   }
 
   @override
   Future<void> logOut() async {
     FirebaseAuth.instance.signOut();
     _tokenStore.delete();
-    _currentUser = null;
   }
 
   @override
@@ -85,9 +78,6 @@ class FiredartAuthProvider implements AuthProvider {
   Future<String?> get authToken async {
     return _tokenStore.idToken;
   }
-
-  @override
-  bool get isVerifiedUser => _currentUser?.emailVerified ?? false;
 }
 
 /// Stores tokens as preferences in Android and iOS.

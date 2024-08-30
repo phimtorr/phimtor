@@ -128,6 +128,25 @@
     "dialog_need_login_title": "Cần đăng nhập",
     "dialog_need_login_message": "Vui lòng đăng nhập bằng tài khoản đã xác minh để sử dụng tính năng này",
 
+    "account_title": "Tài khoản",
+    "account_message": "Bạn đã đăng nhập với email {email}",
+    "@account_message": {
+        "placeholders": {
+            "email": {
+                "type": "String"
+            }
+        }
+    },
+    "account_preminum_expire": "Hạn sử dụng premium đến {date}",
+    "@account_preminum_expire": {
+        "placeholders": {
+            "date": {
+                "type": "DateTime",
+                "format": "yMd"
+            }
+        }
+    },
+
     "setting_title": "Cài đặt",
     "setting_data_dir": "Thư mục lưu trữ phim",
     "setting_data_dir_changed_note": "Cần khởi động lại ứng dụng để áp dụng thay đổi",
