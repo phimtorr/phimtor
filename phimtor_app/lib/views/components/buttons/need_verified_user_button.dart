@@ -7,10 +7,12 @@ class NeedVerifiedUserButton extends StatelessWidget {
     super.key,
     required this.onPressed,
     required this.child,
+    this.icon,
   });
 
-  final Widget child;
   final VoidCallback? onPressed;
+  final Widget child;
+  final Widget? icon;
 
   void hanldePressed(BuildContext context) async {
     if (!AuthService().isVerifiedUser) {
@@ -21,11 +23,25 @@ class NeedVerifiedUserButton extends StatelessWidget {
     onPressed!.call();
   }
 
+  bool get isVerifired => AuthService().isVerifiedUser;
+
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    if (!isVerifired) {
+      return ElevatedButton.icon(
+        onPressed: onPressed == null
+            ? null
+            : () async {
+                await showNeedLoginDialog(context);
+              },
+        label: child,
+        icon: const Icon(Icons.lock_outline),
+      );
+    }
+    return ElevatedButton.icon(
       onPressed: onPressed == null ? null : () => hanldePressed(context),
-      child: child,
+      label: child,
+      icon: icon,
     );
   }
 }
