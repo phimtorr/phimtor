@@ -59,6 +59,11 @@ class UpdaterService {
     }
 
     final versionValue = response.body.toString().trim();
+
+    if (Constants.appVersion.toString().trim() == versionValue.toLowerCase().trim()) {
+      return;
+    }
+
     final version = UpdaterVersion(
       version: versionValue,
       binaryUrl: binaryUrl,

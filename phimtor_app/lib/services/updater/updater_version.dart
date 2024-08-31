@@ -15,7 +15,7 @@ class UpdaterVersion {
     if (identical(this, other)) return true;
 
     return other is UpdaterVersion &&
-        other.version == version;
+        other.version.toString().trim() == version.toLowerCase().trim();
   }
   
   @override
