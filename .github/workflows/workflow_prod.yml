@@ -25,6 +25,23 @@ jobs:
       SSH_USER: ${{ secrets.SSH_USER }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
+  build_flutter_app:
+    uses: ./.github/workflows/build_flutter_app.yml
+    with:
+      server_address: "https://phimtor.net"
+
+  release_phimtor_app:
+    needs: [ build_flutter_app ]
+    uses: ./.github/workflows/release_phimtor_app.yml
+    with:
+      artifact_pattern: phimtor_app_*
+      environment: production
+      destination_dir: "phimtor_app_candidate"
+    secrets:
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
   build_server:
     uses: ./.github/workflows/build_server.yml
 

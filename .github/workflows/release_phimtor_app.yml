@@ -11,6 +11,10 @@ on:
         description: 'Environment'
         required: true
         type: string
+      destination_dir:
+        description: 'Destination directory'
+        required: true
+        type: string
     secrets:
       SSH_HOST:
         description: 'SSH host'
@@ -26,8 +30,6 @@ jobs:
   release:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-    env:
-      DEST_DIR: "phimtor_app"
     steps:
       - name: Install ssh key
         run: |
@@ -59,8 +61,8 @@ jobs:
 
       - name: Deploy desktop
         run: |
-          ssh server 'mkdir -p ${{ vars.WORKING_DIR }}/${{ env.DEST_DIR }}'
-          ssh server 'rm -rf ${{ vars.WORKING_DIR }}/${{ env.DEST_DIR }}/*'
-          find desktop_app -name "*.exe" -o -name "*.AppImage" -o -name "*.dmg" -o -name "VERSION.txt" | xargs -I{} scp {} server:${{ vars.WORKING_DIR }}/${{ env.DEST_DIR }}/
+          ssh server 'mkdir -p ${{ vars.WORKING_DIR }}/${{ inputs.destination_dir }}'
+          ssh server 'rm -rf ${{ vars.WORKING_DIR }}/${{inputs.destination_dir }}/*'
+          find desktop_app -name "*.exe" -o -name "*.AppImage" -o -name "*.dmg" -o -name "VERSION.txt" | xargs -I{} scp {} server:${{ vars.WORKING_DIR }}/${{ inputs.destination_dir }}/
         shell: bash
 
