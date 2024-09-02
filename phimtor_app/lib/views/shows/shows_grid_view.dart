@@ -88,7 +88,7 @@ class _ShowsGridViewState extends State<ShowsGridView> {
 
   @override
   Widget build(BuildContext context) {
-    AnalyticsService.sendEvent(
+    AnalyticsService().sendEvent(
       name: "shows_grid_view",
       parameters: {
         "title": widget.title,

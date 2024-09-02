@@ -16,7 +16,7 @@ class MovieDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AnalyticsService.sendEvent(
+    AnalyticsService().sendEvent(
       name: "movie_detail_view",
       parameters: {
         "movie_id": movieId,

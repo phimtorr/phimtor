@@ -75,7 +75,7 @@ class ShowCard extends StatelessWidget {
         ),
       ),
       onTap: () {
-        AnalyticsService.sendEvent(
+        AnalyticsService().sendEvent(
           name: "show_card_tap",
           parameters: {
             "show_id": show.id,

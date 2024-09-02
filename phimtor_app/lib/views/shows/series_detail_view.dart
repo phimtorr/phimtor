@@ -16,7 +16,7 @@ class SeriesDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AnalyticsService.sendEvent(
+    AnalyticsService().sendEvent(
       name: "series_detail_view",
       parameters: {
         "series_id": seriesId,

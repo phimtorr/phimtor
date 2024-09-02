@@ -25,7 +25,7 @@ void main() async {
   await AuthService().initialize();
 
   log("Initializing analytics service");
-  await AnalyticsService.initialize(
+  await AnalyticsService().initialize(
     userId: AuthService().currentUser?.uid,
   );
 

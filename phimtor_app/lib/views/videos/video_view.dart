@@ -16,7 +16,7 @@ class VideoView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AnalyticsService.sendEvent(
+    AnalyticsService().sendEvent(
       name: "video_view",
       parameters: {
         "video_id": videoId,
