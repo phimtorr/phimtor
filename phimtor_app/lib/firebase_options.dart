@@ -32,10 +32,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.windows:
         return windows;
       case TargetPlatform.linux:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return linux;
       default:
         throw UnsupportedError(
           'DefaultFirebaseOptions are not supported for this platform.',
@@ -69,6 +66,8 @@ class DefaultFirebaseOptions {
     storageBucket: 'phimtor-d67b3.appspot.com',
     measurementId: 'G-N2M2ZZ2LJG',
   );
+
+  static const linux = windows;
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyCSbDOQE6soH-DlOqD2ovrVUWjlzzg6pSA',

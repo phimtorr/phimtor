@@ -1,18 +1,32 @@
+import 'dart:developer' show log;
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:phimtor_app/lifecycle_manager.dart';
 import 'package:phimtor_app/locale_provider.dart';
+import 'package:phimtor_app/services/analytics/analytics_service.dart';
+import 'package:phimtor_app/services/auth/auth_service.dart';
+import 'package:phimtor_app/services/preferences/preferences_service.dart';
 import 'package:phimtor_app/views/account/account_view.dart';
 import 'package:phimtor_app/views/components/version_widget.dart';
 import 'package:phimtor_app/views/home_view.dart';
 import 'package:phimtor_app/views/settings_view.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
+
+  log("Initializing preferences service");
+  await PreferencesService.ensureInitialized();
+
+  log("Initializing auth service");
+  await AuthService().initialize();
+
+  log("Initializing analytics service");
+  await AnalyticsService.initialize();
+
   runApp(const MyApp());
 }
 
