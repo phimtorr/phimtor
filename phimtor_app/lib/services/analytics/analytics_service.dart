@@ -10,4 +10,8 @@ class AnalyticsService {
       firebaseOptions: DefaultFirebaseOptions.currentPlatform,
     );
   }
+
+  static void sendEvent({required String name, Map<String, Object>? parameters}) {
+    ambilytics.sendEvent(name: name, parameters: parameters);
+  }
 }
