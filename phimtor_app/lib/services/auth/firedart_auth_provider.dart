@@ -16,7 +16,7 @@ class FiredartAuthProvider implements AuthProvider {
   Future<void> initialize() async {
     _tokenStore = await PreferencesStore.create();
     FirebaseAuth.initialize(
-      DefaultFirebaseOptions.windows.apiKey,
+      DefaultFirebaseOptions.currentPlatform.apiKey,
       _tokenStore,
     );
     try {

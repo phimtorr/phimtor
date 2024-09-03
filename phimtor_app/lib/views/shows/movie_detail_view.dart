@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
+import 'package:phimtor_app/services/analytics/analytics_service.dart';
 import 'package:phimtor_app/services/phimtor/phimtor_service.dart';
 import 'package:phimtor_app/views/videos/video_view.dart';
 import 'package:phimtor_openapi_client/api.dart';
@@ -15,6 +16,13 @@ class MovieDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AnalyticsService().sendEvent(
+      name: "movie_detail_view",
+      parameters: {
+        "movie_id": movieId,
+        "title": title,
+      },
+    );
     const infoTextStyte = TextStyle(
       fontSize: 16,
     );
@@ -30,7 +38,8 @@ class MovieDetailView extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return Center(child: Text(context.loc.error(snapshot.error.toString())));
+            return Center(
+                child: Text(context.loc.error(snapshot.error.toString())));
           }
 
           final resp = snapshot.data as GetMovieResponse;
@@ -99,7 +108,7 @@ class MovieDetailView extends StatelessWidget {
                             ),
                           ));
                         },
-                        label:  Text(context.loc.watch_now),
+                        label: Text(context.loc.watch_now),
                         icon: const Icon(Icons.play_arrow),
                       ),
                     ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
+import 'package:phimtor_app/services/analytics/analytics_service.dart';
 import 'package:phimtor_app/services/phimtor/phimtor_service.dart';
 import 'package:phimtor_app/views/videos/video_view.dart';
 import 'package:phimtor_openapi_client/api.dart';
@@ -7,11 +8,22 @@ import 'package:phimtor_openapi_client/api.dart';
 class SeriesDetailView extends StatelessWidget {
   final int seriesId;
   final String title;
-  const SeriesDetailView({super.key, required this.seriesId, required this.title});
+  const SeriesDetailView({
+    super.key,
+    required this.seriesId,
+    required this.title,
+  });
 
   @override
   Widget build(BuildContext context) {
-     const infoTextStyte = TextStyle(
+    AnalyticsService().sendEvent(
+      name: "series_detail_view",
+      parameters: {
+        "series_id": seriesId,
+        "title": title,
+      },
+    );
+    const infoTextStyte = TextStyle(
       fontSize: 16,
     );
     return Scaffold(
@@ -25,7 +37,8 @@ class SeriesDetailView extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return Center(child: Text(context.loc.error(snapshot.error.toString())));
+            return Center(
+                child: Text(context.loc.error(snapshot.error.toString())));
           }
 
           final resp = snapshot.data as GetSeriesResponse;
@@ -59,7 +72,7 @@ class SeriesDetailView extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 16),
-                       Text(
+                      Text(
                         "${context.loc.detail_release_year}: ${series.releaseYear}",
                         style: infoTextStyte,
                       ),
@@ -74,7 +87,7 @@ class SeriesDetailView extends StatelessWidget {
                         style: infoTextStyte,
                       ),
                       const SizedBox(height: 8),
-                      Text( 
+                      Text(
                         "${context.loc.detail_total_episodes}: ${series.totalEpisodes}",
                         style: infoTextStyte,
                       ),

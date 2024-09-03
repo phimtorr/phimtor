@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:phimtor_app/services/auth/auth_service.dart';
 import 'package:phimtor_app/services/preferences/preferences_service.dart';
 import 'package:phimtor_app/services/updater/updater_service.dart';
 import 'package:torrent/torrent.dart' as torrent;
@@ -55,12 +54,6 @@ class _LifecycleManagerState extends State<LifecycleManager>
   }
 
   Future<void> initServices() async {
-    log("Initializing preferences service");
-    await PreferencesService.ensureInitialized();
-
-     log("Initializing auth service");
-    await AuthService().initialize();
-
     _dataDirPath = PreferencesService.getInstance().dataDirPath;
     log("Starting libtorrent with dataDirPath: $_dataDirPath");
     torrent.LibTorrent().start(_dataDirPath);
@@ -83,7 +76,7 @@ class _LifecycleManagerState extends State<LifecycleManager>
     if (!deleteAfterClose) {
       return;
     }
-    
+
     log("Deleting dataDir");
     final dataDir = Directory(_dataDirPath);
     final contents = dataDir.listSync();

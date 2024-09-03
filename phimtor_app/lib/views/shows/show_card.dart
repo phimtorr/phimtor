@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phimtor_app/services/analytics/analytics_service.dart';
 import 'package:phimtor_app/views/shows/movie_detail_view.dart';
 import 'package:phimtor_app/views/shows/series_detail_view.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
@@ -74,6 +75,13 @@ class ShowCard extends StatelessWidget {
         ),
       ),
       onTap: () {
+        AnalyticsService().sendEvent(
+          name: "show_card_tap",
+          parameters: {
+            "show_id": show.id,
+            "title": show.title,
+          },
+        );
         if (show.type == phimtor_api.ShowType.movie) {
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => MovieDetailView(
