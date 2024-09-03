@@ -14,7 +14,8 @@ class AuthService {
   }
 
   AuthService._internal()
-      : authProvider = defaultTargetPlatform == TargetPlatform.linux
+      : authProvider = (defaultTargetPlatform == TargetPlatform.linux ||
+              defaultTargetPlatform == TargetPlatform.windows)
             ? FiredartAuthProvider()
             : FirebaseAuthProvider();
 
