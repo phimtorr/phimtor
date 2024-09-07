@@ -122,6 +122,23 @@ Source: "{#WorkingDir}\build\windows\x64\runner\Release\vk_swiftshader.dll"; Des
 Source: "{#WorkingDir}\build\windows\x64\runner\Release\vulkan-1.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#WorkingDir}\build\windows\x64\runner\Release\zlib.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#WorkingDir}\build\windows\x64\runner\Release\data\*"; DestDir: "{app}\data"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#UCRT64Dir}\libasprintf-0.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#UCRT64Dir}\libatomic-1.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#UCRT64Dir}\libcharset-1.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#UCRT64Dir}\libgcc_s_seh-1.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#UCRT64Dir}\libgmp-10.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#UCRT64Dir}\libgmpxx-4.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#UCRT64Dir}\libgomp-1.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#UCRT64Dir}\libiconv-2.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#UCRT64Dir}\libintl-8.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#UCRT64Dir}\libisl-23.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#UCRT64Dir}\libmpc-3.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#UCRT64Dir}\libmpfr-6.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#UCRT64Dir}\libquadmath-0.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#UCRT64Dir}\libstdc++-6.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#UCRT64Dir}\libwinpthread-1.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#UCRT64Dir}\libzstd.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#UCRT64Dir}\zlib1.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

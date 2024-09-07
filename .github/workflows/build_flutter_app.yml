@@ -115,7 +115,7 @@ jobs:
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
           path: phimtor_app/windows/phimtor.iss
-          options: /DMyAppVersion=${{ env.VERSION }} /DWorkingDir="${{ github.workspace }}\phimtor_app"
+          options: /DMyAppVersion=${{ env.VERSION }} /DWorkingDir="${{ github.workspace }}\phimtor_app" /DUCRT64Dir="${{ steps.msys2.outputs.msys2-location }}\ucrt64\bin"
 
       # MacOS
       - name: Build MacOS
