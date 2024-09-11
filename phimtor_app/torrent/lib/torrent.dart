@@ -12,12 +12,8 @@ export 'package:openapi_client/api.dart';
 const String _libName = 'torrent';
 
 final ffi.DynamicLibrary _dylib = () {
-  if (Platform.isMacOS || Platform.isIOS) {
-    if (Platform.environment.containsKey('FLUTTER_TEST')) {
-      return ffi.DynamicLibrary.open('build/macos/Build/Products/Debug'
-          '/$_libName/$_libName.framework/$_libName');
-    }
-    return ffi.DynamicLibrary.open('$_libName.framework/$_libName');
+  if (Platform.isMacOS) {
+    return ffi.DynamicLibrary.open('lib$_libName.dylib');
   }
   if (Platform.isAndroid || Platform.isLinux) {
     if (Platform.environment.containsKey('FLUTTER_TEST')) {
