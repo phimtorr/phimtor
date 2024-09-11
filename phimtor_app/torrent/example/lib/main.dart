@@ -20,7 +20,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  static const dataDirPath = '/home/chrisngyn/Desktop/test/';
+  static const dataDirPath = '/Users/khach/Desktop/Test';
 
   @override
   void initState() {
