@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ ubuntu-latest, windows-latest ]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
     runs-on: ${{ matrix.os }}
     env:
       SERVER_ADDR: ${{ inputs.server_address }}
@@ -118,6 +118,11 @@ jobs:
           options: /DMyAppVersion=${{ env.VERSION }} /DWorkingDir="${{ github.workspace }}\phimtor_app" /DUCRT64Dir="${{ steps.msys2.outputs.msys2-location }}\ucrt64\bin"
 
       # MacOS
+      - name: Install dependencies
+        if: runner.os == 'macOS'
+        run: |
+          brew install create-dmg
+        shell: bash
       - name: Build MacOS
         if: runner.os == 'macOS'
         run: scripts/build-macos.sh ${{ env.VERSION }} ${{ github.run_attempt }}
@@ -130,4 +135,6 @@ jobs:
           path: |
             ${{github.workspace}}/phimtor_app/build/*.AppImage
             ${{github.workspace}}\phimtor_app\build\*.exe 
+            ${{github.workspace}}\phimtor_app\build\*.pkg
+            ${{github.workspace}}\phimtor_app\build\*.dmg 
             ${{github.workspace}}/VERSION.txt
