@@ -7,6 +7,11 @@ readonly BUILD_NUMBER=${2:-0}
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 WORKING_DIR=$(cd "$SCRIPT_DIR"/.. && pwd)
 
+(
+    cd "${WORKING_DIR}/torrent/src"
+    make macos
+)
+
 flutter build macos --release \
     --build-number=$BUILD_NUMBER \
     --build-name=$VERSION \
