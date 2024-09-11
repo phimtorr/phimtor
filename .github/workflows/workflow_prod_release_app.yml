@@ -31,4 +31,8 @@ jobs:
           ssh server 'mkdir -p ${{ vars.WORKING_DIR }}/phimtor_app'
           ssh server 'rm -rf ${{ vars.WORKING_DIR }}/phimtor_app/*'
           ssh server 'cp -r ${{ vars.WORKING_DIR }}/phimtor_app_candidate/* ${{ vars.WORKING_DIR }}/phimtor_app/'
+          ssh server 'cp ${{ vars.WORKING_DIR }}/phimtor_app/PhimTor-*-x86_64.AppImage ${{ vars.WORKING_DIR }}/phimtor_app/PhimTor-x86_64.AppImage'
+          ssh server 'cp ${{ vars.WORKING_DIR }}/phimtor_app/PhimTorSetup-*.exe ${{ vars.WORKING_DIR }}/phimtor_app/PhimTorSetup.exe'
+          ssh server 'cp ${{ vars.WORKING_DIR }}/phimtor_app/PhimTor-*.dmg ${{ vars.WORKING_DIR }}/phimtor_app/PhimTor.dmg'
+          ssh server 'cp ${{ vars.WORKING_DIR }}/phimtor_app/PhimTor-*.pkg ${{ vars.WORKING_DIR }}/phimtor_app/PhimTor.pkg'
         shell: bash
