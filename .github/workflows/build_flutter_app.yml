@@ -115,7 +115,7 @@ jobs:
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
           path: phimtor_app/windows/phimtor.iss
-          options: /DMyAppVersion=${{ env.VERSION }} /DWorkingDir="${{ github.workspace }}\phimtor_app" /DUCRT64Dir="${{ steps.msys2.outputs.msys2-location }}\ucrt64\bin"
+          options: /DMyAppVersion=${{ env.VERSION }} /DWorkingDir="${{ github.workspace }}\phimtor_app" /DUCRT64Dir="${{ steps.msys2.outputs.msys2-location }}\ucrt64\bin" /F"PhimTorSetup-${{ env.VERSION }}"
 
       # MacOS
       - name: Install dependencies
@@ -135,6 +135,6 @@ jobs:
           path: |
             ${{github.workspace}}/phimtor_app/build/*.AppImage
             ${{github.workspace}}\phimtor_app\build\*.exe 
-            ${{github.workspace}}\phimtor_app\build\*.pkg
-            ${{github.workspace}}\phimtor_app\build\*.dmg 
+            ${{github.workspace}}/phimtor_app/build/*.pkg
+            ${{github.workspace}}/phimtor_app/build/*.dmg 
             ${{github.workspace}}/VERSION.txt

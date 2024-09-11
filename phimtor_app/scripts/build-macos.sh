@@ -20,13 +20,13 @@ flutter build macos --release \
 
 APP_DIR="${WORKING_DIR}/build/macos/Build/Products/Release/PhimTor.app"
 
-productbuild --component "$APP_DIR" /Applications "$WORKING_DIR/build/PhimTor-${VERSION}-${BUILD_NUMBER}.pkg"
+productbuild --component "$APP_DIR" /Applications "$WORKING_DIR/build/PhimTor-${VERSION}.pkg"
 
 # DMG file 
 mkdir -p "$WORKING_DIR/build/dmg"
 cp -r "$APP_DIR" "$WORKING_DIR/build/dmg/PhimTor.app"
 
-DMG_FILE_NAME="PhimTor-${VERSION}-${BUILD_NUMBER}.dmg"
+DMG_FILE_NAME="PhimTor-${VERSION}.dmg"
 VOLUME_NAME="PhimTor Installer"
 SOURCE_FOLDER="$WORKING_DIR/build/dmg"
 DEST_FILE="$WORKING_DIR/build/$DMG_FILE_NAME"

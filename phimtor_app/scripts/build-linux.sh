@@ -51,5 +51,5 @@ else
     chmod a+x appimagetool-x86_64.AppImage 
 fi
 
-./appimagetool-x86_64.AppImage "$APP_DIR" "build/PhimTor-x86_64.AppImage"
+./appimagetool-x86_64.AppImage "$APP_DIR" "build/PhimTor-${VERSION}-x86_64.AppImage"
 
