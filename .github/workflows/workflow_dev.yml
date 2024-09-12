@@ -9,23 +9,6 @@ on:
       - master
 
 jobs:
-  build_desktop:
-    uses: ./.github/workflows/build_desktop.yml
-    with:
-      server_address: "https://dev.phimtor.net"
-      firebase_api_key: "AIzaSyD0OPqFBC2tYvj74wMWvXqoPixSryet2lQ"
-
-  release_desktop:
-    needs: [ build_desktop ]
-    uses: ./.github/workflows/release_desktop.yml
-    with:
-      artifact_pattern: ${{ needs.build_desktop.outputs.artifact_pattern }}
-      environment: development
-    secrets:
-      SSH_HOST: ${{ secrets.SSH_HOST }}
-      SSH_USER: ${{ secrets.SSH_USER }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-
   build_flutter_app:
     uses: ./.github/workflows/build_flutter_app.yml
     with:
@@ -49,9 +32,8 @@ jobs:
   build_admin:
     uses: ./.github/workflows/build_admin.yml
 
-
   deploy_server:
-    needs: [ build_server, release_desktop ]
+    needs: [ build_server ]
     uses: ./.github/workflows/deploy_server.yml
     with:
       artifact_name: ${{ needs.build_server.outputs.artifact_name }}
