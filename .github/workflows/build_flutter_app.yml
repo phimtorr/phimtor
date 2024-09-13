@@ -136,5 +136,4 @@ jobs:
             ${{github.workspace}}/phimtor_app/build/*.AppImage
             ${{github.workspace}}\phimtor_app\build\*.exe 
             ${{github.workspace}}/phimtor_app/build/*.pkg
-            ${{github.workspace}}/phimtor_app/build/*.dmg 
             ${{github.workspace}}/VERSION.txt
