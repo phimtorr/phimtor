@@ -21,8 +21,12 @@ void main() async {
   log("Initializing preferences service");
   await PreferencesService.ensureInitialized();
 
-  log("Initializing auth service");
-  await AuthService().initialize();
+  try {
+    log("Initializing auth service");
+    await AuthService().initialize();
+  } catch (e) {
+    log("Error initializing auth service: $e");
+  }
 
   log("Initializing analytics service");
   await AnalyticsService().initialize(
