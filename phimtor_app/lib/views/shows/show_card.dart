@@ -38,7 +38,7 @@ class ShowCard extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: SizedBox(
           width: 150.0,
-          // height: 315.0,
+          height: 315.0,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
