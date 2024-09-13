@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
+import 'package:phimtor_app/helpers/time_helpers.dart';
 import 'package:phimtor_app/services/analytics/analytics_service.dart';
 import 'package:phimtor_app/services/phimtor/phimtor_service.dart';
 import 'package:phimtor_app/views/videos/video_view.dart';
@@ -23,9 +24,8 @@ class SeriesDetailView extends StatelessWidget {
         "title": title,
       },
     );
-    const infoTextStyte = TextStyle(
-      fontSize: 16,
-    );
+
+    final infoTextStyte = Theme.of(context).textTheme.bodyMedium;
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
@@ -60,16 +60,15 @@ class SeriesDetailView extends StatelessWidget {
                     children: [
                       Text(
                         series.title,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.headlineMedium,
                       ),
                       Text(
                         series.originalTitle,
-                        style: const TextStyle(
-                          fontSize: 16,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium!.merge(
+                              const TextStyle(
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
                       ),
                       const SizedBox(height: 16),
                       Text(
@@ -83,7 +82,7 @@ class SeriesDetailView extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        context.loc.detail_duration(series.durationInMinutes),
+                        "${context.loc.detail_duration(series.durationInMinutes)} (${TimeHelpers.toHumanReadableDuration(series.durationInMinutes)})",
                         style: infoTextStyte,
                       ),
                       const SizedBox(height: 8),
@@ -91,12 +90,12 @@ class SeriesDetailView extends StatelessWidget {
                         "${context.loc.detail_total_episodes}: ${series.totalEpisodes}",
                         style: infoTextStyte,
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 16),
                       Text(
                         series.description,
-                        style: const TextStyle(
-                          fontSize: 16,
-                        ),
+                        style: infoTextStyte!.merge(const TextStyle(
+                          fontStyle: FontStyle.italic,
+                        )),
                       ),
                       const SizedBox(height: 16),
                       Wrap(
