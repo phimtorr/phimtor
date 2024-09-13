@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
+import 'package:phimtor_app/helpers/time_helpers.dart';
 import 'package:phimtor_app/services/analytics/analytics_service.dart';
 import 'package:phimtor_app/services/phimtor/phimtor_service.dart';
 import 'package:phimtor_app/views/videos/video_view.dart';
@@ -23,10 +24,7 @@ class MovieDetailView extends StatelessWidget {
         "title": title,
       },
     );
-    const infoTextStyte = TextStyle(
-      fontSize: 16,
-    );
-
+    final infoTextStyte = Theme.of(context).textTheme.bodyMedium;
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
@@ -61,19 +59,17 @@ class MovieDetailView extends StatelessWidget {
                     children: [
                       Text(
                         movie.title,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.headlineMedium,
                       ),
                       Text(
                         movie.originalTitle,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontStyle: FontStyle.italic,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium!.merge(
+                              const TextStyle(
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 16),
                       Text(
                         "${context.loc.detail_release_year}: ${movie.releaseYear}",
                         style: infoTextStyte,
@@ -85,7 +81,7 @@ class MovieDetailView extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        context.loc.detail_duration(movie.durationInMinutes),
+                        "${context.loc.detail_duration(movie.durationInMinutes)} (${TimeHelpers.toHumanReadableDuration(movie.durationInMinutes)})",
                         style: infoTextStyte,
                       ),
                       const SizedBox(height: 8),
@@ -93,12 +89,14 @@ class MovieDetailView extends StatelessWidget {
                         "${context.loc.detail_quality}: ${movie.quantity}",
                         style: infoTextStyte,
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 16),
                       Text(
                         movie.description,
-                        style: infoTextStyte,
+                        style: infoTextStyte!.merge(const TextStyle(
+                          fontStyle: FontStyle.italic,
+                        )),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 16),
                       ElevatedButton.icon(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(

@@ -80,7 +80,7 @@ class MoviesSection extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         SizedBox(
-          height: ShowsList.minHeight,
+          height: 320.0,
           child: FutureBuilder(
             future: phimtor_api.PhimtorService()
                 .defaultApi
@@ -144,7 +144,7 @@ class TVSeriesSection extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         SizedBox(
-          height: ShowsList.minHeight,
+          height: 320.0,
           child: FutureBuilder(
             future: phimtor_api.PhimtorService()
                 .defaultApi

@@ -170,9 +170,11 @@ class _VideoPlayerState extends State<VideoPlayer> {
                   videoIndex: _videoIndex!,
                 ),
               if (widget.subtitle != null && widget.subtitle!.id != "no")
-                Text(
-                  "${context.loc.subtitle}: ${widget.subtitle!.title}",
-                  style: Theme.of(context).textTheme.labelMedium,
+                Flexible(
+                  child: Text(
+                    "${context.loc.subtitle}: ${widget.subtitle!.title}",
+                    style: Theme.of(context).textTheme.labelMedium,
+                  ),
                 ),
             ],
           ),

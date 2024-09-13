@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phimtor_app/helpers/time_helpers.dart';
 import 'package:phimtor_app/services/analytics/analytics_service.dart';
 import 'package:phimtor_app/views/shows/movie_detail_view.dart';
 import 'package:phimtor_app/views/shows/series_detail_view.dart';
@@ -38,18 +39,56 @@ class ShowCard extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: SizedBox(
           width: 150.0,
-          // height: 315.0,
+          height: 315.0,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  show.posterLink,
-                  width: 150,
-                  height: 200,
-                  fit: BoxFit.cover,
-                ),
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      show.posterLink,
+                      width: 150,
+                      height: 200,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Positioned(
+                    top: 2,
+                    left: 2,
+                    child: Row(
+                      children: [
+                        ShowLabel(title: show.releaseYear.toString()),
+                        const SizedBox(width: 2),
+                        ShowLabel(title: show.score.toString()),
+                      ],
+                    ),
+                  ),
+                  if (show.type == phimtor_api.ShowType.series) ...[
+                    Positioned(
+                      bottom: 2,
+                      right: 2,
+                      child: ShowLabel(
+                        title: "${show.currentEpisode}/${show.totalEpisodes}",
+                      ),
+                    ),
+                  ],
+                  if (show.type == phimtor_api.ShowType.movie) ...[
+                    Positioned(
+                      bottom: 2,
+                      left: 2,
+                      child: ShowLabel(title: show.quantity),
+                    ),
+                    Positioned(
+                      bottom: 2,
+                      right: 2,
+                      child: ShowLabel(
+                          title: TimeHelpers.toHumanReadableDuration(
+                              show.durationInMinutes)),
+                    ),
+                  ],
+                ],
               ),
               const SizedBox(height: 8),
               Text(
@@ -101,6 +140,37 @@ class ShowCard extends StatelessWidget {
           return;
         }
       },
+    );
+  }
+}
+
+class ShowLabel extends StatelessWidget {
+  const ShowLabel({
+    super.key,
+    required this.title,
+  });
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    final backgroundColor =
+        Theme.of(context).colorScheme.surfaceContainerLow.withOpacity(0.6);
+    final textStyle = Theme.of(context).textTheme.labelSmall!.merge(
+          TextStyle(
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+        );
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        title,
+        style: textStyle,
+      ),
     );
   }
 }

@@ -9,8 +9,6 @@ class ShowsList extends StatelessWidget {
     required this.shows,
   });
 
-  static const minHeight = 320.0; // for not overflow
-
   @override
   Widget build(BuildContext context) {
     return ListView.separated(

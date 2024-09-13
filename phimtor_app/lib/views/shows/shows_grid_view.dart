@@ -98,30 +98,36 @@ class _ShowsGridViewState extends State<ShowsGridView> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Column(
-        children: [
-          if (totalItems == 0)
-            Center(child: Text(context.loc.search_no_result)),
-          if (totalItems != null && totalItems! > 0)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(context.loc.search_count(shows.length, totalItems!)),
-            ),
-          Expanded(
-            child: GridView.builder(
-              controller: scrollController,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 5,
-                childAspectRatio: 0.7,
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (totalItems == 0)
+              Center(child: Text(context.loc.search_no_result)),
+            if (totalItems != null && totalItems! > 0)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(context.loc.search_count(shows.length, totalItems!)),
               ),
-              itemCount: shows.length,
-              itemBuilder: (context, i) {
-                final show = shows[i];
-                return ShowCard(show: show);
-              },
+            Expanded(
+              child: SingleChildScrollView(
+                controller: scrollController,
+                child: Wrap(
+                  alignment: WrapAlignment.start,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 16,
+                  runSpacing: 24,
+                  children: shows.map((show) => ShowCard(show: show)).toList(),
+                ),
+              ),
             ),
-          ),
-        ],
+            if (isLoading)
+              const Center(
+                child: CircularProgressIndicator(),
+              ),
+          ],
+        ),
       ),
     );
   }
