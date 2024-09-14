@@ -66,6 +66,7 @@ dependencies:
     git:
       url: https://github.com/chrisngyn/ambilytics.git
       ref: main
+  go_router: ^14.2.7
 dev_dependencies:
   flutter_test:
     sdk: flutter
