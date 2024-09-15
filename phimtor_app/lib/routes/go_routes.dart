@@ -8,6 +8,7 @@ import 'package:phimtor_app/views/home_view.dart';
 import 'package:phimtor_app/views/settings_view.dart';
 import 'package:phimtor_app/views/shows/movie_detail_view.dart';
 import 'package:phimtor_app/views/shows/series_detail_view.dart';
+import 'package:phimtor_app/views/videos/video_view.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorShowKey =
@@ -73,6 +74,15 @@ final goRouter = GoRouter(
                     return SeriesDetailView(seriesId: id, title: title);
                   },
                 ),
+                GoRoute(
+                  name: routeNameVideo,
+                  path: "video/:id/:title",
+                  builder: (context, state) {
+                    final id = int.parse(state.pathParameters['id']!);
+                    final title = state.pathParameters['title']!;
+                    return VideoView(videoId: id, title: title);
+                  },
+                )
               ],
             )
           ],

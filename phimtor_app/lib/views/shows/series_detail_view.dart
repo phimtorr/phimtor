@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:phimtor_app/helpers/time_helpers.dart';
+import 'package:phimtor_app/routes/route_names.dart';
 import 'package:phimtor_app/services/analytics/analytics_service.dart';
 import 'package:phimtor_app/services/phimtor/phimtor_service.dart';
-import 'package:phimtor_app/views/videos/video_view.dart';
 import 'package:phimtor_openapi_client/api.dart';
 
 class SeriesDetailView extends StatelessWidget {
@@ -105,12 +106,10 @@ class SeriesDetailView extends StatelessWidget {
                           final episode = series.episodes[i];
                           return ElevatedButton(
                             onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => VideoView(
-                                  videoId: episode.videoId,
-                                  title: "${series.title} - ${episode.name}",
-                                ),
-                              ));
+                              context.goNamed(routeNameVideo, pathParameters: {
+                                "id": episode.videoId.toString(),
+                                "title": "${series.title} - ${episode.name}",
+                              });
                             },
                             child: Text(episode.name),
                           );
