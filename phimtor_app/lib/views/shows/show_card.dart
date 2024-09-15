@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:phimtor_app/helpers/time_helpers.dart';
+import 'package:phimtor_app/routes/route_names.dart';
 import 'package:phimtor_app/services/analytics/analytics_service.dart';
-import 'package:phimtor_app/views/shows/movie_detail_view.dart';
-import 'package:phimtor_app/views/shows/series_detail_view.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
 
 class ShowCard extends StatelessWidget {
@@ -122,21 +122,23 @@ class ShowCard extends StatelessWidget {
           },
         );
         if (show.type == phimtor_api.ShowType.movie) {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => MovieDetailView(
-              movieId: show.id,
-              title: show.title,
-            ),
-          ));
+          context.goNamed(
+            routeNameMovieDetails,
+            pathParameters: {
+              "id": show.id.toString(),
+              "title": show.title,
+            },
+          );
           return;
         }
         if (show.type == phimtor_api.ShowType.series) {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => SeriesDetailView(
-              seriesId: show.id,
-              title: show.title,
-            ),
-          ));
+          context.goNamed(
+            routeNameSeriesDetails,
+            pathParameters: {
+              "id": show.id.toString(),
+              "title": show.title,
+            },
+          );
           return;
         }
       },
