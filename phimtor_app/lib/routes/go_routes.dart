@@ -7,7 +7,10 @@ import 'package:phimtor_app/views/account/account_view.dart';
 import 'package:phimtor_app/views/home_view.dart';
 import 'package:phimtor_app/views/settings_view.dart';
 import 'package:phimtor_app/views/shows/movie_detail_view.dart';
+import 'package:phimtor_app/views/shows/movies_grid_view.dart';
+import 'package:phimtor_app/views/shows/search_grid_view.dart';
 import 'package:phimtor_app/views/shows/series_detail_view.dart';
+import 'package:phimtor_app/views/shows/series_grid_view.dart';
 import 'package:phimtor_app/views/videos/video_view.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -56,6 +59,21 @@ final goRouter = GoRouter(
                 child: HomeView(),
               ),
               routes: [
+                // search
+                GoRoute(
+                  name: routeNameShowSearch,
+                  path: "search/:query",
+                  builder: (context, state) {
+                    final query = state.pathParameters['query']!;
+                    return SearchGridView(query: query);
+                  },
+                ),
+                // movies
+                GoRoute(
+                  name: routeNameMovies,
+                  path: "movies",
+                  builder: (context, state) => const MoviesGridView(),
+                ),
                 GoRoute(
                   name: routeNameMovieDetails,
                   path: "movies/:id/:title",
@@ -64,6 +82,12 @@ final goRouter = GoRouter(
                     final title = state.pathParameters['title']!;
                     return MovieDetailView(movieId: id, title: title);
                   },
+                ),
+                // series
+                GoRoute(
+                  name: routeNameSeries,
+                  path: "series",
+                  builder: (context, state) => const SeriesGridView(),
                 ),
                 GoRoute(
                   name: routeNameSeriesDetails,
@@ -74,6 +98,7 @@ final goRouter = GoRouter(
                     return SeriesDetailView(seriesId: id, title: title);
                   },
                 ),
+                // video
                 GoRoute(
                   name: routeNameVideo,
                   path: "video/:id/:title",

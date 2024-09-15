@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
+import 'package:phimtor_app/routes/route_names.dart';
 import 'package:phimtor_app/services/phimtor/phimtor_service.dart'
     as phimtor_api;
 import 'package:phimtor_app/views/search_section.dart';
-import 'package:phimtor_app/views/shows/shows_grid_view.dart';
 import 'package:phimtor_app/views/shows/shows_list.dart';
 import 'package:phimtor_openapi_client/api.dart';
 
@@ -35,19 +36,8 @@ class HomeView extends StatelessWidget {
   }
 }
 
-
 class MoviesSection extends StatelessWidget {
   const MoviesSection({super.key});
-
-  Future<(List<ModelShow>, Pagination)> _loadMovies(int page, int pageSize) async {
-    final resp = await phimtor_api.PhimtorService()
-        .defaultApi
-        .listShows(page: page, pageSize: pageSize, type: ShowType.movie);
-    if (resp == null) {
-      throw Exception("Null response");
-    }
-    return (resp.shows, resp.pagination);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,14 +55,9 @@ class MoviesSection extends StatelessWidget {
             const SizedBox(width: 8),
             ElevatedButton.icon(
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ShowsGridView(
-                    title: context.loc.movies,
-                    loadMore: _loadMovies,
-                  ),
-                ));
+                context.goNamed(routeNameMovies);
               },
-              label:  Text(context.loc.load_more),
+              label: Text(context.loc.load_more),
               icon: const Icon(Icons.arrow_forward),
               iconAlignment: IconAlignment.end,
             ),
@@ -90,7 +75,8 @@ class MoviesSection extends StatelessWidget {
                 return const Center(child: CircularProgressIndicator());
               }
               if (snapshot.hasError) {
-                return Center(child: Text(context.loc.error(snapshot.error.toString())));
+                return Center(
+                    child: Text(context.loc.error(snapshot.error.toString())));
               }
 
               final response = snapshot.data as ListShowsResponse;
@@ -106,16 +92,6 @@ class MoviesSection extends StatelessWidget {
 class TVSeriesSection extends StatelessWidget {
   const TVSeriesSection({super.key});
 
-  Future<(List<ModelShow>, Pagination)> _loadSeries(int page, int pageSize) async {
-    final resp = await phimtor_api.PhimtorService()
-        .defaultApi
-        .listShows(page: page, pageSize: pageSize, type: ShowType.series);
-    if (resp == null) {
-      throw Exception("Null response");
-    }
-    return (resp.shows, resp.pagination);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -129,14 +105,9 @@ class TVSeriesSection extends StatelessWidget {
             const SizedBox(width: 8),
             ElevatedButton.icon(
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ShowsGridView(
-                    title: context.loc.tv_series,
-                    loadMore: _loadSeries,
-                  ),
-                ));
+                context.goNamed(routeNameSeries);
               },
-              label:  Text(context.loc.load_more),
+              label: Text(context.loc.load_more),
               icon: const Icon(Icons.arrow_forward),
               iconAlignment: IconAlignment.end,
             ),
@@ -154,7 +125,8 @@ class TVSeriesSection extends StatelessWidget {
                 return const Center(child: CircularProgressIndicator());
               }
               if (snapshot.hasError) {
-                return Center(child: Text(context.loc.error(snapshot.error.toString())));
+                return Center(
+                    child: Text(context.loc.error(snapshot.error.toString())));
               }
 
               final response = snapshot.data as ListShowsResponse;
