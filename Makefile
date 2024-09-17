@@ -17,6 +17,7 @@ openapi: openapi-http openapi-client openapi-dart-client
 .PHONY: openapi-http
 openapi-http:
 	@./scripts/openapi-http.sh phimtor_api server/http http
+	@./scripts/openapi-http.sh phimtor_api_v2 server/http2 http2
 
 .PHONY: openapi-client
 openapi-client:
@@ -25,6 +26,7 @@ openapi-client:
 .PHONY: openapi-dart-client
 openapi-dart-client:
 	@./scripts/openapi-dart-client.sh phimtor_api phimtor_app/phimtor_openapi_client
+	@./scripts/openapi-dart-client.sh phimtor_api_v2 phimtor_app/phimtor_openapi_client_v2
 
 
 

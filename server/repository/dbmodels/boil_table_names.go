@@ -5,14 +5,24 @@ package dbmodels
 
 var TableNames = struct {
 	Episodes     string
+	Movies       string
 	Shows        string
 	Subtitles    string
 	TorrentLinks string
+	TVEpisodes   string
+	TVSeasons    string
+	TVSeriesShow string
 	Videos       string
+	ViewShows    string
 }{
 	Episodes:     "episodes",
+	Movies:       "movies",
 	Shows:        "shows",
 	Subtitles:    "subtitles",
 	TorrentLinks: "torrent_links",
+	TVEpisodes:   "tv_episodes",
+	TVSeasons:    "tv_seasons",
+	TVSeriesShow: "tv_series_show",
 	Videos:       "videos",
+	ViewShows:    "view_shows",
 }

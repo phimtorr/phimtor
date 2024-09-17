@@ -90,3 +90,47 @@ func (e ShowsType) Ordinal() int {
 		panic(errors.New("enum is not valid"))
 	}
 }
+
+type ViewShowsType string
+
+// Enum values for ViewShowsType
+const (
+	ViewShowsTypeMovie    ViewShowsType = "movie"
+	ViewShowsTypeTVSeries ViewShowsType = "tv-series"
+	ViewShowsTypeEpisode  ViewShowsType = "episode"
+)
+
+func AllViewShowsType() []ViewShowsType {
+	return []ViewShowsType{
+		ViewShowsTypeMovie,
+		ViewShowsTypeTVSeries,
+		ViewShowsTypeEpisode,
+	}
+}
+
+func (e ViewShowsType) IsValid() error {
+	switch e {
+	case ViewShowsTypeMovie, ViewShowsTypeTVSeries, ViewShowsTypeEpisode:
+		return nil
+	default:
+		return errors.New("enum is not valid")
+	}
+}
+
+func (e ViewShowsType) String() string {
+	return string(e)
+}
+
+func (e ViewShowsType) Ordinal() int {
+	switch e {
+	case ViewShowsTypeMovie:
+		return 0
+	case ViewShowsTypeTVSeries:
+		return 1
+	case ViewShowsTypeEpisode:
+		return 2
+
+	default:
+		panic(errors.New("enum is not valid"))
+	}
+}
