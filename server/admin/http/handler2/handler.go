@@ -27,6 +27,12 @@ type Repository interface {
 	ListMovies(ctx context.Context, page, pageSize int) ([]ui.Movie, ui.Pagination, error)
 	GetMovie(ctx context.Context, id int64) (ui.Movie, error)
 	CreateMovieVideo(ctx context.Context, movieID int64) error
+
+	ListTVSeriesShows(ctx context.Context, page, pageSize int) ([]ui.TVSeriesShow, ui.Pagination, error)
+	GetTVSeriesShow(ctx context.Context, showID int64) (ui.TVSeriesShow, []ui.TVSeason, error)
+	GetTVSeason(ctx context.Context, showID int64, seasonNumber int) (ui.TVSeason, []ui.TVEpisode, error)
+	GetTVEpisode(ctx context.Context, showID int64, seasonNumber, episodeNumber int) (ui.TVEpisode, error)
+	CreateTVEpisodeVideo(ctx context.Context, showID int64, seasonNumber, episodeNumber int) error
 }
 
 type Handler struct {

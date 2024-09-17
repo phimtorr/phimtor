@@ -27,6 +27,7 @@ templ layout(title string) {
 					<ul>
 						<li><a href={ templ.SafeURL(uri.ListShows(1)) }>Shows</a></li>
 						<li><a href={ templ.SafeURL(uri.ListMovies(1)) }>Movies</a></li>
+						<li><a href={ templ.SafeURL(uri.ListTVSeries(1)) }>TV Series</a></li>
 						<li><a href={ templ.SafeURL(uri.ListUsers("")) }>Users</a></li>
 						<li><a href="/logout">Logout</a></li>
 					</ul>

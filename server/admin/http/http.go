@@ -68,6 +68,14 @@ func (s Server) Register(r chi.Router) {
 	r.Get("/movies/{id}", errHandlerFunc(s.handler2.ViewMovie))
 	r.Post("/movies/{id}/fetch-from-tmdb", errHandlerFunc(s.handler2.FetchMovieFromTMDB))
 	r.Post("/movies/{id}/create-video", errHandlerFunc(s.handler2.CreateMovieVideo))
+
+	r.Get("/tv-series", errHandlerFunc(s.handler2.ViewTVSeriesShows))
+	r.Post("/tv-series/create", errHandlerFunc(s.handler2.CreateTVSeries))
+	r.Get("/tv-series/{showID}", errHandlerFunc(s.handler2.ViewTVSeriesShow))
+	r.Post("/tv-series/{showID}/fetch-from-tmdb", errHandlerFunc(s.handler2.FetchTVSeriesFromTMDB))
+	r.Get("/tv-series/{showID}/seasons/{seasonNumber}", errHandlerFunc(s.handler2.ViewTVSeason))
+	r.Get("/tv-series/{showID}/seasons/{seasonNumber}/episodes/{episodeNumber}", errHandlerFunc(s.handler2.ViewTVEpisode))
+	r.Post("/tv-series/{showID}/seasons/{seasonNumber}/episodes/{episodeNumber}/create-video", errHandlerFunc(s.handler2.CreateTVEpisodeVideo))
 }
 
 func errHandlerFunc(h func(w http.ResponseWriter, r *http.Request) error) http.HandlerFunc {
