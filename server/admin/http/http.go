@@ -5,22 +5,23 @@ import (
 	"net/http"
 
 	"firebase.google.com/go/v4/auth"
-
-	"github.com/phimtorr/phimtor/server/admin/http/handler"
-	"github.com/phimtorr/phimtor/server/admin/http/ui"
-	"github.com/phimtorr/phimtor/server/admin/repository"
-	"github.com/phimtorr/phimtor/server/admin/s3"
-
 	"github.com/a-h/templ"
 	"github.com/friendsofgo/errors"
 	"github.com/go-chi/chi/v5"
 	"github.com/rs/zerolog/log"
 
 	commonErrors "github.com/phimtorr/phimtor/common/errors"
+	"github.com/phimtorr/phimtor/server/admin/http/handler"
+	"github.com/phimtorr/phimtor/server/admin/http/handler2"
+	"github.com/phimtorr/phimtor/server/admin/http/ui"
+	"github.com/phimtorr/phimtor/server/admin/repository"
+	"github.com/phimtorr/phimtor/server/admin/s3"
+	"github.com/phimtorr/phimtor/server/admin/tmdb"
 )
 
 type Server struct {
-	handler *handler.Handler
+	handler  *handler.Handler
+	handler2 *handler2.Handler
 }
 
 func NewHTTPServer(db *sql.DB, authClient *auth.Client) Server {
@@ -29,6 +30,10 @@ func NewHTTPServer(db *sql.DB, authClient *auth.Client) Server {
 			repository.NewRepository(db),
 			s3.NewService(),
 			authClient,
+		),
+		handler2: handler2.NewHandler(
+			tmdb.NewClient(),
+			repository.NewTMDBRepository(db),
 		),
 	}
 }
@@ -57,6 +62,12 @@ func (s Server) Register(r chi.Router) {
 	r.Get("/users", errHandlerFunc(s.handler.ListUsers))
 	r.Get("/users/{uid}", errHandlerFunc(s.handler.ViewUser))
 	r.Post("/users/{uid}/update-premium", errHandlerFunc(s.handler.UpdatePremium))
+
+	r.Get("/movies", errHandlerFunc(s.handler2.ViewMovies))
+	r.Post("/movies/create", errHandlerFunc(s.handler2.CreateMovie))
+	r.Get("/movies/{id}", errHandlerFunc(s.handler2.ViewMovie))
+	r.Post("/movies/{id}/fetch-from-tmdb", errHandlerFunc(s.handler2.FetchMovieFromTMDB))
+	r.Post("/movies/{id}/create-video", errHandlerFunc(s.handler2.CreateMovieVideo))
 }
 
 func errHandlerFunc(h func(w http.ResponseWriter, r *http.Request) error) http.HandlerFunc {

@@ -1,0 +1,122 @@
+package ui 
+
+import "time"
+import "github.com/phimtorr/phimtor/server/admin/http/uri"
+
+type Movie struct {
+    ID int64
+    Title string
+    OriginalTitle string
+    Status string
+    Tagline string
+    Genres string 
+    Overview string
+    PosterLink string
+    BackdropLink string
+    ReleaseDate string
+    Runtime int
+    VoteAverage float64
+    VoteCount int
+    VideoID int64
+    CreatedAt time.Time
+    UpdatedAt time.Time
+}
+
+templ MoviesView(movies []Movie, pag Pagination) {
+    @layout("Movies") {
+        <h1>Movies</h1>
+        <article>
+            <form method="POST" action={ templ.SafeURL(uri.CreateMovie())  }>
+				<fieldset>
+					<label>
+						ID
+						<input type="number" name="id" required/>
+					</label>
+					<button type="submit">Create</button>
+				</fieldset>
+			</form>
+        </article>
+        <article>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Info</th>
+                        <th>Poster</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    for _, m := range movies {
+                        <tr>
+                            <td>{ toString(m.ID) }</td>
+                            <td>
+                                <span>{ m.Title }</span>
+                                <small style="display: block;">{ m.OriginalTitle }</small>
+							</td>
+                            <td>
+                                <span>Status: { m.Status }</span>
+                                <span>Release Date: { m.ReleaseDate }</span>
+                            </td>
+                            <td><img src={ m.PosterLink } alt={ m.Title } style="width: 150px;"/></td>
+                            <td>
+                                <a role="button" href={ templ.SafeURL(uri.ViewMovie(m.ID)) }>View</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div>
+                @pagination(pag, uri.ListMovies)
+            </div>
+        </article>
+    }
+}
+
+templ MovieView(m Movie) {
+    @layout("Movie") {
+        <article>
+            <h1>{ m.Title }</h1>
+            <header>
+                <h2>{ m.OriginalTitle }</h2>
+                <span>{ m.Status }</span>
+                <span>{ m.Tagline }</span>
+            </header>
+            <section>
+                <figure>
+                    <img src={ m.PosterLink } alt={ m.Title }/>
+                </figure>
+                <figure>
+                    <img src={ m.BackdropLink } alt={ m.Title }/>
+                </figure>
+                <p>{ m.Overview }</p>
+                <d>{ m.Genres }</d>
+                <dl>
+                    <dt>Release Date</dt>
+                    <dd>{ m.ReleaseDate }</dd>
+                    <dt>Runtime</dt>
+                    <dd>{ toString(m.Runtime) } minutes</dd>
+                    <dt>Vote Average</dt>
+                    <dd>{ toString(m.VoteAverage) }</dd>
+                    <dt>Vote Count</dt>
+                    <dd>{ toString(m.VoteCount) }</dd>
+                </dl>
+            </section>
+            <footer>
+                <button hx-post={ uri.FetchMovieFromTMDB(m.ID) }>Fetch TMDB</button>
+                if m.VideoID == 0 {
+                    <button hx-post={ uri.CreateMovieVideo(m.ID) }>Create Video</button>
+                }
+            </footer>
+        </article>
+        if m.VideoID != 0 {
+            <article>
+                <section
+					hx-get={ uri.ViewVideo(m.VideoID) }
+					hx-trigger="load"
+				></section>
+            </article>
+        }
+    }
+}

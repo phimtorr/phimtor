@@ -6,7 +6,7 @@ replace github.com/phimtorr/phimtor/common => ../common
 
 require (
 	firebase.google.com/go/v4 v4.13.0
-	github.com/a-h/templ v0.2.648
+	github.com/a-h/templ v0.2.778
 	github.com/aws/aws-sdk-go-v2/config v1.27.9
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.53.0
 	github.com/cyruzin/golang-tmdb v1.6.7
@@ -17,7 +17,7 @@ require (
 	github.com/golang-migrate/migrate/v4 v4.17.0
 	github.com/oapi-codegen/runtime v1.1.1
 	github.com/phimtorr/phimtor/common v0.0.0-00010101000000-000000000000
-	github.com/rs/cors v1.10.1
+	github.com/rs/cors v1.11.0
 	github.com/rs/zerolog v1.32.0
 	github.com/simukti/sqldb-logger v0.0.0-20230108155151-646c1a075551
 	github.com/volatiletech/null/v8 v8.1.2
@@ -76,12 +76,12 @@ require (
 	github.com/volatiletech/randomize v0.0.1 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
-	golang.org/x/crypto v0.17.0 // indirect
-	golang.org/x/net v0.19.0 // indirect
+	golang.org/x/crypto v0.26.0 // indirect
+	golang.org/x/net v0.28.0 // indirect
 	golang.org/x/oauth2 v0.14.0 // indirect
-	golang.org/x/sync v0.5.0 // indirect
-	golang.org/x/sys v0.15.0 // indirect
-	golang.org/x/text v0.14.0 // indirect
+	golang.org/x/sync v0.8.0 // indirect
+	golang.org/x/sys v0.23.0 // indirect
+	golang.org/x/text v0.17.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
