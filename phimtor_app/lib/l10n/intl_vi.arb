@@ -89,6 +89,8 @@
     "latest_tv_series": "Phim bộ",
     "latest_episodes": "Tập mới",
 
+    "not_available": "Không khả dụng",
+
     "detail_seasons": "Số mùa",
     "detail_release_year": "Năm phát hành",
     "detail_score": "Điểm",

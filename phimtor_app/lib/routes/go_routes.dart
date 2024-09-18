@@ -8,6 +8,7 @@ import 'package:phimtor_app/views/settings_view.dart';
 import 'package:phimtor_app/views/shows/movie_detail_view.dart';
 import 'package:phimtor_app/views/shows/movies_grid_view.dart';
 import 'package:phimtor_app/views/shows/search_grid_view.dart';
+import 'package:phimtor_app/views/shows/tv_season_detail_view.dart';
 import 'package:phimtor_app/views/shows/tv_series_detail_view.dart';
 import 'package:phimtor_app/views/shows/tv_series_grid_view.dart';
 import 'package:phimtor_app/views/videos/video_view.dart';
@@ -77,17 +78,32 @@ final goRouter = GoRouter(
                 ),
                 // series
                 GoRoute(
-                  name: routeNameSeries,
+                  name: routeNameTVSeries,
                   path: "series",
                   builder: (context, state) => const TVSeriesGridView(),
                 ),
                 GoRoute(
-                  name: routeNameSeriesDetails,
+                  name: routeNameTVSeriesDetails,
                   path: "series/:id/:title",
                   builder: (context, state) {
                     final id = int.parse(state.pathParameters['id']!);
                     final title = state.pathParameters['title']!;
                     return TVSeriesDetailView(seriesId: id, title: title);
+                  },
+                ),
+                GoRoute(
+                  name: routeNameTVSeriesSeasonDetails,
+                  path: "series/:id/season/:seasonNumber/:title",
+                  builder: (context, state) {
+                    final seriesId = int.parse(state.pathParameters['id']!);
+                    final seasonNumber =
+                        int.parse(state.pathParameters['seasonNumber']!);
+                    final title = state.pathParameters['title']!;
+                    return TVSeasonDetailView(
+                      seriesId: seriesId,
+                      seasonNumber: seasonNumber,
+                      title: title,
+                    );
                   },
                 ),
                 // video

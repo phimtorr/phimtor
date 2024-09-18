@@ -89,6 +89,8 @@
     "latest_tv_series": "TV Series",
     "latest_episodes": "Episodes",
 
+    "not_available": "Not available",
+
     "detail_seasons": "Seasons",
     "detail_release_year": "Release year",
     "detail_score": "Score",

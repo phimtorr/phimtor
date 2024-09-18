@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
+import 'package:phimtor_app/routes/route_names.dart';
 import 'package:phimtor_app/services/analytics/analytics_service.dart';
 import 'package:phimtor_app/services/phimtor/phimtor_service.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
@@ -79,7 +82,6 @@ class TVSeriesDetailView extends StatelessWidget {
                         style: infoTextStyte,
                       ),
                       const SizedBox(height: 8),
-                      const SizedBox(height: 8),
                       // Text(
                       //   "${context.loc.detail_total_episodes}: ${series.totalEpisodes}",
                       //   style: infoTextStyte,
@@ -98,14 +100,20 @@ class TVSeriesDetailView extends StatelessWidget {
                         style: Theme.of(context).textTheme.headlineMedium,
                       ),
                       const SizedBox(height: 8),
-                      ListView.builder(
+                      ListView.separated(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: series.seasons.length,
                         itemBuilder: (context, index) {
                           final season = series.seasons[index];
-                          return TVSeasonInnerDisplay(season: season);
+                          return TVSeasonInnerDisplay(
+                            seriesId: series.id,
+                            season: season,
+                          );
                         },
+                        separatorBuilder: (context, index) =>  Divider(
+                          color: Theme.of(context).dividerColor,
+                        ),
                       ),
                     ],
                   ),
@@ -120,22 +128,27 @@ class TVSeriesDetailView extends StatelessWidget {
 }
 
 class TVSeasonInnerDisplay extends StatelessWidget {
-  const TVSeasonInnerDisplay({super.key, required this.season});
+  const TVSeasonInnerDisplay({
+    super.key,
+    required this.seriesId,
+    required this.season,
+  });
 
+  final int seriesId;
   final phimtor_api.TvSeriesSeasonsInner season;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // context.goNamed(
-        //   routeNameTvSeriesSeason,
-        //   pathParameters: {
-        //     "seriesId": season.tvSeriesId.toString(),
-        //     "seasonNumber": season.seasonNumber.toString(),
-        //     "title": season.name,
-        //   },
-        // );
+        context.goNamed(
+          routeNameTVSeriesSeasonDetails,
+          pathParameters: {
+            "id": seriesId.toString(),
+            "seasonNumber": season.seasonNumber.toString(),
+            "title": season.name,
+          },
+        );
       },
       child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -159,12 +172,17 @@ class TVSeasonInnerDisplay extends StatelessWidget {
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     Text(
-                      season.airDate.toString(),
+                      season.airDate != null
+                          ? DateFormat.yMMMMd().format(season.airDate!)
+                          : "",
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     Text(
                       season.overview,
-                      style: Theme.of(context).textTheme.bodyMedium!.merge(const TextStyle(
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .merge(const TextStyle(
                             fontStyle: FontStyle.italic,
                           )),
                     ),

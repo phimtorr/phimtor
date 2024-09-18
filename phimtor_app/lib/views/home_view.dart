@@ -107,7 +107,7 @@ class TVSeriesSection extends StatelessWidget {
             const SizedBox(width: 8),
             ElevatedButton.icon(
               onPressed: () {
-                context.goNamed(routeNameSeries);
+                context.goNamed(routeNameTVSeries);
               },
               label: Text(context.loc.load_more),
               icon: const Icon(Icons.arrow_forward),
@@ -158,7 +158,7 @@ class TVEpisodesSection extends StatelessWidget {
             const SizedBox(width: 8),
             ElevatedButton.icon(
               onPressed: () {
-                context.goNamed(routeNameSeries);
+                context.goNamed(routeNameTVSeries);
               },
               label: Text(context.loc.load_more),
               icon: const Icon(Icons.arrow_forward),

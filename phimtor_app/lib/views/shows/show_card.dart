@@ -115,7 +115,7 @@ class ShowCard extends StatelessWidget {
         }
         if (show.type == phimtor_api.ModelShowTypeEnum.tvSeries) {
           context.goNamed(
-            routeNameSeriesDetails,
+            routeNameTVSeriesDetails,
             pathParameters: {
               "id": show.showId.toString(),
               "title": show.title,
@@ -123,12 +123,12 @@ class ShowCard extends StatelessWidget {
           );
           return;
         }
-        // TODO: handle episode late
         if (show.type == phimtor_api.ModelShowTypeEnum.episode) {
           context.goNamed(
-            routeNameSeriesDetails,
+            routeNameTVSeriesSeasonDetails,
             pathParameters: {
               "id": show.showId.toString(),
+              "seasonNumber": show.seasonNumber.toString(),
               "title": show.title,
             },
           );
