@@ -37,7 +37,7 @@ func (r SQLRepo2) GetLatestTvSeries(ctx context.Context, params http2.GetLatestT
 	page, pageSize := toPageAndPageSize(params.Page, params.PageSize)
 
 	queryMods := []qm.QueryMod{
-		dbmodels.LatestShowWhere.Type.EQ(dbmodels.LatestShowsTypeEpisode),
+		dbmodels.LatestShowWhere.Type.EQ(dbmodels.LatestShowsTypeTVSeries),
 	}
 
 	return r.queryShows(ctx, queryMods, page, pageSize, true)
