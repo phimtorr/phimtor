@@ -48,6 +48,10 @@ func (r SQLRepo2) SearchShows(ctx context.Context, params http2.SearchShowsParam
 
 	queryMods := []qm.QueryMod{
 		qm.Where("MATCH(title, original_title) AGAINST (?)", params.Query),
+		dbmodels.LatestShowWhere.Type.IN([]dbmodels.LatestShowsType{
+			dbmodels.LatestShowsTypeMovie,
+			dbmodels.LatestShowsTypeTVSeries,
+		}),
 	}
 
 	return r.queryShows(ctx, queryMods, page, pageSize, false)
