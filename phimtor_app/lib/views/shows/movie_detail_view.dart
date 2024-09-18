@@ -48,7 +48,7 @@ class MovieDetailView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Image.network(
-                  movie.posterLink,
+                  movie.backdropLink,
                   width: double.infinity,
                   height: 300,
                   fit: BoxFit.cover,
@@ -72,27 +72,28 @@ class MovieDetailView extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        "${context.loc.detail_release_year}: ${movie.releaseYear}",
+                        "${context.loc.detail_release_year}: ${movie.releaseDate.year}",
                         style: infoTextStyte,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "${context.loc.detail_score}: ${movie.score}",
+                        "${context.loc.detail_score}: ${movie.voteAverage.toStringAsFixed(1)}",
                         style: infoTextStyte,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "${context.loc.detail_duration(movie.durationInMinutes)} (${TimeHelpers.toHumanReadableDuration(movie.durationInMinutes)})",
+                        "${context.loc.detail_duration(movie.runtime)} (${TimeHelpers.toHumanReadableDuration(movie.runtime)})",
                         style: infoTextStyte,
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "${context.loc.detail_quality}: ${movie.quantity}",
-                        style: infoTextStyte,
-                      ),
+                      // TODO: Update quality
+                      // const SizedBox(height: 8),
+                      // Text(
+                      //   "${context.loc.detail_quality}: ${movie.}",
+                      //   style: infoTextStyte,
+                      // ),
                       const SizedBox(height: 16),
                       Text(
-                        movie.description,
+                        movie.overview,
                         style: infoTextStyte!.merge(const TextStyle(
                           fontStyle: FontStyle.italic,
                         )),
@@ -101,7 +102,7 @@ class MovieDetailView extends StatelessWidget {
                       ElevatedButton.icon(
                         onPressed: () {
                           context.goNamed(routeNameVideo, pathParameters: {
-                            "id": movie.videoId.toString(),
+                            "id": movie.videoID.toString(),
                             "title": movie.title,
                           });
                         },

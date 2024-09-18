@@ -11,11 +11,11 @@
 import 'package:phimtor_openapi_client/api.dart';
 import 'package:test/test.dart';
 
-// tests for TorrentLink
+// tests for Genre
 void main() {
-  // final instance = TorrentLink();
+  // final instance = Genre();
 
-  group('test TorrentLink', () {
+  group('test Genre', () {
     // int id
     test('to test the property `id`', () async {
       // TODO
@@ -23,26 +23,6 @@ void main() {
 
     // String name
     test('to test the property `name`', () async {
-      // TODO
-    });
-
-    // String link
-    test('to test the property `link`', () async {
-      // TODO
-    });
-
-    // int fileIndex
-    test('to test the property `fileIndex`', () async {
-      // TODO
-    });
-
-    // int priority
-    test('to test the property `priority`', () async {
-      // TODO
-    });
-
-    // bool requirePremium
-    test('to test the property `requirePremium`', () async {
       // TODO
     });
 

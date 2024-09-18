@@ -8,8 +8,8 @@ import 'package:phimtor_app/views/settings_view.dart';
 import 'package:phimtor_app/views/shows/movie_detail_view.dart';
 import 'package:phimtor_app/views/shows/movies_grid_view.dart';
 import 'package:phimtor_app/views/shows/search_grid_view.dart';
-import 'package:phimtor_app/views/shows/series_detail_view.dart';
-import 'package:phimtor_app/views/shows/series_grid_view.dart';
+import 'package:phimtor_app/views/shows/tv_series_detail_view.dart';
+import 'package:phimtor_app/views/shows/tv_series_grid_view.dart';
 import 'package:phimtor_app/views/videos/video_view.dart';
 
 // private naviagtors
@@ -79,7 +79,7 @@ final goRouter = GoRouter(
                 GoRoute(
                   name: routeNameSeries,
                   path: "series",
-                  builder: (context, state) => const SeriesGridView(),
+                  builder: (context, state) => const TVSeriesGridView(),
                 ),
                 GoRoute(
                   name: routeNameSeriesDetails,
@@ -87,7 +87,7 @@ final goRouter = GoRouter(
                   builder: (context, state) {
                     final id = int.parse(state.pathParameters['id']!);
                     final title = state.pathParameters['title']!;
-                    return SeriesDetailView(seriesId: id, title: title);
+                    return TVSeriesDetailView(seriesId: id, title: title);
                   },
                 ),
                 // video

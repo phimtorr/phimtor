@@ -14,7 +14,7 @@ class PhimtorService {
   PhimtorService._internal()
       : _defaultApi = phimtor_api.DefaultApi(
           phimtor_api.ApiClient(
-            basePath: '${Constants.apiUrl}/api/v1',
+            basePath: '${Constants.apiUrl}/api/v2',
             authentication: _FirebaseAuthentication(),
           ),
         );

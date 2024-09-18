@@ -11,23 +11,23 @@
 import 'package:phimtor_openapi_client/api.dart';
 import 'package:test/test.dart';
 
-// tests for Movie
+// tests for TvSeries
 void main() {
-  // final instance = Movie();
+  // final instance = TvSeries();
 
-  group('test Movie', () {
+  group('test TvSeries', () {
     // int id
     test('to test the property `id`', () async {
       // TODO
     });
 
-    // String title
-    test('to test the property `title`', () async {
+    // String name
+    test('to test the property `name`', () async {
       // TODO
     });
 
-    // String originalTitle
-    test('to test the property `originalTitle`', () async {
+    // String originalName
+    test('to test the property `originalName`', () async {
       // TODO
     });
 
@@ -61,13 +61,13 @@ void main() {
       // TODO
     });
 
-    // DateTime releaseDate
-    test('to test the property `releaseDate`', () async {
+    // DateTime firstAirDate
+    test('to test the property `firstAirDate`', () async {
       // TODO
     });
 
-    // int runtime
-    test('to test the property `runtime`', () async {
+    // DateTime lastAirDate
+    test('to test the property `lastAirDate`', () async {
       // TODO
     });
 
@@ -76,8 +76,18 @@ void main() {
       // TODO
     });
 
-    // int videoID
-    test('to test the property `videoID`', () async {
+    // int numberOfSeasons
+    test('to test the property `numberOfSeasons`', () async {
+      // TODO
+    });
+
+    // int numberOfEpisodes
+    test('to test the property `numberOfEpisodes`', () async {
+      // TODO
+    });
+
+    // List<TvSeriesSeasonsInner> seasons (default value: const [])
+    test('to test the property `seasons`', () async {
       // TODO
     });
 

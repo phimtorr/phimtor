@@ -14,15 +14,12 @@ class Video {
   /// Returns a new [Video] instance.
   Video({
     required this.id,
-    required this.title,
     this.torrentLinks = const [],
     this.premiumTorrentLinks = const [],
     this.subtitles = const [],
   });
 
   int id;
-
-  String title;
 
   List<TorrentLink> torrentLinks;
 
@@ -33,7 +30,6 @@ class Video {
   @override
   bool operator ==(Object other) => identical(this, other) || other is Video &&
     other.id == id &&
-    other.title == title &&
     _deepEquality.equals(other.torrentLinks, torrentLinks) &&
     _deepEquality.equals(other.premiumTorrentLinks, premiumTorrentLinks) &&
     _deepEquality.equals(other.subtitles, subtitles);
@@ -42,18 +38,16 @@ class Video {
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (id.hashCode) +
-    (title.hashCode) +
     (torrentLinks.hashCode) +
     (premiumTorrentLinks.hashCode) +
     (subtitles.hashCode);
 
   @override
-  String toString() => 'Video[id=$id, title=$title, torrentLinks=$torrentLinks, premiumTorrentLinks=$premiumTorrentLinks, subtitles=$subtitles]';
+  String toString() => 'Video[id=$id, torrentLinks=$torrentLinks, premiumTorrentLinks=$premiumTorrentLinks, subtitles=$subtitles]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'id'] = this.id;
-      json[r'title'] = this.title;
       json[r'torrentLinks'] = this.torrentLinks;
       json[r'premiumTorrentLinks'] = this.premiumTorrentLinks;
       json[r'subtitles'] = this.subtitles;
@@ -80,7 +74,6 @@ class Video {
 
       return Video(
         id: mapValueOfType<int>(json, r'id')!,
-        title: mapValueOfType<String>(json, r'title')!,
         torrentLinks: TorrentLink.listFromJson(json[r'torrentLinks']),
         premiumTorrentLinks: PremiumTorrentLink.listFromJson(json[r'premiumTorrentLinks']),
         subtitles: Subtitle.listFromJson(json[r'subtitles']),
@@ -132,7 +125,6 @@ class Video {
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
     'id',
-    'title',
     'torrentLinks',
     'premiumTorrentLinks',
     'subtitles',

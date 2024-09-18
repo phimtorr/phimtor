@@ -85,9 +85,11 @@
         }
     },
 
-    "movies": "Phim lẻ",
-    "tv_series": "Phim bộ",
+    "latest_movies": "Phim lẻ",
+    "latest_tv_series": "Phim bộ",
+    "latest_episodes": "Tập mới",
 
+    "detail_seasons": "Số mùa",
     "detail_release_year": "Năm phát hành",
     "detail_score": "Điểm",
     "detail_duration": "Thời lượng {duration} phút",

@@ -25,8 +25,7 @@ openapi-client:
 
 .PHONY: openapi-dart-client
 openapi-dart-client:
-	@./scripts/openapi-dart-client.sh phimtor_api phimtor_app/phimtor_openapi_client
-	@./scripts/openapi-dart-client.sh phimtor_api_v2 phimtor_app/phimtor_openapi_client_v2
+	@./scripts/openapi-dart-client.sh phimtor_api_v2 phimtor_app/phimtor_openapi_client
 
 
 

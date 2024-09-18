@@ -85,9 +85,11 @@
         }
     },
 
-    "movies": "Movies",
-    "tv_series": "TV Series",
+    "latest_movies": "Movies",
+    "latest_tv_series": "TV Series",
+    "latest_episodes": "Episodes",
 
+    "detail_seasons": "Seasons",
     "detail_release_year": "Release year",
     "detail_score": "Score",
     "detail_duration": "Duration: {duration} minutes",

@@ -1,4 +1,4 @@
-# phimtor_openapi_client.model.Video
+# phimtor_openapi_client.model.Genre
 
 ## Load the model package
 ```dart
@@ -9,9 +9,7 @@ import 'package:phimtor_openapi_client/api.dart';
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **int** |  | 
-**torrentLinks** | [**List<TorrentLink>**](TorrentLink.md) |  | [default to const []]
-**premiumTorrentLinks** | [**List<PremiumTorrentLink>**](PremiumTorrentLink.md) |  | [default to const []]
-**subtitles** | [**List<Subtitle>**](Subtitle.md) |  | [default to const []]
+**name** | **String** |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

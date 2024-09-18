@@ -14,19 +14,24 @@ class ModelShow {
   /// Returns a new [ModelShow] instance.
   ModelShow({
     required this.id,
+    required this.showId,
+    required this.type,
     required this.title,
     required this.originalTitle,
     required this.posterLink,
-    required this.type,
-    required this.releaseYear,
-    required this.score,
-    required this.durationInMinutes,
-    required this.quantity,
-    required this.totalEpisodes,
-    required this.currentEpisode,
+    required this.airDate,
+    required this.runtime,
+    required this.voteAverage,
+    required this.quality,
+    required this.seasonNumber,
+    required this.episodeNumber,
   });
 
   int id;
+
+  int showId;
+
+  ModelShowTypeEnum type;
 
   String title;
 
@@ -34,65 +39,66 @@ class ModelShow {
 
   String posterLink;
 
-  ShowType type;
+  DateTime airDate;
 
-  int releaseYear;
+  int runtime;
 
-  num score;
+  num voteAverage;
 
-  int durationInMinutes;
+  String quality;
 
-  String quantity;
+  int seasonNumber;
 
-  int totalEpisodes;
-
-  int currentEpisode;
+  int episodeNumber;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is ModelShow &&
     other.id == id &&
+    other.showId == showId &&
+    other.type == type &&
     other.title == title &&
     other.originalTitle == originalTitle &&
     other.posterLink == posterLink &&
-    other.type == type &&
-    other.releaseYear == releaseYear &&
-    other.score == score &&
-    other.durationInMinutes == durationInMinutes &&
-    other.quantity == quantity &&
-    other.totalEpisodes == totalEpisodes &&
-    other.currentEpisode == currentEpisode;
+    other.airDate == airDate &&
+    other.runtime == runtime &&
+    other.voteAverage == voteAverage &&
+    other.quality == quality &&
+    other.seasonNumber == seasonNumber &&
+    other.episodeNumber == episodeNumber;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (id.hashCode) +
+    (showId.hashCode) +
+    (type.hashCode) +
     (title.hashCode) +
     (originalTitle.hashCode) +
     (posterLink.hashCode) +
-    (type.hashCode) +
-    (releaseYear.hashCode) +
-    (score.hashCode) +
-    (durationInMinutes.hashCode) +
-    (quantity.hashCode) +
-    (totalEpisodes.hashCode) +
-    (currentEpisode.hashCode);
+    (airDate.hashCode) +
+    (runtime.hashCode) +
+    (voteAverage.hashCode) +
+    (quality.hashCode) +
+    (seasonNumber.hashCode) +
+    (episodeNumber.hashCode);
 
   @override
-  String toString() => 'ModelShow[id=$id, title=$title, originalTitle=$originalTitle, posterLink=$posterLink, type=$type, releaseYear=$releaseYear, score=$score, durationInMinutes=$durationInMinutes, quantity=$quantity, totalEpisodes=$totalEpisodes, currentEpisode=$currentEpisode]';
+  String toString() => 'ModelShow[id=$id, showId=$showId, type=$type, title=$title, originalTitle=$originalTitle, posterLink=$posterLink, airDate=$airDate, runtime=$runtime, voteAverage=$voteAverage, quality=$quality, seasonNumber=$seasonNumber, episodeNumber=$episodeNumber]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'id'] = this.id;
+      json[r'showId'] = this.showId;
+      json[r'type'] = this.type;
       json[r'title'] = this.title;
       json[r'originalTitle'] = this.originalTitle;
       json[r'posterLink'] = this.posterLink;
-      json[r'type'] = this.type;
-      json[r'releaseYear'] = this.releaseYear;
-      json[r'score'] = this.score;
-      json[r'durationInMinutes'] = this.durationInMinutes;
-      json[r'quantity'] = this.quantity;
-      json[r'totalEpisodes'] = this.totalEpisodes;
-      json[r'currentEpisode'] = this.currentEpisode;
+      json[r'airDate'] = _dateFormatter.format(this.airDate.toUtc());
+      json[r'runtime'] = this.runtime;
+      json[r'voteAverage'] = this.voteAverage;
+      json[r'quality'] = this.quality;
+      json[r'seasonNumber'] = this.seasonNumber;
+      json[r'episodeNumber'] = this.episodeNumber;
     return json;
   }
 
@@ -116,16 +122,17 @@ class ModelShow {
 
       return ModelShow(
         id: mapValueOfType<int>(json, r'id')!,
+        showId: mapValueOfType<int>(json, r'showId')!,
+        type: ModelShowTypeEnum.fromJson(json[r'type'])!,
         title: mapValueOfType<String>(json, r'title')!,
         originalTitle: mapValueOfType<String>(json, r'originalTitle')!,
         posterLink: mapValueOfType<String>(json, r'posterLink')!,
-        type: ShowType.fromJson(json[r'type'])!,
-        releaseYear: mapValueOfType<int>(json, r'releaseYear')!,
-        score: num.parse('${json[r'score']}'),
-        durationInMinutes: mapValueOfType<int>(json, r'durationInMinutes')!,
-        quantity: mapValueOfType<String>(json, r'quantity')!,
-        totalEpisodes: mapValueOfType<int>(json, r'totalEpisodes')!,
-        currentEpisode: mapValueOfType<int>(json, r'currentEpisode')!,
+        airDate: mapDateTime(json, r'airDate', r'')!,
+        runtime: mapValueOfType<int>(json, r'runtime')!,
+        voteAverage: num.parse('${json[r'voteAverage']}'),
+        quality: mapValueOfType<String>(json, r'quality')!,
+        seasonNumber: mapValueOfType<int>(json, r'seasonNumber')!,
+        episodeNumber: mapValueOfType<int>(json, r'episodeNumber')!,
       );
     }
     return null;
@@ -174,16 +181,94 @@ class ModelShow {
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
     'id',
+    'showId',
+    'type',
     'title',
     'originalTitle',
     'posterLink',
-    'type',
-    'releaseYear',
-    'score',
-    'durationInMinutes',
-    'quantity',
-    'totalEpisodes',
-    'currentEpisode',
+    'airDate',
+    'runtime',
+    'voteAverage',
+    'quality',
+    'seasonNumber',
+    'episodeNumber',
   };
 }
+
+
+class ModelShowTypeEnum {
+  /// Instantiate a new enum with the provided [value].
+  const ModelShowTypeEnum._(this.value);
+
+  /// The underlying value of this enum member.
+  final String value;
+
+  @override
+  String toString() => value;
+
+  String toJson() => value;
+
+  static const movie = ModelShowTypeEnum._(r'movie');
+  static const tvSeries = ModelShowTypeEnum._(r'tv-series');
+  static const episode = ModelShowTypeEnum._(r'episode');
+
+  /// List of all possible values in this [enum][ModelShowTypeEnum].
+  static const values = <ModelShowTypeEnum>[
+    movie,
+    tvSeries,
+    episode,
+  ];
+
+  static ModelShowTypeEnum? fromJson(dynamic value) => ModelShowTypeEnumTypeTransformer().decode(value);
+
+  static List<ModelShowTypeEnum> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <ModelShowTypeEnum>[];
+    if (json is List && json.isNotEmpty) {
+      for (final row in json) {
+        final value = ModelShowTypeEnum.fromJson(row);
+        if (value != null) {
+          result.add(value);
+        }
+      }
+    }
+    return result.toList(growable: growable);
+  }
+}
+
+/// Transformation class that can [encode] an instance of [ModelShowTypeEnum] to String,
+/// and [decode] dynamic data back to [ModelShowTypeEnum].
+class ModelShowTypeEnumTypeTransformer {
+  factory ModelShowTypeEnumTypeTransformer() => _instance ??= const ModelShowTypeEnumTypeTransformer._();
+
+  const ModelShowTypeEnumTypeTransformer._();
+
+  String encode(ModelShowTypeEnum data) => data.value;
+
+  /// Decodes a [dynamic value][data] to a ModelShowTypeEnum.
+  ///
+  /// If [allowNull] is true and the [dynamic value][data] cannot be decoded successfully,
+  /// then null is returned. However, if [allowNull] is false and the [dynamic value][data]
+  /// cannot be decoded successfully, then an [UnimplementedError] is thrown.
+  ///
+  /// The [allowNull] is very handy when an API changes and a new enum value is added or removed,
+  /// and users are still using an old app with the old code.
+  ModelShowTypeEnum? decode(dynamic data, {bool allowNull = true}) {
+    if (data != null) {
+      switch (data) {
+        case r'movie': return ModelShowTypeEnum.movie;
+        case r'tv-series': return ModelShowTypeEnum.tvSeries;
+        case r'episode': return ModelShowTypeEnum.episode;
+        default:
+          if (!allowNull) {
+            throw ArgumentError('Unknown enum value to decode: $data');
+          }
+      }
+    }
+    return null;
+  }
+
+  /// Singleton [ModelShowTypeEnumTypeTransformer] instance.
+  static ModelShowTypeEnumTypeTransformer? _instance;
+}
+
 

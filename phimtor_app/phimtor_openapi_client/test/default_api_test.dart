@@ -17,17 +17,45 @@ void main() {
   // final instance = DefaultApi();
 
   group('tests for DefaultApi', () {
+    // Get latest episodes
+    //
+    //Future<GetLatestEpisodesResponse> getLatestEpisodes({ int page, int pageSize }) async
+    test('test getLatestEpisodes', () async {
+      // TODO
+    });
+
+    // Get latest movies
+    //
+    //Future<GetLatestMoviesResponse> getLatestMovies({ int page, int pageSize }) async
+    test('test getLatestMovies', () async {
+      // TODO
+    });
+
+    // Get latest tv series
+    //
+    //Future<GetLatestTvSeriesResponse> getLatestTvSeries({ int page, int pageSize }) async
+    test('test getLatestTvSeries', () async {
+      // TODO
+    });
+
     // Get movie by id
     //
-    //Future<GetMovieResponse> getMovie(int id) async
+    //Future<GetMovieResponse> getMovie(int movieId) async
     test('test getMovie', () async {
       // TODO
     });
 
-    // Get series by id
+    // Get tv season by tv series id and season number
     //
-    //Future<GetSeriesResponse> getSeries(int id) async
-    test('test getSeries', () async {
+    //Future<GetTvSeasonResponse> getTvSeason(int tvSeriesId, int seasonNumber) async
+    test('test getTvSeason', () async {
+      // TODO
+    });
+
+    // Get tv series by id
+    //
+    //Future<GetTvSeriesResponse> getTvSeries(int tvSeriesId) async
+    test('test getTvSeries', () async {
       // TODO
     });
 
@@ -45,16 +73,9 @@ void main() {
       // TODO
     });
 
-    // List all shows
-    //
-    //Future<ListShowsResponse> listShows({ int page, int pageSize, ShowType type }) async
-    test('test listShows', () async {
-      // TODO
-    });
-
     // Search shows
     //
-    //Future<SearchShowsResponse> searchShows(String query, { int page }) async
+    //Future<SearchShowsResponse> searchShows(String query, { int page, int pageSize }) async
     test('test searchShows', () async {
       // TODO
     });

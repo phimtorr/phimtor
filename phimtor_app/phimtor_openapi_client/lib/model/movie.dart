@@ -16,13 +16,16 @@ class Movie {
     required this.id,
     required this.title,
     required this.originalTitle,
-    required this.description,
+    required this.status,
+    required this.tagline,
+    this.genres = const [],
+    required this.overview,
     required this.posterLink,
-    required this.quantity,
-    required this.releaseYear,
-    required this.score,
-    required this.durationInMinutes,
-    required this.videoId,
+    required this.backdropLink,
+    required this.releaseDate,
+    required this.runtime,
+    required this.voteAverage,
+    required this.videoID,
   });
 
   int id;
@@ -31,32 +34,41 @@ class Movie {
 
   String originalTitle;
 
-  String description;
+  String status;
+
+  String tagline;
+
+  List<Genre> genres;
+
+  String overview;
 
   String posterLink;
 
-  String quantity;
+  String backdropLink;
 
-  int releaseYear;
+  DateTime releaseDate;
 
-  num score;
+  int runtime;
 
-  int durationInMinutes;
+  num voteAverage;
 
-  int videoId;
+  int videoID;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is Movie &&
     other.id == id &&
     other.title == title &&
     other.originalTitle == originalTitle &&
-    other.description == description &&
+    other.status == status &&
+    other.tagline == tagline &&
+    _deepEquality.equals(other.genres, genres) &&
+    other.overview == overview &&
     other.posterLink == posterLink &&
-    other.quantity == quantity &&
-    other.releaseYear == releaseYear &&
-    other.score == score &&
-    other.durationInMinutes == durationInMinutes &&
-    other.videoId == videoId;
+    other.backdropLink == backdropLink &&
+    other.releaseDate == releaseDate &&
+    other.runtime == runtime &&
+    other.voteAverage == voteAverage &&
+    other.videoID == videoID;
 
   @override
   int get hashCode =>
@@ -64,29 +76,35 @@ class Movie {
     (id.hashCode) +
     (title.hashCode) +
     (originalTitle.hashCode) +
-    (description.hashCode) +
+    (status.hashCode) +
+    (tagline.hashCode) +
+    (genres.hashCode) +
+    (overview.hashCode) +
     (posterLink.hashCode) +
-    (quantity.hashCode) +
-    (releaseYear.hashCode) +
-    (score.hashCode) +
-    (durationInMinutes.hashCode) +
-    (videoId.hashCode);
+    (backdropLink.hashCode) +
+    (releaseDate.hashCode) +
+    (runtime.hashCode) +
+    (voteAverage.hashCode) +
+    (videoID.hashCode);
 
   @override
-  String toString() => 'Movie[id=$id, title=$title, originalTitle=$originalTitle, description=$description, posterLink=$posterLink, quantity=$quantity, releaseYear=$releaseYear, score=$score, durationInMinutes=$durationInMinutes, videoId=$videoId]';
+  String toString() => 'Movie[id=$id, title=$title, originalTitle=$originalTitle, status=$status, tagline=$tagline, genres=$genres, overview=$overview, posterLink=$posterLink, backdropLink=$backdropLink, releaseDate=$releaseDate, runtime=$runtime, voteAverage=$voteAverage, videoID=$videoID]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'id'] = this.id;
       json[r'title'] = this.title;
       json[r'originalTitle'] = this.originalTitle;
-      json[r'description'] = this.description;
+      json[r'status'] = this.status;
+      json[r'tagline'] = this.tagline;
+      json[r'genres'] = this.genres;
+      json[r'overview'] = this.overview;
       json[r'posterLink'] = this.posterLink;
-      json[r'quantity'] = this.quantity;
-      json[r'releaseYear'] = this.releaseYear;
-      json[r'score'] = this.score;
-      json[r'durationInMinutes'] = this.durationInMinutes;
-      json[r'videoId'] = this.videoId;
+      json[r'backdropLink'] = this.backdropLink;
+      json[r'releaseDate'] = _dateFormatter.format(this.releaseDate.toUtc());
+      json[r'runtime'] = this.runtime;
+      json[r'voteAverage'] = this.voteAverage;
+      json[r'videoID'] = this.videoID;
     return json;
   }
 
@@ -112,13 +130,16 @@ class Movie {
         id: mapValueOfType<int>(json, r'id')!,
         title: mapValueOfType<String>(json, r'title')!,
         originalTitle: mapValueOfType<String>(json, r'originalTitle')!,
-        description: mapValueOfType<String>(json, r'description')!,
+        status: mapValueOfType<String>(json, r'status')!,
+        tagline: mapValueOfType<String>(json, r'tagline')!,
+        genres: Genre.listFromJson(json[r'genres']),
+        overview: mapValueOfType<String>(json, r'overview')!,
         posterLink: mapValueOfType<String>(json, r'posterLink')!,
-        quantity: mapValueOfType<String>(json, r'quantity')!,
-        releaseYear: mapValueOfType<int>(json, r'releaseYear')!,
-        score: num.parse('${json[r'score']}'),
-        durationInMinutes: mapValueOfType<int>(json, r'durationInMinutes')!,
-        videoId: mapValueOfType<int>(json, r'videoId')!,
+        backdropLink: mapValueOfType<String>(json, r'backdropLink')!,
+        releaseDate: mapDateTime(json, r'releaseDate', r'')!,
+        runtime: mapValueOfType<int>(json, r'runtime')!,
+        voteAverage: num.parse('${json[r'voteAverage']}'),
+        videoID: mapValueOfType<int>(json, r'videoID')!,
       );
     }
     return null;
@@ -169,13 +190,16 @@ class Movie {
     'id',
     'title',
     'originalTitle',
-    'description',
+    'status',
+    'tagline',
+    'genres',
+    'overview',
     'posterLink',
-    'quantity',
-    'releaseYear',
-    'score',
-    'durationInMinutes',
-    'videoId',
+    'backdropLink',
+    'releaseDate',
+    'runtime',
+    'voteAverage',
+    'videoID',
   };
 }
 
