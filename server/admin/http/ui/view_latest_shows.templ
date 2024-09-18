@@ -1,0 +1,79 @@
+package ui
+
+import "time"
+import "github.com/phimtorr/phimtor/server/admin/http/uri"
+
+type LatestShow struct {
+    ID int64 
+    Type string
+    ShowID int64
+    Title string
+    OriginalTitle string
+    PosterLink string
+    AirDate string
+    Runtime int
+    VoteAverage float64
+    Quality string
+    SeasonNumber int
+    EpisodeNumber int
+    CreatedAt time.Time
+    UpdatedAt time.Time
+}
+
+templ LatestShowsView(shows []LatestShow, pag Pagination) {
+    @layout("Latest Shows") {
+        <h1>Latest Shows</h1>
+        <article>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Type</th>
+                        <th>Title</th>
+                        <th>Info</th>
+                        <th>Poster</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    for _, s := range shows {
+                        <tr>
+                            <td>{ toString(s.ID) }</td>
+                            <td>{ s.Type }</td>
+                            <td>
+                                <span>{ s.Title }</span>
+                                <small style="display: block;">{ s.OriginalTitle }</small>
+                            </td>
+                            <td>
+                                <span>Season: { toString(s.SeasonNumber) }</span>
+                                <span>Episode: { toString(s.EpisodeNumber) }</span>
+                                <span>Air Date: { s.AirDate }</span>
+                                <span>Runtime: { toString(s.Runtime) }</span>
+                                <span>Vote Average: { toString(s.VoteAverage) }</span>
+                                <span>Quality: { s.Quality }</span>
+                            </td>
+                            <td>
+                                <img src={ s.PosterLink } alt={ s.Title }/>
+                            </td>
+                            <td>
+                                switch s.Type {
+                                    case "movie":
+                                        <a role="button" href={ templ.SafeURL(uri.ViewMovie(s.ShowID)) }>View Movie</a>
+                                    case "tv-series":
+                                        <a role="button" href={ templ.SafeURL(uri.ViewTVSeriesShow(s.ShowID)) }>View TV Series</a>
+                                    case "episode":
+                                        <a role="button" href={ templ.SafeURL(uri.ViewTVSeriesShow(s.ShowID)) }>View TV Series</a>
+                                        <a role="button" href={ templ.SafeURL(uri.ViewTVSeason(s.ShowID, s.SeasonNumber)) }>View TV Season</a>
+                                        <a role="button" href={ templ.SafeURL(uri.ViewTVEpisode(s.ShowID, s.SeasonNumber, s.EpisodeNumber)) }>View TV Episode</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div>
+                @pagination(pag, uri.ListLatestShows)
+            </div>
+        </article>
+    }
+}

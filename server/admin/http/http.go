@@ -63,6 +63,8 @@ func (s Server) Register(r chi.Router) {
 	r.Get("/users/{uid}", errHandlerFunc(s.handler.ViewUser))
 	r.Post("/users/{uid}/update-premium", errHandlerFunc(s.handler.UpdatePremium))
 
+	r.Get("/latest-shows", errHandlerFunc(s.handler2.ListLatestShows))
+
 	r.Get("/movies", errHandlerFunc(s.handler2.ViewMovies))
 	r.Post("/movies/create", errHandlerFunc(s.handler2.CreateMovie))
 	r.Get("/movies/{id}", errHandlerFunc(s.handler2.ViewMovie))
