@@ -14,6 +14,7 @@ import (
 	"github.com/phimtorr/phimtor/common/logs"
 	"github.com/phimtorr/phimtor/server/auth"
 	"github.com/phimtorr/phimtor/server/http"
+	"github.com/phimtorr/phimtor/server/http2"
 	"github.com/phimtorr/phimtor/server/migrations"
 	"github.com/phimtorr/phimtor/server/pkg/database"
 	"github.com/phimtorr/phimtor/server/repository"
@@ -32,16 +33,21 @@ func main() {
 	repo := repository.NewRepository(db)
 	httpServer := http.NewHttpServer(repo)
 
+	repo2 := repository.NewSQLRepo2(db)
+	http2Server := http2.NewHttpServer(repo2)
+
 	r := chi.NewRouter()
 	setMiddlewares(r)
 	setAuthMiddleware(r, firebaseApp)
 
-	handler := http.HandlerFromMuxWithBaseURL(httpServer, r, "/api/v1")
+	http.HandlerFromMuxWithBaseURL(httpServer, r, "/api/v1")
+	http2.HandlerFromMuxWithBaseURL(http2Server, r, "/api/v2")
 
 	addr := ":" + os.Getenv("HTTP_PORT")
 
 	log.Info().Str("address", addr).Msg("Starting HTTP server")
-	if err := stdHttp.ListenAndServe(addr, handler); err != nil {
+
+	if err := stdHttp.ListenAndServe(addr, r); err != nil {
 		log.Fatal().Err(err).Msg("Stopped HTTP server")
 	}
 }

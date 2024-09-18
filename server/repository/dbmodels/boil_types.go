@@ -51,6 +51,50 @@ func makeCacheKey(cols boil.Columns, nzDefaults []string) string {
 	return str
 }
 
+type LatestShowsType string
+
+// Enum values for LatestShowsType
+const (
+	LatestShowsTypeMovie    LatestShowsType = "movie"
+	LatestShowsTypeTVSeries LatestShowsType = "tv-series"
+	LatestShowsTypeEpisode  LatestShowsType = "episode"
+)
+
+func AllLatestShowsType() []LatestShowsType {
+	return []LatestShowsType{
+		LatestShowsTypeMovie,
+		LatestShowsTypeTVSeries,
+		LatestShowsTypeEpisode,
+	}
+}
+
+func (e LatestShowsType) IsValid() error {
+	switch e {
+	case LatestShowsTypeMovie, LatestShowsTypeTVSeries, LatestShowsTypeEpisode:
+		return nil
+	default:
+		return errors.New("enum is not valid")
+	}
+}
+
+func (e LatestShowsType) String() string {
+	return string(e)
+}
+
+func (e LatestShowsType) Ordinal() int {
+	switch e {
+	case LatestShowsTypeMovie:
+		return 0
+	case LatestShowsTypeTVSeries:
+		return 1
+	case LatestShowsTypeEpisode:
+		return 2
+
+	default:
+		panic(errors.New("enum is not valid"))
+	}
+}
+
 type ShowsType string
 
 // Enum values for ShowsType

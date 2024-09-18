@@ -1,0 +1,292 @@
+package ui
+
+import "github.com/phimtorr/phimtor/server/admin/http/uri"
+
+type TVSeriesShow struct {
+    ID               int64
+    Name             string
+    OriginalName     string
+    Status           string
+    Tagline          string
+    Genres           string
+    Overview         string
+    PosterLink       string
+    BackdropLink     string
+    FirstAirDate     string
+    LastAirDate      string
+    VoteAverage      float64
+    VoteCount        int
+    NumberOfEpisodes int
+    NumberOfSeasons  int
+    CreatedAt        string
+    UpdatedAt        string
+}
+
+
+type TVSeason struct {
+    ID            int64
+    ShowID        int64
+    SeasonNumber  int
+    Name          string
+    PosterLink    string
+    Overview      string
+    AirDate       string
+    VoteAverage   float64
+    TotalEpisodes int
+    CreatedAt     string
+    UpdatedAt     string
+}
+
+type TVEpisode struct {
+    ID            int64
+    ShowID        int64
+    SeasonNumber  int
+    EpisodeNumber int
+    Name          string
+    Overview      string
+    AirDate       string
+    Runtime       int
+    StillLink     string
+    VoteAverage   float64
+    VoteCount     int
+    VideoID       int64
+    CreatedAt     string
+    UpdatedAt     string
+}
+
+
+templ TVSeriesShowsView(shows []TVSeriesShow, pag Pagination) {
+    @layout("TV Series Shows") {
+        <h1>TV Series Shows</h1>
+        <article>
+            <form method="POST" action={ templ.SafeURL(uri.CreateTVSeries())  }>
+                <fieldset>
+                    <label>
+                        ID
+                        <input type="number" name="id" required/>
+                    </label>
+                    <button type="submit">Create</button>
+                </fieldset>
+            </form>
+        </article>
+        <article>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Info</th>
+                        <th>Poster</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    for _, s := range shows {
+                        <tr>
+                            <td>{ toString(s.ID) }</td>
+                            <td>
+                                <span>{ s.Name }</span>
+                                <small style="display: block;">{ s.OriginalName }</small>
+                            </td>
+                            <td>
+                                <span>Status: { s.Status }</span>
+                                <span>First Air Date: { s.FirstAirDate }</span>
+                            </td>
+                            <td>
+                                <img src={ s.PosterLink } alt={ s.Name }/>
+                            </td>
+                            <td>
+                                <a role="button" href={ templ.SafeURL(uri.ViewTVSeriesShow(s.ID)) }>View</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </article>
+        <article>
+            <div>
+                @pagination(pag, uri.ListTVSeries)
+            </div>
+        </article>
+    }
+}
+
+templ TVSeriesShowView(show TVSeriesShow, seasons []TVSeason) {
+    @layout("TV Series Show | " + show.Name) {
+        <article>
+            <header>
+                <h1>{ show.Name }</h1>
+                <h2>{ show.OriginalName }</h2>
+            </header>
+            <figure>
+                <img src={ show.PosterLink } alt={ show.Name }/>
+            </figure>
+            <figure>
+                <img src={ show.BackdropLink } alt={ show.Name }/>
+            </figure>
+            <section>
+                <p>{ show.Overview }</p>
+                <dl>
+                    <dt>Status</dt>
+                    <dd>{ show.Status }</dd>
+                    <dt>First Air Date</dt>
+                    <dd>{ show.FirstAirDate }</dd>
+                    <dt>Last Air Date</dt>
+                    <dd>{ show.LastAirDate }</dd>
+                    <dt>Vote Average</dt>
+                    <dd>{ toString(show.VoteAverage) }</dd>
+                    <dt>Vote Count</dt>
+                    <dd>{ toString(show.VoteCount) }</dd>
+                    <dt>Number of Episodes</dt>
+                    <dd>{ toString(show.NumberOfEpisodes) }</dd>
+                    <dt>Number of Seasons</dt>
+                    <dd>{ toString(show.NumberOfSeasons) }</dd>
+                </dl>
+            </section>
+            <footer>
+                <button hx-post={ uri.FetchTVSeriesFromTMDB(show.ID) }>Fetch TMDB</button>
+                <button hx-post={ uri.SyncTVSeries(show.ID) }>Sync</button>
+            </footer>
+        </article>
+        <article>
+            <h2>Seasons</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Info</th>
+                        <th>Poster</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    for _, s := range seasons {
+                        <tr>
+                            <td>{ toString(s.ID) }</td>
+                            <td>
+                                <span>{ s.Name }</span>
+                                <small style="display: block;">{ toString(s.SeasonNumber) }</small>
+                            </td>
+                            <td>
+                                <span>Air date: { s.AirDate }</span>
+                            </td>
+                            <td>
+                                <img src={ s.PosterLink } alt={ s.Name }/>
+                            </td>
+                            <td>
+                                <a role="button" href={ templ.SafeURL(uri.ViewTVSeason(s.ShowID, s.SeasonNumber)) }>View</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </article>
+    }
+}
+
+templ TVSeasonView(season TVSeason, episodes []TVEpisode) {
+    @layout("TV Season | " + season.Name) {
+        <article>
+            <header>
+                <h1>{ season.Name }</h1>
+                <h2>{ toString(season.SeasonNumber) }</h2>
+            </header>
+            <figure>
+                <img src={ season.PosterLink } alt={ season.Name }/>
+            </figure>
+            <section>
+                <p>{ season.Overview }</p>
+                <dl>
+                    <dt>Show ID</dt>
+                    <dd>{ toString(season.ShowID) }</dd>
+                    <dt>Air Date</dt>
+                    <dd>{ season.AirDate }</dd>
+                    <dt>Vote Average</dt>
+                    <dd>{ toString(season.VoteAverage) }</dd>
+                    <dt>Total Episodes</dt>
+                    <dd>{ toString(season.TotalEpisodes) }</dd>
+                </dl>
+            </section>
+        </article>
+        <article>
+            <h2>Episodes</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Info</th>
+                        <th>Still</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    for _, e := range episodes {
+                        <tr>
+                            <td>{ toString(e.ID) }</td>
+                            <td>
+                                <span>{ e.Name }</span>
+                                <small style="display: block;">{ toString(e.EpisodeNumber) }</small>
+                            </td>
+                            <td>
+                                <span>Air date: { e.AirDate }</span>
+                                <span>Runtime: { toString(e.Runtime) } minutes</span>
+                            </td>
+                            <td>
+                                <img src={ e.StillLink } alt={ e.Name }/>
+                            </td>
+                            <td>
+                                <a role="button" href={ templ.SafeURL(uri.ViewTVEpisode(e.ShowID, e.SeasonNumber, e.EpisodeNumber)) }>View</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </article>
+    }
+}
+
+templ TVEpisodeView(episode TVEpisode) {
+    @layout("TV Episode | " + episode.Name) {
+        <article>
+            <header>
+                <h1>{ episode.Name }</h1>
+                <h2>{ toString(episode.EpisodeNumber) }</h2>
+            </header>
+            <figure>
+                <img src={ episode.StillLink } alt={ episode.Name }/>
+            </figure>
+            <section>
+                <p>{ episode.Overview }</p>
+                <dl>
+                    <dt>Show ID</dt>
+                    <dd>{ toString(episode.ShowID) }</dd>
+                    <dt>Season Number</dt>
+                    <dd>{ toString(episode.SeasonNumber) }</dd>
+                    <dt>Air Date</dt>
+                    <dd>{ episode.AirDate }</dd>
+                    <dt>Runtime</dt>
+                    <dd>{ toString(episode.Runtime) } minutes</dd>
+                    <dt>Vote Average</dt>
+                    <dd>{ toString(episode.VoteAverage) }</dd>
+                    <dt>Vote Count</dt>
+                    <dd>{ toString(episode.VoteCount) }</dd>
+                </dl>
+            </section>
+            <footer>
+                if episode.VideoID == 0 {
+                    <button hx-post={ uri.CreateTVEpisodeVideo(episode.ShowID, episode.SeasonNumber, episode.EpisodeNumber) }>Create Video</button>
+                }
+            </footer>
+        </article>
+        if episode.VideoID != 0 {
+            <article>
+                <section
+					hx-get={ uri.ViewVideo(episode.VideoID) }
+					hx-trigger="load"
+				></section>
+            </article>
+        }
+    }
+}

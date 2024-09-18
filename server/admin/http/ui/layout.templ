@@ -26,6 +26,8 @@ templ layout(title string) {
 					</ul>
 					<ul>
 						<li><a href={ templ.SafeURL(uri.ListShows(1)) }>Shows</a></li>
+						<li><a href={ templ.SafeURL(uri.ListMovies(1)) }>Movies</a></li>
+						<li><a href={ templ.SafeURL(uri.ListTVSeries(1)) }>TV Series</a></li>
 						<li><a href={ templ.SafeURL(uri.ListUsers("")) }>Users</a></li>
 						<li><a href="/logout">Logout</a></li>
 					</ul>
@@ -51,7 +53,7 @@ templ pagination(p Pagination, genLinkFn func(int) string) {
 			for i := max(1, p.CurrentPage - 5); i < p.CurrentPage; i++ {
 				<li><a href={ templ.SafeURL(genLinkFn(i)) }>{ toString(i) }</a></li>
 			}
-			<li><a href={ templ.SafeURL(genLinkFn(p.CurrentPage)) } class="current">{ toString(p.CurrentPage) }</a></li>
+			<li style="font-weight: bold;"><a href={ templ.SafeURL(genLinkFn(p.CurrentPage)) } class="current">{ toString(p.CurrentPage) }</a></li>
 			for i := p.CurrentPage + 1; i <= min(p.CurrentPage + 5, p.TotalPages); i++ {
 				<li><a href={ templ.SafeURL(genLinkFn(i)) }>{ toString(i) }</a></li>
 			}
