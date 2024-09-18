@@ -8,6 +8,7 @@ import 'package:phimtor_app/views/settings_view.dart';
 import 'package:phimtor_app/views/shows/movie_detail_view.dart';
 import 'package:phimtor_app/views/shows/movies_grid_view.dart';
 import 'package:phimtor_app/views/shows/search_grid_view.dart';
+import 'package:phimtor_app/views/shows/tv_latest_episodes_grid_view.dart';
 import 'package:phimtor_app/views/shows/tv_season_detail_view.dart';
 import 'package:phimtor_app/views/shows/tv_series_detail_view.dart';
 import 'package:phimtor_app/views/shows/tv_series_grid_view.dart';
@@ -105,6 +106,13 @@ final goRouter = GoRouter(
                       title: title,
                     );
                   },
+                ),
+                GoRoute(
+                  name: routeNameTVLatestEpisodes,
+                  path: "latest-episodes",
+                  pageBuilder: (context, state) => const NoTransitionPage(
+                    child: TvLatestEpisodesGridView(),
+                  ),
                 ),
                 // video
                 GoRoute(
