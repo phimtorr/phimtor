@@ -24,6 +24,8 @@ type Repository interface {
 	UpdateMovie(ctx context.Context, movie *tmdb.MovieDetails) error
 	UpdateTVSeries(ctx context.Context, tv *tmdb.TVDetails, seasons []*tmdb.TVSeasonDetails) error
 
+	ListLatestShows(ctx context.Context, page, pageSize int) ([]ui.LatestShow, ui.Pagination, error)
+
 	ListMovies(ctx context.Context, page, pageSize int) ([]ui.Movie, ui.Pagination, error)
 	GetMovie(ctx context.Context, id int64) (ui.Movie, error)
 	CreateMovieVideo(ctx context.Context, movieID int64) error
