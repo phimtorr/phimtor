@@ -352,18 +352,21 @@ components:
         id:
           type: integer
           format: int64
-        title:
-          type: string
-        originalTitle:
-          type: string
-        posterLink:
-          type: string
+        showId:
+          type: integer
+          format: int64
         type:
           type: string
           enum:
             - movie
             - tv-series
             - episode
+        title:
+          type: string
+        originalTitle:
+          type: string
+        posterLink:
+          type: string
         airDate:
           type: string
           format: date
@@ -373,17 +376,6 @@ components:
           type: number
         quality:
           type: string
-          enum:
-            - 720p
-            - 1080p
-            - 4k
-
-        movieID:
-          type: integer
-          format: int64
-        tvSeriesID:
-          type: integer
-          format: int64
         seasonNumber:
           type: integer
           format: int
@@ -392,16 +384,15 @@ components:
           format: int
       required:
         - id
+        - showId
+        - type
         - title
         - originalTitle
         - posterLink
-        - type
         - airDate
         - runtime
         - voteAverage
         - quality
-        - movieID
-        - tvSeriesID
         - seasonNumber
         - episodeNumber
 

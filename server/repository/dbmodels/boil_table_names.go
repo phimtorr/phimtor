@@ -5,6 +5,7 @@ package dbmodels
 
 var TableNames = struct {
 	Episodes     string
+	LatestShows  string
 	Movies       string
 	Shows        string
 	Subtitles    string
@@ -13,9 +14,9 @@ var TableNames = struct {
 	TVSeasons    string
 	TVSeriesShow string
 	Videos       string
-	ViewShows    string
 }{
 	Episodes:     "episodes",
+	LatestShows:  "latest_shows",
 	Movies:       "movies",
 	Shows:        "shows",
 	Subtitles:    "subtitles",
@@ -24,5 +25,4 @@ var TableNames = struct {
 	TVSeasons:    "tv_seasons",
 	TVSeriesShow: "tv_series_show",
 	Videos:       "videos",
-	ViewShows:    "view_shows",
 }

@@ -32,3 +32,7 @@ func FetchTVSeriesFromTMDB(showID int64) string {
 func CreateTVEpisodeVideo(showID int64, seasonNumber, episodeNumber int) string {
 	return "/tv-series/" + strconv.FormatInt(showID, 10) + "/seasons/" + strconv.Itoa(seasonNumber) + "/episodes/" + strconv.Itoa(episodeNumber) + "/create-video"
 }
+
+func SyncTVSeries(showID int64) string {
+	return "/tv-series/" + strconv.FormatInt(showID, 10) + "/sync"
+}

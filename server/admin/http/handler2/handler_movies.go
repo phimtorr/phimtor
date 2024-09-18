@@ -110,3 +110,20 @@ func (h *Handler) CreateMovieVideo(w http.ResponseWriter, r *http.Request) error
 	redirect(w, r, uri.ViewMovie(id))
 	return nil
 }
+
+func (h *Handler) SyncMovie(w http.ResponseWriter, r *http.Request) error {
+	ctx := r.Context()
+
+	id, err := parseID(chi.URLParam(r, "id"))
+	if err != nil {
+		return errors.Wrap(err, "parsing id")
+	}
+
+	err = h.repo.SyncMovie(ctx, id)
+	if err != nil {
+		return errors.Wrap(err, "sync movie")
+	}
+
+	redirect(w, r, uri.ViewMovie(id))
+	return nil
+}

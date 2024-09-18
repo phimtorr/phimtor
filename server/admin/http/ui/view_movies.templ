@@ -105,6 +105,7 @@ templ MovieView(m Movie) {
             </section>
             <footer>
                 <button hx-post={ uri.FetchMovieFromTMDB(m.ID) }>Fetch TMDB</button>
+                <button hx-post={ uri.SyncMovie(m.ID) }>Sync</button>
                 if m.VideoID == 0 {
                     <button hx-post={ uri.CreateMovieVideo(m.ID) }>Create Video</button>
                 }

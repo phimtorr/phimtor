@@ -33,6 +33,9 @@ type Repository interface {
 	GetTVSeason(ctx context.Context, showID int64, seasonNumber int) (ui.TVSeason, []ui.TVEpisode, error)
 	GetTVEpisode(ctx context.Context, showID int64, seasonNumber, episodeNumber int) (ui.TVEpisode, error)
 	CreateTVEpisodeVideo(ctx context.Context, showID int64, seasonNumber, episodeNumber int) error
+
+	SyncMovie(ctx context.Context, movieID int64) error
+	SyncTVSeries(ctx context.Context, tvID int64) error
 }
 
 type Handler struct {

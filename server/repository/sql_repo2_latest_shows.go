@@ -17,7 +17,7 @@ func (r SQLRepo2) GetLatestEpisodes(ctx context.Context, params http2.GetLatestE
 	page, pageSize := toPageAndPageSize(params.Page, params.PageSize)
 
 	queryMods := []qm.QueryMod{
-		dbmodels.ViewShowWhere.Type.EQ(dbmodels.ViewShowsTypeEpisode),
+		dbmodels.LatestShowWhere.Type.EQ(dbmodels.LatestShowsTypeEpisode),
 	}
 
 	return r.queryShows(ctx, queryMods, page, pageSize, true)
@@ -27,7 +27,7 @@ func (r SQLRepo2) GetLatestMovies(ctx context.Context, params http2.GetLatestMov
 	page, pageSize := toPageAndPageSize(params.Page, params.PageSize)
 
 	queryMods := []qm.QueryMod{
-		dbmodels.ViewShowWhere.Type.EQ(dbmodels.ViewShowsTypeMovie),
+		dbmodels.LatestShowWhere.Type.EQ(dbmodels.LatestShowsTypeMovie),
 	}
 
 	return r.queryShows(ctx, queryMods, page, pageSize, true)
@@ -37,7 +37,7 @@ func (r SQLRepo2) GetLatestTvSeries(ctx context.Context, params http2.GetLatestT
 	page, pageSize := toPageAndPageSize(params.Page, params.PageSize)
 
 	queryMods := []qm.QueryMod{
-		dbmodels.ViewShowWhere.Type.EQ(dbmodels.ViewShowsTypeEpisode),
+		dbmodels.LatestShowWhere.Type.EQ(dbmodels.LatestShowsTypeEpisode),
 	}
 
 	return r.queryShows(ctx, queryMods, page, pageSize, true)
@@ -60,16 +60,16 @@ func (r SQLRepo2) queryShows(ctx context.Context, queryMods []qm.QueryMod, page,
 	)
 
 	if sort {
-		pagingQueryMods = append(pagingQueryMods, qm.OrderBy(dbmodels.ViewShowColumns.AirDate+" DESC"))
+		pagingQueryMods = append(pagingQueryMods, qm.OrderBy(dbmodels.LatestShowColumns.AirDate+" DESC"))
 	}
 
-	shows, err := dbmodels.ViewShows(pagingQueryMods...).
+	shows, err := dbmodels.LatestShows(pagingQueryMods...).
 		All(ctx, r.db)
 	if err != nil {
 		return nil, http2.Pagination{}, fmt.Errorf("get shows: %w", err)
 	}
 
-	count, err := dbmodels.ViewShows(queryMods...).Count(ctx, r.db)
+	count, err := dbmodels.LatestShows(queryMods...).Count(ctx, r.db)
 	if err != nil {
 		return nil, http2.Pagination{}, fmt.Errorf("count shows: %w", err)
 	}
@@ -100,7 +100,7 @@ func toPageAndPageSize(page, pageSize *int) (rPage, rPageSize int) {
 	return
 }
 
-func toHTTP2Shows(shows []*dbmodels.ViewShow) []http2.Show {
+func toHTTP2Shows(shows []*dbmodels.LatestShow) []http2.Show {
 	r := make([]http2.Show, 0, len(shows))
 	for _, show := range shows {
 		r = append(r, toHTTP2Show(show))
@@ -108,19 +108,18 @@ func toHTTP2Shows(shows []*dbmodels.ViewShow) []http2.Show {
 	return r
 }
 
-func toHTTP2Show(show *dbmodels.ViewShow) http2.Show {
+func toHTTP2Show(show *dbmodels.LatestShow) http2.Show {
 	return http2.Show{
 		AirDate:       openapiTypes.Date{Time: show.AirDate.Time},
 		EpisodeNumber: show.EpisodeNumber.Int,
 		Id:            show.ID,
-		MovieID:       show.MovieID.Int64,
+		ShowId:        show.ShowID,
 		OriginalTitle: show.OriginalTitle,
 		PosterLink:    tmdb.GetImageURL(show.PosterPath, tmdb.W300),
-		Quality:       http2.ShowQuality(show.Quality),
+		Quality:       show.Quality,
 		Runtime:       show.Runtime.Int,
 		SeasonNumber:  show.SeasonNumber.Int,
 		Title:         show.Title,
-		TvSeriesID:    show.TVSeriesID.Int64,
 		Type:          http2.ShowType(show.Type),
 		VoteAverage:   show.VoteAverage,
 	}

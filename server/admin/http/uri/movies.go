@@ -24,3 +24,7 @@ func FetchMovieFromTMDB(id int64) string {
 func CreateMovieVideo(id int64) string {
 	return "/movies/" + strconv.FormatInt(id, 10) + "/create-video"
 }
+
+func SyncMovie(id int64) string {
+	return "/movies/" + strconv.FormatInt(id, 10) + "/sync"
+}

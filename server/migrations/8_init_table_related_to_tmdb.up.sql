@@ -80,22 +80,23 @@ CREATE TABLE tv_episodes
     FOREIGN KEY (show_id, season_number) REFERENCES tv_seasons (show_id, season_number)
 );
 
-CREATE TABLE view_shows(
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    title VARCHAR(255) NOT NULL,
-    original_title VARCHAR(255) NOT NULL,
-    poster_path VARCHAR(255) NOT NULL,
-    type enum ('movie', 'tv-series', 'episode') NOT NULL,
-    air_date DATE NULL,
-    runtime INT NULL,
-    vote_average FLOAT NOT NULL,
-    quality VARCHAR(255) NOT NULL,
-    movie_id BIGINT,
-    tv_series_id BIGINT,
-    season_number INT,
-    episode_number INT,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FULLTEXT INDEX search_index (title, original_title)
+CREATE TABLE latest_shows
+(
+    id             BIGINT PRIMARY KEY AUTO_INCREMENT,
+    type           enum ('movie', 'tv-series', 'episode') NOT NULL,
+    show_id        BIGINT                                 NOT NULL, -- it can be movie_id or tv_series_id
+    title          VARCHAR(255)                           NOT NULL,
+    original_title VARCHAR(255)                           NOT NULL,
+    poster_path    VARCHAR(255)                           NOT NULL,
+    air_date       DATE                                   NULL,
+    runtime        INT                                    NULL,
+    vote_average   FLOAT                                  NOT NULL,
+    quality        VARCHAR(255)                           NOT NULL,
+    season_number  INT,                                             -- in case of episode
+    episode_number INT,                                             -- in case of episode
+    created_at     TIMESTAMP                              NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at     TIMESTAMP                              NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FULLTEXT INDEX search_index (title, original_title),
+    UNIQUE KEY idx_type_show_id (type, show_id)
 );
 

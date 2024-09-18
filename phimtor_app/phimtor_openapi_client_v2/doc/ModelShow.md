@@ -9,16 +9,15 @@ import 'package:phimtor_openapi_client_v2/api.dart';
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **int** |  | 
+**showId** | **int** |  | 
+**type** | **String** |  | 
 **title** | **String** |  | 
 **originalTitle** | **String** |  | 
 **posterLink** | **String** |  | 
-**type** | **String** |  | 
 **airDate** | [**DateTime**](DateTime.md) |  | 
 **runtime** | **int** |  | 
 **voteAverage** | **num** |  | 
 **quality** | **String** |  | 
-**movieID** | **int** |  | 
-**tvSeriesID** | **int** |  | 
 **seasonNumber** | **int** |  | 
 **episodeNumber** | **int** |  | 
 

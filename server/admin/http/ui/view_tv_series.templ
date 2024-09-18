@@ -145,6 +145,7 @@ templ TVSeriesShowView(show TVSeriesShow, seasons []TVSeason) {
             </section>
             <footer>
                 <button hx-post={ uri.FetchTVSeriesFromTMDB(show.ID) }>Fetch TMDB</button>
+                <button hx-post={ uri.SyncTVSeries(show.ID) }>Sync</button>
             </footer>
         </article>
         <article>

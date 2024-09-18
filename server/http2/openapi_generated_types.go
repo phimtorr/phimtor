@@ -11,13 +11,6 @@ const (
 	BearerAuthScopes = "bearerAuth.Scopes"
 )
 
-// Defines values for ShowQuality.
-const (
-	N1080p ShowQuality = "1080p"
-	N4k    ShowQuality = "4k"
-	N720p  ShowQuality = "720p"
-)
-
 // Defines values for ShowType.
 const (
 	ShowTypeEpisode  ShowType = "episode"
@@ -73,20 +66,16 @@ type Show struct {
 	AirDate       openapi_types.Date `json:"airDate"`
 	EpisodeNumber int                `json:"episodeNumber"`
 	Id            int64              `json:"id"`
-	MovieID       int64              `json:"movieID"`
 	OriginalTitle string             `json:"originalTitle"`
 	PosterLink    string             `json:"posterLink"`
-	Quality       ShowQuality        `json:"quality"`
+	Quality       string             `json:"quality"`
 	Runtime       int                `json:"runtime"`
 	SeasonNumber  int                `json:"seasonNumber"`
+	ShowId        int64              `json:"showId"`
 	Title         string             `json:"title"`
-	TvSeriesID    int64              `json:"tvSeriesID"`
 	Type          ShowType           `json:"type"`
 	VoteAverage   float32            `json:"voteAverage"`
 }
-
-// ShowQuality defines model for Show.Quality.
-type ShowQuality string
 
 // ShowType defines model for Show.Type.
 type ShowType string

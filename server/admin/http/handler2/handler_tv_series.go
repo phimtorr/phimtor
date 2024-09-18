@@ -160,3 +160,20 @@ func (h *Handler) CreateTVEpisodeVideo(w http.ResponseWriter, r *http.Request) e
 	redirect(w, r, uri.ViewTVEpisode(showID, int(seasonNumber), int(episodeNumber)))
 	return nil
 }
+
+func (h *Handler) SyncTVSeries(w http.ResponseWriter, r *http.Request) error {
+	ctx := r.Context()
+
+	id, err := parseID(chi.URLParam(r, "showID"))
+	if err != nil {
+		return err
+	}
+
+	err = h.repo.SyncTVSeries(ctx, id)
+	if err != nil {
+		return errors.Wrap(err, "sync tv series")
+	}
+
+	redirect(w, r, uri.ViewTVSeriesShow(id))
+	return nil
+}
