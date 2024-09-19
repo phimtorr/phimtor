@@ -200,13 +200,13 @@ class _VideoPlayerState extends State<VideoPlayer> {
                     infoHash: _infoHash!,
                     videoIndex: _videoIndex!,
                   ),
-                if (widget.subtitle != null && widget.subtitle!.id != "no")
-                  Flexible(
-                    child: Text(
-                      "${context.loc.subtitle}: ${widget.subtitle!.title}",
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
+                if (widget.subtitle != null && widget.subtitle!.id != "no") ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    "${context.loc.subtitle}: ${widget.subtitle!.title}",
+                    style: Theme.of(context).textTheme.labelMedium,
                   ),
+                ]
               ],
             ),
     );
