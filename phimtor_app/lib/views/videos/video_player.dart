@@ -146,40 +146,69 @@ class _VideoPlayerState extends State<VideoPlayer> {
         child: Text(context.loc.error(error.toString())),
       );
     }
-    return Column(
-      children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.width * 9.0 / 16.0,
-          child: AspectRatio(
-            aspectRatio: 16.0 / 9.0,
-            child: Video(
-              controller: controller,
-              controls: MaterialDesktopVideoControls,
+    return LayoutBuilder(builder: (context, constraints) {
+      final isWideScreen = constraints.maxWidth > 600;
+      return Column(
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.width * 9.0 / 16.0,
+            child: AspectRatio(
+              aspectRatio: 16.0 / 9.0,
+              child: Video(
+                controller: controller,
+                controls: isWideScreen
+                    ? MaterialDesktopVideoControls
+                    : MaterialVideoControls,
+              ),
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              if (isTorrentIsAdded())
-                StatsSection(
-                  infoHash: _infoHash!,
-                  videoIndex: _videoIndex!,
-                ),
-              if (widget.subtitle != null && widget.subtitle!.id != "no")
-                Flexible(
-                  child: Text(
-                    "${context.loc.subtitle}: ${widget.subtitle!.title}",
-                    style: Theme.of(context).textTheme.labelMedium,
+          buildStatsAndSelectedSubtitleSection(context, isWideScreen),
+        ],
+      );
+    });
+  }
+
+  Widget buildStatsAndSelectedSubtitleSection(
+    BuildContext context,
+    bool isWideScreen,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: isWideScreen
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if (isTorrentIsAdded())
+                  StatsSection(
+                    infoHash: _infoHash!,
+                    videoIndex: _videoIndex!,
                   ),
-                ),
-            ],
-          ),
-        ),
-      ],
+                if (widget.subtitle != null && widget.subtitle!.id != "no")
+                  Flexible(
+                    child: Text(
+                      "${context.loc.subtitle}: ${widget.subtitle!.title}",
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                  ),
+              ],
+            )
+          : Column(
+              children: [
+                if (isTorrentIsAdded())
+                  StatsSection(
+                    infoHash: _infoHash!,
+                    videoIndex: _videoIndex!,
+                  ),
+                if (widget.subtitle != null && widget.subtitle!.id != "no")
+                  Flexible(
+                    child: Text(
+                      "${context.loc.subtitle}: ${widget.subtitle!.title}",
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                  ),
+              ],
+            ),
     );
   }
 }

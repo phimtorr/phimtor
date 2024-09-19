@@ -163,7 +163,7 @@ class TVSeasonDetailView extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            context.loc.latest_episodes,
+            context.loc.detail_episodes,
             style: Theme.of(context).textTheme.headlineMedium,
           ),
         ),

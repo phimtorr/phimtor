@@ -40,8 +40,6 @@ class _VideoScreenState extends State<VideoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var titleStyle = Theme.of(context).textTheme.headlineMedium!;
-
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,49 +48,52 @@ class _VideoScreenState extends State<VideoScreen> {
             torrentLink: _selectedTorrentLink!,
             subtitle: _subtitleTrack,
           ),
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(context.loc.torrent_links, style: titleStyle),
-                Wrap(
-                  spacing: 8,
-                  children: [
-                    ...widget.video.torrentLinks.map((link) {
-                      VoidCallback? onPressed;
-                      if (link != _selectedTorrentLink) {
-                        onPressed = () => selectTorrentLink(link);
-                      }
+          buildTorrentLinksSection(context),
+          SubtitleSection(
+            subtitles: widget.video.subtitles,
+            onSelectSubtitle: setSubtitleTrack,
+          ),
+        ],
+      ),
+    );
+  }
 
-                      if (link == widget.video.torrentLinks.first) {
-                        return ElevatedButton(
-                          onPressed: onPressed,
-                          child: Text(link.name),
-                        );
-                      } else {
-                        return NeedVerifiedUserButton(
-                          onPressed: onPressed,
-                          child: Text(link.name),
-                        );
-                      }
-                    }),
-                    ...widget.video.premiumTorrentLinks.map((link) {
-                      return PremiumButton(
-                        onPressed: () {},
-                        label: Text(link.name),
-                      );
-                    }),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                SubtitleSection(
-                  subtitles: widget.video.subtitles,
-                  onSelectSubtitle: setSubtitleTrack,
-                ),
-              ],
-            ),
+  Widget buildTorrentLinksSection(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(context.loc.torrent_links,
+              style: Theme.of(context).textTheme.headlineMedium),
+          Wrap(
+            spacing: 8,
+            children: [
+              ...widget.video.torrentLinks.map((link) {
+                VoidCallback? onPressed;
+                if (link != _selectedTorrentLink) {
+                  onPressed = () => selectTorrentLink(link);
+                }
+
+                if (link == widget.video.torrentLinks.first) {
+                  return ElevatedButton(
+                    onPressed: onPressed,
+                    child: Text(link.name),
+                  );
+                } else {
+                  return NeedVerifiedUserButton(
+                    onPressed: onPressed,
+                    child: Text(link.name),
+                  );
+                }
+              }),
+              ...widget.video.premiumTorrentLinks.map((link) {
+                return PremiumButton(
+                  onPressed: () {},
+                  label: Text(link.name),
+                );
+              }),
+            ],
           ),
         ],
       ),

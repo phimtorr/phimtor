@@ -68,21 +68,6 @@ class MovieDetailView extends StatelessWidget {
                     height: isWideScreen ? 400.0 : 250.0,
                     fit: BoxFit.cover,
                   ),
-                  // Play button overlay
-                  Positioned(
-                    bottom: 20.0,
-                    right: 20.0,
-                    child: ElevatedButton.icon(
-                        onPressed: () {
-                          context.goNamed(routeNameVideo, pathParameters: {
-                            "id": movie.videoID.toString(),
-                            "title": movie.title,
-                          });
-                        },
-                        label: Text(context.loc.watch_now),
-                        icon: const Icon(Icons.play_arrow),
-                      ),
-                  ),
                 ],
               ),
               // Movie details layout: conditional based on screen width
@@ -181,6 +166,17 @@ class MovieDetailView extends StatelessWidget {
               style: infoTextStyte,
             ),
           ],
+        ),
+        const SizedBox(height: 16.0),
+        ElevatedButton.icon(
+          onPressed: () {
+            context.goNamed(routeNameVideo, pathParameters: {
+              "id": movie.videoID.toString(),
+              "title": movie.title,
+            });
+          },
+          label: Text(context.loc.watch_now),
+          icon: const Icon(Icons.play_arrow),
         ),
       ],
     );
