@@ -104,23 +104,23 @@ var TVSeriesShowTableColumns = struct {
 	CreatedAt        string
 	UpdatedAt        string
 }{
-	ID:               "tv_series_show.id",
-	Name:             "tv_series_show.name",
-	OriginalName:     "tv_series_show.original_name",
-	Status:           "tv_series_show.status",
-	Tagline:          "tv_series_show.tagline",
-	Genres:           "tv_series_show.genres",
-	Overview:         "tv_series_show.overview",
-	PosterPath:       "tv_series_show.poster_path",
-	BackdropPath:     "tv_series_show.backdrop_path",
-	FirstAirDate:     "tv_series_show.first_air_date",
-	LastAirDate:      "tv_series_show.last_air_date",
-	VoteAverage:      "tv_series_show.vote_average",
-	VoteCount:        "tv_series_show.vote_count",
-	NumberOfEpisodes: "tv_series_show.number_of_episodes",
-	NumberOfSeasons:  "tv_series_show.number_of_seasons",
-	CreatedAt:        "tv_series_show.created_at",
-	UpdatedAt:        "tv_series_show.updated_at",
+	ID:               "tv_series_shows.id",
+	Name:             "tv_series_shows.name",
+	OriginalName:     "tv_series_shows.original_name",
+	Status:           "tv_series_shows.status",
+	Tagline:          "tv_series_shows.tagline",
+	Genres:           "tv_series_shows.genres",
+	Overview:         "tv_series_shows.overview",
+	PosterPath:       "tv_series_shows.poster_path",
+	BackdropPath:     "tv_series_shows.backdrop_path",
+	FirstAirDate:     "tv_series_shows.first_air_date",
+	LastAirDate:      "tv_series_shows.last_air_date",
+	VoteAverage:      "tv_series_shows.vote_average",
+	VoteCount:        "tv_series_shows.vote_count",
+	NumberOfEpisodes: "tv_series_shows.number_of_episodes",
+	NumberOfSeasons:  "tv_series_shows.number_of_seasons",
+	CreatedAt:        "tv_series_shows.created_at",
+	UpdatedAt:        "tv_series_shows.updated_at",
 }
 
 // Generated where
@@ -144,23 +144,23 @@ var TVSeriesShowWhere = struct {
 	CreatedAt        whereHelpertime_Time
 	UpdatedAt        whereHelpertime_Time
 }{
-	ID:               whereHelperint64{field: "`tv_series_show`.`id`"},
-	Name:             whereHelperstring{field: "`tv_series_show`.`name`"},
-	OriginalName:     whereHelperstring{field: "`tv_series_show`.`original_name`"},
-	Status:           whereHelperstring{field: "`tv_series_show`.`status`"},
-	Tagline:          whereHelperstring{field: "`tv_series_show`.`tagline`"},
-	Genres:           whereHelpertypes_JSON{field: "`tv_series_show`.`genres`"},
-	Overview:         whereHelperstring{field: "`tv_series_show`.`overview`"},
-	PosterPath:       whereHelperstring{field: "`tv_series_show`.`poster_path`"},
-	BackdropPath:     whereHelperstring{field: "`tv_series_show`.`backdrop_path`"},
-	FirstAirDate:     whereHelpernull_Time{field: "`tv_series_show`.`first_air_date`"},
-	LastAirDate:      whereHelpernull_Time{field: "`tv_series_show`.`last_air_date`"},
-	VoteAverage:      whereHelperfloat32{field: "`tv_series_show`.`vote_average`"},
-	VoteCount:        whereHelperint{field: "`tv_series_show`.`vote_count`"},
-	NumberOfEpisodes: whereHelperint{field: "`tv_series_show`.`number_of_episodes`"},
-	NumberOfSeasons:  whereHelperint{field: "`tv_series_show`.`number_of_seasons`"},
-	CreatedAt:        whereHelpertime_Time{field: "`tv_series_show`.`created_at`"},
-	UpdatedAt:        whereHelpertime_Time{field: "`tv_series_show`.`updated_at`"},
+	ID:               whereHelperint64{field: "`tv_series_shows`.`id`"},
+	Name:             whereHelperstring{field: "`tv_series_shows`.`name`"},
+	OriginalName:     whereHelperstring{field: "`tv_series_shows`.`original_name`"},
+	Status:           whereHelperstring{field: "`tv_series_shows`.`status`"},
+	Tagline:          whereHelperstring{field: "`tv_series_shows`.`tagline`"},
+	Genres:           whereHelpertypes_JSON{field: "`tv_series_shows`.`genres`"},
+	Overview:         whereHelperstring{field: "`tv_series_shows`.`overview`"},
+	PosterPath:       whereHelperstring{field: "`tv_series_shows`.`poster_path`"},
+	BackdropPath:     whereHelperstring{field: "`tv_series_shows`.`backdrop_path`"},
+	FirstAirDate:     whereHelpernull_Time{field: "`tv_series_shows`.`first_air_date`"},
+	LastAirDate:      whereHelpernull_Time{field: "`tv_series_shows`.`last_air_date`"},
+	VoteAverage:      whereHelperfloat32{field: "`tv_series_shows`.`vote_average`"},
+	VoteCount:        whereHelperint{field: "`tv_series_shows`.`vote_count`"},
+	NumberOfEpisodes: whereHelperint{field: "`tv_series_shows`.`number_of_episodes`"},
+	NumberOfSeasons:  whereHelperint{field: "`tv_series_shows`.`number_of_seasons`"},
+	CreatedAt:        whereHelpertime_Time{field: "`tv_series_shows`.`created_at`"},
+	UpdatedAt:        whereHelpertime_Time{field: "`tv_series_shows`.`updated_at`"},
 }
 
 // TVSeriesShowRels is where relationship names are stored.
@@ -442,7 +442,7 @@ func (q tvSeriesShowQuery) One(ctx context.Context, exec boil.ContextExecutor) (
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, sql.ErrNoRows
 		}
-		return nil, errors.Wrap(err, "dbmodels: failed to execute a one query for tv_series_show")
+		return nil, errors.Wrap(err, "dbmodels: failed to execute a one query for tv_series_shows")
 	}
 
 	if err := o.doAfterSelectHooks(ctx, exec); err != nil {
@@ -481,7 +481,7 @@ func (q tvSeriesShowQuery) Count(ctx context.Context, exec boil.ContextExecutor)
 
 	err := q.Query.QueryRowContext(ctx, exec).Scan(&count)
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodels: failed to count tv_series_show rows")
+		return 0, errors.Wrap(err, "dbmodels: failed to count tv_series_shows rows")
 	}
 
 	return count, nil
@@ -497,7 +497,7 @@ func (q tvSeriesShowQuery) Exists(ctx context.Context, exec boil.ContextExecutor
 
 	err := q.Query.QueryRowContext(ctx, exec).Scan(&count)
 	if err != nil {
-		return false, errors.Wrap(err, "dbmodels: failed to check if tv_series_show exists")
+		return false, errors.Wrap(err, "dbmodels: failed to check if tv_series_shows exists")
 	}
 
 	return count > 0, nil
@@ -685,10 +685,10 @@ func (o *TVSeriesShow) AddShowTVSeasons(ctx context.Context, exec boil.ContextEx
 
 // TVSeriesShows retrieves all the records using an executor.
 func TVSeriesShows(mods ...qm.QueryMod) tvSeriesShowQuery {
-	mods = append(mods, qm.From("`tv_series_show`"))
+	mods = append(mods, qm.From("`tv_series_shows`"))
 	q := NewQuery(mods...)
 	if len(queries.GetSelect(q)) == 0 {
-		queries.SetSelect(q, []string{"`tv_series_show`.*"})
+		queries.SetSelect(q, []string{"`tv_series_shows`.*"})
 	}
 
 	return tvSeriesShowQuery{q}
@@ -704,7 +704,7 @@ func FindTVSeriesShow(ctx context.Context, exec boil.ContextExecutor, iD int64, 
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from `tv_series_show` where `id`=?", sel,
+		"select %s from `tv_series_shows` where `id`=?", sel,
 	)
 
 	q := queries.Raw(query, iD)
@@ -714,7 +714,7 @@ func FindTVSeriesShow(ctx context.Context, exec boil.ContextExecutor, iD int64, 
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, sql.ErrNoRows
 		}
-		return nil, errors.Wrap(err, "dbmodels: unable to select from tv_series_show")
+		return nil, errors.Wrap(err, "dbmodels: unable to select from tv_series_shows")
 	}
 
 	if err = tvSeriesShowObj.doAfterSelectHooks(ctx, exec); err != nil {
@@ -728,7 +728,7 @@ func FindTVSeriesShow(ctx context.Context, exec boil.ContextExecutor, iD int64, 
 // See boil.Columns.InsertColumnSet documentation to understand column list inference for inserts.
 func (o *TVSeriesShow) Insert(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) error {
 	if o == nil {
-		return errors.New("dbmodels: no tv_series_show provided for insertion")
+		return errors.New("dbmodels: no tv_series_shows provided for insertion")
 	}
 
 	var err error
@@ -771,15 +771,15 @@ func (o *TVSeriesShow) Insert(ctx context.Context, exec boil.ContextExecutor, co
 			return err
 		}
 		if len(wl) != 0 {
-			cache.query = fmt.Sprintf("INSERT INTO `tv_series_show` (`%s`) %%sVALUES (%s)%%s", strings.Join(wl, "`,`"), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
+			cache.query = fmt.Sprintf("INSERT INTO `tv_series_shows` (`%s`) %%sVALUES (%s)%%s", strings.Join(wl, "`,`"), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
 		} else {
-			cache.query = "INSERT INTO `tv_series_show` () VALUES ()%s%s"
+			cache.query = "INSERT INTO `tv_series_shows` () VALUES ()%s%s"
 		}
 
 		var queryOutput, queryReturning string
 
 		if len(cache.retMapping) != 0 {
-			cache.retQuery = fmt.Sprintf("SELECT `%s` FROM `tv_series_show` WHERE %s", strings.Join(returnColumns, "`,`"), strmangle.WhereClause("`", "`", 0, tvSeriesShowPrimaryKeyColumns))
+			cache.retQuery = fmt.Sprintf("SELECT `%s` FROM `tv_series_shows` WHERE %s", strings.Join(returnColumns, "`,`"), strmangle.WhereClause("`", "`", 0, tvSeriesShowPrimaryKeyColumns))
 		}
 
 		cache.query = fmt.Sprintf(cache.query, queryOutput, queryReturning)
@@ -796,7 +796,7 @@ func (o *TVSeriesShow) Insert(ctx context.Context, exec boil.ContextExecutor, co
 	_, err = exec.ExecContext(ctx, cache.query, vals...)
 
 	if err != nil {
-		return errors.Wrap(err, "dbmodels: unable to insert into tv_series_show")
+		return errors.Wrap(err, "dbmodels: unable to insert into tv_series_shows")
 	}
 
 	var identifierCols []interface{}
@@ -816,7 +816,7 @@ func (o *TVSeriesShow) Insert(ctx context.Context, exec boil.ContextExecutor, co
 	}
 	err = exec.QueryRowContext(ctx, cache.retQuery, identifierCols...).Scan(queries.PtrsFromMapping(value, cache.retMapping)...)
 	if err != nil {
-		return errors.Wrap(err, "dbmodels: unable to populate default values for tv_series_show")
+		return errors.Wrap(err, "dbmodels: unable to populate default values for tv_series_shows")
 	}
 
 CacheNoHooks:
@@ -858,10 +858,10 @@ func (o *TVSeriesShow) Update(ctx context.Context, exec boil.ContextExecutor, co
 			wl = strmangle.SetComplement(wl, []string{"created_at"})
 		}
 		if len(wl) == 0 {
-			return 0, errors.New("dbmodels: unable to update tv_series_show, could not build whitelist")
+			return 0, errors.New("dbmodels: unable to update tv_series_shows, could not build whitelist")
 		}
 
-		cache.query = fmt.Sprintf("UPDATE `tv_series_show` SET %s WHERE %s",
+		cache.query = fmt.Sprintf("UPDATE `tv_series_shows` SET %s WHERE %s",
 			strmangle.SetParamNames("`", "`", 0, wl),
 			strmangle.WhereClause("`", "`", 0, tvSeriesShowPrimaryKeyColumns),
 		)
@@ -881,12 +881,12 @@ func (o *TVSeriesShow) Update(ctx context.Context, exec boil.ContextExecutor, co
 	var result sql.Result
 	result, err = exec.ExecContext(ctx, cache.query, values...)
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodels: unable to update tv_series_show row")
+		return 0, errors.Wrap(err, "dbmodels: unable to update tv_series_shows row")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodels: failed to get rows affected by update for tv_series_show")
+		return 0, errors.Wrap(err, "dbmodels: failed to get rows affected by update for tv_series_shows")
 	}
 
 	if !cached {
@@ -904,12 +904,12 @@ func (q tvSeriesShowQuery) UpdateAll(ctx context.Context, exec boil.ContextExecu
 
 	result, err := q.Query.ExecContext(ctx, exec)
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodels: unable to update all for tv_series_show")
+		return 0, errors.Wrap(err, "dbmodels: unable to update all for tv_series_shows")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodels: unable to retrieve rows affected for tv_series_show")
+		return 0, errors.Wrap(err, "dbmodels: unable to retrieve rows affected for tv_series_shows")
 	}
 
 	return rowsAff, nil
@@ -942,7 +942,7 @@ func (o TVSeriesShowSlice) UpdateAll(ctx context.Context, exec boil.ContextExecu
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := fmt.Sprintf("UPDATE `tv_series_show` SET %s WHERE %s",
+	sql := fmt.Sprintf("UPDATE `tv_series_shows` SET %s WHERE %s",
 		strmangle.SetParamNames("`", "`", 0, colNames),
 		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, tvSeriesShowPrimaryKeyColumns, len(o)))
 
@@ -971,7 +971,7 @@ var mySQLTVSeriesShowUniqueColumns = []string{
 // See boil.Columns documentation for how to properly use updateColumns and insertColumns.
 func (o *TVSeriesShow) Upsert(ctx context.Context, exec boil.ContextExecutor, updateColumns, insertColumns boil.Columns) error {
 	if o == nil {
-		return errors.New("dbmodels: no tv_series_show provided for upsert")
+		return errors.New("dbmodels: no tv_series_shows provided for upsert")
 	}
 	if !boil.TimestampsAreSkipped(ctx) {
 		currTime := time.Now().In(boil.GetLocation())
@@ -1035,14 +1035,14 @@ func (o *TVSeriesShow) Upsert(ctx context.Context, exec boil.ContextExecutor, up
 		)
 
 		if !updateColumns.IsNone() && len(update) == 0 {
-			return errors.New("dbmodels: unable to upsert tv_series_show, could not build update column list")
+			return errors.New("dbmodels: unable to upsert tv_series_shows, could not build update column list")
 		}
 
 		ret := strmangle.SetComplement(tvSeriesShowAllColumns, strmangle.SetIntersect(insert, update))
 
-		cache.query = buildUpsertQueryMySQL(dialect, "`tv_series_show`", update, insert)
+		cache.query = buildUpsertQueryMySQL(dialect, "`tv_series_shows`", update, insert)
 		cache.retQuery = fmt.Sprintf(
-			"SELECT %s FROM `tv_series_show` WHERE %s",
+			"SELECT %s FROM `tv_series_shows` WHERE %s",
 			strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, ret), ","),
 			strmangle.WhereClause("`", "`", 0, nzUniques),
 		)
@@ -1074,7 +1074,7 @@ func (o *TVSeriesShow) Upsert(ctx context.Context, exec boil.ContextExecutor, up
 	_, err = exec.ExecContext(ctx, cache.query, vals...)
 
 	if err != nil {
-		return errors.Wrap(err, "dbmodels: unable to upsert for tv_series_show")
+		return errors.Wrap(err, "dbmodels: unable to upsert for tv_series_shows")
 	}
 
 	var uniqueMap []uint64
@@ -1086,7 +1086,7 @@ func (o *TVSeriesShow) Upsert(ctx context.Context, exec boil.ContextExecutor, up
 
 	uniqueMap, err = queries.BindMapping(tvSeriesShowType, tvSeriesShowMapping, nzUniques)
 	if err != nil {
-		return errors.Wrap(err, "dbmodels: unable to retrieve unique values for tv_series_show")
+		return errors.Wrap(err, "dbmodels: unable to retrieve unique values for tv_series_shows")
 	}
 	nzUniqueCols = queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), uniqueMap)
 
@@ -1097,7 +1097,7 @@ func (o *TVSeriesShow) Upsert(ctx context.Context, exec boil.ContextExecutor, up
 	}
 	err = exec.QueryRowContext(ctx, cache.retQuery, nzUniqueCols...).Scan(returns...)
 	if err != nil {
-		return errors.Wrap(err, "dbmodels: unable to populate default values for tv_series_show")
+		return errors.Wrap(err, "dbmodels: unable to populate default values for tv_series_shows")
 	}
 
 CacheNoHooks:
@@ -1122,7 +1122,7 @@ func (o *TVSeriesShow) Delete(ctx context.Context, exec boil.ContextExecutor) (i
 	}
 
 	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), tvSeriesShowPrimaryKeyMapping)
-	sql := "DELETE FROM `tv_series_show` WHERE `id`=?"
+	sql := "DELETE FROM `tv_series_shows` WHERE `id`=?"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1131,12 +1131,12 @@ func (o *TVSeriesShow) Delete(ctx context.Context, exec boil.ContextExecutor) (i
 	}
 	result, err := exec.ExecContext(ctx, sql, args...)
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodels: unable to delete from tv_series_show")
+		return 0, errors.Wrap(err, "dbmodels: unable to delete from tv_series_shows")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodels: failed to get rows affected by delete for tv_series_show")
+		return 0, errors.Wrap(err, "dbmodels: failed to get rows affected by delete for tv_series_shows")
 	}
 
 	if err := o.doAfterDeleteHooks(ctx, exec); err != nil {
@@ -1156,12 +1156,12 @@ func (q tvSeriesShowQuery) DeleteAll(ctx context.Context, exec boil.ContextExecu
 
 	result, err := q.Query.ExecContext(ctx, exec)
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodels: unable to delete all from tv_series_show")
+		return 0, errors.Wrap(err, "dbmodels: unable to delete all from tv_series_shows")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodels: failed to get rows affected by deleteall for tv_series_show")
+		return 0, errors.Wrap(err, "dbmodels: failed to get rows affected by deleteall for tv_series_shows")
 	}
 
 	return rowsAff, nil
@@ -1187,7 +1187,7 @@ func (o TVSeriesShowSlice) DeleteAll(ctx context.Context, exec boil.ContextExecu
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "DELETE FROM `tv_series_show` WHERE " +
+	sql := "DELETE FROM `tv_series_shows` WHERE " +
 		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, tvSeriesShowPrimaryKeyColumns, len(o))
 
 	if boil.IsDebug(ctx) {
@@ -1202,7 +1202,7 @@ func (o TVSeriesShowSlice) DeleteAll(ctx context.Context, exec boil.ContextExecu
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "dbmodels: failed to get rows affected by deleteall for tv_series_show")
+		return 0, errors.Wrap(err, "dbmodels: failed to get rows affected by deleteall for tv_series_shows")
 	}
 
 	if len(tvSeriesShowAfterDeleteHooks) != 0 {
@@ -1242,7 +1242,7 @@ func (o *TVSeriesShowSlice) ReloadAll(ctx context.Context, exec boil.ContextExec
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "SELECT `tv_series_show`.* FROM `tv_series_show` WHERE " +
+	sql := "SELECT `tv_series_shows`.* FROM `tv_series_shows` WHERE " +
 		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, tvSeriesShowPrimaryKeyColumns, len(*o))
 
 	q := queries.Raw(sql, args...)
@@ -1260,7 +1260,7 @@ func (o *TVSeriesShowSlice) ReloadAll(ctx context.Context, exec boil.ContextExec
 // TVSeriesShowExists checks if the TVSeriesShow row exists.
 func TVSeriesShowExists(ctx context.Context, exec boil.ContextExecutor, iD int64) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from `tv_series_show` where `id`=? limit 1)"
+	sql := "select exists(select 1 from `tv_series_shows` where `id`=? limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1271,7 +1271,7 @@ func TVSeriesShowExists(ctx context.Context, exec boil.ContextExecutor, iD int64
 
 	err := row.Scan(&exists)
 	if err != nil {
-		return false, errors.Wrap(err, "dbmodels: unable to check if tv_series_show exists")
+		return false, errors.Wrap(err, "dbmodels: unable to check if tv_series_shows exists")
 	}
 
 	return exists, nil

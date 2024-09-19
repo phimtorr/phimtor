@@ -24,100 +24,107 @@ import (
 
 // TVSeason is an object representing the database table.
 type TVSeason struct {
-	ID            int64     `boil:"id" json:"id" toml:"id" yaml:"id"`
-	ShowID        int64     `boil:"show_id" json:"show_id" toml:"show_id" yaml:"show_id"`
-	SeasonNumber  int       `boil:"season_number" json:"season_number" toml:"season_number" yaml:"season_number"`
-	Name          string    `boil:"name" json:"name" toml:"name" yaml:"name"`
-	PosterPath    string    `boil:"poster_path" json:"poster_path" toml:"poster_path" yaml:"poster_path"`
-	Overview      string    `boil:"overview" json:"overview" toml:"overview" yaml:"overview"`
-	AirDate       null.Time `boil:"air_date" json:"air_date,omitempty" toml:"air_date" yaml:"air_date,omitempty"`
-	VoteAverage   float32   `boil:"vote_average" json:"vote_average" toml:"vote_average" yaml:"vote_average"`
-	TotalEpisodes int       `boil:"total_episodes" json:"total_episodes" toml:"total_episodes" yaml:"total_episodes"`
-	CreatedAt     time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	UpdatedAt     time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
+	ID                     int64     `boil:"id" json:"id" toml:"id" yaml:"id"`
+	ShowID                 int64     `boil:"show_id" json:"show_id" toml:"show_id" yaml:"show_id"`
+	SeasonNumber           int       `boil:"season_number" json:"season_number" toml:"season_number" yaml:"season_number"`
+	Name                   string    `boil:"name" json:"name" toml:"name" yaml:"name"`
+	PosterPath             string    `boil:"poster_path" json:"poster_path" toml:"poster_path" yaml:"poster_path"`
+	Overview               string    `boil:"overview" json:"overview" toml:"overview" yaml:"overview"`
+	AirDate                null.Time `boil:"air_date" json:"air_date,omitempty" toml:"air_date" yaml:"air_date,omitempty"`
+	VoteAverage            float32   `boil:"vote_average" json:"vote_average" toml:"vote_average" yaml:"vote_average"`
+	TotalEpisodes          int       `boil:"total_episodes" json:"total_episodes" toml:"total_episodes" yaml:"total_episodes"`
+	CreatedAt              time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	UpdatedAt              time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
+	CountAvailableEpisodes int       `boil:"count_available_episodes" json:"count_available_episodes" toml:"count_available_episodes" yaml:"count_available_episodes"`
 
 	R *tvSeasonR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L tvSeasonL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var TVSeasonColumns = struct {
-	ID            string
-	ShowID        string
-	SeasonNumber  string
-	Name          string
-	PosterPath    string
-	Overview      string
-	AirDate       string
-	VoteAverage   string
-	TotalEpisodes string
-	CreatedAt     string
-	UpdatedAt     string
+	ID                     string
+	ShowID                 string
+	SeasonNumber           string
+	Name                   string
+	PosterPath             string
+	Overview               string
+	AirDate                string
+	VoteAverage            string
+	TotalEpisodes          string
+	CreatedAt              string
+	UpdatedAt              string
+	CountAvailableEpisodes string
 }{
-	ID:            "id",
-	ShowID:        "show_id",
-	SeasonNumber:  "season_number",
-	Name:          "name",
-	PosterPath:    "poster_path",
-	Overview:      "overview",
-	AirDate:       "air_date",
-	VoteAverage:   "vote_average",
-	TotalEpisodes: "total_episodes",
-	CreatedAt:     "created_at",
-	UpdatedAt:     "updated_at",
+	ID:                     "id",
+	ShowID:                 "show_id",
+	SeasonNumber:           "season_number",
+	Name:                   "name",
+	PosterPath:             "poster_path",
+	Overview:               "overview",
+	AirDate:                "air_date",
+	VoteAverage:            "vote_average",
+	TotalEpisodes:          "total_episodes",
+	CreatedAt:              "created_at",
+	UpdatedAt:              "updated_at",
+	CountAvailableEpisodes: "count_available_episodes",
 }
 
 var TVSeasonTableColumns = struct {
-	ID            string
-	ShowID        string
-	SeasonNumber  string
-	Name          string
-	PosterPath    string
-	Overview      string
-	AirDate       string
-	VoteAverage   string
-	TotalEpisodes string
-	CreatedAt     string
-	UpdatedAt     string
+	ID                     string
+	ShowID                 string
+	SeasonNumber           string
+	Name                   string
+	PosterPath             string
+	Overview               string
+	AirDate                string
+	VoteAverage            string
+	TotalEpisodes          string
+	CreatedAt              string
+	UpdatedAt              string
+	CountAvailableEpisodes string
 }{
-	ID:            "tv_seasons.id",
-	ShowID:        "tv_seasons.show_id",
-	SeasonNumber:  "tv_seasons.season_number",
-	Name:          "tv_seasons.name",
-	PosterPath:    "tv_seasons.poster_path",
-	Overview:      "tv_seasons.overview",
-	AirDate:       "tv_seasons.air_date",
-	VoteAverage:   "tv_seasons.vote_average",
-	TotalEpisodes: "tv_seasons.total_episodes",
-	CreatedAt:     "tv_seasons.created_at",
-	UpdatedAt:     "tv_seasons.updated_at",
+	ID:                     "tv_seasons.id",
+	ShowID:                 "tv_seasons.show_id",
+	SeasonNumber:           "tv_seasons.season_number",
+	Name:                   "tv_seasons.name",
+	PosterPath:             "tv_seasons.poster_path",
+	Overview:               "tv_seasons.overview",
+	AirDate:                "tv_seasons.air_date",
+	VoteAverage:            "tv_seasons.vote_average",
+	TotalEpisodes:          "tv_seasons.total_episodes",
+	CreatedAt:              "tv_seasons.created_at",
+	UpdatedAt:              "tv_seasons.updated_at",
+	CountAvailableEpisodes: "tv_seasons.count_available_episodes",
 }
 
 // Generated where
 
 var TVSeasonWhere = struct {
-	ID            whereHelperint64
-	ShowID        whereHelperint64
-	SeasonNumber  whereHelperint
-	Name          whereHelperstring
-	PosterPath    whereHelperstring
-	Overview      whereHelperstring
-	AirDate       whereHelpernull_Time
-	VoteAverage   whereHelperfloat32
-	TotalEpisodes whereHelperint
-	CreatedAt     whereHelpertime_Time
-	UpdatedAt     whereHelpertime_Time
+	ID                     whereHelperint64
+	ShowID                 whereHelperint64
+	SeasonNumber           whereHelperint
+	Name                   whereHelperstring
+	PosterPath             whereHelperstring
+	Overview               whereHelperstring
+	AirDate                whereHelpernull_Time
+	VoteAverage            whereHelperfloat32
+	TotalEpisodes          whereHelperint
+	CreatedAt              whereHelpertime_Time
+	UpdatedAt              whereHelpertime_Time
+	CountAvailableEpisodes whereHelperint
 }{
-	ID:            whereHelperint64{field: "`tv_seasons`.`id`"},
-	ShowID:        whereHelperint64{field: "`tv_seasons`.`show_id`"},
-	SeasonNumber:  whereHelperint{field: "`tv_seasons`.`season_number`"},
-	Name:          whereHelperstring{field: "`tv_seasons`.`name`"},
-	PosterPath:    whereHelperstring{field: "`tv_seasons`.`poster_path`"},
-	Overview:      whereHelperstring{field: "`tv_seasons`.`overview`"},
-	AirDate:       whereHelpernull_Time{field: "`tv_seasons`.`air_date`"},
-	VoteAverage:   whereHelperfloat32{field: "`tv_seasons`.`vote_average`"},
-	TotalEpisodes: whereHelperint{field: "`tv_seasons`.`total_episodes`"},
-	CreatedAt:     whereHelpertime_Time{field: "`tv_seasons`.`created_at`"},
-	UpdatedAt:     whereHelpertime_Time{field: "`tv_seasons`.`updated_at`"},
+	ID:                     whereHelperint64{field: "`tv_seasons`.`id`"},
+	ShowID:                 whereHelperint64{field: "`tv_seasons`.`show_id`"},
+	SeasonNumber:           whereHelperint{field: "`tv_seasons`.`season_number`"},
+	Name:                   whereHelperstring{field: "`tv_seasons`.`name`"},
+	PosterPath:             whereHelperstring{field: "`tv_seasons`.`poster_path`"},
+	Overview:               whereHelperstring{field: "`tv_seasons`.`overview`"},
+	AirDate:                whereHelpernull_Time{field: "`tv_seasons`.`air_date`"},
+	VoteAverage:            whereHelperfloat32{field: "`tv_seasons`.`vote_average`"},
+	TotalEpisodes:          whereHelperint{field: "`tv_seasons`.`total_episodes`"},
+	CreatedAt:              whereHelpertime_Time{field: "`tv_seasons`.`created_at`"},
+	UpdatedAt:              whereHelpertime_Time{field: "`tv_seasons`.`updated_at`"},
+	CountAvailableEpisodes: whereHelperint{field: "`tv_seasons`.`count_available_episodes`"},
 }
 
 // TVSeasonRels is where relationship names are stored.
@@ -148,9 +155,9 @@ func (r *tvSeasonR) GetShow() *TVSeriesShow {
 type tvSeasonL struct{}
 
 var (
-	tvSeasonAllColumns            = []string{"id", "show_id", "season_number", "name", "poster_path", "overview", "air_date", "vote_average", "total_episodes", "created_at", "updated_at"}
+	tvSeasonAllColumns            = []string{"id", "show_id", "season_number", "name", "poster_path", "overview", "air_date", "vote_average", "total_episodes", "created_at", "updated_at", "count_available_episodes"}
 	tvSeasonColumnsWithoutDefault = []string{"id", "show_id", "season_number", "name", "poster_path", "overview", "air_date", "vote_average", "total_episodes"}
-	tvSeasonColumnsWithDefault    = []string{"created_at", "updated_at"}
+	tvSeasonColumnsWithDefault    = []string{"created_at", "updated_at", "count_available_episodes"}
 	tvSeasonPrimaryKeyColumns     = []string{"id"}
 	tvSeasonGeneratedColumns      = []string{}
 )
@@ -529,8 +536,8 @@ func (tvSeasonL) LoadShow(ctx context.Context, e boil.ContextExecutor, singular 
 	}
 
 	query := NewQuery(
-		qm.From(`tv_series_show`),
-		qm.WhereIn(`tv_series_show.id in ?`, argsSlice...),
+		qm.From(`tv_series_shows`),
+		qm.WhereIn(`tv_series_shows.id in ?`, argsSlice...),
 	)
 	if mods != nil {
 		mods.Apply(query)
@@ -547,10 +554,10 @@ func (tvSeasonL) LoadShow(ctx context.Context, e boil.ContextExecutor, singular 
 	}
 
 	if err = results.Close(); err != nil {
-		return errors.Wrap(err, "failed to close results of eager load for tv_series_show")
+		return errors.Wrap(err, "failed to close results of eager load for tv_series_shows")
 	}
 	if err = results.Err(); err != nil {
-		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for tv_series_show")
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for tv_series_shows")
 	}
 
 	if len(tvSeriesShowAfterSelectHooks) != 0 {
