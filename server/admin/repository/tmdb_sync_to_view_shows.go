@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	stdErrors "errors"
 	"fmt"
 
 	"github.com/friendsofgo/errors"
@@ -11,6 +12,46 @@ import (
 
 	"github.com/phimtorr/phimtor/server/repository/dbmodels"
 )
+
+func (r TMDBRepository) SyncAll(ctx context.Context) error {
+	var syncErr error
+	if err := r.SyncAllMovies(ctx); err != nil {
+		syncErr = stdErrors.Join(syncErr, fmt.Errorf("sync all movies: %w", err))
+	}
+	return syncErr
+}
+
+func (r TMDBRepository) SyncAllMovies(ctx context.Context) error {
+	movies, err := dbmodels.Movies().All(ctx, r.db)
+	if err != nil {
+		return fmt.Errorf("find movies: %w", err)
+	}
+
+	var syncMoviesErr error
+	for _, movie := range movies {
+		if err := r.SyncMovie(ctx, movie.ID); err != nil {
+			syncMoviesErr = stdErrors.Join(syncMoviesErr, fmt.Errorf("sync movie %d: %w", movie.ID, err))
+		}
+	}
+
+	return syncMoviesErr
+}
+
+func (r TMDBRepository) SyncAllTVSeries(ctx context.Context) error {
+	tvSeriesShows, err := dbmodels.TVSeriesShows().All(ctx, r.db)
+	if err != nil {
+		return fmt.Errorf("find tv series shows: %w", err)
+	}
+
+	var syncTVSeriesErr error
+	for _, show := range tvSeriesShows {
+		if err := r.SyncTVSeries(ctx, show.ID); err != nil {
+			syncTVSeriesErr = stdErrors.Join(syncTVSeriesErr, fmt.Errorf("sync tv series %d: %w", show.ID, err))
+		}
+	}
+
+	return syncTVSeriesErr
+}
 
 const syncToLatestShowsQuery = `
     INSERT INTO latest_shows(
