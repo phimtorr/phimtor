@@ -1,5 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:phimtor_app/constants/enviroment_vars.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:phimtor_app/locale_provider.dart';
 import 'package:phimtor_app/services/preferences/preferences_service.dart';
@@ -51,7 +52,18 @@ class _SettingsViewState extends State<SettingsView> {
         title: Text(context.loc.setting_title),
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Text(
+              "Version: ${Constants.appVersion}",
+              style: Theme.of(context).textTheme.labelSmall!.merge(
+                    const TextStyle(fontStyle: FontStyle.italic),
+                  ),
+            ),
+          ),
+          const SizedBox(height: 8),
           ListTile(
             title: Text(context.loc.setting_lang),
             subtitle: Text(getLanguageName(localeProvider.locale)),
@@ -114,7 +126,6 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
 }
-
 
 String getLanguageName(Locale locale) {
   switch (locale.languageCode) {
