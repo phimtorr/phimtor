@@ -124,7 +124,7 @@ class TVSeriesDetailView extends StatelessWidget {
               ),
               // Season list
               // display list of seasons here
-              buildSeasonDetailsSection(context, series)
+              buildSeasonSection(context, series)
             ],
           ),
         );
@@ -163,7 +163,7 @@ class TVSeriesDetailView extends StatelessWidget {
     );
   }
 
-  Widget buildSeasonDetailsSection(
+  Widget buildSeasonSection(
     BuildContext context,
     phimtor_api.TvSeries series,
   ) {

@@ -29,8 +29,6 @@ class TVSeasonDetailView extends StatelessWidget {
       },
     );
 
-    final infoTextStyte = Theme.of(context).textTheme.bodyMedium;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
@@ -48,91 +46,145 @@ class TVSeasonDetailView extends StatelessWidget {
 
           final resp = snapshot.data as phimtor_api.GetTvSeasonResponse;
           final season = resp.tvSeason;
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Image.network(
-                          season.posterLink,
-                          width: 150,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        flex: 3,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              season.name,
-                              style: Theme.of(context).textTheme.headlineMedium,
-                            ),
-                            Text(
-                              season.overview,
-                              style: infoTextStyte,
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              season.airDate?.year.toString() ?? "",
-                              style: infoTextStyte,
-                            ),
-                            Text(
-                              season.airDate == null
-                                  ? ""
-                                  : DateFormat.yMMMMd().format(season.airDate!),
-                              style: infoTextStyte,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    context.loc.latest_episodes,
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  const SizedBox(height: 8),
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: season.episodes.length,
-                    itemBuilder: (context, index) {
-                      return TVEpisodeInnerDisplay(
-                        episode: season.episodes[index],
-                      );
-                    },
-                    separatorBuilder: (context, index) => Divider(
-                      color: Theme.of(context).dividerColor,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
+          return buildTVSeasonDetailScreen(context, season);
         },
       ),
     );
   }
-}
 
-class TVEpisodeInnerDisplay extends StatelessWidget {
-  const TVEpisodeInnerDisplay({
-    super.key,
-    required this.episode,
-  });
+  Widget buildTVSeasonDetailScreen(
+    BuildContext context,
+    phimtor_api.TVSeason season,
+  ) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        bool isWideScreen = constraints.maxWidth > 600;
 
-  final phimtor_api.TVSeasonEpisodesInner episode;
+        return SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Season details
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: isWideScreen
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Season poster
+                          SizedBox(
+                            width: 200.0,
+                            height: 300.0,
+                            child: Image.network(
+                              season.posterLink,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const SizedBox(width: 16.0),
+                          // Season information
+                          Expanded(
+                            child: buildSeasonDetails(context, season),
+                          ),
+                        ],
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Season poster
+                          SizedBox(
+                            width: 150.0,
+                            height: 200.0,
+                            child: Image.network(
+                              season.posterLink,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const SizedBox(height: 16.0),
+                          // Season information
+                          buildSeasonDetails(context, season),
+                        ],
+                      ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  season.overview,
+                  style: Theme.of(context).textTheme.bodyMedium!.merge(
+                        const TextStyle(
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                ),
+              ),
+              // Episodes section
+              buildEpisodeSection(context, season),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget buildSeasonDetails(
+    BuildContext context,
+    phimtor_api.TVSeason season,
+  ) {
+    final infoTextStyte = Theme.of(context).textTheme.bodyMedium;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          season.name,
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+        const SizedBox(height: 8.0),
+        Text(
+          season.airDate?.year.toString() ?? "",
+          style: infoTextStyte,
+        ),
+        const SizedBox(height: 8.0),
+        Text(
+          season.airDate == null
+              ? ""
+              : DateFormat.yMMMMd().format(season.airDate!),
+          style: infoTextStyte,
+        ),
+      ],
+    );
+  }
+
+  Widget buildEpisodeSection(
+    BuildContext context,
+    phimtor_api.TVSeason season,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            context.loc.latest_episodes,
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+        ),
+        ListView.separated(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: season.episodes.length,
+          itemBuilder: (context, index) {
+            return buildEpisodeDetail(context, season, season.episodes[index]);
+          },
+          separatorBuilder: (context, index) => const SizedBox(height: 8.0),
+        ),
+      ],
+    );
+  }
+
+  Widget buildEpisodeDetail(
+    BuildContext context,
+    phimtor_api.TVSeason season,
+    phimtor_api.TVSeasonEpisodesInner episode,
+  ) {
     return InkWell(
       onTap: () {
         if (episode.videoID == 0) {
@@ -142,29 +194,33 @@ class TVEpisodeInnerDisplay extends StatelessWidget {
           routeNameVideo,
           pathParameters: {
             "id": episode.videoID.toString(),
-            "title": episode.name,
+            "title": "$title - ${episode.name}",
           },
         );
       },
       child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              episode.stillLink != ""
-                  ? Image.network(
-                      episode.stillLink,
-                      width: 200,
-                      fit: BoxFit.cover,
-                    )
-                  : const Icon(Icons.image_not_supported),
+              SizedBox(
+                width: 200.0,
+                child: season.posterLink != ""
+                    ? Image.network(
+                        episode.stillLink,
+                        fit: BoxFit.cover,
+                      )
+                    : const Center(
+                        child: Icon(Icons.image_not_supported),
+                      ),
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      episode.name,
+                      "${episode.episodeNumber}. ${episode.name}",
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     Text(
