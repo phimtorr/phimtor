@@ -18,6 +18,9 @@ func (r TMDBRepository) SyncAll(ctx context.Context) error {
 	if err := r.SyncAllMovies(ctx); err != nil {
 		syncErr = stdErrors.Join(syncErr, fmt.Errorf("sync all movies: %w", err))
 	}
+	if err := r.SyncAllTVSeries(ctx); err != nil {
+		syncErr = stdErrors.Join(syncErr, fmt.Errorf("sync all tv series: %w", err))
+	}
 	return syncErr
 }
 
