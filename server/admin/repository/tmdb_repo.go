@@ -80,7 +80,7 @@ func (r TMDBRepository) UpdateMovie(ctx context.Context, movie *tmdb.MovieDetail
 }
 
 var insertTVSeriesQuery = `
-INSERT INTO tv_series_show (
+INSERT INTO tv_series_shows (
 	id,
 	name,
 	original_name,
