@@ -94,83 +94,109 @@ class _SubtitleSectionState extends State<SubtitleSection> {
     var titleStyle = Theme.of(context).textTheme.headlineMedium!;
     var subtitleStyle = Theme.of(context).textTheme.headlineSmall!;
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(context.loc.subtitle, style: titleStyle),
-              const Spacer(),
-              ElevatedButton.icon(
-                onPressed: _selectedSubtitle != null ? reselectSubtitle : null,
-                label: Text(context.loc.refresh_subtitle),
-                icon: const Icon(Icons.refresh),
-              ),
-              ElevatedButton.icon(
-                onPressed: selectNoSubtitle,
-                label: Text(context.loc.unselect_subtitle),
-                icon: const Icon(Icons.subtitles_off),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          PremiumButton(
-            onPressed: selectSubtitleFile,
-            label: Text(context.loc.select_subtitle_file),
-            icon: const Icon(Icons.subtitles),
-          ),
-          const SizedBox(height: 8),
-          if (widget.vietnameseSubtitles.isNotEmpty)
-            Text(context.loc.subtitle_vietnamese, style: subtitleStyle),
-          Wrap(
-            spacing: 8,
-            children: widget.vietnameseSubtitles.map<Widget>((subtitle) {
-              VoidCallback? onPressed;
-              if (subtitle != _selectedSubtitle) {
-                onPressed = () => selectSubtitle(subtitle);
-              }
-              if (subtitle == widget.vietnameseSubtitles.first) {
-                return ElevatedButton(
-                  onPressed: onPressed,
-                  child: Text(subtitle.name),
-                );
-              } else {
-                return NeedVerifiedUserButton(
-                  onPressed: onPressed,
-                  child: Text(subtitle.name),
-                );
-              }
-            }).toList(),
-          ),
-          const SizedBox(height: 8),
-          if (widget.englishSubtitles.isNotEmpty)
-            Text(context.loc.subtitle_english, style: subtitleStyle),
-          Wrap(
-            spacing: 8,
-            children: widget.englishSubtitles.map<Widget>((subtitle) {
-              VoidCallback? onPressed;
-              if (subtitle != _selectedSubtitle) {
-                onPressed = () => selectSubtitle(subtitle);
-              }
-              if (subtitle == widget.englishSubtitles.first) {
-                return ElevatedButton(
-                  onPressed: onPressed,
-                  child: Text(subtitle.name),
-                );
-              } else {
-                return NeedVerifiedUserButton(
-                  onPressed: onPressed,
-                  child: Text(subtitle.name),
-                );
-              }
-            }).toList(),
-          ),
-        ],
-      ),
-    );
+    return LayoutBuilder(builder: (context, contraints) {
+      final isWideScreen = contraints.maxWidth > 600;
+
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            isWideScreen ? 
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(context.loc.subtitle, style: titleStyle),
+                const Spacer(),
+                ElevatedButton.icon(
+                  onPressed:
+                      _selectedSubtitle != null ? reselectSubtitle : null,
+                  label: Text(context.loc.refresh_subtitle),
+                  icon: const Icon(Icons.refresh),
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton.icon(
+                  onPressed: selectNoSubtitle,
+                  label: Text(context.loc.unselect_subtitle),
+                  icon: const Icon(Icons.subtitles_off),
+                ),
+              ],
+            ):
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(context.loc.subtitle, style: titleStyle),
+                const SizedBox(height: 8),
+                ElevatedButton.icon(
+                  onPressed:
+                      _selectedSubtitle != null ? reselectSubtitle : null,
+                  label: Text(context.loc.refresh_subtitle),
+                  icon: const Icon(Icons.refresh),
+                ),
+                const SizedBox(height: 8),
+                ElevatedButton.icon(
+                  onPressed: selectNoSubtitle,
+                  label: Text(context.loc.unselect_subtitle),
+                  icon: const Icon(Icons.subtitles_off),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            PremiumButton(
+              onPressed: selectSubtitleFile,
+              label: Text(context.loc.select_subtitle_file),
+              icon: const Icon(Icons.subtitles),
+            ),
+            const SizedBox(height: 8),
+            if (widget.vietnameseSubtitles.isNotEmpty)
+              Text(context.loc.subtitle_vietnamese, style: subtitleStyle),
+            Wrap(
+              spacing: 8,
+              children: widget.vietnameseSubtitles.map<Widget>((subtitle) {
+                VoidCallback? onPressed;
+                if (subtitle != _selectedSubtitle) {
+                  onPressed = () => selectSubtitle(subtitle);
+                }
+                if (subtitle == widget.vietnameseSubtitles.first) {
+                  return ElevatedButton(
+                    onPressed: onPressed,
+                    child: Text(subtitle.name),
+                  );
+                } else {
+                  return NeedVerifiedUserButton(
+                    onPressed: onPressed,
+                    child: Text(subtitle.name),
+                  );
+                }
+              }).toList(),
+            ),
+            const SizedBox(height: 8),
+            if (widget.englishSubtitles.isNotEmpty)
+              Text(context.loc.subtitle_english, style: subtitleStyle),
+            Wrap(
+              spacing: 8,
+              children: widget.englishSubtitles.map<Widget>((subtitle) {
+                VoidCallback? onPressed;
+                if (subtitle != _selectedSubtitle) {
+                  onPressed = () => selectSubtitle(subtitle);
+                }
+                if (subtitle == widget.englishSubtitles.first) {
+                  return ElevatedButton(
+                    onPressed: onPressed,
+                    child: Text(subtitle.name),
+                  );
+                } else {
+                  return NeedVerifiedUserButton(
+                    onPressed: onPressed,
+                    child: Text(subtitle.name),
+                  );
+                }
+              }).toList(),
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
 
