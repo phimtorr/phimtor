@@ -21,13 +21,13 @@ void main() {
       // TODO
     });
 
-    // String title
-    test('to test the property `title`', () async {
+    // List<TorrentLink> torrentLinks (default value: const [])
+    test('to test the property `torrentLinks`', () async {
       // TODO
     });
 
-    // List<TorrentLink> torrentLinks (default value: const [])
-    test('to test the property `torrentLinks`', () async {
+    // List<PremiumTorrentLink> premiumTorrentLinks (default value: const [])
+    test('to test the property `premiumTorrentLinks`', () async {
       // TODO
     });
 

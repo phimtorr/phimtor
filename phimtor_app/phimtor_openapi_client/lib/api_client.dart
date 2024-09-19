@@ -11,7 +11,7 @@
 part of openapi.api;
 
 class ApiClient {
-  ApiClient({this.basePath = 'http://localhost:8080/api/v1', this.authentication,});
+  ApiClient({this.basePath = 'http://localhost:8080/api/v2', this.authentication,});
 
   final String basePath;
   final Authentication? authentication;
@@ -182,20 +182,26 @@ class ApiClient {
           return valueString == 'true' || valueString == '1';
         case 'DateTime':
           return value is DateTime ? value : DateTime.tryParse(value);
-        case 'Episode':
-          return Episode.fromJson(value);
         case 'ErrorResponse':
           return ErrorResponse.fromJson(value);
+        case 'Genre':
+          return Genre.fromJson(value);
+        case 'GetLatestEpisodesResponse':
+          return GetLatestEpisodesResponse.fromJson(value);
+        case 'GetLatestMoviesResponse':
+          return GetLatestMoviesResponse.fromJson(value);
+        case 'GetLatestTvSeriesResponse':
+          return GetLatestTvSeriesResponse.fromJson(value);
         case 'GetMovieResponse':
           return GetMovieResponse.fromJson(value);
-        case 'GetSeriesResponse':
-          return GetSeriesResponse.fromJson(value);
+        case 'GetTvSeasonResponse':
+          return GetTvSeasonResponse.fromJson(value);
+        case 'GetTvSeriesResponse':
+          return GetTvSeriesResponse.fromJson(value);
         case 'GetVersionResponse':
           return GetVersionResponse.fromJson(value);
         case 'GetVideoResponse':
           return GetVideoResponse.fromJson(value);
-        case 'ListShowsResponse':
-          return ListShowsResponse.fromJson(value);
         case 'ModelShow':
           return ModelShow.fromJson(value);
         case 'Movie':
@@ -206,14 +212,18 @@ class ApiClient {
           return PremiumTorrentLink.fromJson(value);
         case 'SearchShowsResponse':
           return SearchShowsResponse.fromJson(value);
-        case 'Series':
-          return Series.fromJson(value);
-        case 'ShowType':
-          return ShowTypeTypeTransformer().decode(value);
         case 'Subtitle':
           return Subtitle.fromJson(value);
+        case 'TVSeason':
+          return TVSeason.fromJson(value);
+        case 'TVSeasonEpisodesInner':
+          return TVSeasonEpisodesInner.fromJson(value);
         case 'TorrentLink':
           return TorrentLink.fromJson(value);
+        case 'TvSeries':
+          return TvSeries.fromJson(value);
+        case 'TvSeriesSeasonsInner':
+          return TvSeriesSeasonsInner.fromJson(value);
         case 'Video':
           return Video.fromJson(value);
         default:

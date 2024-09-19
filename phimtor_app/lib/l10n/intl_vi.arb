@@ -7,6 +7,7 @@
     "watch_now": "Xem ngay",
     "select_subtitle_file": "Chọn file phụ đề",
     "unselect_subtitle": "Bỏ chọn phụ đề",
+    "refresh_subtitle": "Làm mới phụ đề",
     "login": "Đăng nhập",
     "logout": "Đăng xuất",
     "register": "Đăng ký",
@@ -85,9 +86,14 @@
         }
     },
 
-    "movies": "Phim lẻ",
-    "tv_series": "Phim bộ",
+    "latest_movies": "Phim lẻ mới",
+    "latest_tv_series": "Phim bộ mới",
+    "latest_episodes": "Tập phim mới",
 
+    "not_available": "Không khả dụng",
+
+    "detail_seasons": "Các mùa",
+    "detail_episodes": "Các tập phim",
     "detail_release_year": "Năm phát hành",
     "detail_score": "Điểm",
     "detail_duration": "Thời lượng {duration} phút",

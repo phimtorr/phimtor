@@ -21,6 +21,16 @@ void main() {
       // TODO
     });
 
+    // int showId
+    test('to test the property `showId`', () async {
+      // TODO
+    });
+
+    // String type
+    test('to test the property `type`', () async {
+      // TODO
+    });
+
     // String title
     test('to test the property `title`', () async {
       // TODO
@@ -36,38 +46,33 @@ void main() {
       // TODO
     });
 
-    // ShowType type
-    test('to test the property `type`', () async {
+    // DateTime airDate
+    test('to test the property `airDate`', () async {
       // TODO
     });
 
-    // int releaseYear
-    test('to test the property `releaseYear`', () async {
+    // int runtime
+    test('to test the property `runtime`', () async {
       // TODO
     });
 
-    // num score
-    test('to test the property `score`', () async {
+    // num voteAverage
+    test('to test the property `voteAverage`', () async {
       // TODO
     });
 
-    // int durationInMinutes
-    test('to test the property `durationInMinutes`', () async {
+    // String quality
+    test('to test the property `quality`', () async {
       // TODO
     });
 
-    // String quantity
-    test('to test the property `quantity`', () async {
+    // int seasonNumber
+    test('to test the property `seasonNumber`', () async {
       // TODO
     });
 
-    // int totalEpisodes
-    test('to test the property `totalEpisodes`', () async {
-      // TODO
-    });
-
-    // int currentEpisode
-    test('to test the property `currentEpisode`', () async {
+    // int episodeNumber
+    test('to test the property `episodeNumber`', () async {
       // TODO
     });
 

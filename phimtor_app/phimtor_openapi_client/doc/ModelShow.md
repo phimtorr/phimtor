@@ -9,16 +9,17 @@ import 'package:phimtor_openapi_client/api.dart';
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **int** |  | 
+**showId** | **int** |  | 
+**type** | **String** |  | 
 **title** | **String** |  | 
 **originalTitle** | **String** |  | 
 **posterLink** | **String** |  | 
-**type** | [**ShowType**](ShowType.md) |  | 
-**releaseYear** | **int** |  | 
-**score** | **num** |  | 
-**durationInMinutes** | **int** |  | 
-**quantity** | **String** |  | 
-**totalEpisodes** | **int** |  | 
-**currentEpisode** | **int** |  | 
+**airDate** | [**DateTime**](DateTime.md) |  | 
+**runtime** | **int** |  | 
+**voteAverage** | **num** |  | 
+**quality** | **String** |  | 
+**seasonNumber** | **int** |  | 
+**episodeNumber** | **int** |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -13,25 +13,6 @@ class ShowCard extends StatelessWidget {
     required this.show,
   });
 
-  factory ShowCard.fake() {
-    return ShowCard(
-      show: phimtor_api.ModelShow(
-        id: 1,
-        title: "Bộ Chiến Tranh Bất Lịch Sự",
-        originalTitle: "The Ministry of Ungentlemanly Warfare",
-        posterLink:
-            "https://image.tmdb.org/t/p/w300/avbU7Msx1O7387Lnh4N81Bq4gfC.jpg",
-        type: phimtor_api.ShowType.movie,
-        releaseYear: 2022,
-        score: 8.5,
-        durationInMinutes: 120,
-        quantity: "4K",
-        totalEpisodes: 1,
-        currentEpisode: 1,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -59,33 +40,34 @@ class ShowCard extends StatelessWidget {
                     left: 2,
                     child: Row(
                       children: [
-                        ShowLabel(title: show.releaseYear.toString()),
+                        ShowLabel(title: show.airDate.year.toString()),
                         const SizedBox(width: 2),
-                        ShowLabel(title: show.score.toString()),
+                        ShowLabel(title: show.voteAverage.toStringAsFixed(1)),
                       ],
                     ),
                   ),
-                  if (show.type == phimtor_api.ShowType.series) ...[
-                    Positioned(
-                      bottom: 2,
-                      right: 2,
-                      child: ShowLabel(
-                        title: "${show.currentEpisode}/${show.totalEpisodes}",
-                      ),
-                    ),
+                  if (show.type == phimtor_api.ModelShowTypeEnum.tvSeries) ...[
+                    // Positioned(
+                    //   bottom: 2,
+                    //   right: 2,
+                    //   child: ShowLabel(
+                    //     title: "${show.currentEpisode}/${show.totalEpisodes}",
+                    //   ),
+                    // ),
                   ],
-                  if (show.type == phimtor_api.ShowType.movie) ...[
-                    Positioned(
-                      bottom: 2,
-                      left: 2,
-                      child: ShowLabel(title: show.quantity),
-                    ),
+                  if (show.type == phimtor_api.ModelShowTypeEnum.movie) ...[
+                    // Positioned(
+                    //   bottom: 2,
+                    //   left: 2,
+                    //   child: ShowLabel(title: show.quality),
+                    // ),
                     Positioned(
                       bottom: 2,
                       right: 2,
                       child: ShowLabel(
-                          title: TimeHelpers.toHumanReadableDuration(
-                              show.durationInMinutes)),
+                        title:
+                            TimeHelpers.toHumanReadableDuration(show.runtime),
+                      ),
                     ),
                   ],
                 ],
@@ -121,21 +103,32 @@ class ShowCard extends StatelessWidget {
             "title": show.title,
           },
         );
-        if (show.type == phimtor_api.ShowType.movie) {
+        if (show.type == phimtor_api.ModelShowTypeEnum.movie) {
           context.goNamed(
             routeNameMovieDetails,
             pathParameters: {
-              "id": show.id.toString(),
+              "id": show.showId.toString(),
               "title": show.title,
             },
           );
           return;
         }
-        if (show.type == phimtor_api.ShowType.series) {
+        if (show.type == phimtor_api.ModelShowTypeEnum.tvSeries) {
           context.goNamed(
-            routeNameSeriesDetails,
+            routeNameTVSeriesDetails,
             pathParameters: {
-              "id": show.id.toString(),
+              "id": show.showId.toString(),
+              "title": show.title,
+            },
+          );
+          return;
+        }
+        if (show.type == phimtor_api.ModelShowTypeEnum.episode) {
+          context.goNamed(
+            routeNameTVSeriesSeasonDetails,
+            pathParameters: {
+              "id": show.showId.toString(),
+              "seasonNumber": show.seasonNumber.toString(),
               "title": show.title,
             },
           );

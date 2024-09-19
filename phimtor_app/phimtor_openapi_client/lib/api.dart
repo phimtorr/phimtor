@@ -30,22 +30,27 @@ part 'auth/http_bearer_auth.dart';
 
 part 'api/default_api.dart';
 
-part 'model/episode.dart';
 part 'model/error_response.dart';
+part 'model/genre.dart';
+part 'model/get_latest_episodes_response.dart';
+part 'model/get_latest_movies_response.dart';
+part 'model/get_latest_tv_series_response.dart';
 part 'model/get_movie_response.dart';
-part 'model/get_series_response.dart';
+part 'model/get_tv_season_response.dart';
+part 'model/get_tv_series_response.dart';
 part 'model/get_version_response.dart';
 part 'model/get_video_response.dart';
-part 'model/list_shows_response.dart';
 part 'model/model_show.dart';
 part 'model/movie.dart';
 part 'model/pagination.dart';
 part 'model/premium_torrent_link.dart';
 part 'model/search_shows_response.dart';
-part 'model/series.dart';
-part 'model/show_type.dart';
 part 'model/subtitle.dart';
+part 'model/tv_season.dart';
+part 'model/tv_season_episodes_inner.dart';
 part 'model/torrent_link.dart';
+part 'model/tv_series.dart';
+part 'model/tv_series_seasons_inner.dart';
 part 'model/video.dart';
 
 
