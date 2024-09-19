@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"net/http"
 	"os"
 	"time"
@@ -14,6 +15,7 @@ import (
 	"github.com/phimtorr/phimtor/common/logs"
 	"github.com/phimtorr/phimtor/server/admin/auth"
 	adminHttp "github.com/phimtorr/phimtor/server/admin/http"
+	"github.com/phimtorr/phimtor/server/admin/repository"
 	"github.com/phimtorr/phimtor/server/pkg/database"
 )
 
@@ -79,5 +81,12 @@ func setAdmin(authClient *firebaseAuth.Client) {
 
 	if err := authClient.SetCustomUserClaims(context.Background(), uid, claims); err != nil {
 		log.Fatal().Err(err).Msg("Failed to set admin")
+	}
+}
+
+func syncAll(db *sql.DB) {
+	r := repository.NewTMDBRepository(db)
+	if err := r.SyncAll(context.Background()); err != nil {
+		log.Error().Err(err).Msg("Failed to sync all")
 	}
 }
