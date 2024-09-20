@@ -1,10 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:phimtor_app/routes/app_routes.dart';
 import 'package:phimtor_app/services/phimtor/phimtor_service.dart'
     as phimtor_service;
-import 'package:phimtor_app/views/search_section.dart';
 import 'package:phimtor_app/views/shows/shows_list.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
 
@@ -40,34 +40,76 @@ class HomeView extends StatelessWidget {
   }
 }
 
-class LatestAddedMoviesSection extends StatelessWidget {
-  const LatestAddedMoviesSection({super.key});
+class SearchSection extends StatefulWidget {
+  const SearchSection({super.key});
+
+  @override
+  State<SearchSection> createState() => _SearchSectionState();
+}
+
+class _SearchSectionState extends State<SearchSection> {
+  final _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        buildHeadline(context, context.loc.latest_added_movies,
-            AppRoutes.latestAddedMovies),
+        Text(
+          context.loc.search,
+          style: Theme.of(context).textTheme.headlineLarge,
+        ),
         const SizedBox(height: 16),
-        buildShowList(context, (
-          int page,
-          int pageSize,
-        ) async {
-          final resp = await phimtor_service.PhimtorService()
-              .defaultApi
-              .listRecentlyAddedMovies(
-                page: page,
-                pageSize: pageSize,
-              );
-          if (resp == null) {
-            throw Exception("Null response");
-          }
-          return resp.movies;
-        }),
+        // a search text box with a button to search
+        CupertinoSearchTextField(
+          controller: _searchController,
+          onSubmitted: (query) async {
+            if (query.isEmpty) {
+              return;
+            }
+            await context.pushNamed(
+              AppRoutes.showSearch,
+              pathParameters: {"query": query},
+            );
+          },
+        ),
       ],
+    );
+  }
+}
+
+class LatestAddedMoviesSection extends StatelessWidget {
+  const LatestAddedMoviesSection({super.key});
+
+  Future<List<phimtor_api.ModelShow>> listShows(
+    int page,
+    int pageSize,
+  ) async {
+    final resp = await phimtor_service.PhimtorService()
+        .defaultApi
+        .listRecentlyAddedMovies(
+          page: page,
+          pageSize: pageSize,
+        );
+    if (resp == null) {
+      throw Exception("Null response");
+    }
+    return resp.movies;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return buildListShowsSection(
+      context,
+      context.loc.latest_added_movies,
+      AppRoutes.latestAddedMovies,
+      listShows,
     );
   }
 }
@@ -75,30 +117,28 @@ class LatestAddedMoviesSection extends StatelessWidget {
 class MoviesSection extends StatelessWidget {
   const MoviesSection({super.key});
 
+  Future<List<phimtor_api.ModelShow>> listShows(
+    int page,
+    int pageSize,
+  ) async {
+    final resp =
+        await phimtor_service.PhimtorService().defaultApi.listLatestMovies(
+              page: page,
+              pageSize: pageSize,
+            );
+    if (resp == null) {
+      throw Exception("Null response");
+    }
+    return resp.movies;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        buildHeadline(context, context.loc.latest_movies, AppRoutes.movies),
-        const SizedBox(height: 16),
-        buildShowList(context, (
-          int page,
-          int pageSize,
-        ) async {
-          final resp = await phimtor_service.PhimtorService()
-              .defaultApi
-              .listLatestMovies(
-                page: page,
-                pageSize: pageSize,
-              );
-          if (resp == null) {
-            throw Exception("Null response");
-          }
-          return resp.movies;
-        }),
-      ],
+    return buildListShowsSection(
+      context,
+      context.loc.latest_movies,
+      AppRoutes.movies,
+      listShows,
     );
   }
 }
@@ -106,63 +146,75 @@ class MoviesSection extends StatelessWidget {
 class TVSeriesSection extends StatelessWidget {
   const TVSeriesSection({super.key});
 
+  Future<List<phimtor_api.ModelShow>> listShows(
+    int page,
+    int pageSize,
+  ) async {
+    final resp =
+        await phimtor_service.PhimtorService().defaultApi.listLatestTvSeries(
+              page: page,
+              pageSize: pageSize,
+            );
+    if (resp == null) {
+      throw Exception("Null response");
+    }
+    return resp.tvSeries;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        buildHeadline(
-            context, context.loc.latest_tv_series, AppRoutes.tvSeries),
-        const SizedBox(height: 16),
-        buildShowList(context, (
-          int page,
-          int pageSize,
-        ) async {
-          final resp = await phimtor_service.PhimtorService()
-              .defaultApi
-              .listLatestTvSeries(
-                page: page,
-                pageSize: pageSize,
-              );
-          if (resp == null) {
-            throw Exception("Null response");
-          }
-          return resp.tvSeries;
-        }),
-      ],
+    return buildListShowsSection(
+      context,
+      context.loc.latest_tv_series,
+      AppRoutes.tvSeries,
+      listShows,
     );
   }
 }
 
 class TVEpisodesSection extends StatelessWidget {
   const TVEpisodesSection({super.key});
+  
+  Future<List<phimtor_api.ModelShow>> listShows(
+    int page,
+    int pageSize,
+  ) async {
+    final resp =
+        await phimtor_service.PhimtorService().defaultApi.listLatestEpisodes(
+              page: page,
+              pageSize: pageSize,
+            );
+    if (resp == null) {
+      throw Exception("Null response");
+    }
+    return resp.episodes;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        buildHeadline(
-            context, context.loc.latest_episodes, AppRoutes.tvLatestEpisodes),
-        const SizedBox(height: 16),
-        buildShowList(context, (
-          int page,
-          int pageSize,
-        ) async {
-          final resp = await phimtor_service.PhimtorService()
-              .defaultApi
-              .listLatestEpisodes(
-                page: page,
-                pageSize: pageSize,
-              );
-          if (resp == null) {
-            throw Exception("Null response");
-          }
-          return resp.episodes;
-        }),
-      ],
+    return buildListShowsSection(
+      context,
+      context.loc.latest_episodes,
+      AppRoutes.tvLatestEpisodes,
+      listShows,
     );
   }
+}
+
+Widget buildListShowsSection(
+  BuildContext context,
+  String title,
+  String loadMoreRouteName,
+  ListShowsFunction listShows,
+) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      buildHeadline(context, title, loadMoreRouteName),
+      const SizedBox(height: 16),
+      buildShowList(context, listShows),
+    ],
+  );
 }
 
 Widget buildHeadline(
