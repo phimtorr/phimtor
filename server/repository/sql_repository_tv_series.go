@@ -9,23 +9,23 @@ import (
 	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 
-	"github.com/phimtorr/phimtor/server/http2"
+	"github.com/phimtorr/phimtor/server/http"
 	"github.com/phimtorr/phimtor/server/repository/dbmodels"
 )
 
-func (r SQLRepository) GetTvSeries(ctx context.Context, id int64) (http2.TvSeries, error) {
+func (r SQLRepository) GetTvSeries(ctx context.Context, id int64) (http.TvSeries, error) {
 	tvSeries, err := dbmodels.TVSeriesShows(
 		dbmodels.TVSeriesShowWhere.ID.EQ(id),
 		qm.Load(dbmodels.TVSeriesShowRels.ShowTVSeasons),
 	).One(ctx, r.db)
 	if err != nil {
-		return http2.TvSeries{}, fmt.Errorf("get tv series: %w", err)
+		return http.TvSeries{}, fmt.Errorf("get tv series: %w", err)
 	}
 
 	return toHTTP2TvSeries(tvSeries), nil
 }
 
-func toHTTP2TvSeries(dbTvSeries *dbmodels.TVSeriesShow) http2.TvSeries {
+func toHTTP2TvSeries(dbTvSeries *dbmodels.TVSeriesShow) http.TvSeries {
 	episodes := make([]struct {
 		AirDate      *openapiTypes.Date `json:"airDate,omitempty"`
 		Id           int64              `json:"id"`
@@ -46,7 +46,7 @@ func toHTTP2TvSeries(dbTvSeries *dbmodels.TVSeriesShow) http2.TvSeries {
 		episodes[i].VoteAverage = s.VoteAverage
 	}
 
-	return http2.TvSeries{
+	return http.TvSeries{
 		BackdropLink:     tmdb.GetImageURL(dbTvSeries.BackdropPath, tmdb.Original),
 		FirstAirDate:     toOpenapiTypeDate(dbTvSeries.FirstAirDate),
 		Genres:           toHTTP2Genres(dbTvSeries.Genres),
@@ -65,13 +65,13 @@ func toHTTP2TvSeries(dbTvSeries *dbmodels.TVSeriesShow) http2.TvSeries {
 	}
 }
 
-func (r SQLRepository) GetTvSeason(ctx context.Context, showID int64, seasonNumber int) (http2.TVSeason, error) {
+func (r SQLRepository) GetTvSeason(ctx context.Context, showID int64, seasonNumber int) (http.TVSeason, error) {
 	season, err := dbmodels.TVSeasons(
 		dbmodels.TVSeasonWhere.ShowID.EQ(showID),
 		dbmodels.TVSeasonWhere.SeasonNumber.EQ(seasonNumber),
 	).One(ctx, r.db)
 	if err != nil {
-		return http2.TVSeason{}, fmt.Errorf("get tv season: %w", err)
+		return http.TVSeason{}, fmt.Errorf("get tv season: %w", err)
 	}
 
 	episodes, err := dbmodels.TVEpisodes(
@@ -79,13 +79,13 @@ func (r SQLRepository) GetTvSeason(ctx context.Context, showID int64, seasonNumb
 		dbmodels.TVEpisodeWhere.SeasonNumber.EQ(seasonNumber),
 	).All(ctx, r.db)
 	if err != nil {
-		return http2.TVSeason{}, fmt.Errorf("get tv season episodes: %w", err)
+		return http.TVSeason{}, fmt.Errorf("get tv season episodes: %w", err)
 	}
 
 	return toHTTP2TVSeason(season, episodes), nil
 }
 
-func toHTTP2TVSeason(dbSeason *dbmodels.TVSeason, dbEpisodes []*dbmodels.TVEpisode) http2.TVSeason {
+func toHTTP2TVSeason(dbSeason *dbmodels.TVSeason, dbEpisodes []*dbmodels.TVEpisode) http.TVSeason {
 	episodes := make([]struct {
 		AirDate       *openapiTypes.Date `json:"airDate,omitempty"`
 		EpisodeNumber int                `json:"episodeNumber"`
@@ -110,7 +110,7 @@ func toHTTP2TVSeason(dbSeason *dbmodels.TVSeason, dbEpisodes []*dbmodels.TVEpiso
 		episodes[i].VoteAverage = e.VoteAverage
 	}
 
-	return http2.TVSeason{
+	return http.TVSeason{
 		AirDate:      toOpenapiTypeDate(dbSeason.AirDate),
 		Episodes:     episodes,
 		Id:           dbSeason.ID,

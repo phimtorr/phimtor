@@ -13,7 +13,7 @@ import (
 
 	"github.com/phimtorr/phimtor/common/logs"
 	"github.com/phimtorr/phimtor/server/auth"
-	"github.com/phimtorr/phimtor/server/http2"
+	"github.com/phimtorr/phimtor/server/http"
 	"github.com/phimtorr/phimtor/server/migrations"
 	"github.com/phimtorr/phimtor/server/pkg/database"
 	"github.com/phimtorr/phimtor/server/repository"
@@ -30,7 +30,7 @@ func main() {
 	}
 
 	repo := repository.NewSQLRepository(db)
-	http2Server := http2.NewHttpServer(repo)
+	http2Server := http.NewHttpServer(repo)
 
 	r := chi.NewRouter()
 	setMiddlewares(r)
@@ -38,7 +38,7 @@ func main() {
 
 	r.Get("/api/v1/*", http2Server.Unsupported)
 
-	http2.HandlerFromMuxWithBaseURL(http2Server, r, "/api/v2")
+	http.HandlerFromMuxWithBaseURL(http2Server, r, "/api/v2")
 
 	addr := ":" + os.Getenv("HTTP_PORT")
 

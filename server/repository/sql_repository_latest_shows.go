@@ -9,11 +9,11 @@ import (
 	openapiTypes "github.com/oapi-codegen/runtime/types"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 
-	"github.com/phimtorr/phimtor/server/http2"
+	"github.com/phimtorr/phimtor/server/http"
 	"github.com/phimtorr/phimtor/server/repository/dbmodels"
 )
 
-func (r SQLRepository) GetLatestEpisodes(ctx context.Context, params http2.GetLatestEpisodesParams) ([]http2.Show, http2.Pagination, error) {
+func (r SQLRepository) GetLatestEpisodes(ctx context.Context, params http.GetLatestEpisodesParams) ([]http.Show, http.Pagination, error) {
 	page, pageSize := toPageAndPageSize(params.Page, params.PageSize)
 
 	queryMods := []qm.QueryMod{
@@ -23,7 +23,7 @@ func (r SQLRepository) GetLatestEpisodes(ctx context.Context, params http2.GetLa
 	return r.queryShows(ctx, queryMods, page, pageSize, true)
 }
 
-func (r SQLRepository) GetLatestMovies(ctx context.Context, params http2.GetLatestMoviesParams) ([]http2.Show, http2.Pagination, error) {
+func (r SQLRepository) GetLatestMovies(ctx context.Context, params http.GetLatestMoviesParams) ([]http.Show, http.Pagination, error) {
 	page, pageSize := toPageAndPageSize(params.Page, params.PageSize)
 
 	queryMods := []qm.QueryMod{
@@ -33,7 +33,7 @@ func (r SQLRepository) GetLatestMovies(ctx context.Context, params http2.GetLate
 	return r.queryShows(ctx, queryMods, page, pageSize, true)
 }
 
-func (r SQLRepository) GetLatestTvSeries(ctx context.Context, params http2.GetLatestTvSeriesParams) ([]http2.Show, http2.Pagination, error) {
+func (r SQLRepository) GetLatestTvSeries(ctx context.Context, params http.GetLatestTvSeriesParams) ([]http.Show, http.Pagination, error) {
 	page, pageSize := toPageAndPageSize(params.Page, params.PageSize)
 
 	queryMods := []qm.QueryMod{
@@ -43,7 +43,7 @@ func (r SQLRepository) GetLatestTvSeries(ctx context.Context, params http2.GetLa
 	return r.queryShows(ctx, queryMods, page, pageSize, true)
 }
 
-func (r SQLRepository) SearchShows(ctx context.Context, params http2.SearchShowsParams) ([]http2.Show, http2.Pagination, error) {
+func (r SQLRepository) SearchShows(ctx context.Context, params http.SearchShowsParams) ([]http.Show, http.Pagination, error) {
 	page, pageSize := toPageAndPageSize(params.Page, params.PageSize)
 
 	queryMods := []qm.QueryMod{
@@ -57,7 +57,7 @@ func (r SQLRepository) SearchShows(ctx context.Context, params http2.SearchShows
 	return r.queryShows(ctx, queryMods, page, pageSize, false)
 }
 
-func (r SQLRepository) queryShows(ctx context.Context, queryMods []qm.QueryMod, page, pageSize int, sort bool) ([]http2.Show, http2.Pagination, error) {
+func (r SQLRepository) queryShows(ctx context.Context, queryMods []qm.QueryMod, page, pageSize int, sort bool) ([]http.Show, http.Pagination, error) {
 	pagingQueryMods := append(queryMods,
 		qm.Limit(pageSize),
 		qm.Offset((page-1)*pageSize),
@@ -70,12 +70,12 @@ func (r SQLRepository) queryShows(ctx context.Context, queryMods []qm.QueryMod, 
 	shows, err := dbmodels.LatestShows(pagingQueryMods...).
 		All(ctx, r.db)
 	if err != nil {
-		return nil, http2.Pagination{}, fmt.Errorf("get shows: %w", err)
+		return nil, http.Pagination{}, fmt.Errorf("get shows: %w", err)
 	}
 
 	count, err := dbmodels.LatestShows(queryMods...).Count(ctx, r.db)
 	if err != nil {
-		return nil, http2.Pagination{}, fmt.Errorf("count shows: %w", err)
+		return nil, http.Pagination{}, fmt.Errorf("count shows: %w", err)
 	}
 
 	return toHTTP2Shows(shows), toHTTP2Pagination(page, pageSize, count), nil
@@ -104,16 +104,16 @@ func toPageAndPageSize(page, pageSize *int) (rPage, rPageSize int) {
 	return
 }
 
-func toHTTP2Shows(shows []*dbmodels.LatestShow) []http2.Show {
-	r := make([]http2.Show, 0, len(shows))
+func toHTTP2Shows(shows []*dbmodels.LatestShow) []http.Show {
+	r := make([]http.Show, 0, len(shows))
 	for _, show := range shows {
 		r = append(r, toHTTP2Show(show))
 	}
 	return r
 }
 
-func toHTTP2Show(show *dbmodels.LatestShow) http2.Show {
-	return http2.Show{
+func toHTTP2Show(show *dbmodels.LatestShow) http.Show {
+	return http.Show{
 		AirDate:       openapiTypes.Date{Time: show.AirDate.Time},
 		EpisodeNumber: show.EpisodeNumber.Int,
 		Id:            show.ID,
@@ -124,13 +124,13 @@ func toHTTP2Show(show *dbmodels.LatestShow) http2.Show {
 		Runtime:       show.Runtime.Int,
 		SeasonNumber:  show.SeasonNumber.Int,
 		Title:         show.Title,
-		Type:          http2.ShowType(show.Type),
+		Type:          http.ShowType(show.Type),
 		VoteAverage:   show.VoteAverage,
 	}
 }
 
-func toHTTP2Pagination(page, pageSize int, total int64) http2.Pagination {
-	return http2.Pagination{
+func toHTTP2Pagination(page, pageSize int, total int64) http.Pagination {
+	return http.Pagination{
 		Page:         page,
 		TotalPages:   int(math.Ceil(float64(total) / float64(pageSize))),
 		TotalResults: total,
