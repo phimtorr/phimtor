@@ -11,7 +11,6 @@ import (
 
 	commonErrors "github.com/phimtorr/phimtor/common/errors"
 	"github.com/phimtorr/phimtor/server/admin/http/handler"
-	"github.com/phimtorr/phimtor/server/admin/http/handler2"
 	"github.com/phimtorr/phimtor/server/admin/repository"
 	"github.com/phimtorr/phimtor/server/admin/s3"
 	"github.com/phimtorr/phimtor/server/admin/tmdb"
@@ -20,7 +19,7 @@ import (
 type Server struct {
 	videoHandler *handler.VideoHandler
 	userHandler  *handler.UserHandler
-	handler2     *handler2.Handler
+	tmdbHandler  *handler.TMDBHandler
 }
 
 func NewHTTPServer(db *sql.DB, authClient *auth.Client) Server {
@@ -30,7 +29,7 @@ func NewHTTPServer(db *sql.DB, authClient *auth.Client) Server {
 			s3.NewService(),
 		),
 		userHandler: handler.NewUserHandler(authClient),
-		handler2: handler2.NewHandler(
+		tmdbHandler: handler.NewTMDBHandler(
 			tmdb.NewClient(),
 			repository.NewTMDBRepository(db),
 		),
@@ -50,23 +49,23 @@ func (s Server) Register(r chi.Router) {
 	r.Get("/users/{uid}", errHandlerFunc(s.userHandler.ViewUser))
 	r.Post("/users/{uid}/update-premium", errHandlerFunc(s.userHandler.UpdatePremium))
 
-	r.Get("/latest-shows", errHandlerFunc(s.handler2.ListLatestShows))
+	r.Get("/latest-shows", errHandlerFunc(s.tmdbHandler.ListLatestShows))
 
-	r.Get("/movies", errHandlerFunc(s.handler2.ViewMovies))
-	r.Post("/movies/create", errHandlerFunc(s.handler2.CreateMovie))
-	r.Get("/movies/{id}", errHandlerFunc(s.handler2.ViewMovie))
-	r.Post("/movies/{id}/fetch-from-tmdb", errHandlerFunc(s.handler2.FetchMovieFromTMDB))
-	r.Post("/movies/{id}/create-video", errHandlerFunc(s.handler2.CreateMovieVideo))
-	r.Post("/movies/{id}/sync", errHandlerFunc(s.handler2.SyncMovie))
+	r.Get("/movies", errHandlerFunc(s.tmdbHandler.ViewMovies))
+	r.Post("/movies/create", errHandlerFunc(s.tmdbHandler.CreateMovie))
+	r.Get("/movies/{id}", errHandlerFunc(s.tmdbHandler.ViewMovie))
+	r.Post("/movies/{id}/fetch-from-tmdb", errHandlerFunc(s.tmdbHandler.FetchMovieFromTMDB))
+	r.Post("/movies/{id}/create-video", errHandlerFunc(s.tmdbHandler.CreateMovieVideo))
+	r.Post("/movies/{id}/sync", errHandlerFunc(s.tmdbHandler.SyncMovie))
 
-	r.Get("/tv-series", errHandlerFunc(s.handler2.ViewTVSeriesShows))
-	r.Post("/tv-series/create", errHandlerFunc(s.handler2.CreateTVSeries))
-	r.Get("/tv-series/{showID}", errHandlerFunc(s.handler2.ViewTVSeriesShow))
-	r.Post("/tv-series/{showID}/fetch-from-tmdb", errHandlerFunc(s.handler2.FetchTVSeriesFromTMDB))
-	r.Get("/tv-series/{showID}/seasons/{seasonNumber}", errHandlerFunc(s.handler2.ViewTVSeason))
-	r.Get("/tv-series/{showID}/seasons/{seasonNumber}/episodes/{episodeNumber}", errHandlerFunc(s.handler2.ViewTVEpisode))
-	r.Post("/tv-series/{showID}/seasons/{seasonNumber}/episodes/{episodeNumber}/create-video", errHandlerFunc(s.handler2.CreateTVEpisodeVideo))
-	r.Post("/tv-series/{showID}/sync", errHandlerFunc(s.handler2.SyncTVSeries))
+	r.Get("/tv-series", errHandlerFunc(s.tmdbHandler.ViewTVSeriesShows))
+	r.Post("/tv-series/create", errHandlerFunc(s.tmdbHandler.CreateTVSeries))
+	r.Get("/tv-series/{showID}", errHandlerFunc(s.tmdbHandler.ViewTVSeriesShow))
+	r.Post("/tv-series/{showID}/fetch-from-tmdb", errHandlerFunc(s.tmdbHandler.FetchTVSeriesFromTMDB))
+	r.Get("/tv-series/{showID}/seasons/{seasonNumber}", errHandlerFunc(s.tmdbHandler.ViewTVSeason))
+	r.Get("/tv-series/{showID}/seasons/{seasonNumber}/episodes/{episodeNumber}", errHandlerFunc(s.tmdbHandler.ViewTVEpisode))
+	r.Post("/tv-series/{showID}/seasons/{seasonNumber}/episodes/{episodeNumber}/create-video", errHandlerFunc(s.tmdbHandler.CreateTVEpisodeVideo))
+	r.Post("/tv-series/{showID}/sync", errHandlerFunc(s.tmdbHandler.SyncTVSeries))
 }
 
 func errHandlerFunc(h func(w http.ResponseWriter, r *http.Request) error) http.HandlerFunc {

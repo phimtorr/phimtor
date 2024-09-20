@@ -1,18 +1,11 @@
-package handler2
+package handler
 
 import (
 	"context"
-	"net/http"
-	"strconv"
 
 	tmdb "github.com/cyruzin/golang-tmdb"
-	"github.com/friendsofgo/errors"
 
 	"github.com/phimtorr/phimtor/server/admin/http/ui"
-)
-
-const (
-	pageSize = 10
 )
 
 type TMDBClient interface {
@@ -20,7 +13,7 @@ type TMDBClient interface {
 	GetTVSeriesDetails(ctx context.Context, tvID int) (*tmdb.TVDetails, []*tmdb.TVSeasonDetails, error)
 }
 
-type Repository interface {
+type TMDBRepository interface {
 	UpdateMovie(ctx context.Context, movie *tmdb.MovieDetails) error
 	UpdateTVSeries(ctx context.Context, tv *tmdb.TVDetails, seasons []*tmdb.TVSeasonDetails) error
 
@@ -40,12 +33,12 @@ type Repository interface {
 	SyncTVSeries(ctx context.Context, tvID int64) error
 }
 
-type Handler struct {
+type TMDBHandler struct {
 	tmdbClient TMDBClient
-	repo       Repository
+	repo       TMDBRepository
 }
 
-func NewHandler(tmdbClient TMDBClient, repo Repository) *Handler {
+func NewTMDBHandler(tmdbClient TMDBClient, repo TMDBRepository) *TMDBHandler {
 	if tmdbClient == nil {
 		panic("tmdbClient is required")
 	}
@@ -53,25 +46,9 @@ func NewHandler(tmdbClient TMDBClient, repo Repository) *Handler {
 	if repo == nil {
 		panic("repo is required")
 	}
-	return &Handler{
+
+	return &TMDBHandler{
 		tmdbClient: tmdbClient,
 		repo:       repo,
 	}
-}
-
-func redirect(w http.ResponseWriter, r *http.Request, url string) {
-	if r.Header.Get("HX-Request") == "true" {
-		w.Header().Set("HX-Redirect", url)
-		w.WriteHeader(http.StatusOK)
-	} else {
-		http.Redirect(w, r, url, http.StatusSeeOther)
-	}
-}
-
-func parseID(idRaw string) (int64, error) {
-	id, err := strconv.ParseInt(idRaw, 10, 64)
-	if err != nil {
-		return 0, errors.Wrap(err, "parsing id")
-	}
-	return id, nil
 }

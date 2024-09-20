@@ -1,4 +1,4 @@
-package handler2
+package handler
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/phimtorr/phimtor/server/admin/http/ui"
 )
 
-func (h *Handler) ListLatestShows(w http.ResponseWriter, r *http.Request) error {
+func (h *TMDBHandler) ListLatestShows(w http.ResponseWriter, r *http.Request) error {
 	var page int
 	if p := r.URL.Query().Get("page"); p != "" {
 		page, _ = strconv.Atoi(p)

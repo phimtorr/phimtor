@@ -1,4 +1,4 @@
-package handler2
+package handler
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ import (
 	"github.com/phimtorr/phimtor/server/admin/http/uri"
 )
 
-func (h *Handler) ViewTVSeriesShows(w http.ResponseWriter, r *http.Request) error {
+func (h *TMDBHandler) ViewTVSeriesShows(w http.ResponseWriter, r *http.Request) error {
 	var page int
 	if p := r.URL.Query().Get("page"); p != "" {
 		page, _ = strconv.Atoi(p)
@@ -30,7 +30,7 @@ func (h *Handler) ViewTVSeriesShows(w http.ResponseWriter, r *http.Request) erro
 	return ui.TVSeriesShowsView(shows, pag).Render(r.Context(), w)
 }
 
-func (h *Handler) ViewTVSeriesShow(w http.ResponseWriter, r *http.Request) error {
+func (h *TMDBHandler) ViewTVSeriesShow(w http.ResponseWriter, r *http.Request) error {
 	showID, err := parseID(chi.URLParam(r, "showID"))
 	if err != nil {
 		return err
@@ -44,7 +44,7 @@ func (h *Handler) ViewTVSeriesShow(w http.ResponseWriter, r *http.Request) error
 	return ui.TVSeriesShowView(show, seasons).Render(r.Context(), w)
 }
 
-func (h *Handler) ViewTVSeason(w http.ResponseWriter, r *http.Request) error {
+func (h *TMDBHandler) ViewTVSeason(w http.ResponseWriter, r *http.Request) error {
 	showID, err := parseID(chi.URLParam(r, "showID"))
 	if err != nil {
 		return err
@@ -63,7 +63,7 @@ func (h *Handler) ViewTVSeason(w http.ResponseWriter, r *http.Request) error {
 	return ui.TVSeasonView(season, episodes).Render(r.Context(), w)
 }
 
-func (h *Handler) ViewTVEpisode(w http.ResponseWriter, r *http.Request) error {
+func (h *TMDBHandler) ViewTVEpisode(w http.ResponseWriter, r *http.Request) error {
 	showID, err := parseID(chi.URLParam(r, "showID"))
 	if err != nil {
 		return err
@@ -87,7 +87,7 @@ func (h *Handler) ViewTVEpisode(w http.ResponseWriter, r *http.Request) error {
 	return ui.TVEpisodeView(episode).Render(r.Context(), w)
 }
 
-func (h *Handler) CreateTVSeries(w http.ResponseWriter, r *http.Request) error {
+func (h *TMDBHandler) CreateTVSeries(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
 
 	if err := r.ParseForm(); err != nil {
@@ -114,7 +114,7 @@ func (h *Handler) CreateTVSeries(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func (h *Handler) FetchTVSeriesFromTMDB(w http.ResponseWriter, r *http.Request) error {
+func (h *TMDBHandler) FetchTVSeriesFromTMDB(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
 
 	id, err := parseID(chi.URLParam(r, "showID"))
@@ -136,7 +136,7 @@ func (h *Handler) FetchTVSeriesFromTMDB(w http.ResponseWriter, r *http.Request) 
 	return nil
 }
 
-func (h *Handler) CreateTVEpisodeVideo(w http.ResponseWriter, r *http.Request) error {
+func (h *TMDBHandler) CreateTVEpisodeVideo(w http.ResponseWriter, r *http.Request) error {
 	showID, err := parseID(chi.URLParam(r, "showID"))
 	if err != nil {
 		return err
@@ -161,7 +161,7 @@ func (h *Handler) CreateTVEpisodeVideo(w http.ResponseWriter, r *http.Request) e
 	return nil
 }
 
-func (h *Handler) SyncTVSeries(w http.ResponseWriter, r *http.Request) error {
+func (h *TMDBHandler) SyncTVSeries(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
 
 	id, err := parseID(chi.URLParam(r, "showID"))

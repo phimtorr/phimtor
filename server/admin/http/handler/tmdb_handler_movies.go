@@ -1,4 +1,4 @@
-package handler2
+package handler
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ import (
 	"github.com/phimtorr/phimtor/server/admin/http/uri"
 )
 
-func (h *Handler) ViewMovies(w http.ResponseWriter, r *http.Request) error {
+func (h *TMDBHandler) ViewMovies(w http.ResponseWriter, r *http.Request) error {
 	var page int
 	if p := r.URL.Query().Get("page"); p != "" {
 		page, _ = strconv.Atoi(p)
@@ -30,7 +30,7 @@ func (h *Handler) ViewMovies(w http.ResponseWriter, r *http.Request) error {
 	return ui.MoviesView(movies, pag).Render(r.Context(), w)
 }
 
-func (h *Handler) ViewMovie(w http.ResponseWriter, r *http.Request) error {
+func (h *TMDBHandler) ViewMovie(w http.ResponseWriter, r *http.Request) error {
 	id, err := parseID(chi.URLParam(r, "id"))
 	if err != nil {
 		return err
@@ -44,7 +44,7 @@ func (h *Handler) ViewMovie(w http.ResponseWriter, r *http.Request) error {
 	return ui.MovieView(movie).Render(r.Context(), w)
 }
 
-func (h *Handler) CreateMovie(w http.ResponseWriter, r *http.Request) error {
+func (h *TMDBHandler) CreateMovie(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
 
 	if err := r.ParseForm(); err != nil {
@@ -71,7 +71,7 @@ func (h *Handler) CreateMovie(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func (h *Handler) FetchMovieFromTMDB(w http.ResponseWriter, r *http.Request) error {
+func (h *TMDBHandler) FetchMovieFromTMDB(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
 
 	id, err := parseID(chi.URLParam(r, "id"))
@@ -94,7 +94,7 @@ func (h *Handler) FetchMovieFromTMDB(w http.ResponseWriter, r *http.Request) err
 	return nil
 }
 
-func (h *Handler) CreateMovieVideo(w http.ResponseWriter, r *http.Request) error {
+func (h *TMDBHandler) CreateMovieVideo(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
 
 	id, err := parseID(chi.URLParam(r, "id"))
@@ -111,7 +111,7 @@ func (h *Handler) CreateMovieVideo(w http.ResponseWriter, r *http.Request) error
 	return nil
 }
 
-func (h *Handler) SyncMovie(w http.ResponseWriter, r *http.Request) error {
+func (h *TMDBHandler) SyncMovie(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
 
 	id, err := parseID(chi.URLParam(r, "id"))
