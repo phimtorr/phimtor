@@ -7,6 +7,6 @@ import (
 )
 
 func (h *Handler) Home(w http.ResponseWriter, r *http.Request) error {
-	redirect(w, r, uri.ListShows(1))
+	redirect(w, r, uri.ListLatestShows(1))
 	return nil
 }

@@ -8,6 +8,10 @@ import (
 	"firebase.google.com/go/v4/auth"
 )
 
+const (
+	pageSize = 10
+)
+
 type FileService interface {
 	UploadFile(ctx context.Context, key string, body io.Reader) (string, error)
 	DeleteFile(ctx context.Context, key string) error

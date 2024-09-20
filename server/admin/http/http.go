@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"firebase.google.com/go/v4/auth"
-	"github.com/a-h/templ"
 	"github.com/friendsofgo/errors"
 	"github.com/go-chi/chi/v5"
 	"github.com/rs/zerolog/log"
@@ -13,7 +12,6 @@ import (
 	commonErrors "github.com/phimtorr/phimtor/common/errors"
 	"github.com/phimtorr/phimtor/server/admin/http/handler"
 	"github.com/phimtorr/phimtor/server/admin/http/handler2"
-	"github.com/phimtorr/phimtor/server/admin/http/ui"
 	"github.com/phimtorr/phimtor/server/admin/repository"
 	"github.com/phimtorr/phimtor/server/admin/s3"
 	"github.com/phimtorr/phimtor/server/admin/tmdb"
@@ -40,18 +38,6 @@ func NewHTTPServer(db *sql.DB, authClient *auth.Client) Server {
 
 func (s Server) Register(r chi.Router) {
 	r.Get("/", errHandlerFunc(s.handler.Home))
-	r.Get("/shows", errHandlerFunc(s.handler.ListShows))
-
-	r.Get("/shows/create", templ.Handler(ui.CreateShowForm()).ServeHTTP)
-	r.Post("/shows/create", errHandlerFunc(s.handler.CreateShow))
-	r.Get("/shows/{id}", errHandlerFunc(s.handler.ViewShow))
-	r.Get("/shows/{id}/update", errHandlerFunc(s.handler.ViewUpdateShowForm))
-	r.Post("/shows/{id}/update", errHandlerFunc(s.handler.UpdateShow))
-
-	r.Get("/shows/{id}/episodes", errHandlerFunc(s.handler.ListEpisodes))
-	r.Get("/shows/{id}/episodes/create", errHandlerFunc(s.handler.ViewCreateEpisodeForm))
-	r.Post("/shows/{id}/episodes/create", errHandlerFunc(s.handler.CreateEpisode))
-	r.Get("/shows/{id}/episodes/{episodeID}/view", errHandlerFunc(s.handler.ViewEpisode))
 
 	r.Get("/videos/{id}", errHandlerFunc(s.handler.ViewVideo))
 	r.Post("/videos/{id}/torrents/create", errHandlerFunc(s.handler.CreateTorrent))
