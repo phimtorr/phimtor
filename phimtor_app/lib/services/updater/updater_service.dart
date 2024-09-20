@@ -13,14 +13,18 @@ class UpdaterService {
   UpdaterService._internal() {
     _versionController = StreamController<UpdaterVersion>.broadcast(
       onListen: () {
-        if (_version != null) {
-          _versionController.add(_version!);
+        if (_newVersion != null) {
+          _versionController.add(_newVersion!);
         }
       },
     );
   }
 
-  UpdaterVersion? _version;
+  UpdaterVersion? _newVersion;
+
+  bool get hasNewVersion => _newVersion != null;
+
+  UpdaterVersion? get newVersion => _newVersion;
 
   late final StreamController<UpdaterVersion> _versionController;
 
@@ -58,32 +62,32 @@ class UpdaterService {
       return;
     }
 
-    final versionValue = response.body.toString().trim();
+    final versionValue = response.body.toString().trim().toLowerCase();
 
-    if (Constants.appVersion.toString().trim() == versionValue.toLowerCase().trim()) {
+    if (Constants.appVersion.toString().trim() == versionValue) {
       return;
     }
 
     final version = UpdaterVersion(
       version: versionValue,
-      binaryUrl: binaryUrl,
+      binaryUrl: getBinaryUrl(versionValue),
     );
 
-    _version = version;
+    _newVersion = version;
     _versionController.add(version);
   }
 }
 
-Uri get binaryUrl {
+Uri getBinaryUrl(String versionValue) {
   if (Platform.isLinux) {
     return Uri.parse(
-        "${Constants.apiUrl}/public/phimtor-app/PhimTor-x86_64.AppImage");
+        "${Constants.apiUrl}/public/phimtor-app/PhimTor-$versionValue-x86_64.AppImage");
   }
   if (Platform.isWindows) {
-    return Uri.parse("${Constants.apiUrl}/public/phimtor-app/PhimTorSetup.exe");
+    return Uri.parse("${Constants.apiUrl}/public/phimtor-app/PhimTorSetup-$versionValue.exe");
   }
   if (Platform.isMacOS) {
-    return Uri.parse("${Constants.apiUrl}/public/phimtor-app/PhimTor.dmg");
+    return Uri.parse("${Constants.apiUrl}/public/phimtor-app/PhimTor-$versionValue.pkg");
   }
 
   throw UnsupportedError("Unsupported platform");
