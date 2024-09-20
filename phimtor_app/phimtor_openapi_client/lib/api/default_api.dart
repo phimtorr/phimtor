@@ -16,195 +16,6 @@ class DefaultApi {
 
   final ApiClient apiClient;
 
-  /// Get latest episodes
-  ///
-  /// Note: This method returns the HTTP [Response].
-  ///
-  /// Parameters:
-  ///
-  /// * [int] page:
-  ///
-  /// * [int] pageSize:
-  Future<Response> getLatestEpisodesWithHttpInfo({ int? page, int? pageSize, }) async {
-    // ignore: prefer_const_declarations
-    final path = r'/shows/latest-episodes';
-
-    // ignore: prefer_final_locals
-    Object? postBody;
-
-    final queryParams = <QueryParam>[];
-    final headerParams = <String, String>{};
-    final formParams = <String, String>{};
-
-    if (page != null) {
-      queryParams.addAll(_queryParams('', 'page', page));
-    }
-    if (pageSize != null) {
-      queryParams.addAll(_queryParams('', 'pageSize', pageSize));
-    }
-
-    const contentTypes = <String>[];
-
-
-    return apiClient.invokeAPI(
-      path,
-      'GET',
-      queryParams,
-      postBody,
-      headerParams,
-      formParams,
-      contentTypes.isEmpty ? null : contentTypes.first,
-    );
-  }
-
-  /// Get latest episodes
-  ///
-  /// Parameters:
-  ///
-  /// * [int] page:
-  ///
-  /// * [int] pageSize:
-  Future<GetLatestEpisodesResponse?> getLatestEpisodes({ int? page, int? pageSize, }) async {
-    final response = await getLatestEpisodesWithHttpInfo( page: page, pageSize: pageSize, );
-    if (response.statusCode >= HttpStatus.badRequest) {
-      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
-    }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
-    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetLatestEpisodesResponse',) as GetLatestEpisodesResponse;
-    
-    }
-    return null;
-  }
-
-  /// Get latest movies
-  ///
-  /// Note: This method returns the HTTP [Response].
-  ///
-  /// Parameters:
-  ///
-  /// * [int] page:
-  ///
-  /// * [int] pageSize:
-  Future<Response> getLatestMoviesWithHttpInfo({ int? page, int? pageSize, }) async {
-    // ignore: prefer_const_declarations
-    final path = r'/shows/latest-movies';
-
-    // ignore: prefer_final_locals
-    Object? postBody;
-
-    final queryParams = <QueryParam>[];
-    final headerParams = <String, String>{};
-    final formParams = <String, String>{};
-
-    if (page != null) {
-      queryParams.addAll(_queryParams('', 'page', page));
-    }
-    if (pageSize != null) {
-      queryParams.addAll(_queryParams('', 'pageSize', pageSize));
-    }
-
-    const contentTypes = <String>[];
-
-
-    return apiClient.invokeAPI(
-      path,
-      'GET',
-      queryParams,
-      postBody,
-      headerParams,
-      formParams,
-      contentTypes.isEmpty ? null : contentTypes.first,
-    );
-  }
-
-  /// Get latest movies
-  ///
-  /// Parameters:
-  ///
-  /// * [int] page:
-  ///
-  /// * [int] pageSize:
-  Future<GetLatestMoviesResponse?> getLatestMovies({ int? page, int? pageSize, }) async {
-    final response = await getLatestMoviesWithHttpInfo( page: page, pageSize: pageSize, );
-    if (response.statusCode >= HttpStatus.badRequest) {
-      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
-    }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
-    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetLatestMoviesResponse',) as GetLatestMoviesResponse;
-    
-    }
-    return null;
-  }
-
-  /// Get latest tv series
-  ///
-  /// Note: This method returns the HTTP [Response].
-  ///
-  /// Parameters:
-  ///
-  /// * [int] page:
-  ///
-  /// * [int] pageSize:
-  Future<Response> getLatestTvSeriesWithHttpInfo({ int? page, int? pageSize, }) async {
-    // ignore: prefer_const_declarations
-    final path = r'/shows/latest-tv-series';
-
-    // ignore: prefer_final_locals
-    Object? postBody;
-
-    final queryParams = <QueryParam>[];
-    final headerParams = <String, String>{};
-    final formParams = <String, String>{};
-
-    if (page != null) {
-      queryParams.addAll(_queryParams('', 'page', page));
-    }
-    if (pageSize != null) {
-      queryParams.addAll(_queryParams('', 'pageSize', pageSize));
-    }
-
-    const contentTypes = <String>[];
-
-
-    return apiClient.invokeAPI(
-      path,
-      'GET',
-      queryParams,
-      postBody,
-      headerParams,
-      formParams,
-      contentTypes.isEmpty ? null : contentTypes.first,
-    );
-  }
-
-  /// Get latest tv series
-  ///
-  /// Parameters:
-  ///
-  /// * [int] page:
-  ///
-  /// * [int] pageSize:
-  Future<GetLatestTvSeriesResponse?> getLatestTvSeries({ int? page, int? pageSize, }) async {
-    final response = await getLatestTvSeriesWithHttpInfo( page: page, pageSize: pageSize, );
-    if (response.statusCode >= HttpStatus.badRequest) {
-      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
-    }
-    // When a remote server returns no body with a status of 204, we shall not decode it.
-    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
-    // FormatException when trying to decode an empty string.
-    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetLatestTvSeriesResponse',) as GetLatestTvSeriesResponse;
-    
-    }
-    return null;
-  }
-
   /// Get movie by id
   ///
   /// Note: This method returns the HTTP [Response].
@@ -461,6 +272,258 @@ class DefaultApi {
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
       return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetVideoResponse',) as GetVideoResponse;
+    
+    }
+    return null;
+  }
+
+  /// List latest episodes
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [int] page:
+  ///
+  /// * [int] pageSize:
+  Future<Response> listLatestEpisodesWithHttpInfo({ int? page, int? pageSize, }) async {
+    // ignore: prefer_const_declarations
+    final path = r'/shows/latest-episodes';
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    if (page != null) {
+      queryParams.addAll(_queryParams('', 'page', page));
+    }
+    if (pageSize != null) {
+      queryParams.addAll(_queryParams('', 'pageSize', pageSize));
+    }
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// List latest episodes
+  ///
+  /// Parameters:
+  ///
+  /// * [int] page:
+  ///
+  /// * [int] pageSize:
+  Future<GetLatestEpisodesResponse?> listLatestEpisodes({ int? page, int? pageSize, }) async {
+    final response = await listLatestEpisodesWithHttpInfo( page: page, pageSize: pageSize, );
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetLatestEpisodesResponse',) as GetLatestEpisodesResponse;
+    
+    }
+    return null;
+  }
+
+  /// List latest movies
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [int] page:
+  ///
+  /// * [int] pageSize:
+  Future<Response> listLatestMoviesWithHttpInfo({ int? page, int? pageSize, }) async {
+    // ignore: prefer_const_declarations
+    final path = r'/shows/latest-movies';
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    if (page != null) {
+      queryParams.addAll(_queryParams('', 'page', page));
+    }
+    if (pageSize != null) {
+      queryParams.addAll(_queryParams('', 'pageSize', pageSize));
+    }
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// List latest movies
+  ///
+  /// Parameters:
+  ///
+  /// * [int] page:
+  ///
+  /// * [int] pageSize:
+  Future<GetLatestMoviesResponse?> listLatestMovies({ int? page, int? pageSize, }) async {
+    final response = await listLatestMoviesWithHttpInfo( page: page, pageSize: pageSize, );
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetLatestMoviesResponse',) as GetLatestMoviesResponse;
+    
+    }
+    return null;
+  }
+
+  /// List latest tv series
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [int] page:
+  ///
+  /// * [int] pageSize:
+  Future<Response> listLatestTvSeriesWithHttpInfo({ int? page, int? pageSize, }) async {
+    // ignore: prefer_const_declarations
+    final path = r'/shows/latest-tv-series';
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    if (page != null) {
+      queryParams.addAll(_queryParams('', 'page', page));
+    }
+    if (pageSize != null) {
+      queryParams.addAll(_queryParams('', 'pageSize', pageSize));
+    }
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// List latest tv series
+  ///
+  /// Parameters:
+  ///
+  /// * [int] page:
+  ///
+  /// * [int] pageSize:
+  Future<GetLatestTvSeriesResponse?> listLatestTvSeries({ int? page, int? pageSize, }) async {
+    final response = await listLatestTvSeriesWithHttpInfo( page: page, pageSize: pageSize, );
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetLatestTvSeriesResponse',) as GetLatestTvSeriesResponse;
+    
+    }
+    return null;
+  }
+
+  /// List recently added movies
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [int] page:
+  ///
+  /// * [int] pageSize:
+  Future<Response> listRecentlyAddedMoviesWithHttpInfo({ int? page, int? pageSize, }) async {
+    // ignore: prefer_const_declarations
+    final path = r'/shows/recently-added-movies';
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    if (page != null) {
+      queryParams.addAll(_queryParams('', 'page', page));
+    }
+    if (pageSize != null) {
+      queryParams.addAll(_queryParams('', 'pageSize', pageSize));
+    }
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// List recently added movies
+  ///
+  /// Parameters:
+  ///
+  /// * [int] page:
+  ///
+  /// * [int] pageSize:
+  Future<GetLatestMoviesResponse?> listRecentlyAddedMovies({ int? page, int? pageSize, }) async {
+    final response = await listRecentlyAddedMoviesWithHttpInfo( page: page, pageSize: pageSize, );
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'GetLatestMoviesResponse',) as GetLatestMoviesResponse;
     
     }
     return null;

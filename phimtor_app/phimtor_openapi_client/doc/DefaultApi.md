@@ -9,163 +9,17 @@ All URIs are relative to *http://localhost:8080/api/v2*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**getLatestEpisodes**](DefaultApi.md#getlatestepisodes) | **GET** /shows/latest-episodes | Get latest episodes
-[**getLatestMovies**](DefaultApi.md#getlatestmovies) | **GET** /shows/latest-movies | Get latest movies
-[**getLatestTvSeries**](DefaultApi.md#getlatesttvseries) | **GET** /shows/latest-tv-series | Get latest tv series
 [**getMovie**](DefaultApi.md#getmovie) | **GET** /movies/{movieId} | Get movie by id
 [**getTvSeason**](DefaultApi.md#gettvseason) | **GET** /tv-series/{tvSeriesId}/seasons/{seasonNumber} | Get tv season by tv series id and season number
 [**getTvSeries**](DefaultApi.md#gettvseries) | **GET** /tv-series/{tvSeriesId} | Get tv series by id
 [**getVersion**](DefaultApi.md#getversion) | **GET** /version | Get version
 [**getVideo**](DefaultApi.md#getvideo) | **GET** /videos/{id} | Get video by id
+[**listLatestEpisodes**](DefaultApi.md#listlatestepisodes) | **GET** /shows/latest-episodes | List latest episodes
+[**listLatestMovies**](DefaultApi.md#listlatestmovies) | **GET** /shows/latest-movies | List latest movies
+[**listLatestTvSeries**](DefaultApi.md#listlatesttvseries) | **GET** /shows/latest-tv-series | List latest tv series
+[**listRecentlyAddedMovies**](DefaultApi.md#listrecentlyaddedmovies) | **GET** /shows/recently-added-movies | List recently added movies
 [**searchShows**](DefaultApi.md#searchshows) | **GET** /shows/search | Search shows
 
-
-# **getLatestEpisodes**
-> GetLatestEpisodesResponse getLatestEpisodes(page, pageSize)
-
-Get latest episodes
-
-### Example
-```dart
-import 'package:phimtor_openapi_client/api.dart';
-// TODO Configure HTTP Bearer authorization: bearerAuth
-// Case 1. Use String Token
-//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken('YOUR_ACCESS_TOKEN');
-// Case 2. Use Function which generate token.
-// String yourTokenGeneratorFunction() { ... }
-//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
-
-final api_instance = DefaultApi();
-final page = 56; // int | 
-final pageSize = 56; // int | 
-
-try {
-    final result = api_instance.getLatestEpisodes(page, pageSize);
-    print(result);
-} catch (e) {
-    print('Exception when calling DefaultApi->getLatestEpisodes: $e\n');
-}
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **page** | **int**|  | [optional] [default to 1]
- **pageSize** | **int**|  | [optional] [default to 18]
-
-### Return type
-
-[**GetLatestEpisodesResponse**](GetLatestEpisodesResponse.md)
-
-### Authorization
-
-[bearerAuth](../README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **getLatestMovies**
-> GetLatestMoviesResponse getLatestMovies(page, pageSize)
-
-Get latest movies
-
-### Example
-```dart
-import 'package:phimtor_openapi_client/api.dart';
-// TODO Configure HTTP Bearer authorization: bearerAuth
-// Case 1. Use String Token
-//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken('YOUR_ACCESS_TOKEN');
-// Case 2. Use Function which generate token.
-// String yourTokenGeneratorFunction() { ... }
-//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
-
-final api_instance = DefaultApi();
-final page = 56; // int | 
-final pageSize = 56; // int | 
-
-try {
-    final result = api_instance.getLatestMovies(page, pageSize);
-    print(result);
-} catch (e) {
-    print('Exception when calling DefaultApi->getLatestMovies: $e\n');
-}
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **page** | **int**|  | [optional] [default to 1]
- **pageSize** | **int**|  | [optional] [default to 18]
-
-### Return type
-
-[**GetLatestMoviesResponse**](GetLatestMoviesResponse.md)
-
-### Authorization
-
-[bearerAuth](../README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **getLatestTvSeries**
-> GetLatestTvSeriesResponse getLatestTvSeries(page, pageSize)
-
-Get latest tv series
-
-### Example
-```dart
-import 'package:phimtor_openapi_client/api.dart';
-// TODO Configure HTTP Bearer authorization: bearerAuth
-// Case 1. Use String Token
-//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken('YOUR_ACCESS_TOKEN');
-// Case 2. Use Function which generate token.
-// String yourTokenGeneratorFunction() { ... }
-//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
-
-final api_instance = DefaultApi();
-final page = 56; // int | 
-final pageSize = 56; // int | 
-
-try {
-    final result = api_instance.getLatestTvSeries(page, pageSize);
-    print(result);
-} catch (e) {
-    print('Exception when calling DefaultApi->getLatestTvSeries: $e\n');
-}
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **page** | **int**|  | [optional] [default to 1]
- **pageSize** | **int**|  | [optional] [default to 18]
-
-### Return type
-
-[**GetLatestTvSeriesResponse**](GetLatestTvSeriesResponse.md)
-
-### Authorization
-
-[bearerAuth](../README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **getMovie**
 > GetMovieResponse getMovie(movieId)
@@ -388,6 +242,202 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**GetVideoResponse**](GetVideoResponse.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **listLatestEpisodes**
+> GetLatestEpisodesResponse listLatestEpisodes(page, pageSize)
+
+List latest episodes
+
+### Example
+```dart
+import 'package:phimtor_openapi_client/api.dart';
+// TODO Configure HTTP Bearer authorization: bearerAuth
+// Case 1. Use String Token
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken('YOUR_ACCESS_TOKEN');
+// Case 2. Use Function which generate token.
+// String yourTokenGeneratorFunction() { ... }
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
+
+final api_instance = DefaultApi();
+final page = 56; // int | 
+final pageSize = 56; // int | 
+
+try {
+    final result = api_instance.listLatestEpisodes(page, pageSize);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->listLatestEpisodes: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **page** | **int**|  | [optional] [default to 1]
+ **pageSize** | **int**|  | [optional] [default to 18]
+
+### Return type
+
+[**GetLatestEpisodesResponse**](GetLatestEpisodesResponse.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **listLatestMovies**
+> GetLatestMoviesResponse listLatestMovies(page, pageSize)
+
+List latest movies
+
+### Example
+```dart
+import 'package:phimtor_openapi_client/api.dart';
+// TODO Configure HTTP Bearer authorization: bearerAuth
+// Case 1. Use String Token
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken('YOUR_ACCESS_TOKEN');
+// Case 2. Use Function which generate token.
+// String yourTokenGeneratorFunction() { ... }
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
+
+final api_instance = DefaultApi();
+final page = 56; // int | 
+final pageSize = 56; // int | 
+
+try {
+    final result = api_instance.listLatestMovies(page, pageSize);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->listLatestMovies: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **page** | **int**|  | [optional] [default to 1]
+ **pageSize** | **int**|  | [optional] [default to 18]
+
+### Return type
+
+[**GetLatestMoviesResponse**](GetLatestMoviesResponse.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **listLatestTvSeries**
+> GetLatestTvSeriesResponse listLatestTvSeries(page, pageSize)
+
+List latest tv series
+
+### Example
+```dart
+import 'package:phimtor_openapi_client/api.dart';
+// TODO Configure HTTP Bearer authorization: bearerAuth
+// Case 1. Use String Token
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken('YOUR_ACCESS_TOKEN');
+// Case 2. Use Function which generate token.
+// String yourTokenGeneratorFunction() { ... }
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
+
+final api_instance = DefaultApi();
+final page = 56; // int | 
+final pageSize = 56; // int | 
+
+try {
+    final result = api_instance.listLatestTvSeries(page, pageSize);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->listLatestTvSeries: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **page** | **int**|  | [optional] [default to 1]
+ **pageSize** | **int**|  | [optional] [default to 18]
+
+### Return type
+
+[**GetLatestTvSeriesResponse**](GetLatestTvSeriesResponse.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **listRecentlyAddedMovies**
+> GetLatestMoviesResponse listRecentlyAddedMovies(page, pageSize)
+
+List recently added movies
+
+### Example
+```dart
+import 'package:phimtor_openapi_client/api.dart';
+// TODO Configure HTTP Bearer authorization: bearerAuth
+// Case 1. Use String Token
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken('YOUR_ACCESS_TOKEN');
+// Case 2. Use Function which generate token.
+// String yourTokenGeneratorFunction() { ... }
+//defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
+
+final api_instance = DefaultApi();
+final page = 56; // int | 
+final pageSize = 56; // int | 
+
+try {
+    final result = api_instance.listRecentlyAddedMovies(page, pageSize);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->listRecentlyAddedMovies: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **page** | **int**|  | [optional] [default to 1]
+ **pageSize** | **int**|  | [optional] [default to 18]
+
+### Return type
+
+[**GetLatestMoviesResponse**](GetLatestMoviesResponse.md)
 
 ### Authorization
 

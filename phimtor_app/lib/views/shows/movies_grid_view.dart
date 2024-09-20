@@ -12,7 +12,7 @@ class MoviesGridView extends StatelessWidget {
     int page,
     int pageSize,
   ) async {
-    final resp = await PhimtorService().defaultApi.getLatestMovies(
+    final resp = await PhimtorService().defaultApi.listLatestMovies(
           page: page,
           pageSize: pageSize,
         );

@@ -12,7 +12,7 @@ class TvLatestEpisodesGridView extends StatelessWidget {
     int page,
     int pageSize,
   ) async {
-    final resp = await PhimtorService().defaultApi.getLatestEpisodes(
+    final resp = await PhimtorService().defaultApi.listLatestEpisodes(
           page: page,
           pageSize: pageSize,
         );

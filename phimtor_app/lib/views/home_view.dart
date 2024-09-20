@@ -71,7 +71,7 @@ class MoviesSection extends StatelessWidget {
           child: FutureBuilder(
             future: phimtor_service.PhimtorService()
                 .defaultApi
-                .getLatestMovies(page: 1, pageSize: 10),
+                .listLatestMovies(page: 1, pageSize: 10),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -121,7 +121,7 @@ class TVSeriesSection extends StatelessWidget {
           child: FutureBuilder(
             future: phimtor_service.PhimtorService()
                 .defaultApi
-                .getLatestTvSeries(page: 1, pageSize: 10,),
+                .listLatestTvSeries(page: 1, pageSize: 10,),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -172,7 +172,7 @@ class TVEpisodesSection extends StatelessWidget {
           child: FutureBuilder(
             future: phimtor_service.PhimtorService()
                 .defaultApi
-                .getLatestEpisodes(page: 1, pageSize: 10,),
+                .listLatestEpisodes(page: 1, pageSize: 10,),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
