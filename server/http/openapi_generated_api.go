@@ -17,15 +17,18 @@ type ServerInterface interface {
 	// Get movie by id
 	// (GET /movies/{movieId})
 	GetMovie(w http.ResponseWriter, r *http.Request, movieId int64)
-	// Get latest episodes
+	// List latest episodes
 	// (GET /shows/latest-episodes)
-	GetLatestEpisodes(w http.ResponseWriter, r *http.Request, params GetLatestEpisodesParams)
-	// Get latest movies
+	ListLatestEpisodes(w http.ResponseWriter, r *http.Request, params ListLatestEpisodesParams)
+	// List latest movies
 	// (GET /shows/latest-movies)
-	GetLatestMovies(w http.ResponseWriter, r *http.Request, params GetLatestMoviesParams)
-	// Get latest tv series
+	ListLatestMovies(w http.ResponseWriter, r *http.Request, params ListLatestMoviesParams)
+	// List latest tv series
 	// (GET /shows/latest-tv-series)
-	GetLatestTvSeries(w http.ResponseWriter, r *http.Request, params GetLatestTvSeriesParams)
+	ListLatestTvSeries(w http.ResponseWriter, r *http.Request, params ListLatestTvSeriesParams)
+	// List recently added movies
+	// (GET /shows/recently-added-movies)
+	ListRecentlyAddedMovies(w http.ResponseWriter, r *http.Request, params ListRecentlyAddedMoviesParams)
 	// Search shows
 	// (GET /shows/search)
 	SearchShows(w http.ResponseWriter, r *http.Request, params SearchShowsParams)
@@ -53,21 +56,27 @@ func (_ Unimplemented) GetMovie(w http.ResponseWriter, r *http.Request, movieId 
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// Get latest episodes
+// List latest episodes
 // (GET /shows/latest-episodes)
-func (_ Unimplemented) GetLatestEpisodes(w http.ResponseWriter, r *http.Request, params GetLatestEpisodesParams) {
+func (_ Unimplemented) ListLatestEpisodes(w http.ResponseWriter, r *http.Request, params ListLatestEpisodesParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// Get latest movies
+// List latest movies
 // (GET /shows/latest-movies)
-func (_ Unimplemented) GetLatestMovies(w http.ResponseWriter, r *http.Request, params GetLatestMoviesParams) {
+func (_ Unimplemented) ListLatestMovies(w http.ResponseWriter, r *http.Request, params ListLatestMoviesParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// Get latest tv series
+// List latest tv series
 // (GET /shows/latest-tv-series)
-func (_ Unimplemented) GetLatestTvSeries(w http.ResponseWriter, r *http.Request, params GetLatestTvSeriesParams) {
+func (_ Unimplemented) ListLatestTvSeries(w http.ResponseWriter, r *http.Request, params ListLatestTvSeriesParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// List recently added movies
+// (GET /shows/recently-added-movies)
+func (_ Unimplemented) ListRecentlyAddedMovies(w http.ResponseWriter, r *http.Request, params ListRecentlyAddedMoviesParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -138,8 +147,8 @@ func (siw *ServerInterfaceWrapper) GetMovie(w http.ResponseWriter, r *http.Reque
 	handler.ServeHTTP(w, r.WithContext(ctx))
 }
 
-// GetLatestEpisodes operation middleware
-func (siw *ServerInterfaceWrapper) GetLatestEpisodes(w http.ResponseWriter, r *http.Request) {
+// ListLatestEpisodes operation middleware
+func (siw *ServerInterfaceWrapper) ListLatestEpisodes(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var err error
@@ -147,7 +156,7 @@ func (siw *ServerInterfaceWrapper) GetLatestEpisodes(w http.ResponseWriter, r *h
 	ctx = context.WithValue(ctx, BearerAuthScopes, []string{})
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params GetLatestEpisodesParams
+	var params ListLatestEpisodesParams
 
 	// ------------- Optional query parameter "page" -------------
 
@@ -166,7 +175,7 @@ func (siw *ServerInterfaceWrapper) GetLatestEpisodes(w http.ResponseWriter, r *h
 	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetLatestEpisodes(w, r, params)
+		siw.Handler.ListLatestEpisodes(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -176,8 +185,8 @@ func (siw *ServerInterfaceWrapper) GetLatestEpisodes(w http.ResponseWriter, r *h
 	handler.ServeHTTP(w, r.WithContext(ctx))
 }
 
-// GetLatestMovies operation middleware
-func (siw *ServerInterfaceWrapper) GetLatestMovies(w http.ResponseWriter, r *http.Request) {
+// ListLatestMovies operation middleware
+func (siw *ServerInterfaceWrapper) ListLatestMovies(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var err error
@@ -185,7 +194,7 @@ func (siw *ServerInterfaceWrapper) GetLatestMovies(w http.ResponseWriter, r *htt
 	ctx = context.WithValue(ctx, BearerAuthScopes, []string{})
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params GetLatestMoviesParams
+	var params ListLatestMoviesParams
 
 	// ------------- Optional query parameter "page" -------------
 
@@ -204,7 +213,7 @@ func (siw *ServerInterfaceWrapper) GetLatestMovies(w http.ResponseWriter, r *htt
 	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetLatestMovies(w, r, params)
+		siw.Handler.ListLatestMovies(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -214,8 +223,8 @@ func (siw *ServerInterfaceWrapper) GetLatestMovies(w http.ResponseWriter, r *htt
 	handler.ServeHTTP(w, r.WithContext(ctx))
 }
 
-// GetLatestTvSeries operation middleware
-func (siw *ServerInterfaceWrapper) GetLatestTvSeries(w http.ResponseWriter, r *http.Request) {
+// ListLatestTvSeries operation middleware
+func (siw *ServerInterfaceWrapper) ListLatestTvSeries(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var err error
@@ -223,7 +232,7 @@ func (siw *ServerInterfaceWrapper) GetLatestTvSeries(w http.ResponseWriter, r *h
 	ctx = context.WithValue(ctx, BearerAuthScopes, []string{})
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params GetLatestTvSeriesParams
+	var params ListLatestTvSeriesParams
 
 	// ------------- Optional query parameter "page" -------------
 
@@ -242,7 +251,45 @@ func (siw *ServerInterfaceWrapper) GetLatestTvSeries(w http.ResponseWriter, r *h
 	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetLatestTvSeries(w, r, params)
+		siw.Handler.ListLatestTvSeries(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// ListRecentlyAddedMovies operation middleware
+func (siw *ServerInterfaceWrapper) ListRecentlyAddedMovies(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, []string{})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListRecentlyAddedMoviesParams
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "page", r.URL.Query(), &params.Page)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		return
+	}
+
+	// ------------- Optional query parameter "pageSize" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "pageSize", r.URL.Query(), &params.PageSize)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "pageSize", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListRecentlyAddedMovies(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -532,13 +579,16 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Get(options.BaseURL+"/movies/{movieId}", wrapper.GetMovie)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/shows/latest-episodes", wrapper.GetLatestEpisodes)
+		r.Get(options.BaseURL+"/shows/latest-episodes", wrapper.ListLatestEpisodes)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/shows/latest-movies", wrapper.GetLatestMovies)
+		r.Get(options.BaseURL+"/shows/latest-movies", wrapper.ListLatestMovies)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/shows/latest-tv-series", wrapper.GetLatestTvSeries)
+		r.Get(options.BaseURL+"/shows/latest-tv-series", wrapper.ListLatestTvSeries)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/shows/recently-added-movies", wrapper.ListRecentlyAddedMovies)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/shows/search", wrapper.SearchShows)

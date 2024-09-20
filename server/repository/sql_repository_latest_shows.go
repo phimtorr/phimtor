@@ -13,34 +13,52 @@ import (
 	"github.com/phimtorr/phimtor/server/repository/dbmodels"
 )
 
-func (r SQLRepository) GetLatestEpisodes(ctx context.Context, params http.GetLatestEpisodesParams) ([]http.Show, http.Pagination, error) {
-	page, pageSize := toPageAndPageSize(params.Page, params.PageSize)
+type sortBy int
 
-	queryMods := []qm.QueryMod{
-		dbmodels.LatestShowWhere.Type.EQ(dbmodels.LatestShowsTypeEpisode),
-	}
+const (
+	sortByNone = iota
+	sortByAirDateDesc
+	sortByCreatedAtDesc
+)
 
-	return r.queryShows(ctx, queryMods, page, pageSize, true)
-}
-
-func (r SQLRepository) GetLatestMovies(ctx context.Context, params http.GetLatestMoviesParams) ([]http.Show, http.Pagination, error) {
+func (r SQLRepository) ListRecentlyAddedMovies(ctx context.Context, params http.ListRecentlyAddedMoviesParams) ([]http.Show, http.Pagination, error) {
 	page, pageSize := toPageAndPageSize(params.Page, params.PageSize)
 
 	queryMods := []qm.QueryMod{
 		dbmodels.LatestShowWhere.Type.EQ(dbmodels.LatestShowsTypeMovie),
 	}
 
-	return r.queryShows(ctx, queryMods, page, pageSize, true)
+	return r.queryShows(ctx, queryMods, page, pageSize, sortByCreatedAtDesc)
 }
 
-func (r SQLRepository) GetLatestTvSeries(ctx context.Context, params http.GetLatestTvSeriesParams) ([]http.Show, http.Pagination, error) {
+func (r SQLRepository) ListLatestEpisodes(ctx context.Context, params http.ListLatestEpisodesParams) ([]http.Show, http.Pagination, error) {
+	page, pageSize := toPageAndPageSize(params.Page, params.PageSize)
+
+	queryMods := []qm.QueryMod{
+		dbmodels.LatestShowWhere.Type.EQ(dbmodels.LatestShowsTypeEpisode),
+	}
+
+	return r.queryShows(ctx, queryMods, page, pageSize, sortByAirDateDesc)
+}
+
+func (r SQLRepository) ListLatestMovies(ctx context.Context, params http.ListLatestMoviesParams) ([]http.Show, http.Pagination, error) {
+	page, pageSize := toPageAndPageSize(params.Page, params.PageSize)
+
+	queryMods := []qm.QueryMod{
+		dbmodels.LatestShowWhere.Type.EQ(dbmodels.LatestShowsTypeMovie),
+	}
+
+	return r.queryShows(ctx, queryMods, page, pageSize, sortByAirDateDesc)
+}
+
+func (r SQLRepository) ListLatestTvSeries(ctx context.Context, params http.ListLatestTvSeriesParams) ([]http.Show, http.Pagination, error) {
 	page, pageSize := toPageAndPageSize(params.Page, params.PageSize)
 
 	queryMods := []qm.QueryMod{
 		dbmodels.LatestShowWhere.Type.EQ(dbmodels.LatestShowsTypeTVSeries),
 	}
 
-	return r.queryShows(ctx, queryMods, page, pageSize, true)
+	return r.queryShows(ctx, queryMods, page, pageSize, sortByAirDateDesc)
 }
 
 func (r SQLRepository) SearchShows(ctx context.Context, params http.SearchShowsParams) ([]http.Show, http.Pagination, error) {
@@ -54,17 +72,22 @@ func (r SQLRepository) SearchShows(ctx context.Context, params http.SearchShowsP
 		}),
 	}
 
-	return r.queryShows(ctx, queryMods, page, pageSize, false)
+	return r.queryShows(ctx, queryMods, page, pageSize, sortByNone)
 }
 
-func (r SQLRepository) queryShows(ctx context.Context, queryMods []qm.QueryMod, page, pageSize int, sort bool) ([]http.Show, http.Pagination, error) {
+func (r SQLRepository) queryShows(ctx context.Context, queryMods []qm.QueryMod, page, pageSize int, sort sortBy) ([]http.Show, http.Pagination, error) {
 	pagingQueryMods := append(queryMods,
 		qm.Limit(pageSize),
 		qm.Offset((page-1)*pageSize),
 	)
 
-	if sort {
+	switch sort {
+	case sortByAirDateDesc:
 		pagingQueryMods = append(pagingQueryMods, qm.OrderBy(dbmodels.LatestShowColumns.AirDate+" DESC"))
+	case sortByCreatedAtDesc:
+		pagingQueryMods = append(pagingQueryMods, qm.OrderBy(dbmodels.LatestShowColumns.CreatedAt+" DESC"))
+	default:
+		// Do nothing
 	}
 
 	shows, err := dbmodels.LatestShows(pagingQueryMods...).
