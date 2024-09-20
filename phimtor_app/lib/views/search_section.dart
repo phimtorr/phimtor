@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
-import 'package:phimtor_app/routes/route_names.dart';
+import 'package:phimtor_app/routes/app_routes.dart';
 
 class SearchSection extends StatefulWidget {
   const SearchSection({super.key});
@@ -38,7 +38,7 @@ class _SearchSectionState extends State<SearchSection> {
               return;
             }
             await context.pushNamed(
-              routeNameShowSearch,
+              AppRoutes.showSearch,
               pathParameters: {"query": query},
             );
           },

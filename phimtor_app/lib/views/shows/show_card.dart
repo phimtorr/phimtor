@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phimtor_app/helpers/time_helpers.dart';
-import 'package:phimtor_app/routes/route_names.dart';
+import 'package:phimtor_app/routes/app_routes.dart';
 import 'package:phimtor_app/services/analytics/analytics_service.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
 
@@ -105,7 +105,7 @@ class ShowCard extends StatelessWidget {
         );
         if (show.type == phimtor_api.ModelShowTypeEnum.movie) {
           await context.pushNamed(
-            routeNameMovieDetails,
+            AppRoutes.movieDetails,
             pathParameters: {
               "id": show.showId.toString(),
               "title": show.title,
@@ -115,7 +115,7 @@ class ShowCard extends StatelessWidget {
         }
         if (show.type == phimtor_api.ModelShowTypeEnum.tvSeries) {
           await context.pushNamed(
-            routeNameTVSeriesDetails,
+            AppRoutes.tvSeriesDetails,
             pathParameters: {
               "id": show.showId.toString(),
               "title": show.title,
@@ -125,7 +125,7 @@ class ShowCard extends StatelessWidget {
         }
         if (show.type == phimtor_api.ModelShowTypeEnum.episode) {
           await context.pushNamed(
-            routeNameTVSeriesSeasonDetails,
+            AppRoutes.tvSeriesSeasonDetails,
             pathParameters: {
               "id": show.showId.toString(),
               "seasonNumber": show.seasonNumber.toString(),

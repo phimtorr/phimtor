@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
-import 'package:phimtor_app/routes/route_names.dart';
+import 'package:phimtor_app/routes/app_routes.dart';
 import 'package:phimtor_app/services/analytics/analytics_service.dart';
 import 'package:phimtor_app/services/phimtor/phimtor_service.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
@@ -193,7 +193,7 @@ class TVSeasonDetailView extends StatelessWidget {
       return InkWell(
         onTap: episode.videoID == 0 ? null : () async {
           await context.pushNamed(
-            routeNameVideo,
+            AppRoutes.video,
             pathParameters: {
               "id": episode.videoID.toString(),
               "title": "$title - ${episode.name}",

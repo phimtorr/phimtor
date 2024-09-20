@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
-import 'package:phimtor_app/routes/route_names.dart';
+import 'package:phimtor_app/routes/app_routes.dart';
 import 'package:phimtor_app/services/phimtor/phimtor_service.dart'
     as phimtor_service;
 import 'package:phimtor_app/views/search_section.dart';
@@ -57,7 +57,7 @@ class MoviesSection extends StatelessWidget {
             const SizedBox(width: 8),
             ElevatedButton.icon(
               onPressed: () async {
-                await context.pushNamed(routeNameMovies);
+                await context.pushNamed(AppRoutes.movies);
               },
               label: Text(context.loc.load_more),
               icon: const Icon(Icons.arrow_forward),
@@ -107,7 +107,7 @@ class TVSeriesSection extends StatelessWidget {
             const SizedBox(width: 8),
             ElevatedButton.icon(
               onPressed: () async {
-                await context.pushNamed(routeNameTVSeries);
+                await context.pushNamed(AppRoutes.tvSeries);
               },
               label: Text(context.loc.load_more),
               icon: const Icon(Icons.arrow_forward),
@@ -158,7 +158,7 @@ class TVEpisodesSection extends StatelessWidget {
             const SizedBox(width: 8),
             ElevatedButton.icon(
               onPressed: () async {
-                await context.pushNamed(routeNameTVLatestEpisodes);
+                await context.pushNamed(AppRoutes.tvLatestEpisodes);
               },
               label: Text(context.loc.load_more),
               icon: const Icon(Icons.arrow_forward),
