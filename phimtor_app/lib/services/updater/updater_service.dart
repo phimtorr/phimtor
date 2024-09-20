@@ -58,15 +58,15 @@ class UpdaterService {
       return;
     }
 
-    final versionValue = response.body.toString().trim();
+    final versionValue = response.body.toString().trim().toLowerCase();
 
-    if (Constants.appVersion.toString().trim() == versionValue.toLowerCase().trim()) {
+    if (Constants.appVersion.toString().trim() == versionValue) {
       return;
     }
 
     final version = UpdaterVersion(
       version: versionValue,
-      binaryUrl: binaryUrl,
+      binaryUrl: getBinaryUrl(versionValue),
     );
 
     _version = version;
@@ -74,16 +74,16 @@ class UpdaterService {
   }
 }
 
-Uri get binaryUrl {
+Uri getBinaryUrl(String versionValue) {
   if (Platform.isLinux) {
     return Uri.parse(
-        "${Constants.apiUrl}/public/phimtor-app/PhimTor-x86_64.AppImage");
+        "${Constants.apiUrl}/public/phimtor-app/PhimTor-$versionValue-x86_64.AppImage");
   }
   if (Platform.isWindows) {
-    return Uri.parse("${Constants.apiUrl}/public/phimtor-app/PhimTorSetup.exe");
+    return Uri.parse("${Constants.apiUrl}/public/phimtor-app/PhimTorSetup-$versionValue.exe");
   }
   if (Platform.isMacOS) {
-    return Uri.parse("${Constants.apiUrl}/public/phimtor-app/PhimTor.dmg");
+    return Uri.parse("${Constants.apiUrl}/public/phimtor-app/PhimTor-$versionValue.pkg");
   }
 
   throw UnsupportedError("Unsupported platform");
