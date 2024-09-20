@@ -86,6 +86,7 @@
         }
     },
 
+    "latest_added_movies": "Phim lẻ mới thêm",
     "latest_movies": "Phim lẻ mới",
     "latest_tv_series": "Phim bộ mới",
     "latest_episodes": "Tập phim mới",

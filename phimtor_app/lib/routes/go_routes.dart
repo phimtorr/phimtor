@@ -5,6 +5,7 @@ import 'package:phimtor_app/routes/scaffold_with_nested_navigation.dart';
 import 'package:phimtor_app/views/account/account_view.dart';
 import 'package:phimtor_app/views/home_view.dart';
 import 'package:phimtor_app/views/settings_view.dart';
+import 'package:phimtor_app/views/shows/latest_added_movies_grid_view.dart';
 import 'package:phimtor_app/views/shows/movie_detail_view.dart';
 import 'package:phimtor_app/views/shows/movies_grid_view.dart';
 import 'package:phimtor_app/views/shows/search_grid_view.dart';
@@ -67,6 +68,11 @@ final goRouter = GoRouter(
                   name: AppRoutes.movies,
                   path: "movies",
                   builder: (context, state) => const MoviesGridView(),
+                ),
+                GoRoute(
+                  name: AppRoutes.latestAddedMovies,
+                  path: "movies/latest_added",
+                  builder: (context, state) => const LatestAddedMoviesGridView(),
                 ),
                 GoRoute(
                   name: AppRoutes.movieDetails,

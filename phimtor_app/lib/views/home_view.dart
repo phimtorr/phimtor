@@ -25,6 +25,8 @@ class HomeView extends StatelessWidget {
             children: [
               SearchSection(),
               SizedBox(height: 32),
+              LatestAddedMoviesSection(),
+              SizedBox(height: 32),
               MoviesSection(),
               SizedBox(height: 32),
               TVSeriesSection(),
@@ -34,6 +36,59 @@ class HomeView extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class LatestAddedMoviesSection extends StatelessWidget {
+  const LatestAddedMoviesSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              context.loc.latest_added_movies,
+              style: Theme.of(context).textTheme.headlineLarge,
+            ),
+            const SizedBox(width: 8),
+            ElevatedButton.icon(
+              onPressed: () async {
+                await context.pushNamed(AppRoutes.latestAddedMovies);
+              },
+              label: Text(context.loc.load_more),
+              icon: const Icon(Icons.arrow_forward),
+              iconAlignment: IconAlignment.end,
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          height: 320.0,
+          child: FutureBuilder(
+            future: phimtor_service.PhimtorService()
+                .defaultApi
+                .listRecentlyAddedMovies(page: 1, pageSize: 10),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasError) {
+                return Center(
+                    child: Text(context.loc.error(snapshot.error.toString())));
+              }
+
+              final response = snapshot.data as phimtor_api.GetLatestMoviesResponse;
+              return ShowsList(shows: response.movies);
+            },
+          ),
+        ),
+      ],
     );
   }
 }
