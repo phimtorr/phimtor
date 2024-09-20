@@ -13,14 +13,14 @@ class UpdaterService {
   UpdaterService._internal() {
     _versionController = StreamController<UpdaterVersion>.broadcast(
       onListen: () {
-        if (_version != null) {
-          _versionController.add(_version!);
+        if (_newVersion != null) {
+          _versionController.add(_newVersion!);
         }
       },
     );
   }
 
-  UpdaterVersion? _version;
+  UpdaterVersion? _newVersion;
 
   late final StreamController<UpdaterVersion> _versionController;
 
@@ -69,7 +69,7 @@ class UpdaterService {
       binaryUrl: getBinaryUrl(versionValue),
     );
 
-    _version = version;
+    _newVersion = version;
     _versionController.add(version);
   }
 }

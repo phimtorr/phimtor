@@ -3,29 +3,14 @@ import 'package:phimtor_app/constants/enviroment_vars.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:phimtor_app/services/updater/updater_service.dart';
 import 'package:phimtor_app/services/updater/updater_version.dart';
-import 'package:phimtor_app/utilities/dialogs/generic_dialog.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:phimtor_app/utilities/dialogs/updater_dialog.dart';
 
 class VersionWidget extends StatelessWidget {
   const VersionWidget({super.key});
 
   Future<void> alertNewVesion(
       BuildContext context, UpdaterVersion version) async {
-    // show dialog
-    final ok = await showGenericDialog<bool>(
-      context: context,
-      title: context.loc.version_update_title,
-      content: context.loc.version_update_message(version.version),
-      optionsBuilder: () {
-        return {
-          context.loc.close: null,
-          context.loc.download: true,
-        };
-      },
-    );
-    if (ok == true) {
-      launchUrl(version.binaryUrl);
-    }
+    await showUpdaterDialog(context, version);
   }
 
   @override

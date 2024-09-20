@@ -9,6 +9,7 @@ import 'package:phimtor_app/routes/go_routes.dart';
 import 'package:phimtor_app/services/analytics/analytics_service.dart';
 import 'package:phimtor_app/services/auth/auth_service.dart';
 import 'package:phimtor_app/services/preferences/preferences_service.dart';
+import 'package:phimtor_app/views/components/updater_alert.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -54,6 +55,12 @@ class MyApp extends StatelessWidget {
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
               useMaterial3: true,
             ),
+            builder: (context, child) {
+              return UpdaterAlert(
+                navigatorKey: goRouter.routerDelegate.navigatorKey,
+                child: child,
+              );
+            },
           );
         }),
       ),
