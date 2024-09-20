@@ -34,6 +34,7 @@ class _LifecycleManagerState extends State<LifecycleManager>
       log("Error: $error");
       if (mounted) {
         setState(() {
+          debugPrint("Error: $error");
           _error = error;
         });
       }
