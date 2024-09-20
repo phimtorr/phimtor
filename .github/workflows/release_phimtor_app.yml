@@ -63,6 +63,6 @@ jobs:
         run: |
           ssh server 'mkdir -p ${{ vars.WORKING_DIR }}/${{ inputs.destination_dir }}'
           ssh server 'rm -rf ${{ vars.WORKING_DIR }}/${{inputs.destination_dir }}/*'
-          find desktop_app -name "*.exe" -o -name "*.AppImage" -o -name "*.pkg" -o -name "VERSION.txt" | xargs -I{} scp {} server:${{ vars.WORKING_DIR }}/${{ inputs.destination_dir }}/
+          find desktop_app -name "*.exe" -o -name "*.AppImage" -o -name "*.apk" -o -name "*.pkg" -o -name "VERSION.txt" | xargs -I{} scp {} server:${{ vars.WORKING_DIR }}/${{ inputs.destination_dir }}/
         shell: bash
 

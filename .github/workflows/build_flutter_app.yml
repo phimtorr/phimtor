@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ ubuntu-latest ]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
     runs-on: ${{ matrix.os }}
     env:
       SERVER_ADDR: ${{ inputs.server_address }}
@@ -83,7 +83,7 @@ jobs:
 
       # Run flutter doctor to verify dependencies
       - name: Flutter doctor
-        run: flutter doctor
+        run: flutter doctor --verbose
         shell: bash
 
       ############################
@@ -93,6 +93,12 @@ jobs:
       - name: Build Linux
         if: runner.os == 'Linux'
         run: scripts/build-linux.sh ${{ env.VERSION }} ${{ github.run_attempt }}
+        shell: bash
+
+      # Android
+      - name: Build Android
+        if: runner.os == 'Linux'
+        run: scripts/build-android.sh ${{ env.VERSION }} ${{ github.run_attempt }}
         shell: bash
 
       # Windows
@@ -147,6 +153,7 @@ jobs:
           name: phimtor_app_${{ runner.os }}
           path: |
             ${{github.workspace}}/phimtor_app/build/*.AppImage
+            ${{github.workspace}}/phimtor_app/build/*.apk
             ${{github.workspace}}\phimtor_app\build\*.exe 
             ${{github.workspace}}/phimtor_app/build/*.pkg
             ${{github.workspace}}/VERSION.txt
