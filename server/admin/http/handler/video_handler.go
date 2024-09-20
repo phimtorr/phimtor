@@ -2,12 +2,12 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
 	"strings"
 
-	"github.com/friendsofgo/errors"
 	"github.com/go-chi/chi/v5"
 
 	commonErrors "github.com/phimtorr/phimtor/common/errors"
@@ -47,7 +47,7 @@ func (h *VideoHandler) ViewVideo(w http.ResponseWriter, r *http.Request) error {
 
 	video, err := h.repo.GetVideo(r.Context(), videoID)
 	if err != nil {
-		return errors.Wrap(err, "get video")
+		return fmt.Errorf("get video: %w", err)
 	}
 
 	return ui.ViewVideo(video).Render(r.Context(), w)
@@ -60,7 +60,7 @@ func (h *VideoHandler) CreateTorrent(w http.ResponseWriter, r *http.Request) err
 	}
 
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
-		return errors.Wrap(err, "parsing form")
+		return fmt.Errorf("parsing form: %w", err)
 	}
 
 	name := r.Form.Get("name")
@@ -72,13 +72,13 @@ func (h *VideoHandler) CreateTorrent(w http.ResponseWriter, r *http.Request) err
 	if strings.TrimSpace(link) == "" {
 		file, fileHeader, err := r.FormFile("file")
 		if err != nil {
-			return errors.Wrap(err, "get file")
+			return fmt.Errorf("get file: %w", err)
 		}
 
 		fileKey := strconv.FormatInt(videoID, 10) + "/torrents/" + fileHeader.Filename
 		link, err = h.fileService.UploadFile(r.Context(), fileKey, file)
 		if err != nil {
-			return errors.Wrap(err, "upload file")
+			return fmt.Errorf("upload file: %w", err)
 		}
 	}
 
@@ -89,12 +89,12 @@ func (h *VideoHandler) CreateTorrent(w http.ResponseWriter, r *http.Request) err
 	fileIndex, err := strconv.Atoi(r.Form.Get("fileIndex"))
 	if err != nil {
 		return commonErrors.NewIncorrectInputError("invalid-file-index",
-			errors.Wrap(err, "invalid file index").Error())
+			fmt.Sprintf("invalid file index: %v", err))
 	}
 	priority, err := strconv.Atoi(r.Form.Get("priority"))
 	if err != nil {
 		return commonErrors.NewIncorrectInputError("invalid-priority",
-			errors.Wrap(err, "invalid priority").Error())
+			fmt.Sprintf("invalid priority: %v", err))
 	}
 
 	requiredPremium := r.Form.Get("requiredPremium") == "on"
@@ -107,12 +107,12 @@ func (h *VideoHandler) CreateTorrent(w http.ResponseWriter, r *http.Request) err
 		Priority:        priority,
 		RequiredPremium: requiredPremium,
 	}); err != nil {
-		return errors.Wrap(err, "create torrent")
+		return fmt.Errorf("create torrent: %w", err)
 	}
 
 	video, err := h.repo.GetVideo(r.Context(), videoID)
 	if err != nil {
-		return errors.Wrap(err, "get video")
+		return fmt.Errorf("get video: %w", err)
 	}
 
 	return ui.ViewTorrents(video.ID, video.Torrents).Render(r.Context(), w)
@@ -130,7 +130,7 @@ func (h *VideoHandler) DeleteTorrent(w http.ResponseWriter, r *http.Request) err
 	}
 
 	if err := h.repo.DeleteTorrent(r.Context(), videoID, torrentID); err != nil {
-		return errors.Wrap(err, "delete torrent")
+		return fmt.Errorf("delete torrent: %w", err)
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -144,7 +144,7 @@ func (h *VideoHandler) CreateSubtitle(w http.ResponseWriter, r *http.Request) er
 	}
 
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
-		return errors.Wrap(err, "parsing form")
+		return fmt.Errorf("parsing form: %w", err)
 	}
 
 	language := r.Form.Get("language")
@@ -153,11 +153,14 @@ func (h *VideoHandler) CreateSubtitle(w http.ResponseWriter, r *http.Request) er
 	}
 
 	file, fileHeader, err := r.FormFile("file")
+	if err != nil {
+		return fmt.Errorf("get file: %w", err)
+	}
 	fileKey := strconv.FormatInt(videoID, 10) + "/" + language + "/" + fileHeader.Filename
 
 	objectURL, err := h.fileService.UploadFile(r.Context(), fileKey, file)
 	if err != nil {
-		return errors.Wrap(err, "upload file")
+		return fmt.Errorf("upload file: %w", err)
 	}
 
 	name := strings.TrimSpace(r.Form.Get("name"))
@@ -170,7 +173,7 @@ func (h *VideoHandler) CreateSubtitle(w http.ResponseWriter, r *http.Request) er
 	priority, err := strconv.Atoi(r.Form.Get("priority"))
 	if err != nil {
 		return commonErrors.NewIncorrectInputError("invalid-priority",
-			errors.Wrap(err, "invalid priority").Error())
+			fmt.Sprintf("invalid priority: %v", err))
 	}
 
 	if _, err := h.repo.CreateSubtitle(r.Context(), SubtitleToCreate{
@@ -182,12 +185,12 @@ func (h *VideoHandler) CreateSubtitle(w http.ResponseWriter, r *http.Request) er
 		FileKey:  fileKey,
 		Priority: priority,
 	}); err != nil {
-		return errors.Wrap(err, "create subtitle")
+		return fmt.Errorf("create subtitle: %w", err)
 	}
 
 	video, err := h.repo.GetVideo(r.Context(), videoID)
 	if err != nil {
-		return errors.Wrap(err, "get video")
+		return fmt.Errorf("get video: %w", err)
 	}
 
 	return ui.ViewSubtitles(video.ID, video.Subtitles).Render(r.Context(), w)
@@ -206,15 +209,15 @@ func (h *VideoHandler) DeleteSubtitle(w http.ResponseWriter, r *http.Request) er
 
 	sub, err := h.repo.GetSubtitle(r.Context(), videoID, subtitleID)
 	if err != nil {
-		return errors.Wrap(err, "get subtitle")
+		return fmt.Errorf("get subtitle: %w", err)
 	}
 
 	if err := h.repo.DeleteSubtitle(r.Context(), videoID, subtitleID); err != nil {
-		return errors.Wrap(err, "delete subtitle")
+		return fmt.Errorf("delete subtitle: %w", err)
 	}
 
 	if err := h.fileService.DeleteFile(r.Context(), sub.FileKey); err != nil {
-		return errors.Wrap(err, "delete file")
+		return fmt.Errorf("delete file: %w", err)
 	}
 
 	w.WriteHeader(http.StatusOK)

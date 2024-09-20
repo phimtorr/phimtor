@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/friendsofgo/errors"
 	"github.com/go-chi/chi/v5"
 
 	commonErrors "github.com/phimtorr/phimtor/common/errors"
@@ -24,7 +23,7 @@ func (h *TMDBHandler) ViewMovies(w http.ResponseWriter, r *http.Request) error {
 
 	movies, pag, err := h.repo.ListMovies(r.Context(), page, pageSize)
 	if err != nil {
-		return errors.Wrap(err, "list movies")
+		return fmt.Errorf("list movies: %w", err)
 	}
 
 	return ui.MoviesView(movies, pag).Render(r.Context(), w)
@@ -38,7 +37,7 @@ func (h *TMDBHandler) ViewMovie(w http.ResponseWriter, r *http.Request) error {
 
 	movie, err := h.repo.GetMovie(r.Context(), id)
 	if err != nil {
-		return errors.Wrap(err, "get movie")
+		return fmt.Errorf("get movie: %w", err)
 	}
 
 	return ui.MovieView(movie).Render(r.Context(), w)
@@ -48,7 +47,7 @@ func (h *TMDBHandler) CreateMovie(w http.ResponseWriter, r *http.Request) error 
 	ctx := r.Context()
 
 	if err := r.ParseForm(); err != nil {
-		return errors.Wrap(err, "parsing form")
+		return fmt.Errorf("parse form: %w", err)
 	}
 
 	id, err := strconv.Atoi(r.Form.Get("id"))
@@ -59,12 +58,12 @@ func (h *TMDBHandler) CreateMovie(w http.ResponseWriter, r *http.Request) error 
 
 	movie, err := h.tmdbClient.GetMovieDetails(ctx, id)
 	if err != nil {
-		return errors.Wrap(err, "get movie details")
+		return fmt.Errorf("get movie details: %w", err)
 	}
 
 	err = h.repo.UpdateMovie(ctx, movie)
 	if err != nil {
-		return errors.Wrap(err, "update movie")
+		return fmt.Errorf("update movie: %w", err)
 	}
 
 	redirect(w, r, uri.ViewMovie(int64(id)))
@@ -76,17 +75,17 @@ func (h *TMDBHandler) FetchMovieFromTMDB(w http.ResponseWriter, r *http.Request)
 
 	id, err := parseID(chi.URLParam(r, "id"))
 	if err != nil {
-		return errors.Wrap(err, "parsing id")
+		return fmt.Errorf("parsing id: %w", err)
 	}
 
 	movie, err := h.tmdbClient.GetMovieDetails(ctx, int(id))
 	if err != nil {
-		return errors.Wrap(err, "get movie details")
+		return fmt.Errorf("get movie details: %w", err)
 	}
 
 	err = h.repo.UpdateMovie(ctx, movie)
 	if err != nil {
-		return errors.Wrap(err, "update movie")
+		return fmt.Errorf("update movie: %w", err)
 	}
 
 	redirect(w, r, uri.ViewMovie(id))
@@ -99,12 +98,12 @@ func (h *TMDBHandler) CreateMovieVideo(w http.ResponseWriter, r *http.Request) e
 
 	id, err := parseID(chi.URLParam(r, "id"))
 	if err != nil {
-		return errors.Wrap(err, "parsing id")
+		return fmt.Errorf("parsing id: %w", err)
 	}
 
 	err = h.repo.CreateMovieVideo(ctx, id)
 	if err != nil {
-		return errors.Wrap(err, "create movie video")
+		return fmt.Errorf("create movie video: %w", err)
 	}
 
 	redirect(w, r, uri.ViewMovie(id))
@@ -116,12 +115,12 @@ func (h *TMDBHandler) SyncMovie(w http.ResponseWriter, r *http.Request) error {
 
 	id, err := parseID(chi.URLParam(r, "id"))
 	if err != nil {
-		return errors.Wrap(err, "parsing id")
+		return fmt.Errorf("parsing id: %w", err)
 	}
 
 	err = h.repo.SyncMovie(ctx, id)
 	if err != nil {
-		return errors.Wrap(err, "sync movie")
+		return fmt.Errorf("sync movie: %w", err)
 	}
 
 	redirect(w, r, uri.ViewMovie(id))

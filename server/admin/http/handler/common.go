@@ -1,10 +1,11 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
-	"github.com/friendsofgo/errors"
+	commonErrors "github.com/phimtorr/phimtor/common/errors"
 )
 
 const (
@@ -14,7 +15,8 @@ const (
 func parseID(idRaw string) (int64, error) {
 	id, err := strconv.ParseInt(idRaw, 10, 64)
 	if err != nil {
-		return 0, errors.Wrap(err, "parsing id")
+		return 0, commonErrors.NewIncorrectInputError("invalid-id",
+			fmt.Sprintf("invalid id=%s, err: %v", idRaw, err))
 	}
 	return id, nil
 }

@@ -3,10 +3,9 @@ package repository
 import (
 	"context"
 	"database/sql"
-	stdErrors "errors"
+	"errors"
 	"fmt"
 
-	"github.com/friendsofgo/errors"
 	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 
@@ -16,10 +15,10 @@ import (
 func (r TMDBRepository) SyncAll(ctx context.Context) error {
 	var syncErr error
 	if err := r.SyncAllMovies(ctx); err != nil {
-		syncErr = stdErrors.Join(syncErr, fmt.Errorf("sync all movies: %w", err))
+		syncErr = errors.Join(syncErr, fmt.Errorf("sync all movies: %w", err))
 	}
 	if err := r.SyncAllTVSeries(ctx); err != nil {
-		syncErr = stdErrors.Join(syncErr, fmt.Errorf("sync all tv series: %w", err))
+		syncErr = errors.Join(syncErr, fmt.Errorf("sync all tv series: %w", err))
 	}
 	return syncErr
 }
@@ -33,7 +32,7 @@ func (r TMDBRepository) SyncAllMovies(ctx context.Context) error {
 	var syncMoviesErr error
 	for _, movie := range movies {
 		if err := r.SyncMovie(ctx, movie.ID); err != nil {
-			syncMoviesErr = stdErrors.Join(syncMoviesErr, fmt.Errorf("sync movie %d: %w", movie.ID, err))
+			syncMoviesErr = errors.Join(syncMoviesErr, fmt.Errorf("sync movie %d: %w", movie.ID, err))
 		}
 	}
 
@@ -49,7 +48,7 @@ func (r TMDBRepository) SyncAllTVSeries(ctx context.Context) error {
 	var syncTVSeriesErr error
 	for _, show := range tvSeriesShows {
 		if err := r.SyncTVSeries(ctx, show.ID); err != nil {
-			syncTVSeriesErr = stdErrors.Join(syncTVSeriesErr, fmt.Errorf("sync tv series %d: %w", show.ID, err))
+			syncTVSeriesErr = errors.Join(syncTVSeriesErr, fmt.Errorf("sync tv series %d: %w", show.ID, err))
 		}
 	}
 

@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/friendsofgo/errors"
 	"github.com/go-chi/chi/v5"
 
 	commonErrors "github.com/phimtorr/phimtor/common/errors"
@@ -24,7 +23,7 @@ func (h *TMDBHandler) ViewTVSeriesShows(w http.ResponseWriter, r *http.Request) 
 
 	shows, pag, err := h.repo.ListTVSeriesShows(r.Context(), page, pageSize)
 	if err != nil {
-		return errors.Wrap(err, "list tv series shows")
+		return fmt.Errorf("list tv series shows: %w", err)
 	}
 
 	return ui.TVSeriesShowsView(shows, pag).Render(r.Context(), w)
@@ -38,7 +37,7 @@ func (h *TMDBHandler) ViewTVSeriesShow(w http.ResponseWriter, r *http.Request) e
 
 	show, seasons, err := h.repo.GetTVSeriesShow(r.Context(), showID)
 	if err != nil {
-		return errors.Wrap(err, "get tv series show")
+		return fmt.Errorf("get tv series show: %w", err)
 	}
 
 	return ui.TVSeriesShowView(show, seasons).Render(r.Context(), w)
@@ -57,7 +56,7 @@ func (h *TMDBHandler) ViewTVSeason(w http.ResponseWriter, r *http.Request) error
 
 	season, episodes, err := h.repo.GetTVSeason(r.Context(), showID, int(seasonNumber))
 	if err != nil {
-		return errors.Wrap(err, "get tv season")
+		return fmt.Errorf("get tv season: %w", err)
 	}
 
 	return ui.TVSeasonView(season, episodes).Render(r.Context(), w)
@@ -81,7 +80,7 @@ func (h *TMDBHandler) ViewTVEpisode(w http.ResponseWriter, r *http.Request) erro
 
 	episode, err := h.repo.GetTVEpisode(r.Context(), showID, int(seasonNumber), int(episodeNumber))
 	if err != nil {
-		return errors.Wrap(err, "get tv episode")
+		return fmt.Errorf("get tv episode: %w", err)
 	}
 
 	return ui.TVEpisodeView(episode).Render(r.Context(), w)
@@ -91,7 +90,7 @@ func (h *TMDBHandler) CreateTVSeries(w http.ResponseWriter, r *http.Request) err
 	ctx := r.Context()
 
 	if err := r.ParseForm(); err != nil {
-		return errors.Wrap(err, "parsing form")
+		return fmt.Errorf("parsing form: %w", err)
 	}
 
 	id, err := strconv.Atoi(r.Form.Get("id"))
@@ -102,12 +101,12 @@ func (h *TMDBHandler) CreateTVSeries(w http.ResponseWriter, r *http.Request) err
 
 	tv, seasons, err := h.tmdbClient.GetTVSeriesDetails(ctx, id)
 	if err != nil {
-		return errors.Wrap(err, "get tv series details")
+		return fmt.Errorf("get tv series details: %w", err)
 	}
 
 	err = h.repo.UpdateTVSeries(ctx, tv, seasons)
 	if err != nil {
-		return errors.Wrap(err, "update tv series")
+		return fmt.Errorf("update tv series: %w", err)
 	}
 
 	redirect(w, r, uri.ViewTVSeriesShow(int64(id)))
@@ -119,17 +118,17 @@ func (h *TMDBHandler) FetchTVSeriesFromTMDB(w http.ResponseWriter, r *http.Reque
 
 	id, err := parseID(chi.URLParam(r, "showID"))
 	if err != nil {
-		return errors.Wrap(err, "parsing id")
+		return fmt.Errorf("parsing id: %w", err)
 	}
 
 	tv, seasons, err := h.tmdbClient.GetTVSeriesDetails(ctx, int(id))
 	if err != nil {
-		return errors.Wrap(err, "get tv series details")
+		return fmt.Errorf("get tv series details: %w", err)
 	}
 
 	err = h.repo.UpdateTVSeries(ctx, tv, seasons)
 	if err != nil {
-		return errors.Wrap(err, "update tv series")
+		return fmt.Errorf("update tv series: %w", err)
 	}
 
 	redirect(w, r, uri.ViewTVSeriesShow(id))
@@ -154,7 +153,7 @@ func (h *TMDBHandler) CreateTVEpisodeVideo(w http.ResponseWriter, r *http.Reques
 
 	err = h.repo.CreateTVEpisodeVideo(r.Context(), showID, int(seasonNumber), int(episodeNumber))
 	if err != nil {
-		return errors.Wrap(err, "create tv episode video")
+		return fmt.Errorf("create tv episode video: %w", err)
 	}
 
 	redirect(w, r, uri.ViewTVEpisode(showID, int(seasonNumber), int(episodeNumber)))
@@ -171,7 +170,7 @@ func (h *TMDBHandler) SyncTVSeries(w http.ResponseWriter, r *http.Request) error
 
 	err = h.repo.SyncTVSeries(ctx, id)
 	if err != nil {
-		return errors.Wrap(err, "sync tv series")
+		return fmt.Errorf("sync tv series: %w", err)
 	}
 
 	redirect(w, r, uri.ViewTVSeriesShow(id))
