@@ -1,5 +1,5 @@
 ANDROID_OUT=../android/src/main/jniLibs
-ANDROID_SDK=$(HOME)/Android/Sdk
+ANDROID_SDK := $(if $(ANDROID_SDK_ROOT),$(ANDROID_SDK_ROOT),$(HOME)/Android/Sdk)
 NDK=$(ANDROID_SDK)/ndk/23.1.7779620
 NDK_BIN=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/bin
 NDK_SYSROOT=$(NDK)/toolchains/llvm/prebuilt/linux-x86_64/sysroot
