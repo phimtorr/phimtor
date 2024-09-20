@@ -13,7 +13,7 @@ import (
 	"github.com/phimtorr/phimtor/server/repository/dbmodels"
 )
 
-func (r SQLRepo2) GetLatestEpisodes(ctx context.Context, params http2.GetLatestEpisodesParams) ([]http2.Show, http2.Pagination, error) {
+func (r SQLRepository) GetLatestEpisodes(ctx context.Context, params http2.GetLatestEpisodesParams) ([]http2.Show, http2.Pagination, error) {
 	page, pageSize := toPageAndPageSize(params.Page, params.PageSize)
 
 	queryMods := []qm.QueryMod{
@@ -23,7 +23,7 @@ func (r SQLRepo2) GetLatestEpisodes(ctx context.Context, params http2.GetLatestE
 	return r.queryShows(ctx, queryMods, page, pageSize, true)
 }
 
-func (r SQLRepo2) GetLatestMovies(ctx context.Context, params http2.GetLatestMoviesParams) ([]http2.Show, http2.Pagination, error) {
+func (r SQLRepository) GetLatestMovies(ctx context.Context, params http2.GetLatestMoviesParams) ([]http2.Show, http2.Pagination, error) {
 	page, pageSize := toPageAndPageSize(params.Page, params.PageSize)
 
 	queryMods := []qm.QueryMod{
@@ -33,7 +33,7 @@ func (r SQLRepo2) GetLatestMovies(ctx context.Context, params http2.GetLatestMov
 	return r.queryShows(ctx, queryMods, page, pageSize, true)
 }
 
-func (r SQLRepo2) GetLatestTvSeries(ctx context.Context, params http2.GetLatestTvSeriesParams) ([]http2.Show, http2.Pagination, error) {
+func (r SQLRepository) GetLatestTvSeries(ctx context.Context, params http2.GetLatestTvSeriesParams) ([]http2.Show, http2.Pagination, error) {
 	page, pageSize := toPageAndPageSize(params.Page, params.PageSize)
 
 	queryMods := []qm.QueryMod{
@@ -43,7 +43,7 @@ func (r SQLRepo2) GetLatestTvSeries(ctx context.Context, params http2.GetLatestT
 	return r.queryShows(ctx, queryMods, page, pageSize, true)
 }
 
-func (r SQLRepo2) SearchShows(ctx context.Context, params http2.SearchShowsParams) ([]http2.Show, http2.Pagination, error) {
+func (r SQLRepository) SearchShows(ctx context.Context, params http2.SearchShowsParams) ([]http2.Show, http2.Pagination, error) {
 	page, pageSize := toPageAndPageSize(params.Page, params.PageSize)
 
 	queryMods := []qm.QueryMod{
@@ -57,7 +57,7 @@ func (r SQLRepo2) SearchShows(ctx context.Context, params http2.SearchShowsParam
 	return r.queryShows(ctx, queryMods, page, pageSize, false)
 }
 
-func (r SQLRepo2) queryShows(ctx context.Context, queryMods []qm.QueryMod, page, pageSize int, sort bool) ([]http2.Show, http2.Pagination, error) {
+func (r SQLRepository) queryShows(ctx context.Context, queryMods []qm.QueryMod, page, pageSize int, sort bool) ([]http2.Show, http2.Pagination, error) {
 	pagingQueryMods := append(queryMods,
 		qm.Limit(pageSize),
 		qm.Offset((page-1)*pageSize),

@@ -13,7 +13,7 @@ import (
 	"github.com/phimtorr/phimtor/server/repository/dbmodels"
 )
 
-func (r SQLRepo2) GetTvSeries(ctx context.Context, id int64) (http2.TvSeries, error) {
+func (r SQLRepository) GetTvSeries(ctx context.Context, id int64) (http2.TvSeries, error) {
 	tvSeries, err := dbmodels.TVSeriesShows(
 		dbmodels.TVSeriesShowWhere.ID.EQ(id),
 		qm.Load(dbmodels.TVSeriesShowRels.ShowTVSeasons),
@@ -65,7 +65,7 @@ func toHTTP2TvSeries(dbTvSeries *dbmodels.TVSeriesShow) http2.TvSeries {
 	}
 }
 
-func (r SQLRepo2) GetTvSeason(ctx context.Context, showID int64, seasonNumber int) (http2.TVSeason, error) {
+func (r SQLRepository) GetTvSeason(ctx context.Context, showID int64, seasonNumber int) (http2.TVSeason, error) {
 	season, err := dbmodels.TVSeasons(
 		dbmodels.TVSeasonWhere.ShowID.EQ(showID),
 		dbmodels.TVSeasonWhere.SeasonNumber.EQ(seasonNumber),

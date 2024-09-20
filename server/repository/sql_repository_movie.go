@@ -13,7 +13,7 @@ import (
 	"github.com/phimtorr/phimtor/server/repository/dbmodels"
 )
 
-func (r SQLRepo2) GetMovie(ctx context.Context, id int64) (http2.Movie, error) {
+func (r SQLRepository) GetMovie(ctx context.Context, id int64) (http2.Movie, error) {
 	dbMovie, err := dbmodels.Movies(
 		dbmodels.MovieWhere.ID.EQ(id),
 	).One(ctx, r.db)

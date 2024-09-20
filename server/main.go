@@ -29,8 +29,8 @@ func main() {
 		log.Fatal().Err(err).Msg("Failed to run migrations")
 	}
 
-	repo2 := repository.NewSQLRepo2(db)
-	http2Server := http2.NewHttpServer(repo2)
+	repo := repository.NewSQLRepository(db)
+	http2Server := http2.NewHttpServer(repo)
 
 	r := chi.NewRouter()
 	setMiddlewares(r)

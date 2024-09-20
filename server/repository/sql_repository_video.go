@@ -11,7 +11,7 @@ import (
 	"github.com/phimtorr/phimtor/server/repository/dbmodels"
 )
 
-func (r SQLRepo2) GetVideo(ctx context.Context, user auth.User, id int64) (http2.Video, error) {
+func (r SQLRepository) GetVideo(ctx context.Context, user auth.User, id int64) (http2.Video, error) {
 	dbVideo, err := dbmodels.Videos(
 		dbmodels.VideoWhere.ID.EQ(id),
 		qm.Load(dbmodels.VideoRels.TorrentLinks),
