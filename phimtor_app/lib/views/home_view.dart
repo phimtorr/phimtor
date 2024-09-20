@@ -52,27 +52,21 @@ class LatestAddedMoviesSection extends StatelessWidget {
         buildHeadline(context, context.loc.latest_added_movies,
             AppRoutes.latestAddedMovies),
         const SizedBox(height: 16),
-        SizedBox(
-          height: 320.0,
-          child: FutureBuilder(
-            future: phimtor_service.PhimtorService()
-                .defaultApi
-                .listRecentlyAddedMovies(page: 1, pageSize: 10),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (snapshot.hasError) {
-                return Center(
-                    child: Text(context.loc.error(snapshot.error.toString())));
-              }
-
-              final response =
-                  snapshot.data as phimtor_api.GetLatestMoviesResponse;
-              return ShowsList(shows: response.movies);
-            },
-          ),
-        ),
+        buildShowList(context, (
+          int page,
+          int pageSize,
+        ) async {
+          final resp = await phimtor_service.PhimtorService()
+              .defaultApi
+              .listRecentlyAddedMovies(
+                page: page,
+                pageSize: pageSize,
+              );
+          if (resp == null) {
+            throw Exception("Null response");
+          }
+          return resp.movies;
+        }),
       ],
     );
   }
@@ -87,30 +81,23 @@ class MoviesSection extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        buildHeadline(
-            context, context.loc.latest_movies, AppRoutes.movies),
+        buildHeadline(context, context.loc.latest_movies, AppRoutes.movies),
         const SizedBox(height: 16),
-        SizedBox(
-          height: 320.0,
-          child: FutureBuilder(
-            future: phimtor_service.PhimtorService()
-                .defaultApi
-                .listLatestMovies(page: 1, pageSize: 10),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (snapshot.hasError) {
-                return Center(
-                    child: Text(context.loc.error(snapshot.error.toString())));
-              }
-
-              final response =
-                  snapshot.data as phimtor_api.GetLatestMoviesResponse;
-              return ShowsList(shows: response.movies);
-            },
-          ),
-        ),
+        buildShowList(context, (
+          int page,
+          int pageSize,
+        ) async {
+          final resp = await phimtor_service.PhimtorService()
+              .defaultApi
+              .listLatestMovies(
+                page: page,
+                pageSize: pageSize,
+              );
+          if (resp == null) {
+            throw Exception("Null response");
+          }
+          return resp.movies;
+        }),
       ],
     );
   }
@@ -127,29 +114,21 @@ class TVSeriesSection extends StatelessWidget {
         buildHeadline(
             context, context.loc.latest_tv_series, AppRoutes.tvSeries),
         const SizedBox(height: 16),
-        SizedBox(
-          height: 320.0,
-          child: FutureBuilder(
-            future:
-                phimtor_service.PhimtorService().defaultApi.listLatestTvSeries(
-                      page: 1,
-                      pageSize: 10,
-                    ),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (snapshot.hasError) {
-                return Center(
-                    child: Text(context.loc.error(snapshot.error.toString())));
-              }
-
-              final response =
-                  snapshot.data as phimtor_api.GetLatestTvSeriesResponse;
-              return ShowsList(shows: response.tvSeries);
-            },
-          ),
-        ),
+        buildShowList(context, (
+          int page,
+          int pageSize,
+        ) async {
+          final resp = await phimtor_service.PhimtorService()
+              .defaultApi
+              .listLatestTvSeries(
+                page: page,
+                pageSize: pageSize,
+              );
+          if (resp == null) {
+            throw Exception("Null response");
+          }
+          return resp.tvSeries;
+        }),
       ],
     );
   }
@@ -166,29 +145,21 @@ class TVEpisodesSection extends StatelessWidget {
         buildHeadline(
             context, context.loc.latest_episodes, AppRoutes.tvLatestEpisodes),
         const SizedBox(height: 16),
-        SizedBox(
-          height: 320.0,
-          child: FutureBuilder(
-            future:
-                phimtor_service.PhimtorService().defaultApi.listLatestEpisodes(
-                      page: 1,
-                      pageSize: 10,
-                    ),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (snapshot.hasError) {
-                return Center(
-                    child: Text(context.loc.error(snapshot.error.toString())));
-              }
-
-              final response =
-                  snapshot.data as phimtor_api.GetLatestEpisodesResponse;
-              return ShowsList(shows: response.episodes);
-            },
-          ),
-        ),
+        buildShowList(context, (
+          int page,
+          int pageSize,
+        ) async {
+          final resp = await phimtor_service.PhimtorService()
+              .defaultApi
+              .listLatestEpisodes(
+                page: page,
+                pageSize: pageSize,
+              );
+          if (resp == null) {
+            throw Exception("Null response");
+          }
+          return resp.episodes;
+        }),
       ],
     );
   }
@@ -238,4 +209,30 @@ Widget buildHeadline(
       );
     }
   });
+}
+
+typedef ListShowsFunction = Future<List<phimtor_api.ModelShow>> Function(
+  int page,
+  int pageSize,
+);
+
+Widget buildShowList(BuildContext context, ListShowsFunction listShows) {
+  return SizedBox(
+    height: 320.0,
+    child: FutureBuilder(
+      future: listShows(1, 10),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(
+              child: Text(context.loc.error(snapshot.error.toString())));
+        }
+
+        final shows = snapshot.data ?? [];
+        return ShowsList(shows: shows);
+      },
+    ),
+  );
 }
