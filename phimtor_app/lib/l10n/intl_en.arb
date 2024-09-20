@@ -156,6 +156,8 @@
         }
     },
 
+    "video_player_need_verified_account_message": "You need a verified account to watch video",
+
     "setting_title": "Setting",
     "setting_data_dir": "Data directory",
     "setting_data_dir_changed_note": "Need to restart app to apply changes",

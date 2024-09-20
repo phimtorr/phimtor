@@ -156,6 +156,8 @@
         }
     },
 
+    "video_player_need_verified_account_message": "Cần tài khoản đã xác minh để xem phim",
+
     "setting_title": "Cài đặt",
     "setting_data_dir": "Thư mục lưu trữ phim",
     "setting_data_dir_changed_note": "Cần khởi động lại ứng dụng để áp dụng thay đổi",

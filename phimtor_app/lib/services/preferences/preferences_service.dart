@@ -57,6 +57,18 @@ class PreferencesService {
         }
 
         await _prefs.setString(_keyDataDirPath, dataDirPath);
+      } else if (Platform.isAndroid) {
+        final dir = await getTemporaryDirectory();
+        final path = dir.path;
+        final dataDirPath = p.join(path, 'PhimTor');
+
+        final dataDir = Directory(dataDirPath);
+        final isExisted = await dataDir.exists();
+        if (!isExisted) {
+          await dataDir.create(recursive: true);
+        }
+
+        await _prefs.setString(_keyDataDirPath, dataDirPath);
       } else {
         throw UnsupportedError('Not support dataDir on this platform');
       }
@@ -85,7 +97,11 @@ class PreferencesService {
     await _prefs.setBool(_keyDeleteAfterClose, value);
   }
 
-  bool get deleteAfterClose  {
+  bool get deleteAfterClose {
+    // if mobile, always delete after close
+    if (PlatformUtilities.isMobile) {
+      return true;
+    }
     return _prefs.getBool(_keyDeleteAfterClose) ?? true;
   }
 
@@ -94,7 +110,7 @@ class PreferencesService {
   }
 
   Locale get locale {
-    final code =  _prefs.getString(_keyLocale) ?? 'vi';
+    final code = _prefs.getString(_keyLocale) ?? 'vi';
     return Locale(code);
   }
 }

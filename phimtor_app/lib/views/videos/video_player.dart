@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
+import 'package:phimtor_app/utilities/platform/platform_utilities.dart';
 import 'package:phimtor_app/views/videos/stats_section.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
 import 'package:torrent/torrent.dart' as torrent;
@@ -58,7 +59,9 @@ class _VideoPlayerState extends State<VideoPlayer> {
   @override
   void dispose() {
     player.dispose();
-    // remove torrent here
+    torrent.LibTorrent()
+        .torrentApi
+        .dropAllTorrents(delete: PlatformUtilities.isMobile); // delete torrents on mobile to save storage
     super.dispose();
   }
 
@@ -82,11 +85,13 @@ class _VideoPlayerState extends State<VideoPlayer> {
     try {
       final torrentLink = widget.torrentLink;
       final torrentFile = await torrent.LibTorrent().torrentApi.addTorrent(
-          torrent.AddTorrentRequest(
-            link: torrentLink.link,
-          ),
-          dropOthers: true,
-          deleteOthers: false);
+            torrent.AddTorrentRequest(
+              link: torrentLink.link,
+            ),
+            dropOthers: true,
+            deleteOthers: PlatformUtilities
+                .isMobile, // delete others on mobile to save storage
+          );
       if (torrentFile == null) {
         throw Exception('Failed to add torrent');
       }

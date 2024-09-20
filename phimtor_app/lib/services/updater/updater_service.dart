@@ -89,6 +89,9 @@ Uri getBinaryUrl(String versionValue) {
   if (Platform.isMacOS) {
     return Uri.parse("${Constants.apiUrl}/public/phimtor-app/PhimTor-$versionValue.pkg");
   }
+  if (Platform.isAndroid) {
+    return Uri.parse("${Constants.apiUrl}/public/phimtor-app/PhimTor-$versionValue.apk");
+  }
 
   throw UnsupportedError("Unsupported platform");
 }

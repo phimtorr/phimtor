@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
-import 'package:phimtor_app/routes/route_names.dart';
+import 'package:phimtor_app/routes/app_routes.dart';
 import 'package:phimtor_app/services/analytics/analytics_service.dart';
 import 'package:phimtor_app/services/phimtor/phimtor_service.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
@@ -167,27 +167,28 @@ class TVSeriesDetailView extends StatelessWidget {
     BuildContext context,
     phimtor_api.TvSeries series,
   ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
             context.loc.detail_seasons,
             style: Theme.of(context).textTheme.headlineMedium,
           ),
-        ),
-        ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: series.seasons.length,
-          itemBuilder: (context, index) {
-            final season = series.seasons[index];
-            return buildSeasonDetail(context, series, season);
-          },
-          separatorBuilder: (context, index) => const SizedBox(height: 8.0),
-        ),
-      ],
+          const SizedBox(height: 16.0),
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: series.seasons.length,
+            itemBuilder: (context, index) {
+              final season = series.seasons[index];
+              return buildSeasonDetail(context, series, season);
+            },
+            separatorBuilder: (context, index) => const SizedBox(height: 8.0),
+          ),
+        ],
+      ),
     );
   }
 
@@ -197,9 +198,9 @@ class TVSeriesDetailView extends StatelessWidget {
     phimtor_api.TvSeriesSeasonsInner season,
   ) {
     return InkWell(
-      onTap: () {
-        context.goNamed(
-          routeNameTVSeriesSeasonDetails,
+      onTap: () async {
+        await context.pushNamed(
+          AppRoutes.tvSeriesSeasonDetails,
           pathParameters: {
             "id": seriesId.toString(),
             "seasonNumber": season.seasonNumber.toString(),
@@ -207,56 +208,64 @@ class TVSeriesDetailView extends StatelessWidget {
           },
         );
       },
-      child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: 100.0,
-                height: 150.0,
-                child: season.posterLink != ""
-                    ? Image.network(
-                        season.posterLink,
-                        fit: BoxFit.cover,
-                      )
-                    : const Center(
-                        child: Icon(Icons.image_not_supported),
-                      ),
+      child: Ink(
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.0),
+          color: Theme.of(context)
+              .colorScheme
+              .surfaceContainerLow
+              .withOpacity(0.7),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 100.0,
+              height: 150.0,
+              child: season.posterLink != ""
+                  ? Image.network(
+                      season.posterLink,
+                      fit: BoxFit.cover,
+                    )
+                  : const Center(
+                      child: Icon(Icons.image_not_supported),
+                    ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    season.name,
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                  Text(
+                    season.airDate != null
+                        ? DateFormat.yMMMMd().format(season.airDate!)
+                        : "",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  Text(
+                    "${context.loc.detail_score}: ${season.voteAverage.toStringAsFixed(1)}",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  Text(
+                    season.overview,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .merge(const TextStyle(
+                          fontStyle: FontStyle.italic,
+                        )),
+                  ),
+                ],
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      season.name,
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    Text(
-                      season.airDate != null
-                          ? DateFormat.yMMMMd().format(season.airDate!)
-                          : "",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    Text(
-                      "${context.loc.detail_score}: ${season.voteAverage.toStringAsFixed(1)}",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    Text(
-                      season.overview,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium!
-                          .merge(const TextStyle(
-                            fontStyle: FontStyle.italic,
-                          )),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          )),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:phimtor_app/routes/route_names.dart';
+import 'package:phimtor_app/routes/app_routes.dart';
 import 'package:phimtor_app/routes/scaffold_with_nested_navigation.dart';
 import 'package:phimtor_app/views/account/account_view.dart';
 import 'package:phimtor_app/views/home_view.dart';
@@ -47,7 +47,7 @@ final goRouter = GoRouter(
           navigatorKey: _shellNavigatorShowKey,
           routes: [
             GoRoute(
-              name: routeNameShows,
+              name: AppRoutes.shows,
               path: "/shows",
               pageBuilder: (context, state) => const NoTransitionPage(
                 child: HomeView(),
@@ -55,7 +55,7 @@ final goRouter = GoRouter(
               routes: [
                 // search
                 GoRoute(
-                  name: routeNameShowSearch,
+                  name: AppRoutes.showSearch,
                   path: "search/:query",
                   builder: (context, state) {
                     final query = state.pathParameters['query']!;
@@ -64,12 +64,12 @@ final goRouter = GoRouter(
                 ),
                 // movies
                 GoRoute(
-                  name: routeNameMovies,
+                  name: AppRoutes.movies,
                   path: "movies",
                   builder: (context, state) => const MoviesGridView(),
                 ),
                 GoRoute(
-                  name: routeNameMovieDetails,
+                  name: AppRoutes.movieDetails,
                   path: "movies/:id/:title",
                   builder: (context, state) {
                     final id = int.parse(state.pathParameters['id']!);
@@ -79,12 +79,12 @@ final goRouter = GoRouter(
                 ),
                 // series
                 GoRoute(
-                  name: routeNameTVSeries,
+                  name: AppRoutes.tvSeries,
                   path: "series",
                   builder: (context, state) => const TVSeriesGridView(),
                 ),
                 GoRoute(
-                  name: routeNameTVSeriesDetails,
+                  name: AppRoutes.tvSeriesDetails,
                   path: "series/:id/:title",
                   builder: (context, state) {
                     final id = int.parse(state.pathParameters['id']!);
@@ -93,7 +93,7 @@ final goRouter = GoRouter(
                   },
                 ),
                 GoRoute(
-                  name: routeNameTVSeriesSeasonDetails,
+                  name: AppRoutes.tvSeriesSeasonDetails,
                   path: "series/:id/season/:seasonNumber/:title",
                   builder: (context, state) {
                     final seriesId = int.parse(state.pathParameters['id']!);
@@ -108,7 +108,7 @@ final goRouter = GoRouter(
                   },
                 ),
                 GoRoute(
-                  name: routeNameTVLatestEpisodes,
+                  name: AppRoutes.tvLatestEpisodes,
                   path: "latest-episodes",
                   pageBuilder: (context, state) => const NoTransitionPage(
                     child: TvLatestEpisodesGridView(),
@@ -116,7 +116,7 @@ final goRouter = GoRouter(
                 ),
                 // video
                 GoRoute(
-                  name: routeNameVideo,
+                  name: AppRoutes.video,
                   path: "video/:id/:title",
                   builder: (context, state) {
                     final id = int.parse(state.pathParameters['id']!);
