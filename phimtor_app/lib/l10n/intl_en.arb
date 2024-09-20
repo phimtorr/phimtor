@@ -11,7 +11,7 @@
     "login": "Login",
     "logout": "Logout",
     "register": "Register",
-    "has_new_version": "New version available",
+    "has_new_version": "New version available, update now",
     "download": "Download",
     "close": "Close",
     "ok": "OK",

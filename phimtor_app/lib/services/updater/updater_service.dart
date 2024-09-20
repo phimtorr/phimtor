@@ -22,6 +22,10 @@ class UpdaterService {
 
   UpdaterVersion? _newVersion;
 
+  bool get hasNewVersion => _newVersion != null;
+
+  UpdaterVersion? get newVersion => _newVersion;
+
   late final StreamController<UpdaterVersion> _versionController;
 
   Stream<UpdaterVersion> get versionStream => _versionController.stream;

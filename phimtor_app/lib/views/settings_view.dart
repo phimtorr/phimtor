@@ -4,6 +4,8 @@ import 'package:phimtor_app/constants/enviroment_vars.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:phimtor_app/locale_provider.dart';
 import 'package:phimtor_app/services/preferences/preferences_service.dart';
+import 'package:phimtor_app/services/updater/updater_service.dart';
+import 'package:phimtor_app/utilities/dialogs/updater_dialog.dart';
 import 'package:provider/provider.dart';
 
 class SettingsView extends StatefulWidget {
@@ -54,15 +56,7 @@ class _SettingsViewState extends State<SettingsView> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: Text(
-              "Version: ${Constants.appVersion}",
-              style: Theme.of(context).textTheme.labelSmall!.merge(
-                    const TextStyle(fontStyle: FontStyle.italic),
-                  ),
-            ),
-          ),
+          buildVersionSection(context),
           const SizedBox(height: 8),
           ListTile(
             title: Text(context.loc.setting_lang),
@@ -121,6 +115,36 @@ class _SettingsViewState extends State<SettingsView> {
             value: _deleteAfterClose,
             onChanged: updateDeleteAfterClose,
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildVersionSection(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Version: ${Constants.appVersion}",
+            style: Theme.of(context).textTheme.labelSmall!.merge(
+                  const TextStyle(fontStyle: FontStyle.italic),
+                ),
+          ),
+          if (UpdaterService().hasNewVersion) ...[
+            const SizedBox(height: 8),
+            ElevatedButton.icon(
+              onPressed: () async {
+                await showUpdaterDialog(context, UpdaterService().newVersion!);
+              },
+              icon: const Icon(Icons.update),
+              label: Text(
+                context.loc.has_new_version,
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
+            ),
+          ],
         ],
       ),
     );
