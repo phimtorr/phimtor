@@ -3,6 +3,7 @@ class AppRoutes {
   static const showSearch = "show_search";
 
   static const movies = "movies";
+  static const latestAddedMovies = "latest_added_movies";
   static const movieDetails = "movie_details";
 
   static const tvSeries = "tv_series";

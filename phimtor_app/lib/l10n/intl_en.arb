@@ -86,6 +86,7 @@
         }
     },
 
+    "latest_added_movies": "Lasted added movies",
     "latest_movies": "Latest Movies",
     "latest_tv_series": "Latest TV Series",
     "latest_episodes": "Latest Episodes",

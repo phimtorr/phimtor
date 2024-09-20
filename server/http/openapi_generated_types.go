@@ -169,20 +169,26 @@ type BadRequest = ErrorResponse
 // InternalError defines model for InternalError.
 type InternalError = ErrorResponse
 
-// GetLatestEpisodesParams defines parameters for GetLatestEpisodes.
-type GetLatestEpisodesParams struct {
+// ListLatestEpisodesParams defines parameters for ListLatestEpisodes.
+type ListLatestEpisodesParams struct {
 	Page     *Page     `form:"page,omitempty" json:"page,omitempty"`
 	PageSize *PageSize `form:"pageSize,omitempty" json:"pageSize,omitempty"`
 }
 
-// GetLatestMoviesParams defines parameters for GetLatestMovies.
-type GetLatestMoviesParams struct {
+// ListLatestMoviesParams defines parameters for ListLatestMovies.
+type ListLatestMoviesParams struct {
 	Page     *Page     `form:"page,omitempty" json:"page,omitempty"`
 	PageSize *PageSize `form:"pageSize,omitempty" json:"pageSize,omitempty"`
 }
 
-// GetLatestTvSeriesParams defines parameters for GetLatestTvSeries.
-type GetLatestTvSeriesParams struct {
+// ListLatestTvSeriesParams defines parameters for ListLatestTvSeries.
+type ListLatestTvSeriesParams struct {
+	Page     *Page     `form:"page,omitempty" json:"page,omitempty"`
+	PageSize *PageSize `form:"pageSize,omitempty" json:"pageSize,omitempty"`
+}
+
+// ListRecentlyAddedMoviesParams defines parameters for ListRecentlyAddedMovies.
+type ListRecentlyAddedMoviesParams struct {
 	Page     *Page     `form:"page,omitempty" json:"page,omitempty"`
 	PageSize *PageSize `form:"pageSize,omitempty" json:"pageSize,omitempty"`
 }

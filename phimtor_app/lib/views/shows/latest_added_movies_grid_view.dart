@@ -5,14 +5,14 @@ import 'package:phimtor_app/services/phimtor/phimtor_service.dart';
 import 'package:phimtor_app/views/shows/shows_grid.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
 
-class MoviesGridView extends StatelessWidget {
-  const MoviesGridView({super.key});
+class LatestAddedMoviesGridView extends StatelessWidget {
+  const LatestAddedMoviesGridView({super.key});
 
   Future<(List<phimtor_api.ModelShow>, phimtor_api.Pagination)> _loadMovies(
     int page,
     int pageSize,
   ) async {
-    final resp = await PhimtorService().defaultApi.listLatestMovies(
+    final resp = await PhimtorService().defaultApi.listRecentlyAddedMovies(
           page: page,
           pageSize: pageSize,
         );
@@ -29,7 +29,7 @@ class MoviesGridView extends StatelessWidget {
     );
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.loc.latest_movies),
+        title: Text(context.loc.latest_added_movies),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

@@ -66,10 +66,40 @@ paths:
         500:
           $ref: "#/components/responses/InternalError"
 
+  /shows/recently-added-movies:
+    get:
+      operationId: listRecentlyAddedMovies
+      summary: List recently added movies
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/pageSize"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                title: GetLatestMoviesResponse
+                type: object
+                properties:
+                  movies:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Show'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                required:
+                  - movies
+                  - pagination
+        400:
+          $ref: "#/components/responses/BadRequest"
+        500:
+          $ref: "#/components/responses/InternalError"
+
   /shows/latest-movies:
     get:
-      operationId: getLatestMovies
-      summary: Get latest movies
+      operationId: listLatestMovies
+      summary: List latest movies
       parameters:
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/pageSize"
@@ -98,8 +128,8 @@ paths:
 
   /shows/latest-tv-series:
     get:
-      operationId: getLatestTvSeries
-      summary: Get latest tv series
+      operationId: listLatestTvSeries
+      summary: List latest tv series
       parameters:
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/pageSize"
@@ -128,8 +158,8 @@ paths:
 
   /shows/latest-episodes:
     get:
-      operationId: getLatestEpisodes
-      summary: Get latest episodes
+      operationId: listLatestEpisodes
+      summary: List latest episodes
       parameters:
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/pageSize"

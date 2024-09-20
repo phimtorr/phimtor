@@ -48,14 +48,13 @@ import 'package:phimtor_openapi_client/api.dart';
 //defaultApiClient.getAuthentication<HttpBearerAuth>('bearerAuth').setAccessToken(yourTokenGeneratorFunction);
 
 final api_instance = DefaultApi();
-final page = 56; // int | 
-final pageSize = 56; // int | 
+final movieId = 789; // int | 
 
 try {
-    final result = api_instance.getLatestEpisodes(page, pageSize);
+    final result = api_instance.getMovie(movieId);
     print(result);
 } catch (e) {
-    print('Exception when calling DefaultApi->getLatestEpisodes: $e\n');
+    print('Exception when calling DefaultApi->getMovie: $e\n');
 }
 
 ```
@@ -66,14 +65,15 @@ All URIs are relative to *http://localhost:8080/api/v2*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*DefaultApi* | [**getLatestEpisodes**](doc//DefaultApi.md#getlatestepisodes) | **GET** /shows/latest-episodes | Get latest episodes
-*DefaultApi* | [**getLatestMovies**](doc//DefaultApi.md#getlatestmovies) | **GET** /shows/latest-movies | Get latest movies
-*DefaultApi* | [**getLatestTvSeries**](doc//DefaultApi.md#getlatesttvseries) | **GET** /shows/latest-tv-series | Get latest tv series
 *DefaultApi* | [**getMovie**](doc//DefaultApi.md#getmovie) | **GET** /movies/{movieId} | Get movie by id
 *DefaultApi* | [**getTvSeason**](doc//DefaultApi.md#gettvseason) | **GET** /tv-series/{tvSeriesId}/seasons/{seasonNumber} | Get tv season by tv series id and season number
 *DefaultApi* | [**getTvSeries**](doc//DefaultApi.md#gettvseries) | **GET** /tv-series/{tvSeriesId} | Get tv series by id
 *DefaultApi* | [**getVersion**](doc//DefaultApi.md#getversion) | **GET** /version | Get version
 *DefaultApi* | [**getVideo**](doc//DefaultApi.md#getvideo) | **GET** /videos/{id} | Get video by id
+*DefaultApi* | [**listLatestEpisodes**](doc//DefaultApi.md#listlatestepisodes) | **GET** /shows/latest-episodes | List latest episodes
+*DefaultApi* | [**listLatestMovies**](doc//DefaultApi.md#listlatestmovies) | **GET** /shows/latest-movies | List latest movies
+*DefaultApi* | [**listLatestTvSeries**](doc//DefaultApi.md#listlatesttvseries) | **GET** /shows/latest-tv-series | List latest tv series
+*DefaultApi* | [**listRecentlyAddedMovies**](doc//DefaultApi.md#listrecentlyaddedmovies) | **GET** /shows/recently-added-movies | List recently added movies
 *DefaultApi* | [**searchShows**](doc//DefaultApi.md#searchshows) | **GET** /shows/search | Search shows
 
 
