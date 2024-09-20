@@ -47,26 +47,10 @@ class LatestAddedMoviesSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              context.loc.latest_added_movies,
-              style: Theme.of(context).textTheme.headlineLarge,
-            ),
-            const SizedBox(width: 8),
-            ElevatedButton.icon(
-              onPressed: () async {
-                await context.pushNamed(AppRoutes.latestAddedMovies);
-              },
-              label: Text(context.loc.load_more),
-              icon: const Icon(Icons.arrow_forward),
-              iconAlignment: IconAlignment.end,
-            ),
-          ],
-        ),
+        buildHeadline(context, context.loc.latest_added_movies,
+            AppRoutes.latestAddedMovies),
         const SizedBox(height: 16),
         SizedBox(
           height: 320.0,
@@ -83,7 +67,8 @@ class LatestAddedMoviesSection extends StatelessWidget {
                     child: Text(context.loc.error(snapshot.error.toString())));
               }
 
-              final response = snapshot.data as phimtor_api.GetLatestMoviesResponse;
+              final response =
+                  snapshot.data as phimtor_api.GetLatestMoviesResponse;
               return ShowsList(shows: response.movies);
             },
           ),
@@ -100,26 +85,10 @@ class MoviesSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              context.loc.latest_movies,
-              style: Theme.of(context).textTheme.headlineLarge,
-            ),
-            const SizedBox(width: 8),
-            ElevatedButton.icon(
-              onPressed: () async {
-                await context.pushNamed(AppRoutes.movies);
-              },
-              label: Text(context.loc.load_more),
-              icon: const Icon(Icons.arrow_forward),
-              iconAlignment: IconAlignment.end,
-            ),
-          ],
-        ),
+        buildHeadline(
+            context, context.loc.latest_movies, AppRoutes.movies),
         const SizedBox(height: 16),
         SizedBox(
           height: 320.0,
@@ -136,7 +105,8 @@ class MoviesSection extends StatelessWidget {
                     child: Text(context.loc.error(snapshot.error.toString())));
               }
 
-              final response = snapshot.data as phimtor_api.GetLatestMoviesResponse;
+              final response =
+                  snapshot.data as phimtor_api.GetLatestMoviesResponse;
               return ShowsList(shows: response.movies);
             },
           ),
@@ -152,31 +122,19 @@ class TVSeriesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Text(
-              context.loc.latest_tv_series,
-              style: Theme.of(context).textTheme.headlineLarge,
-            ),
-            const SizedBox(width: 8),
-            ElevatedButton.icon(
-              onPressed: () async {
-                await context.pushNamed(AppRoutes.tvSeries);
-              },
-              label: Text(context.loc.load_more),
-              icon: const Icon(Icons.arrow_forward),
-              iconAlignment: IconAlignment.end,
-            ),
-          ],
-        ),
+        buildHeadline(
+            context, context.loc.latest_tv_series, AppRoutes.tvSeries),
         const SizedBox(height: 16),
         SizedBox(
           height: 320.0,
           child: FutureBuilder(
-            future: phimtor_service.PhimtorService()
-                .defaultApi
-                .listLatestTvSeries(page: 1, pageSize: 10,),
+            future:
+                phimtor_service.PhimtorService().defaultApi.listLatestTvSeries(
+                      page: 1,
+                      pageSize: 10,
+                    ),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -186,7 +144,8 @@ class TVSeriesSection extends StatelessWidget {
                     child: Text(context.loc.error(snapshot.error.toString())));
               }
 
-              final response = snapshot.data as phimtor_api.GetLatestTvSeriesResponse;
+              final response =
+                  snapshot.data as phimtor_api.GetLatestTvSeriesResponse;
               return ShowsList(shows: response.tvSeries);
             },
           ),
@@ -194,7 +153,6 @@ class TVSeriesSection extends StatelessWidget {
       ],
     );
   }
-
 }
 
 class TVEpisodesSection extends StatelessWidget {
@@ -203,31 +161,19 @@ class TVEpisodesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Text(
-              context.loc.latest_episodes,
-              style: Theme.of(context).textTheme.headlineLarge,
-            ),
-            const SizedBox(width: 8),
-            ElevatedButton.icon(
-              onPressed: () async {
-                await context.pushNamed(AppRoutes.tvLatestEpisodes);
-              },
-              label: Text(context.loc.load_more),
-              icon: const Icon(Icons.arrow_forward),
-              iconAlignment: IconAlignment.end,
-            ),
-          ],
-        ),
+        buildHeadline(
+            context, context.loc.latest_episodes, AppRoutes.tvLatestEpisodes),
         const SizedBox(height: 16),
         SizedBox(
           height: 320.0,
           child: FutureBuilder(
-            future: phimtor_service.PhimtorService()
-                .defaultApi
-                .listLatestEpisodes(page: 1, pageSize: 10,),
+            future:
+                phimtor_service.PhimtorService().defaultApi.listLatestEpisodes(
+                      page: 1,
+                      pageSize: 10,
+                    ),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -237,7 +183,8 @@ class TVEpisodesSection extends StatelessWidget {
                     child: Text(context.loc.error(snapshot.error.toString())));
               }
 
-              final response = snapshot.data as phimtor_api.GetLatestEpisodesResponse;
+              final response =
+                  snapshot.data as phimtor_api.GetLatestEpisodesResponse;
               return ShowsList(shows: response.episodes);
             },
           ),
@@ -245,4 +192,50 @@ class TVEpisodesSection extends StatelessWidget {
       ],
     );
   }
+}
+
+Widget buildHeadline(
+    BuildContext context, String title, String loadMoreRouteName) {
+  return LayoutBuilder(builder: (context, constraints) {
+    final isWideScreen = constraints.maxWidth > 600;
+    if (isWideScreen) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            style: Theme.of(context).textTheme.headlineLarge,
+          ),
+          const SizedBox(width: 8),
+          ElevatedButton.icon(
+            onPressed: () async {
+              await context.pushNamed(loadMoreRouteName);
+            },
+            label: Text(context.loc.load_more),
+            icon: const Icon(Icons.arrow_forward),
+            iconAlignment: IconAlignment.end,
+          ),
+        ],
+      );
+    } else {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: Theme.of(context).textTheme.headlineLarge,
+          ),
+          const SizedBox(height: 8),
+          ElevatedButton.icon(
+            onPressed: () async {
+              await context.pushNamed(loadMoreRouteName);
+            },
+            label: Text(context.loc.load_more),
+            icon: const Icon(Icons.arrow_forward),
+            iconAlignment: IconAlignment.end,
+          ),
+        ],
+      );
+    }
+  });
 }
