@@ -3,8 +3,9 @@ package migrations
 import (
 	"database/sql"
 	"embed"
+	"errors"
+	"fmt"
 
-	"github.com/friendsofgo/errors"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/mysql"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
@@ -16,19 +17,19 @@ var migrationFS embed.FS
 func Run(db *sql.DB) error {
 	d, err := iofs.New(migrationFS, ".")
 	if err != nil {
-		return errors.Wrap(err, "create iofs source instance")
+		return fmt.Errorf("create iofs source instance: %w", err)
 	}
 	driver, err := mysql.WithInstance(db, &mysql.Config{})
 	if err != nil {
-		return errors.Wrap(err, "create mysql driver instance")
+		return fmt.Errorf("create mysql driver instance: %w", err)
 	}
 	m, err := migrate.NewWithInstance("iofs", d, "mysql", driver)
 	if err != nil {
-		return errors.Wrap(err, "create migrate instance")
+		return fmt.Errorf("create migrate instance: %w", err)
 	}
 
 	if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
-		return errors.Wrap(err, "run migrations")
+		return fmt.Errorf("run migrations: %w", err)
 	}
 	return nil
 }

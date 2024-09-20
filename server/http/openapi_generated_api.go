@@ -15,17 +15,26 @@ import (
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 	// Get movie by id
-	// (GET /movies/{id})
-	GetMovie(w http.ResponseWriter, r *http.Request, id int64)
-	// Get series by id
-	// (GET /series/{id})
-	GetSeries(w http.ResponseWriter, r *http.Request, id int64)
-	// List all shows
-	// (GET /shows)
-	ListShows(w http.ResponseWriter, r *http.Request, params ListShowsParams)
+	// (GET /movies/{movieId})
+	GetMovie(w http.ResponseWriter, r *http.Request, movieId int64)
+	// Get latest episodes
+	// (GET /shows/latest-episodes)
+	GetLatestEpisodes(w http.ResponseWriter, r *http.Request, params GetLatestEpisodesParams)
+	// Get latest movies
+	// (GET /shows/latest-movies)
+	GetLatestMovies(w http.ResponseWriter, r *http.Request, params GetLatestMoviesParams)
+	// Get latest tv series
+	// (GET /shows/latest-tv-series)
+	GetLatestTvSeries(w http.ResponseWriter, r *http.Request, params GetLatestTvSeriesParams)
 	// Search shows
 	// (GET /shows/search)
 	SearchShows(w http.ResponseWriter, r *http.Request, params SearchShowsParams)
+	// Get tv series by id
+	// (GET /tv-series/{tvSeriesId})
+	GetTvSeries(w http.ResponseWriter, r *http.Request, tvSeriesId int64)
+	// Get tv season by tv series id and season number
+	// (GET /tv-series/{tvSeriesId}/seasons/{seasonNumber})
+	GetTvSeason(w http.ResponseWriter, r *http.Request, tvSeriesId int64, seasonNumber int)
 	// Get version
 	// (GET /version)
 	GetVersion(w http.ResponseWriter, r *http.Request)
@@ -39,26 +48,44 @@ type ServerInterface interface {
 type Unimplemented struct{}
 
 // Get movie by id
-// (GET /movies/{id})
-func (_ Unimplemented) GetMovie(w http.ResponseWriter, r *http.Request, id int64) {
+// (GET /movies/{movieId})
+func (_ Unimplemented) GetMovie(w http.ResponseWriter, r *http.Request, movieId int64) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// Get series by id
-// (GET /series/{id})
-func (_ Unimplemented) GetSeries(w http.ResponseWriter, r *http.Request, id int64) {
+// Get latest episodes
+// (GET /shows/latest-episodes)
+func (_ Unimplemented) GetLatestEpisodes(w http.ResponseWriter, r *http.Request, params GetLatestEpisodesParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// List all shows
-// (GET /shows)
-func (_ Unimplemented) ListShows(w http.ResponseWriter, r *http.Request, params ListShowsParams) {
+// Get latest movies
+// (GET /shows/latest-movies)
+func (_ Unimplemented) GetLatestMovies(w http.ResponseWriter, r *http.Request, params GetLatestMoviesParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// Get latest tv series
+// (GET /shows/latest-tv-series)
+func (_ Unimplemented) GetLatestTvSeries(w http.ResponseWriter, r *http.Request, params GetLatestTvSeriesParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
 // Search shows
 // (GET /shows/search)
 func (_ Unimplemented) SearchShows(w http.ResponseWriter, r *http.Request, params SearchShowsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// Get tv series by id
+// (GET /tv-series/{tvSeriesId})
+func (_ Unimplemented) GetTvSeries(w http.ResponseWriter, r *http.Request, tvSeriesId int64) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// Get tv season by tv series id and season number
+// (GET /tv-series/{tvSeriesId}/seasons/{seasonNumber})
+func (_ Unimplemented) GetTvSeason(w http.ResponseWriter, r *http.Request, tvSeriesId int64, seasonNumber int) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -89,19 +116,19 @@ func (siw *ServerInterfaceWrapper) GetMovie(w http.ResponseWriter, r *http.Reque
 
 	var err error
 
-	// ------------- Path parameter "id" -------------
-	var id int64
+	// ------------- Path parameter "movieId" -------------
+	var movieId int64
 
-	err = runtime.BindStyledParameterWithLocation("simple", false, "id", runtime.ParamLocationPath, chi.URLParam(r, "id"), &id)
+	err = runtime.BindStyledParameterWithLocation("simple", false, "movieId", runtime.ParamLocationPath, chi.URLParam(r, "movieId"), &movieId)
 	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "movieId", Err: err})
 		return
 	}
 
 	ctx = context.WithValue(ctx, BearerAuthScopes, []string{})
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetMovie(w, r, id)
+		siw.Handler.GetMovie(w, r, movieId)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -111,36 +138,8 @@ func (siw *ServerInterfaceWrapper) GetMovie(w http.ResponseWriter, r *http.Reque
 	handler.ServeHTTP(w, r.WithContext(ctx))
 }
 
-// GetSeries operation middleware
-func (siw *ServerInterfaceWrapper) GetSeries(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-
-	var err error
-
-	// ------------- Path parameter "id" -------------
-	var id int64
-
-	err = runtime.BindStyledParameterWithLocation("simple", false, "id", runtime.ParamLocationPath, chi.URLParam(r, "id"), &id)
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
-		return
-	}
-
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{})
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetSeries(w, r, id)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r.WithContext(ctx))
-}
-
-// ListShows operation middleware
-func (siw *ServerInterfaceWrapper) ListShows(w http.ResponseWriter, r *http.Request) {
+// GetLatestEpisodes operation middleware
+func (siw *ServerInterfaceWrapper) GetLatestEpisodes(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var err error
@@ -148,7 +147,7 @@ func (siw *ServerInterfaceWrapper) ListShows(w http.ResponseWriter, r *http.Requ
 	ctx = context.WithValue(ctx, BearerAuthScopes, []string{})
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params ListShowsParams
+	var params GetLatestEpisodesParams
 
 	// ------------- Optional query parameter "page" -------------
 
@@ -166,16 +165,84 @@ func (siw *ServerInterfaceWrapper) ListShows(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	// ------------- Optional query parameter "type" -------------
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetLatestEpisodes(w, r, params)
+	}))
 
-	err = runtime.BindQueryParameter("form", true, false, "type", r.URL.Query(), &params.Type)
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// GetLatestMovies operation middleware
+func (siw *ServerInterfaceWrapper) GetLatestMovies(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, []string{})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetLatestMoviesParams
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "page", r.URL.Query(), &params.Page)
 	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "type", Err: err})
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		return
+	}
+
+	// ------------- Optional query parameter "pageSize" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "pageSize", r.URL.Query(), &params.PageSize)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "pageSize", Err: err})
 		return
 	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListShows(w, r, params)
+		siw.Handler.GetLatestMovies(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// GetLatestTvSeries operation middleware
+func (siw *ServerInterfaceWrapper) GetLatestTvSeries(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, []string{})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetLatestTvSeriesParams
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "page", r.URL.Query(), &params.Page)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		return
+	}
+
+	// ------------- Optional query parameter "pageSize" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "pageSize", r.URL.Query(), &params.PageSize)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "pageSize", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetLatestTvSeries(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -219,8 +286,81 @@ func (siw *ServerInterfaceWrapper) SearchShows(w http.ResponseWriter, r *http.Re
 		return
 	}
 
+	// ------------- Optional query parameter "pageSize" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "pageSize", r.URL.Query(), &params.PageSize)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "pageSize", Err: err})
+		return
+	}
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.SearchShows(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// GetTvSeries operation middleware
+func (siw *ServerInterfaceWrapper) GetTvSeries(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "tvSeriesId" -------------
+	var tvSeriesId int64
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "tvSeriesId", runtime.ParamLocationPath, chi.URLParam(r, "tvSeriesId"), &tvSeriesId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "tvSeriesId", Err: err})
+		return
+	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, []string{})
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetTvSeries(w, r, tvSeriesId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// GetTvSeason operation middleware
+func (siw *ServerInterfaceWrapper) GetTvSeason(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "tvSeriesId" -------------
+	var tvSeriesId int64
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "tvSeriesId", runtime.ParamLocationPath, chi.URLParam(r, "tvSeriesId"), &tvSeriesId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "tvSeriesId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "seasonNumber" -------------
+	var seasonNumber int
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "seasonNumber", runtime.ParamLocationPath, chi.URLParam(r, "seasonNumber"), &seasonNumber)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "seasonNumber", Err: err})
+		return
+	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, []string{})
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetTvSeason(w, r, tvSeriesId, seasonNumber)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -389,16 +529,25 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	}
 
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/movies/{id}", wrapper.GetMovie)
+		r.Get(options.BaseURL+"/movies/{movieId}", wrapper.GetMovie)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/series/{id}", wrapper.GetSeries)
+		r.Get(options.BaseURL+"/shows/latest-episodes", wrapper.GetLatestEpisodes)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/shows", wrapper.ListShows)
+		r.Get(options.BaseURL+"/shows/latest-movies", wrapper.GetLatestMovies)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/shows/latest-tv-series", wrapper.GetLatestTvSeries)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/shows/search", wrapper.SearchShows)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/tv-series/{tvSeriesId}", wrapper.GetTvSeries)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/tv-series/{tvSeriesId}/seasons/{seasonNumber}", wrapper.GetTvSeason)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/version", wrapper.GetVersion)

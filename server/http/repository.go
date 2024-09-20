@@ -7,9 +7,14 @@ import (
 )
 
 type Repository interface {
-	ListShows(ctx context.Context, params ListShowsParams) ([]Show, Pagination, error)
-	SearchShow(ctx context.Context, params SearchShowsParams) ([]Show, Pagination, error)
+	GetLatestEpisodes(ctx context.Context, params GetLatestEpisodesParams) ([]Show, Pagination, error)
+	GetLatestMovies(ctx context.Context, params GetLatestMoviesParams) ([]Show, Pagination, error)
+	GetLatestTvSeries(ctx context.Context, params GetLatestTvSeriesParams) ([]Show, Pagination, error)
+	SearchShows(ctx context.Context, params SearchShowsParams) ([]Show, Pagination, error)
+
 	GetMovie(ctx context.Context, id int64) (Movie, error)
-	GetSeries(ctx context.Context, id int64) (Series, error)
+	GetTvSeries(ctx context.Context, id int64) (TvSeries, error)
+	GetTvSeason(ctx context.Context, showID int64, seasonNumber int) (TVSeason, error)
+
 	GetVideo(ctx context.Context, user auth.User, id int64) (Video, error)
 }

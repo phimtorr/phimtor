@@ -1,9 +1,8 @@
 package http
 
 import (
+	"errors"
 	"net/http"
-
-	"github.com/friendsofgo/errors"
 
 	"github.com/go-chi/render"
 	"github.com/rs/zerolog/log"

@@ -14,7 +14,6 @@ import (
 	"github.com/phimtorr/phimtor/common/logs"
 	"github.com/phimtorr/phimtor/server/auth"
 	"github.com/phimtorr/phimtor/server/http"
-	"github.com/phimtorr/phimtor/server/http2"
 	"github.com/phimtorr/phimtor/server/migrations"
 	"github.com/phimtorr/phimtor/server/pkg/database"
 	"github.com/phimtorr/phimtor/server/repository"
@@ -30,18 +29,16 @@ func main() {
 		log.Fatal().Err(err).Msg("Failed to run migrations")
 	}
 
-	repo := repository.NewRepository(db)
-	httpServer := http.NewHttpServer(repo)
-
-	repo2 := repository.NewSQLRepo2(db)
-	http2Server := http2.NewHttpServer(repo2)
+	repo := repository.NewSQLRepository(db)
+	http2Server := http.NewHttpServer(repo)
 
 	r := chi.NewRouter()
 	setMiddlewares(r)
 	setAuthMiddleware(r, firebaseApp)
 
-	http.HandlerFromMuxWithBaseURL(httpServer, r, "/api/v1")
-	http2.HandlerFromMuxWithBaseURL(http2Server, r, "/api/v2")
+	r.Get("/api/v1/*", http2Server.Unsupported)
+
+	http.HandlerFromMuxWithBaseURL(http2Server, r, "/api/v2")
 
 	addr := ":" + os.Getenv("HTTP_PORT")
 
