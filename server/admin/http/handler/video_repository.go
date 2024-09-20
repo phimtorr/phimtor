@@ -6,7 +6,7 @@ import (
 	"github.com/phimtorr/phimtor/server/admin/http/ui"
 )
 
-type Repository interface {
+type VideoRepository interface {
 	GetVideo(ctx context.Context, id int64) (ui.Video, error)
 
 	CreateTorrent(ctx context.Context, torrent TorrentToCreate) (int64, error)

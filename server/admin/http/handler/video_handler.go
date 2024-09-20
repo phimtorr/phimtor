@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"context"
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -12,7 +14,32 @@ import (
 	"github.com/phimtorr/phimtor/server/admin/http/ui"
 )
 
-func (h *Handler) ViewVideo(w http.ResponseWriter, r *http.Request) error {
+type FileService interface {
+	UploadFile(ctx context.Context, key string, body io.Reader) (string, error)
+	DeleteFile(ctx context.Context, key string) error
+}
+
+type VideoHandler struct {
+	repo        VideoRepository
+	fileService FileService
+}
+
+func NewVideoHandler(repo VideoRepository, fileService FileService) *VideoHandler {
+	if repo == nil {
+		panic("nil repository")
+
+	}
+	if fileService == nil {
+		panic("nil file service")
+	}
+
+	return &VideoHandler{
+		repo:        repo,
+		fileService: fileService,
+	}
+}
+
+func (h *VideoHandler) ViewVideo(w http.ResponseWriter, r *http.Request) error {
 	videoID, err := parseID(chi.URLParam(r, "id"))
 	if err != nil {
 		return err
@@ -26,7 +53,7 @@ func (h *Handler) ViewVideo(w http.ResponseWriter, r *http.Request) error {
 	return ui.ViewVideo(video).Render(r.Context(), w)
 }
 
-func (h *Handler) CreateTorrent(w http.ResponseWriter, r *http.Request) error {
+func (h *VideoHandler) CreateTorrent(w http.ResponseWriter, r *http.Request) error {
 	videoID, err := parseID(chi.URLParam(r, "id"))
 	if err != nil {
 		return err
@@ -91,7 +118,7 @@ func (h *Handler) CreateTorrent(w http.ResponseWriter, r *http.Request) error {
 	return ui.ViewTorrents(video.ID, video.Torrents).Render(r.Context(), w)
 }
 
-func (h *Handler) DeleteTorrent(w http.ResponseWriter, r *http.Request) error {
+func (h *VideoHandler) DeleteTorrent(w http.ResponseWriter, r *http.Request) error {
 	videoID, err := parseID(chi.URLParam(r, "id"))
 	if err != nil {
 		return err
@@ -110,7 +137,7 @@ func (h *Handler) DeleteTorrent(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func (h *Handler) CreateSubtitle(w http.ResponseWriter, r *http.Request) error {
+func (h *VideoHandler) CreateSubtitle(w http.ResponseWriter, r *http.Request) error {
 	videoID, err := parseID(chi.URLParam(r, "id"))
 	if err != nil {
 		return err
@@ -166,7 +193,7 @@ func (h *Handler) CreateSubtitle(w http.ResponseWriter, r *http.Request) error {
 	return ui.ViewSubtitles(video.ID, video.Subtitles).Render(r.Context(), w)
 }
 
-func (h *Handler) DeleteSubtitle(w http.ResponseWriter, r *http.Request) error {
+func (h *VideoHandler) DeleteSubtitle(w http.ResponseWriter, r *http.Request) error {
 	videoID, err := parseID(chi.URLParam(r, "id"))
 	if err != nil {
 		return err

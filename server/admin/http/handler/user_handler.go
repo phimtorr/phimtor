@@ -12,7 +12,21 @@ import (
 	"github.com/phimtorr/phimtor/server/admin/http/ui"
 )
 
-func (h *Handler) ListUsers(w http.ResponseWriter, r *http.Request) error {
+type UserHandler struct {
+	authClient *auth.Client
+}
+
+func NewUserHandler(authClient *auth.Client) *UserHandler {
+	if authClient == nil {
+		panic("nil auth client")
+	}
+
+	return &UserHandler{
+		authClient: authClient,
+	}
+}
+
+func (h *UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
 	nextPageToken := r.URL.Query().Get("nextPageToken")
 	pager := iterator.NewPager(h.authClient.Users(ctx, ""), pageSize, nextPageToken)
@@ -25,7 +39,7 @@ func (h *Handler) ListUsers(w http.ResponseWriter, r *http.Request) error {
 	return ui.ListUsers(users, nextPageToken).Render(ctx, w)
 }
 
-func (h *Handler) ViewUser(w http.ResponseWriter, r *http.Request) error {
+func (h *UserHandler) ViewUser(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
 	uid := chi.URLParam(r, "uid")
 	user, err := h.authClient.GetUser(ctx, uid)
@@ -36,7 +50,7 @@ func (h *Handler) ViewUser(w http.ResponseWriter, r *http.Request) error {
 	return ui.ViewUser(user).Render(ctx, w)
 }
 
-func (h *Handler) UpdatePremium(w http.ResponseWriter, r *http.Request) error {
+func (h *UserHandler) UpdatePremium(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
 	uid := chi.URLParam(r, "uid")
 

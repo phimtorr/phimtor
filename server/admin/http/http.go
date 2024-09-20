@@ -18,17 +18,18 @@ import (
 )
 
 type Server struct {
-	handler  *handler.Handler
-	handler2 *handler2.Handler
+	videoHandler *handler.VideoHandler
+	userHandler  *handler.UserHandler
+	handler2     *handler2.Handler
 }
 
 func NewHTTPServer(db *sql.DB, authClient *auth.Client) Server {
 	return Server{
-		handler: handler.New(
+		videoHandler: handler.NewVideoHandler(
 			repository.NewRepository(db),
 			s3.NewService(),
-			authClient,
 		),
+		userHandler: handler.NewUserHandler(authClient),
 		handler2: handler2.NewHandler(
 			tmdb.NewClient(),
 			repository.NewTMDBRepository(db),
@@ -37,17 +38,17 @@ func NewHTTPServer(db *sql.DB, authClient *auth.Client) Server {
 }
 
 func (s Server) Register(r chi.Router) {
-	r.Get("/", errHandlerFunc(s.handler.Home))
+	r.Get("/", errHandlerFunc(handler.Home))
 
-	r.Get("/videos/{id}", errHandlerFunc(s.handler.ViewVideo))
-	r.Post("/videos/{id}/torrents/create", errHandlerFunc(s.handler.CreateTorrent))
-	r.Delete("/videos/{id}/torrents/{torrentID}", errHandlerFunc(s.handler.DeleteTorrent))
-	r.Post("/videos/{id}/subtitles/create", errHandlerFunc(s.handler.CreateSubtitle))
-	r.Delete("/videos/{id}/subtitles/{subtitleID}", errHandlerFunc(s.handler.DeleteSubtitle))
+	r.Get("/videos/{id}", errHandlerFunc(s.videoHandler.ViewVideo))
+	r.Post("/videos/{id}/torrents/create", errHandlerFunc(s.videoHandler.CreateTorrent))
+	r.Delete("/videos/{id}/torrents/{torrentID}", errHandlerFunc(s.videoHandler.DeleteTorrent))
+	r.Post("/videos/{id}/subtitles/create", errHandlerFunc(s.videoHandler.CreateSubtitle))
+	r.Delete("/videos/{id}/subtitles/{subtitleID}", errHandlerFunc(s.videoHandler.DeleteSubtitle))
 
-	r.Get("/users", errHandlerFunc(s.handler.ListUsers))
-	r.Get("/users/{uid}", errHandlerFunc(s.handler.ViewUser))
-	r.Post("/users/{uid}/update-premium", errHandlerFunc(s.handler.UpdatePremium))
+	r.Get("/users", errHandlerFunc(s.userHandler.ListUsers))
+	r.Get("/users/{uid}", errHandlerFunc(s.userHandler.ViewUser))
+	r.Post("/users/{uid}/update-premium", errHandlerFunc(s.userHandler.UpdatePremium))
 
 	r.Get("/latest-shows", errHandlerFunc(s.handler2.ListLatestShows))
 
