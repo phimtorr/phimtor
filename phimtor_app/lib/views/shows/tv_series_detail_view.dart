@@ -198,8 +198,8 @@ class TVSeriesDetailView extends StatelessWidget {
     phimtor_api.TvSeriesSeasonsInner season,
   ) {
     return InkWell(
-      onTap: () {
-        context.goNamed(
+      onTap: () async {
+        await context.pushNamed(
           routeNameTVSeriesSeasonDetails,
           pathParameters: {
             "id": seriesId.toString(),

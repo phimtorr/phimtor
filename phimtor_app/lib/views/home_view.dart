@@ -56,8 +56,8 @@ class MoviesSection extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             ElevatedButton.icon(
-              onPressed: () {
-                context.goNamed(routeNameMovies);
+              onPressed: () async {
+                await context.pushNamed(routeNameMovies);
               },
               label: Text(context.loc.load_more),
               icon: const Icon(Icons.arrow_forward),
@@ -106,8 +106,8 @@ class TVSeriesSection extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             ElevatedButton.icon(
-              onPressed: () {
-                context.goNamed(routeNameTVSeries);
+              onPressed: () async {
+                await context.pushNamed(routeNameTVSeries);
               },
               label: Text(context.loc.load_more),
               icon: const Icon(Icons.arrow_forward),
@@ -157,8 +157,8 @@ class TVEpisodesSection extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             ElevatedButton.icon(
-              onPressed: () {
-                context.goNamed(routeNameTVLatestEpisodes);
+              onPressed: () async {
+                await context.pushNamed(routeNameTVLatestEpisodes);
               },
               label: Text(context.loc.load_more),
               icon: const Icon(Icons.arrow_forward),

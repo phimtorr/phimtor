@@ -33,11 +33,11 @@ class _SearchSectionState extends State<SearchSection> {
         // a search text box with a button to search
         CupertinoSearchTextField(
           controller: _searchController,
-          onSubmitted: (query) {
+          onSubmitted: (query) async {
             if (query.isEmpty) {
               return;
             }
-            context.goNamed(
+            await context.pushNamed(
               routeNameShowSearch,
               pathParameters: {"query": query},
             );

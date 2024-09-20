@@ -191,11 +191,8 @@ class TVSeasonDetailView extends StatelessWidget {
       final isWideScreen = constraits.maxWidth > 600;
 
       return InkWell(
-        onTap: () {
-          if (episode.videoID == 0) {
-            return;
-          }
-          context.goNamed(
+        onTap: episode.videoID == 0 ? null : () async {
+          await context.pushNamed(
             routeNameVideo,
             pathParameters: {
               "id": episode.videoID.toString(),

@@ -169,11 +169,14 @@ class MovieDetailView extends StatelessWidget {
         ),
         const SizedBox(height: 16.0),
         ElevatedButton.icon(
-          onPressed: () {
-            context.goNamed(routeNameVideo, pathParameters: {
-              "id": movie.videoID.toString(),
-              "title": movie.title,
-            });
+          onPressed: () async {
+            await context.pushNamed(
+              routeNameVideo,
+              pathParameters: {
+                "id": movie.videoID.toString(),
+                "title": movie.title,
+              },
+            );
           },
           label: Text(context.loc.watch_now),
           icon: const Icon(Icons.play_arrow),

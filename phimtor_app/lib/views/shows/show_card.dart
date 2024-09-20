@@ -95,7 +95,7 @@ class ShowCard extends StatelessWidget {
           ),
         ),
       ),
-      onTap: () {
+      onTap: () async {
         AnalyticsService().sendEvent(
           name: "show_card_tap",
           parameters: {
@@ -104,7 +104,7 @@ class ShowCard extends StatelessWidget {
           },
         );
         if (show.type == phimtor_api.ModelShowTypeEnum.movie) {
-          context.goNamed(
+          await context.pushNamed(
             routeNameMovieDetails,
             pathParameters: {
               "id": show.showId.toString(),
@@ -114,7 +114,7 @@ class ShowCard extends StatelessWidget {
           return;
         }
         if (show.type == phimtor_api.ModelShowTypeEnum.tvSeries) {
-          context.goNamed(
+          await context.pushNamed(
             routeNameTVSeriesDetails,
             pathParameters: {
               "id": show.showId.toString(),
@@ -124,7 +124,7 @@ class ShowCard extends StatelessWidget {
           return;
         }
         if (show.type == phimtor_api.ModelShowTypeEnum.episode) {
-          context.goNamed(
+          await context.pushNamed(
             routeNameTVSeriesSeasonDetails,
             pathParameters: {
               "id": show.showId.toString(),
