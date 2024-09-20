@@ -12,16 +12,11 @@ tools:
 
 
 .PHONY: openapi
-openapi: openapi-http openapi-client openapi-dart-client
+openapi: openapi-http openapi-dart-client
 
 .PHONY: openapi-http
 openapi-http:
-	@./scripts/openapi-http.sh phimtor_api server/http http
 	@./scripts/openapi-http.sh phimtor_api_v2 server/http2 http2
-
-.PHONY: openapi-client
-openapi-client:
-	@./scripts/openapi-client.sh phimtor_api desktop/client/api api
 
 .PHONY: openapi-dart-client
 openapi-dart-client:
