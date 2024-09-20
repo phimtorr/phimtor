@@ -29,10 +29,7 @@ jobs:
       - name: Deploy desktop
         run: |
           ssh server 'mkdir -p ${{ vars.WORKING_DIR }}/phimtor_app'
+          ssh server 'cd ${{ vars.WORKING_DIR }} && sed -i "s/$(cat phimtor_app/VERSION.txt)/$(cat phimtor_app_candidate/VERSION.txt)/" landing/index.html'
           ssh server 'rm -rf ${{ vars.WORKING_DIR }}/phimtor_app/*'
           ssh server 'cp -r ${{ vars.WORKING_DIR }}/phimtor_app_candidate/* ${{ vars.WORKING_DIR }}/phimtor_app/'
-          ssh server 'cp ${{ vars.WORKING_DIR }}/phimtor_app/PhimTor-*-x86_64.AppImage ${{ vars.WORKING_DIR }}/phimtor_app/PhimTor-x86_64.AppImage'
-          ssh server 'cp ${{ vars.WORKING_DIR }}/phimtor_app/PhimTor-*.apk ${{ vars.WORKING_DIR }}/phimtor_app/PhimTor.apk'
-          ssh server 'cp ${{ vars.WORKING_DIR }}/phimtor_app/PhimTorSetup-*.exe ${{ vars.WORKING_DIR }}/phimtor_app/PhimTorSetup.exe'
-          ssh server 'cp ${{ vars.WORKING_DIR }}/phimtor_app/PhimTor-*.pkg ${{ vars.WORKING_DIR }}/phimtor_app/PhimTor.pkg'
         shell: bash
