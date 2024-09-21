@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"slices"
 
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
@@ -41,7 +42,7 @@ func toHTTP2TorrentLinks(user auth.User, dbLinks dbmodels.TorrentLinkSlice) []ht
 		links = append(links, http.TorrentLink{
 			Id:             link.ID,
 			Link:           link.Link,
-			Name:           link.Name,
+			Name:           toTorrentLinkName(link),
 			FileIndex:      link.FileIndex,
 			Priority:       link.Priority,
 			RequirePremium: link.RequiredPremium,
@@ -65,7 +66,7 @@ func toHTTP2PremiumTorrentLinks(user auth.User, dbLinks dbmodels.TorrentLinkSlic
 		}
 		links = append(links, http.PremiumTorrentLink{
 			Id:       link.ID,
-			Name:     link.Name,
+			Name:     toTorrentLinkName(link),
 			Priority: link.Priority,
 		})
 	}
@@ -75,6 +76,17 @@ func toHTTP2PremiumTorrentLinks(user auth.User, dbLinks dbmodels.TorrentLinkSlic
 	})
 	return links
 
+}
+
+func toTorrentLinkName(link *dbmodels.TorrentLink) string {
+	name := fmt.Sprintf("%dp.%s", link.Resolution, link.Type)
+	if link.Codec != "" {
+		name += "." + link.Codec
+	}
+	if link.Source != "" {
+		name += "." + link.Source
+	}
+	return name
 }
 
 func toHTTP2Subtitles(dbSubs dbmodels.SubtitleSlice) []http.Subtitle {
