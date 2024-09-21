@@ -29,7 +29,6 @@ type TorrentLink struct {
 	Type            string    `boil:"type" json:"type" toml:"type" yaml:"type"`
 	Codec           string    `boil:"codec" json:"codec" toml:"codec" yaml:"codec"`
 	Source          string    `boil:"source" json:"source" toml:"source" yaml:"source"`
-	Name            string    `boil:"name" json:"name" toml:"name" yaml:"name"`
 	Link            string    `boil:"link" json:"link" toml:"link" yaml:"link"`
 	FileIndex       int       `boil:"file_index" json:"file_index" toml:"file_index" yaml:"file_index"`
 	Priority        int       `boil:"priority" json:"priority" toml:"priority" yaml:"priority"`
@@ -48,7 +47,6 @@ var TorrentLinkColumns = struct {
 	Type            string
 	Codec           string
 	Source          string
-	Name            string
 	Link            string
 	FileIndex       string
 	Priority        string
@@ -62,7 +60,6 @@ var TorrentLinkColumns = struct {
 	Type:            "type",
 	Codec:           "codec",
 	Source:          "source",
-	Name:            "name",
 	Link:            "link",
 	FileIndex:       "file_index",
 	Priority:        "priority",
@@ -78,7 +75,6 @@ var TorrentLinkTableColumns = struct {
 	Type            string
 	Codec           string
 	Source          string
-	Name            string
 	Link            string
 	FileIndex       string
 	Priority        string
@@ -92,7 +88,6 @@ var TorrentLinkTableColumns = struct {
 	Type:            "torrent_links.type",
 	Codec:           "torrent_links.codec",
 	Source:          "torrent_links.source",
-	Name:            "torrent_links.name",
 	Link:            "torrent_links.link",
 	FileIndex:       "torrent_links.file_index",
 	Priority:        "torrent_links.priority",
@@ -110,7 +105,6 @@ var TorrentLinkWhere = struct {
 	Type            whereHelperstring
 	Codec           whereHelperstring
 	Source          whereHelperstring
-	Name            whereHelperstring
 	Link            whereHelperstring
 	FileIndex       whereHelperint
 	Priority        whereHelperint
@@ -124,7 +118,6 @@ var TorrentLinkWhere = struct {
 	Type:            whereHelperstring{field: "`torrent_links`.`type`"},
 	Codec:           whereHelperstring{field: "`torrent_links`.`codec`"},
 	Source:          whereHelperstring{field: "`torrent_links`.`source`"},
-	Name:            whereHelperstring{field: "`torrent_links`.`name`"},
 	Link:            whereHelperstring{field: "`torrent_links`.`link`"},
 	FileIndex:       whereHelperint{field: "`torrent_links`.`file_index`"},
 	Priority:        whereHelperint{field: "`torrent_links`.`priority`"},
@@ -161,8 +154,8 @@ func (r *torrentLinkR) GetVideo() *Video {
 type torrentLinkL struct{}
 
 var (
-	torrentLinkAllColumns            = []string{"id", "video_id", "resolution", "type", "codec", "source", "name", "link", "file_index", "priority", "required_premium", "created_at", "updated_at"}
-	torrentLinkColumnsWithoutDefault = []string{"video_id", "resolution", "type", "codec", "source", "name", "link"}
+	torrentLinkAllColumns            = []string{"id", "video_id", "resolution", "type", "codec", "source", "link", "file_index", "priority", "required_premium", "created_at", "updated_at"}
+	torrentLinkColumnsWithoutDefault = []string{"video_id", "resolution", "type", "codec", "source", "link"}
 	torrentLinkColumnsWithDefault    = []string{"id", "file_index", "priority", "required_premium", "created_at", "updated_at"}
 	torrentLinkPrimaryKeyColumns     = []string{"id"}
 	torrentLinkGeneratedColumns      = []string{}
