@@ -63,10 +63,19 @@ func (h *VideoHandler) CreateTorrent(w http.ResponseWriter, r *http.Request) err
 		return fmt.Errorf("parsing form: %w", err)
 	}
 
-	name := r.Form.Get("name")
-	if name == "" {
-		return commonErrors.NewIncorrectInputError("empty-name", "empty name")
+	resolution, err := strconv.Atoi(r.Form.Get("resolution"))
+	if err != nil {
+		return commonErrors.NewIncorrectInputError("invalid-resolution",
+			fmt.Sprintf("invalid resolution: %v", err))
 	}
+
+	videoType := r.Form.Get("type")
+	if videoType == "" {
+		return commonErrors.NewIncorrectInputError("empty-type", "empty type")
+	}
+
+	codec := r.Form.Get("codec")
+	source := r.Form.Get("source")
 
 	link := r.Form.Get("link")
 	if strings.TrimSpace(link) == "" {
@@ -101,7 +110,10 @@ func (h *VideoHandler) CreateTorrent(w http.ResponseWriter, r *http.Request) err
 
 	if _, err := h.repo.CreateTorrent(r.Context(), TorrentToCreate{
 		VideoID:         videoID,
-		Name:            name,
+		Resolution:      resolution,
+		Type:            videoType,
+		Codec:           codec,
+		Source:          source,
 		Link:            link,
 		FileIndex:       fileIndex,
 		Priority:        priority,

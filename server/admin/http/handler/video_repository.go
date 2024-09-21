@@ -45,7 +45,10 @@ type ShowToUpdate struct {
 
 type TorrentToCreate struct {
 	VideoID         int64
-	Name            string
+	Resolution      int
+	Type            string
+	Codec           string
+	Source          string
 	Link            string
 	FileIndex       int
 	Priority        int

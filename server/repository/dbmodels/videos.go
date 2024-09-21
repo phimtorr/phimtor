@@ -23,44 +23,65 @@ import (
 
 // Video is an object representing the database table.
 type Video struct {
-	ID        int64     `boil:"id" json:"id" toml:"id" yaml:"id"`
-	CreatedAt time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	UpdatedAt time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
+	ID            int64     `boil:"id" json:"id" toml:"id" yaml:"id"`
+	MaxResolution int       `boil:"max_resolution" json:"max_resolution" toml:"max_resolution" yaml:"max_resolution"`
+	HasViSub      bool      `boil:"has_vi_sub" json:"has_vi_sub" toml:"has_vi_sub" yaml:"has_vi_sub"`
+	HasEnSub      bool      `boil:"has_en_sub" json:"has_en_sub" toml:"has_en_sub" yaml:"has_en_sub"`
+	CreatedAt     time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	UpdatedAt     time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
 
 	R *videoR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L videoL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var VideoColumns = struct {
-	ID        string
-	CreatedAt string
-	UpdatedAt string
+	ID            string
+	MaxResolution string
+	HasViSub      string
+	HasEnSub      string
+	CreatedAt     string
+	UpdatedAt     string
 }{
-	ID:        "id",
-	CreatedAt: "created_at",
-	UpdatedAt: "updated_at",
+	ID:            "id",
+	MaxResolution: "max_resolution",
+	HasViSub:      "has_vi_sub",
+	HasEnSub:      "has_en_sub",
+	CreatedAt:     "created_at",
+	UpdatedAt:     "updated_at",
 }
 
 var VideoTableColumns = struct {
-	ID        string
-	CreatedAt string
-	UpdatedAt string
+	ID            string
+	MaxResolution string
+	HasViSub      string
+	HasEnSub      string
+	CreatedAt     string
+	UpdatedAt     string
 }{
-	ID:        "videos.id",
-	CreatedAt: "videos.created_at",
-	UpdatedAt: "videos.updated_at",
+	ID:            "videos.id",
+	MaxResolution: "videos.max_resolution",
+	HasViSub:      "videos.has_vi_sub",
+	HasEnSub:      "videos.has_en_sub",
+	CreatedAt:     "videos.created_at",
+	UpdatedAt:     "videos.updated_at",
 }
 
 // Generated where
 
 var VideoWhere = struct {
-	ID        whereHelperint64
-	CreatedAt whereHelpertime_Time
-	UpdatedAt whereHelpertime_Time
+	ID            whereHelperint64
+	MaxResolution whereHelperint
+	HasViSub      whereHelperbool
+	HasEnSub      whereHelperbool
+	CreatedAt     whereHelpertime_Time
+	UpdatedAt     whereHelpertime_Time
 }{
-	ID:        whereHelperint64{field: "`videos`.`id`"},
-	CreatedAt: whereHelpertime_Time{field: "`videos`.`created_at`"},
-	UpdatedAt: whereHelpertime_Time{field: "`videos`.`updated_at`"},
+	ID:            whereHelperint64{field: "`videos`.`id`"},
+	MaxResolution: whereHelperint{field: "`videos`.`max_resolution`"},
+	HasViSub:      whereHelperbool{field: "`videos`.`has_vi_sub`"},
+	HasEnSub:      whereHelperbool{field: "`videos`.`has_en_sub`"},
+	CreatedAt:     whereHelpertime_Time{field: "`videos`.`created_at`"},
+	UpdatedAt:     whereHelpertime_Time{field: "`videos`.`updated_at`"},
 }
 
 // VideoRels is where relationship names are stored.
@@ -101,8 +122,8 @@ func (r *videoR) GetTorrentLinks() TorrentLinkSlice {
 type videoL struct{}
 
 var (
-	videoAllColumns            = []string{"id", "created_at", "updated_at"}
-	videoColumnsWithoutDefault = []string{}
+	videoAllColumns            = []string{"id", "max_resolution", "has_vi_sub", "has_en_sub", "created_at", "updated_at"}
+	videoColumnsWithoutDefault = []string{"max_resolution", "has_vi_sub", "has_en_sub"}
 	videoColumnsWithDefault    = []string{"id", "created_at", "updated_at"}
 	videoPrimaryKeyColumns     = []string{"id"}
 	videoGeneratedColumns      = []string{}

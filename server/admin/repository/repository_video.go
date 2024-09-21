@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
@@ -29,7 +30,7 @@ func toUIVideo(vid *dbmodels.Video) ui.Video {
 	for _, t := range vid.R.TorrentLinks {
 		torrents = append(torrents, ui.Torrent{
 			ID:              t.ID,
-			Name:            t.Name,
+			Name:            toTorrentLinkName(t),
 			Link:            t.Link,
 			FileIndex:       t.FileIndex,
 			Priority:        t.Priority,
@@ -49,10 +50,24 @@ func toUIVideo(vid *dbmodels.Video) ui.Video {
 	}
 }
 
+func toTorrentLinkName(t *dbmodels.TorrentLink) string {
+	name := fmt.Sprintf("%dp.%s", t.Resolution, t.Type)
+	if t.Codec != "" {
+		name += "." + t.Codec
+	}
+	if t.Source != "" {
+		name += "." + t.Source
+	}
+	return name
+}
+
 func (r Repository) CreateTorrent(ctx context.Context, torrent handler.TorrentToCreate) (int64, error) {
 	dbTorrentLink := &dbmodels.TorrentLink{
 		VideoID:         torrent.VideoID,
-		Name:            torrent.Name,
+		Resolution:      torrent.Resolution,
+		Type:            torrent.Type,
+		Codec:           torrent.Codec,
+		Source:          torrent.Source,
 		Link:            torrent.Link,
 		FileIndex:       torrent.FileIndex,
 		Priority:        torrent.Priority,
