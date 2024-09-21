@@ -53,6 +53,24 @@ func (h *VideoHandler) ViewVideo(w http.ResponseWriter, r *http.Request) error {
 	return ui.ViewVideo(video).Render(r.Context(), w)
 }
 
+func (h *VideoHandler) SyncVideo(w http.ResponseWriter, r *http.Request) error {
+	videoID, err := parseID(chi.URLParam(r, "id"))
+	if err != nil {
+		return err
+	}
+
+	if err := h.repo.SyncVideo(r.Context(), videoID); err != nil {
+		return fmt.Errorf("sync video: %w", err)
+	}
+
+	video, err := h.repo.GetVideo(r.Context(), videoID)
+	if err != nil {
+		return fmt.Errorf("get video: %w", err)
+	}
+
+	return ui.ViewVideo(video).Render(r.Context(), w)
+}
+
 func (h *VideoHandler) CreateTorrent(w http.ResponseWriter, r *http.Request) error {
 	videoID, err := parseID(chi.URLParam(r, "id"))
 	if err != nil {
@@ -63,10 +81,19 @@ func (h *VideoHandler) CreateTorrent(w http.ResponseWriter, r *http.Request) err
 		return fmt.Errorf("parsing form: %w", err)
 	}
 
-	name := r.Form.Get("name")
-	if name == "" {
-		return commonErrors.NewIncorrectInputError("empty-name", "empty name")
+	resolution, err := strconv.Atoi(r.Form.Get("resolution"))
+	if err != nil {
+		return commonErrors.NewIncorrectInputError("invalid-resolution",
+			fmt.Sprintf("invalid resolution: %v", err))
 	}
+
+	videoType := r.Form.Get("type")
+	if videoType == "" {
+		return commonErrors.NewIncorrectInputError("empty-type", "empty type")
+	}
+
+	codec := r.Form.Get("codec")
+	source := r.Form.Get("source")
 
 	link := r.Form.Get("link")
 	if strings.TrimSpace(link) == "" {
@@ -101,13 +128,20 @@ func (h *VideoHandler) CreateTorrent(w http.ResponseWriter, r *http.Request) err
 
 	if _, err := h.repo.CreateTorrent(r.Context(), TorrentToCreate{
 		VideoID:         videoID,
-		Name:            name,
+		Resolution:      resolution,
+		Type:            videoType,
+		Codec:           codec,
+		Source:          source,
 		Link:            link,
 		FileIndex:       fileIndex,
 		Priority:        priority,
 		RequiredPremium: requiredPremium,
 	}); err != nil {
 		return fmt.Errorf("create torrent: %w", err)
+	}
+
+	if err := h.repo.SyncVideo(r.Context(), videoID); err != nil {
+		return fmt.Errorf("sync video: %w", err)
 	}
 
 	video, err := h.repo.GetVideo(r.Context(), videoID)
@@ -131,6 +165,10 @@ func (h *VideoHandler) DeleteTorrent(w http.ResponseWriter, r *http.Request) err
 
 	if err := h.repo.DeleteTorrent(r.Context(), videoID, torrentID); err != nil {
 		return fmt.Errorf("delete torrent: %w", err)
+	}
+
+	if err := h.repo.SyncVideo(r.Context(), videoID); err != nil {
+		return fmt.Errorf("sync video: %w", err)
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -188,6 +226,10 @@ func (h *VideoHandler) CreateSubtitle(w http.ResponseWriter, r *http.Request) er
 		return fmt.Errorf("create subtitle: %w", err)
 	}
 
+	if err := h.repo.SyncVideo(r.Context(), videoID); err != nil {
+		return fmt.Errorf("sync video: %w", err)
+	}
+
 	video, err := h.repo.GetVideo(r.Context(), videoID)
 	if err != nil {
 		return fmt.Errorf("get video: %w", err)
@@ -218,6 +260,10 @@ func (h *VideoHandler) DeleteSubtitle(w http.ResponseWriter, r *http.Request) er
 
 	if err := h.fileService.DeleteFile(r.Context(), sub.FileKey); err != nil {
 		return fmt.Errorf("delete file: %w", err)
+	}
+
+	if err := h.repo.SyncVideo(r.Context(), videoID); err != nil {
+		return fmt.Errorf("sync video: %w", err)
 	}
 
 	w.WriteHeader(http.StatusOK)

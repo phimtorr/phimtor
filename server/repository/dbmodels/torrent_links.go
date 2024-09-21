@@ -25,6 +25,10 @@ import (
 type TorrentLink struct {
 	ID              int64     `boil:"id" json:"id" toml:"id" yaml:"id"`
 	VideoID         int64     `boil:"video_id" json:"video_id" toml:"video_id" yaml:"video_id"`
+	Resolution      int       `boil:"resolution" json:"resolution" toml:"resolution" yaml:"resolution"`
+	Type            string    `boil:"type" json:"type" toml:"type" yaml:"type"`
+	Codec           string    `boil:"codec" json:"codec" toml:"codec" yaml:"codec"`
+	Source          string    `boil:"source" json:"source" toml:"source" yaml:"source"`
 	Name            string    `boil:"name" json:"name" toml:"name" yaml:"name"`
 	Link            string    `boil:"link" json:"link" toml:"link" yaml:"link"`
 	FileIndex       int       `boil:"file_index" json:"file_index" toml:"file_index" yaml:"file_index"`
@@ -40,6 +44,10 @@ type TorrentLink struct {
 var TorrentLinkColumns = struct {
 	ID              string
 	VideoID         string
+	Resolution      string
+	Type            string
+	Codec           string
+	Source          string
 	Name            string
 	Link            string
 	FileIndex       string
@@ -50,6 +58,10 @@ var TorrentLinkColumns = struct {
 }{
 	ID:              "id",
 	VideoID:         "video_id",
+	Resolution:      "resolution",
+	Type:            "type",
+	Codec:           "codec",
+	Source:          "source",
 	Name:            "name",
 	Link:            "link",
 	FileIndex:       "file_index",
@@ -62,6 +74,10 @@ var TorrentLinkColumns = struct {
 var TorrentLinkTableColumns = struct {
 	ID              string
 	VideoID         string
+	Resolution      string
+	Type            string
+	Codec           string
+	Source          string
 	Name            string
 	Link            string
 	FileIndex       string
@@ -72,6 +88,10 @@ var TorrentLinkTableColumns = struct {
 }{
 	ID:              "torrent_links.id",
 	VideoID:         "torrent_links.video_id",
+	Resolution:      "torrent_links.resolution",
+	Type:            "torrent_links.type",
+	Codec:           "torrent_links.codec",
+	Source:          "torrent_links.source",
 	Name:            "torrent_links.name",
 	Link:            "torrent_links.link",
 	FileIndex:       "torrent_links.file_index",
@@ -83,18 +103,13 @@ var TorrentLinkTableColumns = struct {
 
 // Generated where
 
-type whereHelperbool struct{ field string }
-
-func (w whereHelperbool) EQ(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperbool) NEQ(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
-func (w whereHelperbool) LT(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperbool) LTE(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
-func (w whereHelperbool) GT(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperbool) GTE(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
-
 var TorrentLinkWhere = struct {
 	ID              whereHelperint64
 	VideoID         whereHelperint64
+	Resolution      whereHelperint
+	Type            whereHelperstring
+	Codec           whereHelperstring
+	Source          whereHelperstring
 	Name            whereHelperstring
 	Link            whereHelperstring
 	FileIndex       whereHelperint
@@ -105,6 +120,10 @@ var TorrentLinkWhere = struct {
 }{
 	ID:              whereHelperint64{field: "`torrent_links`.`id`"},
 	VideoID:         whereHelperint64{field: "`torrent_links`.`video_id`"},
+	Resolution:      whereHelperint{field: "`torrent_links`.`resolution`"},
+	Type:            whereHelperstring{field: "`torrent_links`.`type`"},
+	Codec:           whereHelperstring{field: "`torrent_links`.`codec`"},
+	Source:          whereHelperstring{field: "`torrent_links`.`source`"},
 	Name:            whereHelperstring{field: "`torrent_links`.`name`"},
 	Link:            whereHelperstring{field: "`torrent_links`.`link`"},
 	FileIndex:       whereHelperint{field: "`torrent_links`.`file_index`"},
@@ -142,8 +161,8 @@ func (r *torrentLinkR) GetVideo() *Video {
 type torrentLinkL struct{}
 
 var (
-	torrentLinkAllColumns            = []string{"id", "video_id", "name", "link", "file_index", "priority", "required_premium", "created_at", "updated_at"}
-	torrentLinkColumnsWithoutDefault = []string{"video_id", "name", "link"}
+	torrentLinkAllColumns            = []string{"id", "video_id", "resolution", "type", "codec", "source", "name", "link", "file_index", "priority", "required_premium", "created_at", "updated_at"}
+	torrentLinkColumnsWithoutDefault = []string{"video_id", "resolution", "type", "codec", "source", "name", "link"}
 	torrentLinkColumnsWithDefault    = []string{"id", "file_index", "priority", "required_premium", "created_at", "updated_at"}
 	torrentLinkPrimaryKeyColumns     = []string{"id"}
 	torrentLinkGeneratedColumns      = []string{}

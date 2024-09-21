@@ -34,8 +34,10 @@ type LatestShow struct {
 	Runtime       null.Int        `boil:"runtime" json:"runtime,omitempty" toml:"runtime" yaml:"runtime,omitempty"`
 	VoteAverage   float32         `boil:"vote_average" json:"vote_average" toml:"vote_average" yaml:"vote_average"`
 	Quality       string          `boil:"quality" json:"quality" toml:"quality" yaml:"quality"`
+	HasViSub      bool            `boil:"has_vi_sub" json:"has_vi_sub" toml:"has_vi_sub" yaml:"has_vi_sub"`
 	SeasonNumber  null.Int        `boil:"season_number" json:"season_number,omitempty" toml:"season_number" yaml:"season_number,omitempty"`
 	EpisodeNumber null.Int        `boil:"episode_number" json:"episode_number,omitempty" toml:"episode_number" yaml:"episode_number,omitempty"`
+	VideoID       int64           `boil:"video_id" json:"video_id" toml:"video_id" yaml:"video_id"`
 	CreatedAt     time.Time       `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt     time.Time       `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
 
@@ -54,8 +56,10 @@ var LatestShowColumns = struct {
 	Runtime       string
 	VoteAverage   string
 	Quality       string
+	HasViSub      string
 	SeasonNumber  string
 	EpisodeNumber string
+	VideoID       string
 	CreatedAt     string
 	UpdatedAt     string
 }{
@@ -69,8 +73,10 @@ var LatestShowColumns = struct {
 	Runtime:       "runtime",
 	VoteAverage:   "vote_average",
 	Quality:       "quality",
+	HasViSub:      "has_vi_sub",
 	SeasonNumber:  "season_number",
 	EpisodeNumber: "episode_number",
+	VideoID:       "video_id",
 	CreatedAt:     "created_at",
 	UpdatedAt:     "updated_at",
 }
@@ -86,8 +92,10 @@ var LatestShowTableColumns = struct {
 	Runtime       string
 	VoteAverage   string
 	Quality       string
+	HasViSub      string
 	SeasonNumber  string
 	EpisodeNumber string
+	VideoID       string
 	CreatedAt     string
 	UpdatedAt     string
 }{
@@ -101,8 +109,10 @@ var LatestShowTableColumns = struct {
 	Runtime:       "latest_shows.runtime",
 	VoteAverage:   "latest_shows.vote_average",
 	Quality:       "latest_shows.quality",
+	HasViSub:      "latest_shows.has_vi_sub",
 	SeasonNumber:  "latest_shows.season_number",
 	EpisodeNumber: "latest_shows.episode_number",
+	VideoID:       "latest_shows.video_id",
 	CreatedAt:     "latest_shows.created_at",
 	UpdatedAt:     "latest_shows.updated_at",
 }
@@ -283,6 +293,15 @@ func (w whereHelperfloat32) NIN(slice []float32) qm.QueryMod {
 	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
 }
 
+type whereHelperbool struct{ field string }
+
+func (w whereHelperbool) EQ(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
+func (w whereHelperbool) NEQ(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
+func (w whereHelperbool) LT(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
+func (w whereHelperbool) LTE(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
+func (w whereHelperbool) GT(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
+func (w whereHelperbool) GTE(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
+
 type whereHelpertime_Time struct{ field string }
 
 func (w whereHelpertime_Time) EQ(x time.Time) qm.QueryMod {
@@ -315,8 +334,10 @@ var LatestShowWhere = struct {
 	Runtime       whereHelpernull_Int
 	VoteAverage   whereHelperfloat32
 	Quality       whereHelperstring
+	HasViSub      whereHelperbool
 	SeasonNumber  whereHelpernull_Int
 	EpisodeNumber whereHelpernull_Int
+	VideoID       whereHelperint64
 	CreatedAt     whereHelpertime_Time
 	UpdatedAt     whereHelpertime_Time
 }{
@@ -330,8 +351,10 @@ var LatestShowWhere = struct {
 	Runtime:       whereHelpernull_Int{field: "`latest_shows`.`runtime`"},
 	VoteAverage:   whereHelperfloat32{field: "`latest_shows`.`vote_average`"},
 	Quality:       whereHelperstring{field: "`latest_shows`.`quality`"},
+	HasViSub:      whereHelperbool{field: "`latest_shows`.`has_vi_sub`"},
 	SeasonNumber:  whereHelpernull_Int{field: "`latest_shows`.`season_number`"},
 	EpisodeNumber: whereHelpernull_Int{field: "`latest_shows`.`episode_number`"},
+	VideoID:       whereHelperint64{field: "`latest_shows`.`video_id`"},
 	CreatedAt:     whereHelpertime_Time{field: "`latest_shows`.`created_at`"},
 	UpdatedAt:     whereHelpertime_Time{field: "`latest_shows`.`updated_at`"},
 }
@@ -353,9 +376,9 @@ func (*latestShowR) NewStruct() *latestShowR {
 type latestShowL struct{}
 
 var (
-	latestShowAllColumns            = []string{"id", "type", "show_id", "title", "original_title", "poster_path", "air_date", "runtime", "vote_average", "quality", "season_number", "episode_number", "created_at", "updated_at"}
+	latestShowAllColumns            = []string{"id", "type", "show_id", "title", "original_title", "poster_path", "air_date", "runtime", "vote_average", "quality", "has_vi_sub", "season_number", "episode_number", "video_id", "created_at", "updated_at"}
 	latestShowColumnsWithoutDefault = []string{"type", "show_id", "title", "original_title", "poster_path", "air_date", "runtime", "vote_average", "quality", "season_number", "episode_number"}
-	latestShowColumnsWithDefault    = []string{"id", "created_at", "updated_at"}
+	latestShowColumnsWithDefault    = []string{"id", "has_vi_sub", "video_id", "created_at", "updated_at"}
 	latestShowPrimaryKeyColumns     = []string{"id"}
 	latestShowGeneratedColumns      = []string{}
 )

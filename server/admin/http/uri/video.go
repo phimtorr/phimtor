@@ -6,6 +6,10 @@ func ViewVideo(videoID int64) string {
 	return "/videos/" + strconv.FormatInt(videoID, 10)
 }
 
+func SyncVideo(videoID int64) string {
+	return "/videos/" + strconv.FormatInt(videoID, 10) + "/sync"
+}
+
 func CreateTorrent(videoID int64) string {
 	return "/videos/" + strconv.FormatInt(videoID, 10) + "/torrents/create"
 }

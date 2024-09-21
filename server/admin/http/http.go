@@ -40,6 +40,7 @@ func (s Server) Register(r chi.Router) {
 	r.Get("/", errHandlerFunc(handler.Home))
 
 	r.Get("/videos/{id}", errHandlerFunc(s.videoHandler.ViewVideo))
+	r.Post("/videos/{id}/sync", errHandlerFunc(s.videoHandler.SyncVideo))
 	r.Post("/videos/{id}/torrents/create", errHandlerFunc(s.videoHandler.CreateTorrent))
 	r.Delete("/videos/{id}/torrents/{torrentID}", errHandlerFunc(s.videoHandler.DeleteTorrent))
 	r.Post("/videos/{id}/subtitles/create", errHandlerFunc(s.videoHandler.CreateSubtitle))

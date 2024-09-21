@@ -8,6 +8,7 @@ import (
 
 type VideoRepository interface {
 	GetVideo(ctx context.Context, id int64) (ui.Video, error)
+	SyncVideo(ctx context.Context, videoID int64) error
 
 	CreateTorrent(ctx context.Context, torrent TorrentToCreate) (int64, error)
 	DeleteTorrent(ctx context.Context, videoID, id int64) error
@@ -45,7 +46,10 @@ type ShowToUpdate struct {
 
 type TorrentToCreate struct {
 	VideoID         int64
-	Name            string
+	Resolution      int
+	Type            string
+	Codec           string
+	Source          string
 	Link            string
 	FileIndex       int
 	Priority        int

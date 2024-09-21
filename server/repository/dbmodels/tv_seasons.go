@@ -33,9 +33,9 @@ type TVSeason struct {
 	AirDate                null.Time `boil:"air_date" json:"air_date,omitempty" toml:"air_date" yaml:"air_date,omitempty"`
 	VoteAverage            float32   `boil:"vote_average" json:"vote_average" toml:"vote_average" yaml:"vote_average"`
 	TotalEpisodes          int       `boil:"total_episodes" json:"total_episodes" toml:"total_episodes" yaml:"total_episodes"`
+	CountAvailableEpisodes int       `boil:"count_available_episodes" json:"count_available_episodes" toml:"count_available_episodes" yaml:"count_available_episodes"`
 	CreatedAt              time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt              time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
-	CountAvailableEpisodes int       `boil:"count_available_episodes" json:"count_available_episodes" toml:"count_available_episodes" yaml:"count_available_episodes"`
 
 	R *tvSeasonR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L tvSeasonL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -51,9 +51,9 @@ var TVSeasonColumns = struct {
 	AirDate                string
 	VoteAverage            string
 	TotalEpisodes          string
+	CountAvailableEpisodes string
 	CreatedAt              string
 	UpdatedAt              string
-	CountAvailableEpisodes string
 }{
 	ID:                     "id",
 	ShowID:                 "show_id",
@@ -64,9 +64,9 @@ var TVSeasonColumns = struct {
 	AirDate:                "air_date",
 	VoteAverage:            "vote_average",
 	TotalEpisodes:          "total_episodes",
+	CountAvailableEpisodes: "count_available_episodes",
 	CreatedAt:              "created_at",
 	UpdatedAt:              "updated_at",
-	CountAvailableEpisodes: "count_available_episodes",
 }
 
 var TVSeasonTableColumns = struct {
@@ -79,9 +79,9 @@ var TVSeasonTableColumns = struct {
 	AirDate                string
 	VoteAverage            string
 	TotalEpisodes          string
+	CountAvailableEpisodes string
 	CreatedAt              string
 	UpdatedAt              string
-	CountAvailableEpisodes string
 }{
 	ID:                     "tv_seasons.id",
 	ShowID:                 "tv_seasons.show_id",
@@ -92,9 +92,9 @@ var TVSeasonTableColumns = struct {
 	AirDate:                "tv_seasons.air_date",
 	VoteAverage:            "tv_seasons.vote_average",
 	TotalEpisodes:          "tv_seasons.total_episodes",
+	CountAvailableEpisodes: "tv_seasons.count_available_episodes",
 	CreatedAt:              "tv_seasons.created_at",
 	UpdatedAt:              "tv_seasons.updated_at",
-	CountAvailableEpisodes: "tv_seasons.count_available_episodes",
 }
 
 // Generated where
@@ -109,9 +109,9 @@ var TVSeasonWhere = struct {
 	AirDate                whereHelpernull_Time
 	VoteAverage            whereHelperfloat32
 	TotalEpisodes          whereHelperint
+	CountAvailableEpisodes whereHelperint
 	CreatedAt              whereHelpertime_Time
 	UpdatedAt              whereHelpertime_Time
-	CountAvailableEpisodes whereHelperint
 }{
 	ID:                     whereHelperint64{field: "`tv_seasons`.`id`"},
 	ShowID:                 whereHelperint64{field: "`tv_seasons`.`show_id`"},
@@ -122,9 +122,9 @@ var TVSeasonWhere = struct {
 	AirDate:                whereHelpernull_Time{field: "`tv_seasons`.`air_date`"},
 	VoteAverage:            whereHelperfloat32{field: "`tv_seasons`.`vote_average`"},
 	TotalEpisodes:          whereHelperint{field: "`tv_seasons`.`total_episodes`"},
+	CountAvailableEpisodes: whereHelperint{field: "`tv_seasons`.`count_available_episodes`"},
 	CreatedAt:              whereHelpertime_Time{field: "`tv_seasons`.`created_at`"},
 	UpdatedAt:              whereHelpertime_Time{field: "`tv_seasons`.`updated_at`"},
-	CountAvailableEpisodes: whereHelperint{field: "`tv_seasons`.`count_available_episodes`"},
 }
 
 // TVSeasonRels is where relationship names are stored.
@@ -155,9 +155,9 @@ func (r *tvSeasonR) GetShow() *TVSeriesShow {
 type tvSeasonL struct{}
 
 var (
-	tvSeasonAllColumns            = []string{"id", "show_id", "season_number", "name", "poster_path", "overview", "air_date", "vote_average", "total_episodes", "created_at", "updated_at", "count_available_episodes"}
+	tvSeasonAllColumns            = []string{"id", "show_id", "season_number", "name", "poster_path", "overview", "air_date", "vote_average", "total_episodes", "count_available_episodes", "created_at", "updated_at"}
 	tvSeasonColumnsWithoutDefault = []string{"id", "show_id", "season_number", "name", "poster_path", "overview", "air_date", "vote_average", "total_episodes"}
-	tvSeasonColumnsWithDefault    = []string{"created_at", "updated_at", "count_available_episodes"}
+	tvSeasonColumnsWithDefault    = []string{"count_available_episodes", "created_at", "updated_at"}
 	tvSeasonPrimaryKeyColumns     = []string{"id"}
 	tvSeasonGeneratedColumns      = []string{}
 )
