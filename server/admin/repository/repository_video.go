@@ -44,9 +44,12 @@ func toUIVideo(vid *dbmodels.Video) ui.Video {
 	}
 
 	return ui.Video{
-		ID:        vid.ID,
-		Torrents:  torrents,
-		Subtitles: subtitles,
+		ID:            vid.ID,
+		MaxResolution: vid.MaxResolution,
+		HasViSub:      vid.HasViSub,
+		HasEnSub:      vid.HasEnSub,
+		Torrents:      torrents,
+		Subtitles:     subtitles,
 	}
 }
 

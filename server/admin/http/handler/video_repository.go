@@ -8,6 +8,7 @@ import (
 
 type VideoRepository interface {
 	GetVideo(ctx context.Context, id int64) (ui.Video, error)
+	SyncVideo(ctx context.Context, videoID int64) error
 
 	CreateTorrent(ctx context.Context, torrent TorrentToCreate) (int64, error)
 	DeleteTorrent(ctx context.Context, videoID, id int64) error

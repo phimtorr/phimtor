@@ -3,16 +3,37 @@ package ui
 import "github.com/phimtorr/phimtor/server/admin/http/uri"
 
 type Video struct {
-	ID        int64
-	Torrents  []Torrent
-	Subtitles []Subtitle
+	ID        		int64
+	MaxResolution 	int
+	HasViSub  		bool
+	HasEnSub  		bool
+	Torrents  		[]Torrent
+	Subtitles 		[]Subtitle
 }
 
 templ ViewVideo(video Video) {
-	<section>
+	<section id="view-video">
 		<header>
 			<h2>Video</h2>
 		</header>
+		<section>
+			<h3>General</h3>
+			<dl>
+				<dt>ID</dt>
+				<dd>{ toString(video.ID) }</dd>
+				<dt>Max Resolution</dt>
+				<dd>{ toString(video.MaxResolution) }</dd>
+				<dt>Has Vietnamese Subtitle</dt>
+				<dd>{ toString(video.HasViSub) }</dd>
+				<dt>Has English Subtitle</dt>
+				<dd>{ toString(video.HasEnSub) }</dd>
+			</dl>
+			<button 
+				hx-post={ uri.SyncVideo(video.ID) }
+				hx-target="#view-video"
+				hx-swap="outerHTML"
+				>Sync</button>
+		</section>
 		<section>
 			@ViewTorrents(video.ID, video.Torrents)
 			@ViewSubtitles(video.ID, video.Subtitles)
