@@ -12,6 +12,7 @@ var TableNames = struct {
 	TVSeasons     string
 	TVSeriesShows string
 	Videos        string
+	YtsTorrents   string
 }{
 	LatestShows:   "latest_shows",
 	Movies:        "movies",
@@ -21,4 +22,5 @@ var TableNames = struct {
 	TVSeasons:     "tv_seasons",
 	TVSeriesShows: "tv_series_shows",
 	Videos:        "videos",
+	YtsTorrents:   "yts_torrents",
 }
