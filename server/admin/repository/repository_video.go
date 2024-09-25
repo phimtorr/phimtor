@@ -17,6 +17,7 @@ func (r Repository) GetVideo(ctx context.Context, id int64) (ui.Video, error) {
 		dbmodels.VideoWhere.ID.EQ(id),
 		qm.Load(dbmodels.VideoRels.TorrentLinks),
 		qm.Load(dbmodels.VideoRels.Subtitles),
+		qm.Load(dbmodels.VideoRels.MovieYtsTorrents),
 	).One(ctx, r.db)
 	if err != nil {
 		return ui.Video{}, err
@@ -38,6 +39,21 @@ func toUIVideo(vid *dbmodels.Video) ui.Video {
 		})
 	}
 
+	ytsTorrents := make([]ui.YTSTorrent, 0, len(vid.R.MovieYtsTorrents))
+	for _, t := range vid.R.MovieYtsTorrents {
+		ytsTorrents = append(ytsTorrents, ui.YTSTorrent{
+			Hash:         t.Hash,
+			Quality:      t.Quality,
+			Resolution:   t.Resolution,
+			Type:         t.Type,
+			VideoCodec:   t.VideoCodec,
+			Seeds:        t.Seeds,
+			Peers:        t.Peers,
+			SizeBytes:    t.SizeBytes,
+			DateUploaded: t.DateUploaded.Format("2006-01-02 15:04:05"),
+		})
+	}
+
 	subtitles := make([]ui.Subtitle, 0, len(vid.R.Subtitles))
 	for _, s := range vid.R.Subtitles {
 		subtitles = append(subtitles, toUISubtitle(s))
@@ -48,6 +64,7 @@ func toUIVideo(vid *dbmodels.Video) ui.Video {
 		MaxResolution: vid.MaxResolution,
 		HasViSub:      vid.HasViSub,
 		HasEnSub:      vid.HasEnSub,
+		YTSTorrents:   ytsTorrents,
 		Torrents:      torrents,
 		Subtitles:     subtitles,
 	}

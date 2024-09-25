@@ -15,6 +15,7 @@ func (r Repository) SyncVideo(ctx context.Context, videoID int64) error {
 		dbmodels.VideoWhere.ID.EQ(videoID),
 		qm.Load(dbmodels.VideoRels.TorrentLinks),
 		qm.Load(dbmodels.VideoRels.Subtitles),
+		qm.Load(dbmodels.VideoRels.MovieYtsTorrents),
 	).One(ctx, r.db)
 	if err != nil {
 		return fmt.Errorf("find video: %w", err)
@@ -24,6 +25,11 @@ func (r Repository) SyncVideo(ctx context.Context, videoID int64) error {
 	for _, link := range video.R.TorrentLinks {
 		if link.Resolution > maxResolution {
 			maxResolution = link.Resolution
+		}
+	}
+	for _, ytsTorrent := range video.R.MovieYtsTorrents {
+		if ytsTorrent.Resolution > maxResolution {
+			maxResolution = ytsTorrent.Resolution
 		}
 	}
 

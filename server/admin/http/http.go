@@ -14,6 +14,7 @@ import (
 	"github.com/phimtorr/phimtor/server/admin/repository"
 	"github.com/phimtorr/phimtor/server/admin/s3"
 	"github.com/phimtorr/phimtor/server/admin/tmdb"
+	"github.com/phimtorr/phimtor/server/admin/yts"
 )
 
 type Server struct {
@@ -22,7 +23,7 @@ type Server struct {
 	tmdbHandler  *handler.TMDBHandler
 }
 
-func NewHTTPServer(db *sql.DB, authClient *auth.Client) Server {
+func NewHTTPServer(db *sql.DB, authClient *auth.Client, ytsClient *yts.Client) Server {
 	return Server{
 		videoHandler: handler.NewVideoHandler(
 			repository.NewRepository(db),
@@ -32,6 +33,7 @@ func NewHTTPServer(db *sql.DB, authClient *auth.Client) Server {
 		tmdbHandler: handler.NewTMDBHandler(
 			tmdb.NewClient(),
 			repository.NewTMDBRepository(db),
+			ytsClient,
 		),
 	}
 }
@@ -58,6 +60,7 @@ func (s Server) Register(r chi.Router) {
 	r.Post("/movies/{id}/fetch-from-tmdb", errHandlerFunc(s.tmdbHandler.FetchMovieFromTMDB))
 	r.Post("/movies/{id}/create-video", errHandlerFunc(s.tmdbHandler.CreateMovieVideo))
 	r.Post("/movies/{id}/sync", errHandlerFunc(s.tmdbHandler.SyncMovie))
+	r.Post("/movies/{id}/sync-yts", errHandlerFunc(s.tmdbHandler.SyncYTSMovie))
 
 	r.Get("/tv-series", errHandlerFunc(s.tmdbHandler.ViewTVSeriesShows))
 	r.Post("/tv-series/create", errHandlerFunc(s.tmdbHandler.CreateTVSeries))

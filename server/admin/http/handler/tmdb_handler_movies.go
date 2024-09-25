@@ -126,3 +126,39 @@ func (h *TMDBHandler) SyncMovie(w http.ResponseWriter, r *http.Request) error {
 	redirect(w, r, uri.ViewMovie(id))
 	return nil
 }
+
+func (h *TMDBHandler) SyncYTSMovie(w http.ResponseWriter, r *http.Request) error {
+	ctx := r.Context()
+
+	id, err := parseID(chi.URLParam(r, "id"))
+	if err != nil {
+		return fmt.Errorf("parsing id: %w", err)
+	}
+
+	movie, err := h.repo.GetMovie(ctx, id)
+	if err != nil {
+		return fmt.Errorf("get movie: %w", err)
+	}
+
+	if movie.VideoID == 0 {
+		return commonErrors.NewIncorrectInputError("no-video-id", "no video id")
+	}
+
+	ytsMovie, err := h.ytsClient.GetMovie(ctx, movie.IMDBID)
+	if err != nil {
+		return fmt.Errorf("get yts movie: %w", err)
+	}
+
+	err = h.repo.UpdateYTSMovie(ctx, id, ytsMovie)
+	if err != nil {
+		return fmt.Errorf("update yts movie: %w", err)
+	}
+
+	err = h.repo.SyncMovie(ctx, id)
+	if err != nil {
+		return fmt.Errorf("sync movie: %w", err)
+	}
+
+	redirect(w, r, uri.ViewMovie(id))
+	return nil
+}

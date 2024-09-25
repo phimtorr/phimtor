@@ -6,6 +6,7 @@ import (
 	tmdb "github.com/cyruzin/golang-tmdb"
 
 	"github.com/phimtorr/phimtor/server/admin/http/ui"
+	"github.com/phimtorr/phimtor/server/admin/yts"
 )
 
 type TMDBClient interface {
@@ -16,6 +17,7 @@ type TMDBClient interface {
 type TMDBRepository interface {
 	UpdateMovie(ctx context.Context, movie *tmdb.MovieDetails) error
 	UpdateTVSeries(ctx context.Context, tv *tmdb.TVDetails, seasons []*tmdb.TVSeasonDetails) error
+	UpdateYTSMovie(ctx context.Context, id int64, movie yts.Movie) error
 
 	ListLatestShows(ctx context.Context, page, pageSize int) ([]ui.LatestShow, ui.Pagination, error)
 
@@ -33,12 +35,17 @@ type TMDBRepository interface {
 	SyncTVSeries(ctx context.Context, tvID int64) error
 }
 
+type YTSClient interface {
+	GetMovie(ctx context.Context, imdbID string) (yts.Movie, error)
+}
+
 type TMDBHandler struct {
 	tmdbClient TMDBClient
 	repo       TMDBRepository
+	ytsClient  YTSClient
 }
 
-func NewTMDBHandler(tmdbClient TMDBClient, repo TMDBRepository) *TMDBHandler {
+func NewTMDBHandler(tmdbClient TMDBClient, repo TMDBRepository, ytsClient YTSClient) *TMDBHandler {
 	if tmdbClient == nil {
 		panic("tmdbClient is required")
 	}
@@ -47,8 +54,13 @@ func NewTMDBHandler(tmdbClient TMDBClient, repo TMDBRepository) *TMDBHandler {
 		panic("repo is required")
 	}
 
+	if ytsClient == nil {
+		panic("ytsClient is required")
+	}
+
 	return &TMDBHandler{
 		tmdbClient: tmdbClient,
 		repo:       repo,
+		ytsClient:  ytsClient,
 	}
 }

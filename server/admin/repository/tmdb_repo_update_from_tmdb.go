@@ -17,6 +17,10 @@ func NewTMDBRepository(db *sql.DB) TMDBRepository {
 	return TMDBRepository{db}
 }
 
+func (r TMDBRepository) getVideoRepo() Repository {
+	return NewRepository(r.db)
+}
+
 var insertMovieQuery = `
 INSERT INTO movies (
 	id,

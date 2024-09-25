@@ -5,6 +5,7 @@ import "github.com/phimtorr/phimtor/server/admin/http/uri"
 
 type Movie struct {
     ID int64
+	IMDBID        string
     Title string
     OriginalTitle string
     Status string
@@ -108,6 +109,9 @@ templ MovieView(m Movie) {
                 <button hx-post={ uri.SyncMovie(m.ID) }>Sync</button>
                 if m.VideoID == 0 {
                     <button hx-post={ uri.CreateMovieVideo(m.ID) }>Create Video</button>
+                }
+                if m.VideoID != 0 {
+                    <button hx-post={ uri.SyncYTSMovie(m.ID) }>Sync From YTS</button>
                 }
             </footer>
         </article>
