@@ -17,7 +17,7 @@ type TMDBClient interface {
 type TMDBRepository interface {
 	UpdateMovie(ctx context.Context, movie *tmdb.MovieDetails) error
 	UpdateTVSeries(ctx context.Context, tv *tmdb.TVDetails, seasons []*tmdb.TVSeasonDetails) error
-	UpdateYTSMovie(ctx context.Context, id int64, movie yts.Movie) error
+	UpdateYTSMovie(ctx context.Context, videoID int64, movie yts.Movie) error
 
 	ListLatestShows(ctx context.Context, page, pageSize int) ([]ui.LatestShow, ui.Pagination, error)
 

@@ -25,7 +25,7 @@ func (r TMDBRepository) UpdateYTSMovie(ctx context.Context, videoID int64, movie
 
 	// Update torrents
 	for _, t := range movie.Torrents {
-		if err := r.updateYTSTorrent(ctx, videoID, t); err != nil {
+		if err := r.updateYTSTorrent(ctx, movie.ID, t); err != nil {
 			return fmt.Errorf("update yts torrent %s: %w", t.Hash, err)
 		}
 	}

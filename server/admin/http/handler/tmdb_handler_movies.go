@@ -149,7 +149,7 @@ func (h *TMDBHandler) SyncYTSMovie(w http.ResponseWriter, r *http.Request) error
 		return fmt.Errorf("get yts movie: %w", err)
 	}
 
-	err = h.repo.UpdateYTSMovie(ctx, id, ytsMovie)
+	err = h.repo.UpdateYTSMovie(ctx, movie.VideoID, ytsMovie)
 	if err != nil {
 		return fmt.Errorf("update yts movie: %w", err)
 	}
