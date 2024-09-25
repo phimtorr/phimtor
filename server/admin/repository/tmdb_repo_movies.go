@@ -86,6 +86,7 @@ func toUIMovies(dbMovies []*dbmodels.Movie) []ui.Movie {
 func toUIMovie(dbMovie *dbmodels.Movie) ui.Movie {
 	return ui.Movie{
 		ID:            dbMovie.ID,
+		IMDBID:        dbMovie.ImdbID,
 		Title:         dbMovie.Title,
 		OriginalTitle: dbMovie.OriginalTitle,
 		Status:        dbMovie.Status,

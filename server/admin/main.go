@@ -16,6 +16,7 @@ import (
 	"github.com/phimtorr/phimtor/server/admin/auth"
 	adminHttp "github.com/phimtorr/phimtor/server/admin/http"
 	"github.com/phimtorr/phimtor/server/admin/repository"
+	"github.com/phimtorr/phimtor/server/admin/yts"
 	"github.com/phimtorr/phimtor/server/pkg/database"
 )
 
@@ -38,7 +39,9 @@ func main() {
 	authService := auth.NewAuth(authClient)
 
 	db := database.NewMySqlDB()
-	httpServer := adminHttp.NewHTTPServer(db, authClient)
+	ytsClient := yts.NewClientFromEnv()
+
+	httpServer := adminHttp.NewHTTPServer(db, authClient, ytsClient)
 
 	r := chi.NewRouter()
 

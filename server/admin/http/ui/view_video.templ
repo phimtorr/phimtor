@@ -4,9 +4,11 @@ import "github.com/phimtorr/phimtor/server/admin/http/uri"
 
 type Video struct {
 	ID        		int64
+	YTSMovieID 		int
 	MaxResolution 	int
 	HasViSub  		bool
 	HasEnSub  		bool
+	YTSTorrents 	[]YTSTorrent
 	Torrents  		[]Torrent
 	Subtitles 		[]Subtitle
 }
@@ -35,10 +37,64 @@ templ ViewVideo(video Video) {
 				>Sync</button>
 		</section>
 		<section>
+			if len(video.YTSTorrents) > 0 {
+				@ViewYTSTorrents(video.ID, video.YTSTorrents)
+			}
 			@ViewTorrents(video.ID, video.Torrents)
 			@ViewSubtitles(video.ID, video.Subtitles)
 		</section>
 	</section>
+}
+
+type YTSTorrent struct {
+	Hash        string
+	MovieID     int64
+	Quality     string
+	Resolution 	int
+	Type        string
+	VideoCodec string
+	SizeBytes        int64
+	Peers int 
+	Seeds int
+	DateUploaded string
+}
+
+templ ViewYTSTorrents(videoID int64, torrents []YTSTorrent) {
+	<article>
+		<header>
+			<h3>YTS Torrents</h3>
+		</header>
+		<section>
+			<table>
+				<thead>
+					<tr>
+						<th>Hash</th>
+						<th>Info</th>
+						<th>Seeds/Peers</th>
+						<th>Date Uploaded</th>
+					</tr>
+				</thead>
+				<tbody hx-confirm="Are you sure?" hx-target="closest tr" hx-swap="outerHTML">
+					for _, t := range torrents {
+						<tr>
+							<td>{ t.Hash }</td>
+							<td>
+								<p>Quality: { t.Quality }</p>
+								<p>Resolution: { toString(t.Resolution) }</p>
+								<p>Type: { t.Type }</p>
+								<p>Size: { bytesToDisplaySize(t.SizeBytes) }</p>
+							</td>
+							<td>
+								<p>Seeds: { toString(t.Seeds) }</p>
+								<p>Peers: { toString(t.Peers) }</p>
+							</td>
+							<td>{ t.DateUploaded }</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</section>
+	</article>
 }
 
 type Torrent struct {
