@@ -5,12 +5,19 @@ import (
 )
 
 type SQLRepository struct {
-	db *sql.DB
+	db          *sql.DB
+	ytsTrackers []string
 }
 
-func NewSQLRepository(db *sql.DB) SQLRepository {
+func NewSQLRepository(db *sql.DB, ytsTrackers []string) SQLRepository {
 	if db == nil {
 		panic("db is nil")
 	}
-	return SQLRepository{db: db}
+	if len(ytsTrackers) == 0 {
+		panic("ytsTrackers is empty")
+	}
+	return SQLRepository{
+		db:          db,
+		ytsTrackers: ytsTrackers,
+	}
 }

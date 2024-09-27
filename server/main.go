@@ -4,6 +4,7 @@ import (
 	"context"
 	stdHttp "net/http"
 	"os"
+	"strings"
 
 	firebase "firebase.google.com/go/v4"
 	"github.com/go-chi/chi/v5"
@@ -29,7 +30,7 @@ func main() {
 		log.Fatal().Err(err).Msg("Failed to run migrations")
 	}
 
-	repo := repository.NewSQLRepository(db)
+	repo := repository.NewSQLRepository(db, loadYTSTrackers())
 	http2Server := http.NewHttpServer(repo)
 
 	r := chi.NewRouter()
@@ -80,4 +81,12 @@ func newFirebaseApp() *firebase.App {
 		log.Fatal().Err(err).Msg("Failed to create firebase app")
 	}
 	return app
+}
+
+func loadYTSTrackers() []string {
+	trackers := os.Getenv("YTS_TRACKERS")
+	if trackers == "" {
+		log.Fatal().Msg("YTS_TRACKERS is empty")
+	}
+	return strings.Split(trackers, ",")
 }
