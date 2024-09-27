@@ -1,0 +1,2 @@
+ALTER TABLE torrent_links
+    MODIFY COLUMN link TEXT NOT NULL;
