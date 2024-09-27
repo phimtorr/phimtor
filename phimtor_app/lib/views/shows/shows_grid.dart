@@ -97,12 +97,15 @@ class _ShowsGridState extends State<ShowsGrid> {
         Expanded(
           child: SingleChildScrollView(
             controller: scrollController,
-            child: Wrap(
-              alignment: WrapAlignment.start,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 16,
-              runSpacing: 24,
-              children: shows.map((show) => ShowCard(show: show)).toList(),
+            child: SizedBox(
+              width: double.infinity,
+              child: Wrap(
+                alignment: WrapAlignment.start,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 16,
+                runSpacing: 24,
+                children: shows.map((show) => ShowCard(show: show)).toList(),
+              ),
             ),
           ),
         ),
