@@ -41,10 +41,10 @@ class ShowCard extends StatelessWidget {
                     left: 2,
                     child: Row(
                       children: [
-                        ShowComponents.buildShowLabel(
+                        ShowComponents.buildOverlayLabel(
                             context, show.airDate.year.toString()),
                         const SizedBox(width: 2),
-                        ShowComponents.buildShowLabel(
+                        ShowComponents.buildOverlayLabel(
                             context, show.voteAverage.toStringAsFixed(1)),
                       ],
                     ),
@@ -65,11 +65,11 @@ class ShowCard extends StatelessWidget {
                         left: 2,
                         child: Row(
                           children: [
-                            ShowComponents.buildShowLabel(
+                            ShowComponents.buildOverlayLabel(
                                 context, show.quality),
                             if (show.hasViSub) ...[
                               const SizedBox(width: 2),
-                              ShowComponents.buildShowLabel(context, "CC"),
+                              ShowComponents.buildOverlayLabel(context, "CC"),
                             ],
                           ],
                         ),
@@ -78,7 +78,7 @@ class ShowCard extends StatelessWidget {
                     Positioned(
                       bottom: 2,
                       right: 2,
-                      child: ShowComponents.buildShowLabel(
+                      child: ShowComponents.buildOverlayLabel(
                         context,
                         TimeHelpers.toHumanReadableDuration(show.runtime),
                       ),

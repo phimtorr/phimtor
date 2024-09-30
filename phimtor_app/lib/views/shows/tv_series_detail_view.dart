@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:phimtor_app/routes/app_routes.dart';
 import 'package:phimtor_app/services/analytics/analytics_service.dart';
@@ -74,7 +73,8 @@ class TVSeriesDetailView extends StatelessWidget {
                     Positioned(
                       bottom: 16.0,
                       left: 16.0,
-                      child: ShowComponents.buildTagline(context, series.tagline),
+                      child:
+                          ShowComponents.buildTagline(context, series.tagline),
                     ),
                 ],
               ),
@@ -156,15 +156,36 @@ class TVSeriesDetailView extends StatelessWidget {
                 ),
               ),
         ),
+        const SizedBox(height: 16.0),
+        ShowComponents.buildGenres(context, series.genres),
         const SizedBox(height: 8.0),
-        Text(
-          "${context.loc.detail_release_year}: ${series.firstAirDate?.year}",
-          style: infoTextStyte,
-        ),
+        if (series.firstAirDate != null)
+          Row(
+            children: [
+              Text(
+                "${context.loc.detail_release_year}:",
+                style: infoTextStyte,
+              ),
+              const SizedBox(width: 4.0),
+              ShowComponents.buildLable(
+                context,
+                ShowComponents.formatReleaseDate(series.firstAirDate!),
+              ),
+            ],
+          ),
         const SizedBox(height: 8),
-        Text(
-          "${context.loc.detail_score}: ${series.voteAverage.toStringAsFixed(1)}",
-          style: infoTextStyte,
+        Row(
+          children: [
+            Text(
+              "${context.loc.detail_score}:",
+              style: infoTextStyte,
+            ),
+            const SizedBox(width: 8.0),
+            ShowComponents.buildLable(
+              context,
+              series.voteAverage.toStringAsFixed(1),
+            ),
+          ],
         ),
       ],
     );
@@ -248,16 +269,32 @@ class TVSeriesDetailView extends StatelessWidget {
                     season.name,
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
-                  Text(
-                    season.airDate != null
-                        ? DateFormat.yMMMMd().format(season.airDate!)
-                        : "",
-                    style: Theme.of(context).textTheme.bodyMedium,
+                  const SizedBox(height: 8.0),
+                  Row(
+                    children: [
+                      if (season.airDate != null) ...[
+                        ShowComponents.buildLable(
+                          context,
+                          ShowComponents.formatReleaseDate(season.airDate!),
+                        ),
+                        const SizedBox(width: 8.0),
+                      ],
+                      Row(
+                        children: [
+                          Text(
+                            "${context.loc.detail_score}:",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                          const SizedBox(width: 8.0),
+                          ShowComponents.buildLable(
+                            context,
+                            season.voteAverage.toStringAsFixed(1),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  Text(
-                    "${context.loc.detail_score}: ${season.voteAverage.toStringAsFixed(1)}",
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
+                  const SizedBox(height: 8.0),
                   Text(
                     season.overview,
                     style: Theme.of(context)

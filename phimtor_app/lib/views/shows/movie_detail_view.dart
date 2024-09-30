@@ -74,7 +74,8 @@ class MovieDetailView extends StatelessWidget {
                     Positioned(
                       bottom: 16.0,
                       left: 16.0,
-                      child: ShowComponents.buildTagline(context, movie.tagline),
+                      child:
+                          ShowComponents.buildTagline(context, movie.tagline),
                     ),
                 ],
               ),
@@ -156,23 +157,38 @@ class MovieDetailView extends StatelessWidget {
                 ),
               ),
         ),
-        const SizedBox(height: 8.0),
-        Text(
-          "${context.loc.detail_release_year}: ${movie.releaseDate.year}",
-          style: infoTextStyte,
-        ),
+        const SizedBox(height: 16.0),
+        ShowComponents.buildGenres(context, movie.genres),
         const SizedBox(height: 8.0),
         Row(
           children: [
             Text(
-              "${context.loc.detail_duration(movie.runtime)} (${TimeHelpers.toHumanReadableDuration(movie.runtime)})",
+              "${context.loc.detail_release_year}:",
               style: infoTextStyte,
             ),
+            const SizedBox(width: 4.0),
+            ShowComponents.buildLable(
+                context, ShowComponents.formatReleaseDate(movie.releaseDate)),
+          ],
+        ),
+        const SizedBox(height: 16.0),
+        Row(
+          children: [
+            Text(
+              context.loc.detail_duration(movie.runtime),
+              style: infoTextStyte,
+            ),
+            const SizedBox(width: 4.0),
+            ShowComponents.buildLable(
+                context, TimeHelpers.toHumanReadableDuration(movie.runtime)),
             const SizedBox(width: 16.0),
             Text(
-              "${context.loc.detail_score}: ${movie.voteAverage.toStringAsFixed(1)}",
+              "${context.loc.detail_score}:",
               style: infoTextStyte,
             ),
+            const SizedBox(width: 4.0),
+            ShowComponents.buildLable(
+                context, movie.voteAverage.toStringAsFixed(1)),
           ],
         ),
         const SizedBox(height: 16.0),
