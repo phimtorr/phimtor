@@ -5,6 +5,7 @@ import 'package:phimtor_app/helpers/time_helpers.dart';
 import 'package:phimtor_app/routes/app_routes.dart';
 import 'package:phimtor_app/services/analytics/analytics_service.dart';
 import 'package:phimtor_app/services/phimtor/phimtor_service.dart';
+import 'package:phimtor_app/views/shows/show_components.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
 
 class MovieDetailView extends StatelessWidget {
@@ -68,6 +69,14 @@ class MovieDetailView extends StatelessWidget {
                     height: isWideScreen ? 400.0 : 250.0,
                     fit: BoxFit.cover,
                   ),
+                  // Tagline
+                  if (movie.tagline != "")
+                    Positioned(
+                      bottom: 16.0,
+                      left: 16.0,
+                      child:
+                          ShowComponents.buildTagline(context, movie.tagline),
+                    ),
                 ],
               ),
               // Movie details layout: conditional based on screen width
@@ -148,23 +157,38 @@ class MovieDetailView extends StatelessWidget {
                 ),
               ),
         ),
-        const SizedBox(height: 8.0),
-        Text(
-          "${context.loc.detail_release_year}: ${movie.releaseDate.year}",
-          style: infoTextStyte,
-        ),
+        const SizedBox(height: 16.0),
+        ShowComponents.buildGenres(context, movie.genres),
         const SizedBox(height: 8.0),
         Row(
           children: [
             Text(
-              "${context.loc.detail_duration(movie.runtime)} (${TimeHelpers.toHumanReadableDuration(movie.runtime)})",
+              "${context.loc.detail_release_year}:",
               style: infoTextStyte,
             ),
+            const SizedBox(width: 4.0),
+            ShowComponents.buildLable(
+                context, ShowComponents.formatReleaseDate(movie.releaseDate)),
+          ],
+        ),
+        const SizedBox(height: 16.0),
+        Row(
+          children: [
+            Text(
+              context.loc.detail_duration(movie.runtime),
+              style: infoTextStyte,
+            ),
+            const SizedBox(width: 4.0),
+            ShowComponents.buildLable(
+                context, TimeHelpers.toHumanReadableDuration(movie.runtime)),
             const SizedBox(width: 16.0),
             Text(
-              "${context.loc.detail_score}: ${movie.voteAverage.toStringAsFixed(1)}",
+              "${context.loc.detail_score}:",
               style: infoTextStyte,
             ),
+            const SizedBox(width: 4.0),
+            ShowComponents.buildLable(
+                context, movie.voteAverage.toStringAsFixed(1)),
           ],
         ),
         const SizedBox(height: 16.0),

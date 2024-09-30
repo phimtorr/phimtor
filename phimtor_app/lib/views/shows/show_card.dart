@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:phimtor_app/helpers/time_helpers.dart';
 import 'package:phimtor_app/routes/app_routes.dart';
 import 'package:phimtor_app/services/analytics/analytics_service.dart';
+import 'package:phimtor_app/views/shows/show_components.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
 
 class ShowCard extends StatelessWidget {
@@ -40,9 +41,11 @@ class ShowCard extends StatelessWidget {
                     left: 2,
                     child: Row(
                       children: [
-                        ShowLabel(title: show.airDate.year.toString()),
+                        ShowComponents.buildOverlayLabel(
+                            context, show.airDate.year.toString()),
                         const SizedBox(width: 2),
-                        ShowLabel(title: show.voteAverage.toStringAsFixed(1)),
+                        ShowComponents.buildOverlayLabel(
+                            context, show.voteAverage.toStringAsFixed(1)),
                       ],
                     ),
                   ),
@@ -56,17 +59,28 @@ class ShowCard extends StatelessWidget {
                     // ),
                   ],
                   if (show.type == phimtor_api.ModelShowTypeEnum.movie) ...[
-                    // Positioned(
-                    //   bottom: 2,
-                    //   left: 2,
-                    //   child: ShowLabel(title: show.quality),
-                    // ),
+                    if (show.quality != "") ...[
+                      Positioned(
+                        bottom: 2,
+                        left: 2,
+                        child: Row(
+                          children: [
+                            ShowComponents.buildOverlayLabel(
+                                context, show.quality),
+                            if (show.hasViSub) ...[
+                              const SizedBox(width: 2),
+                              ShowComponents.buildOverlayLabel(context, "CC"),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
                     Positioned(
                       bottom: 2,
                       right: 2,
-                      child: ShowLabel(
-                        title:
-                            TimeHelpers.toHumanReadableDuration(show.runtime),
+                      child: ShowComponents.buildOverlayLabel(
+                        context,
+                        TimeHelpers.toHumanReadableDuration(show.runtime),
                       ),
                     ),
                   ],
@@ -135,37 +149,6 @@ class ShowCard extends StatelessWidget {
           return;
         }
       },
-    );
-  }
-}
-
-class ShowLabel extends StatelessWidget {
-  const ShowLabel({
-    super.key,
-    required this.title,
-  });
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    final backgroundColor =
-        Theme.of(context).colorScheme.surfaceContainerLow.withOpacity(0.6);
-    final textStyle = Theme.of(context).textTheme.labelSmall!.merge(
-          TextStyle(
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
-        );
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Text(
-        title,
-        style: textStyle,
-      ),
     );
   }
 }

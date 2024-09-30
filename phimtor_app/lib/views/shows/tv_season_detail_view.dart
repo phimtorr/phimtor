@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:phimtor_app/routes/app_routes.dart';
 import 'package:phimtor_app/services/analytics/analytics_service.dart';
 import 'package:phimtor_app/services/phimtor/phimtor_service.dart';
+import 'package:phimtor_app/views/shows/show_components.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
 
 class TVSeasonDetailView extends StatelessWidget {
@@ -138,16 +138,23 @@ class TVSeasonDetailView extends StatelessWidget {
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         const SizedBox(height: 8.0),
-        Text(
-          season.airDate?.year.toString() ?? "",
-          style: infoTextStyte,
-        ),
-        const SizedBox(height: 8.0),
-        Text(
-          season.airDate == null
-              ? ""
-              : DateFormat.yMMMMd().format(season.airDate!),
-          style: infoTextStyte,
+        if (season.airDate != null) ...[
+          ShowComponents.buildLable(
+              context, ShowComponents.formatReleaseDate(season.airDate!)),
+          const SizedBox(height: 8.0),
+        ],
+        Row(
+          children: [
+            Text(
+              "${context.loc.detail_score}:",
+              style: infoTextStyte,
+            ),
+            const SizedBox(width: 8.0),
+            ShowComponents.buildLable(
+              context,
+              season.voteAverage.toStringAsFixed(1),
+            ),
+          ],
         ),
       ],
     );
@@ -191,15 +198,17 @@ class TVSeasonDetailView extends StatelessWidget {
       final isWideScreen = constraits.maxWidth > 600;
 
       return InkWell(
-        onTap: episode.videoID == 0 ? null : () async {
-          await context.pushNamed(
-            AppRoutes.video,
-            pathParameters: {
-              "id": episode.videoID.toString(),
-              "title": "$title - ${episode.name}",
-            },
-          );
-        },
+        onTap: episode.videoID == 0
+            ? null
+            : () async {
+                await context.pushNamed(
+                  AppRoutes.video,
+                  pathParameters: {
+                    "id": episode.videoID.toString(),
+                    "title": "$title - ${episode.name}",
+                  },
+                );
+              },
         child: Ink(
           padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
@@ -264,16 +273,32 @@ class TVSeasonDetailView extends StatelessWidget {
           "${episode.episodeNumber}. ${episode.name}",
           style: Theme.of(context).textTheme.headlineMedium,
         ),
-        Text(
-          episode.airDate != null
-              ? DateFormat.yMMMMd().format(episode.airDate!)
-              : "",
-          style: Theme.of(context).textTheme.bodyMedium,
+        const SizedBox(height: 8.0),
+        Row(
+          children: [
+            if (episode.airDate != null) ...[
+              ShowComponents.buildLable(
+                context,
+                ShowComponents.formatReleaseDate(episode.airDate!),
+              ),
+              const SizedBox(width: 16.0),
+            ],
+            Row(
+              children: [
+                Text(
+                  "${context.loc.detail_score}:",
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                const SizedBox(width: 8.0),
+                ShowComponents.buildLable(
+                  context,
+                  episode.voteAverage.toStringAsFixed(1),
+                ),
+              ],
+            ),
+          ],
         ),
-        Text(
-          "${context.loc.detail_score}: ${episode.voteAverage.toStringAsFixed(1)}",
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
+        const SizedBox(height: 8.0),
         if (episode.videoID == 0)
           Text(
             context.loc.not_available,
