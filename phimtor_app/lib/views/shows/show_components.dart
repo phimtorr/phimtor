@@ -23,4 +23,25 @@ class ShowComponents {
     );
   }
 
+  static Widget buildShowLabel(BuildContext context, String title) {
+    final backgroundColor =
+        Theme.of(context).colorScheme.surfaceContainerLow.withOpacity(0.6);
+    final textStyle = Theme.of(context).textTheme.labelSmall!.merge(
+          TextStyle(
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+        );
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        title,
+        style: textStyle,
+      ),
+    );
+  }
+
 }
