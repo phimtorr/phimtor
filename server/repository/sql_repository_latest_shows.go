@@ -144,6 +144,7 @@ func toHTTP2Show(show *dbmodels.LatestShow) http.Show {
 		OriginalTitle: show.OriginalTitle,
 		PosterLink:    tmdb.GetImageURL(show.PosterPath, tmdb.W300),
 		Quality:       show.Quality,
+		HasViSub:      show.HasViSub,
 		Runtime:       show.Runtime.Int,
 		SeasonNumber:  show.SeasonNumber.Int,
 		Title:         show.Title,

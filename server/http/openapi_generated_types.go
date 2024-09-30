@@ -65,6 +65,7 @@ type PremiumTorrentLink struct {
 type Show struct {
 	AirDate       openapi_types.Date `json:"airDate"`
 	EpisodeNumber int                `json:"episodeNumber"`
+	HasViSub      bool               `json:"hasViSub"`
 	Id            int64              `json:"id"`
 	OriginalTitle string             `json:"originalTitle"`
 	PosterLink    string             `json:"posterLink"`

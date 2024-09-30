@@ -18,6 +18,7 @@ Name | Type | Description | Notes
 **runtime** | **int** |  | 
 **voteAverage** | **num** |  | 
 **quality** | **String** |  | 
+**hasViSub** | **bool** |  | 
 **seasonNumber** | **int** |  | 
 **episodeNumber** | **int** |  | 
 

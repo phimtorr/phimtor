@@ -23,6 +23,7 @@ class ModelShow {
     required this.runtime,
     required this.voteAverage,
     required this.quality,
+    required this.hasViSub,
     required this.seasonNumber,
     required this.episodeNumber,
   });
@@ -47,6 +48,8 @@ class ModelShow {
 
   String quality;
 
+  bool hasViSub;
+
   int seasonNumber;
 
   int episodeNumber;
@@ -63,6 +66,7 @@ class ModelShow {
     other.runtime == runtime &&
     other.voteAverage == voteAverage &&
     other.quality == quality &&
+    other.hasViSub == hasViSub &&
     other.seasonNumber == seasonNumber &&
     other.episodeNumber == episodeNumber;
 
@@ -79,11 +83,12 @@ class ModelShow {
     (runtime.hashCode) +
     (voteAverage.hashCode) +
     (quality.hashCode) +
+    (hasViSub.hashCode) +
     (seasonNumber.hashCode) +
     (episodeNumber.hashCode);
 
   @override
-  String toString() => 'ModelShow[id=$id, showId=$showId, type=$type, title=$title, originalTitle=$originalTitle, posterLink=$posterLink, airDate=$airDate, runtime=$runtime, voteAverage=$voteAverage, quality=$quality, seasonNumber=$seasonNumber, episodeNumber=$episodeNumber]';
+  String toString() => 'ModelShow[id=$id, showId=$showId, type=$type, title=$title, originalTitle=$originalTitle, posterLink=$posterLink, airDate=$airDate, runtime=$runtime, voteAverage=$voteAverage, quality=$quality, hasViSub=$hasViSub, seasonNumber=$seasonNumber, episodeNumber=$episodeNumber]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -97,6 +102,7 @@ class ModelShow {
       json[r'runtime'] = this.runtime;
       json[r'voteAverage'] = this.voteAverage;
       json[r'quality'] = this.quality;
+      json[r'hasViSub'] = this.hasViSub;
       json[r'seasonNumber'] = this.seasonNumber;
       json[r'episodeNumber'] = this.episodeNumber;
     return json;
@@ -131,6 +137,7 @@ class ModelShow {
         runtime: mapValueOfType<int>(json, r'runtime')!,
         voteAverage: num.parse('${json[r'voteAverage']}'),
         quality: mapValueOfType<String>(json, r'quality')!,
+        hasViSub: mapValueOfType<bool>(json, r'hasViSub')!,
         seasonNumber: mapValueOfType<int>(json, r'seasonNumber')!,
         episodeNumber: mapValueOfType<int>(json, r'episodeNumber')!,
       );
@@ -190,6 +197,7 @@ class ModelShow {
     'runtime',
     'voteAverage',
     'quality',
+    'hasViSub',
     'seasonNumber',
     'episodeNumber',
   };
