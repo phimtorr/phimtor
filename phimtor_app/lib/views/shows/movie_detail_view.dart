@@ -5,6 +5,7 @@ import 'package:phimtor_app/helpers/time_helpers.dart';
 import 'package:phimtor_app/routes/app_routes.dart';
 import 'package:phimtor_app/services/analytics/analytics_service.dart';
 import 'package:phimtor_app/services/phimtor/phimtor_service.dart';
+import 'package:phimtor_app/views/shows/show_components.dart';
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
 
 class MovieDetailView extends StatelessWidget {
@@ -68,6 +69,13 @@ class MovieDetailView extends StatelessWidget {
                     height: isWideScreen ? 400.0 : 250.0,
                     fit: BoxFit.cover,
                   ),
+                  // Tagline
+                  if (movie.tagline != "")
+                    Positioned(
+                      bottom: 16.0,
+                      left: 16.0,
+                      child: ShowComponents.buildTagline(context, movie.tagline),
+                    ),
                 ],
               ),
               // Movie details layout: conditional based on screen width
