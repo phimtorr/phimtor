@@ -406,6 +406,8 @@ components:
           type: number
         quality:
           type: string
+        hasViSub:
+          type: boolean
         seasonNumber:
           type: integer
           format: int
@@ -423,6 +425,7 @@ components:
         - runtime
         - voteAverage
         - quality
+        - hasViSub
         - seasonNumber
         - episodeNumber
 

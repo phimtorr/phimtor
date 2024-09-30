@@ -41,6 +41,8 @@ func main() {
 	db := database.NewMySqlDB()
 	ytsClient := yts.NewClientFromEnv()
 
+	syncAll(db)
+
 	httpServer := adminHttp.NewHTTPServer(db, authClient, ytsClient)
 
 	r := chi.NewRouter()
@@ -89,7 +91,7 @@ func setAdmin(authClient *firebaseAuth.Client) {
 
 func syncAll(db *sql.DB) {
 	r := repository.NewTMDBRepository(db)
-	if err := r.SyncAll(context.Background()); err != nil {
+	if err := r.SyncAllMovies(context.Background()); err != nil {
 		log.Error().Err(err).Msg("Failed to sync all")
 	}
 }

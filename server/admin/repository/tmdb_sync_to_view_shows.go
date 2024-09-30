@@ -66,10 +66,11 @@ const syncToLatestShowsQuery = `
 		runtime, 
 		vote_average, 
 		quality, 
+		has_vi_sub,
 		season_number, 
 		episode_number
 	) VALUES (
-		?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+		?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
 	)
 	ON DUPLICATE KEY UPDATE
 		type = VALUES(type),
@@ -81,6 +82,7 @@ const syncToLatestShowsQuery = `
 		runtime = VALUES(runtime),
 		vote_average = VALUES(vote_average),
 		quality = VALUES(quality),
+		has_vi_sub = VALUES(has_vi_sub),
 		season_number = VALUES(season_number),
 		episode_number = VALUES(episode_number);
 `
@@ -96,6 +98,21 @@ func (r TMDBRepository) SyncMovie(ctx context.Context, movieID int64) error {
 		return nil
 	}
 
+	video, err := dbmodels.FindVideo(ctx, r.db, movie.VideoID)
+	if err != nil {
+		return fmt.Errorf("find video: %w", err)
+	}
+
+	var quality string
+	switch video.MaxResolution {
+	case 2160:
+		quality = "4K"
+	case 1080:
+		quality = "1080p"
+	case 720:
+		quality = "720p"
+	}
+
 	_, err = r.db.ExecContext(ctx, syncToLatestShowsQuery,
 		dbmodels.LatestShowsTypeMovie,
 		movie.ID,
@@ -105,7 +122,8 @@ func (r TMDBRepository) SyncMovie(ctx context.Context, movieID int64) error {
 		movie.ReleaseDate,
 		movie.Runtime,
 		movie.VoteAverage,
-		"", // TODO: get quality from video
+		quality,
+		video.HasViSub,
 		nil,
 		nil,
 	)
