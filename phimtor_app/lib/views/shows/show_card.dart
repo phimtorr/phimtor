@@ -56,11 +56,21 @@ class ShowCard extends StatelessWidget {
                     // ),
                   ],
                   if (show.type == phimtor_api.ModelShowTypeEnum.movie) ...[
-                    // Positioned(
-                    //   bottom: 2,
-                    //   left: 2,
-                    //   child: ShowLabel(title: show.quality),
-                    // ),
+                    if (show.quality != "") ...[
+                      Positioned(
+                        bottom: 2,
+                        left: 2,
+                        child: Row(
+                          children: [
+                            ShowLabel(title: show.quality),
+                            if (show.hasViSub) ...[
+                              const SizedBox(width: 2),
+                              const ShowLabel(title: "CC"),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
                     Positioned(
                       bottom: 2,
                       right: 2,
