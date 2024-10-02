@@ -61,3 +61,16 @@ func (c Client) GetTVSeriesDetails(ctx context.Context, tvID int) (*tmdb.TVDetai
 func (c Client) getTVSeasonDetails(_ context.Context, tvID, seasonNumber int) (*tmdb.TVSeasonDetails, error) {
 	return c.client.GetTVSeasonDetails(tvID, seasonNumber, c.defaultOptions)
 }
+
+func (c Client) ListTopRatedMovies(ctx context.Context, page int) (*tmdb.MovieTopRated, error) {
+	options := map[string]string{
+		"page": fmt.Sprintf("%d", page),
+	}
+
+	resp, err := c.client.GetMovieTopRated(options)
+	if err != nil {
+		return nil, fmt.Errorf("get top rated movies: %w", err)
+	}
+
+	return resp, nil
+}
