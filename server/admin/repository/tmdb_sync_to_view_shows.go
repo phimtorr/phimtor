@@ -156,6 +156,11 @@ func (r TMDBRepository) SyncTVSeries(ctx context.Context, showID int64) error {
 		return fmt.Errorf("find lasted episode: %w", err)
 	}
 
+	lastedEpisodeVideo, err := dbmodels.FindVideo(ctx, r.db, lastedEpisode.VideoID)
+	if err != nil {
+		return fmt.Errorf("find lasted episode video: %w", err)
+	}
+
 	lastedSeason, err := dbmodels.TVSeasons(
 		dbmodels.TVSeasonWhere.ShowID.EQ(showID),
 		dbmodels.TVSeasonWhere.SeasonNumber.EQ(lastedEpisode.SeasonNumber),
@@ -182,6 +187,7 @@ func (r TMDBRepository) SyncTVSeries(ctx context.Context, showID int64) error {
 		nil,
 		tvSeriesShow.VoteAverage,
 		"",
+		false,
 		nil,
 		nil,
 	)
@@ -200,6 +206,7 @@ func (r TMDBRepository) SyncTVSeries(ctx context.Context, showID int64) error {
 		lastedEpisode.Runtime,
 		lastedEpisode.VoteAverage,
 		"",
+		lastedEpisodeVideo.HasViSub,
 		null.IntFrom(lastedEpisode.SeasonNumber),
 		null.IntFrom(lastedEpisode.EpisodeNumber),
 	)
