@@ -4,7 +4,6 @@ import 'package:media_kit/media_kit.dart';
 import 'package:path/path.dart' as path;
 import 'package:phimtor_app/extensions/buildcontext/loc.dart';
 import 'package:phimtor_app/views/components/buttons/need_verified_user_button.dart';
-import 'package:phimtor_app/views/components/buttons/premium_button.dart';
 
 import 'package:phimtor_openapi_client/api.dart' as phimtor_api;
 
@@ -142,10 +141,10 @@ class _SubtitleSectionState extends State<SubtitleSection> {
               ],
             ),
             const SizedBox(height: 8),
-            PremiumButton(
+            NeedVerifiedUserButton(
               onPressed: selectSubtitleFile,
-              label: Text(context.loc.select_subtitle_file),
               icon: const Icon(Icons.subtitles),
+              child: Text(context.loc.select_subtitle_file),
             ),
             const SizedBox(height: 8),
             if (widget.vietnameseSubtitles.isNotEmpty)
