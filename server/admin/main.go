@@ -43,6 +43,10 @@ func main() {
 	db := database.NewMySqlDB()
 	ytsClient := yts.NewClientFromEnv()
 
+	go func() {
+		jobs.RunSetPremiumForNewUsers(context.Background(), authClient)
+	}()
+
 	//processJob(db, ytsClient)
 
 	httpServer := adminHttp.NewHTTPServer(db, authClient, ytsClient)
