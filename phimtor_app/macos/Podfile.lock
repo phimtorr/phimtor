@@ -13,9 +13,9 @@ PODS:
     - Firebase/Analytics (= 11.0.0)
     - firebase_core
     - FlutterMacOS
-  - firebase_auth (5.2.1):
-    - Firebase/Auth (~> 11.0.0)
-    - Firebase/CoreOnly (~> 11.0.0)
+  - firebase_auth (5.3.3):
+    - Firebase/Auth (~> 11.4.0)
+    - Firebase/CoreOnly (~> 11.4.0)
     - firebase_core
     - FlutterMacOS
   - firebase_core (3.4.1):

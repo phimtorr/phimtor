@@ -102,6 +102,27 @@ jobs:
         shell: bash
 
       # Windows
+      # Replace Visual Studio 17.12 with 17.10 to workaround Firebase issue
+      # https://github.com/firebase/flutterfire/issues/16536
+      - name: Cleanup Visual Studio Installer
+        if: runner.os == 'Windows'
+        continue-on-error: true
+        run: |
+          & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\InstallCleanup.exe"
+        shell: pwsh
+
+      # Replace Visual Studio 17.12 with 17.10 to workaround Firebase issue
+      # https://github.com/firebase/flutterfire/issues/16536
+      - name: Install Visual Studio 2022 Enterprise
+        if: runner.os == 'Windows'
+        run: |
+          Invoke-WebRequest -Uri https://aka.ms/vs/17/release.ltsc.17.10/vs_enterprise.exe -OutFile vs_enterprise.exe
+          $process = Start-Process -FilePath '.\vs_enterprise.exe' -ArgumentList "--add", "Microsoft.VisualStudio.Workload.Azure", "--quiet", "--norestart", "--wait", "--includeRecommended" -Wait -PassThru
+          Write-Output $process.ExitCode
+          $process = Start-Process -FilePath '.\vs_enterprise.exe' -ArgumentList "--add", "Microsoft.VisualStudio.Workload.NativeDesktop", "--quiet", "--norestart", "--wait", "--includeRecommended" -Wait -PassThru
+          Write-Output $process.ExitCode
+        shell: pwsh
+
       - name: Install msys2
         id: msys2
         if: runner.os == 'Windows'
@@ -137,6 +158,13 @@ jobs:
           options: /DMyAppVersion=${{ env.VERSION }} /DWorkingDir="${{ github.workspace }}\phimtor_app" /DUCRT64Dir="${{ steps.msys2.outputs.msys2-location }}\ucrt64\bin" /F"PhimTorSetup-${{ env.VERSION }}"
 
       # MacOS
+      - name: Update pod
+        if: runner.os == 'macOS'
+        run: |
+          flutter pub get
+          cd macos && pod update Firebase/Auth && pod repo update && pod install --repo-update
+        shell: bash
+
       - name: Install dependencies
         if: runner.os == 'macOS'
         run: |
