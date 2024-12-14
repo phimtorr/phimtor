@@ -144,7 +144,7 @@ func (h *TMDBHandler) SyncYTSMovie(w http.ResponseWriter, r *http.Request) error
 		return commonErrors.NewIncorrectInputError("no-video-id", "no video id")
 	}
 
-	ytsMovie, err := h.ytsClient.GetMovie(ctx, movie.IMDBID)
+	ytsMovie, err := h.ytsClient.GetMovieByIMDbID(ctx, movie.IMDBID)
 	if err != nil {
 		return fmt.Errorf("get yts movie: %w", err)
 	}

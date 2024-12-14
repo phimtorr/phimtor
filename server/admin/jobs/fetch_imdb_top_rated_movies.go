@@ -20,7 +20,7 @@ type TMDBClient interface {
 }
 
 type YTSClient interface {
-	GetMovie(ctx context.Context, imdbID string) (yts.Movie, error)
+	GetMovieByIMDbID(ctx context.Context, imdbID string) (yts.Movie, error)
 }
 
 type Repository interface {
@@ -95,7 +95,7 @@ func (j FetchIMDBTopRatedMoviesJob) createMovie(ctx context.Context, movieID int
 		return fmt.Errorf("get movie details: %w", err)
 	}
 
-	ytsMovie, err := j.ytsClient.GetMovie(ctx, tmdbMovie.IMDbID)
+	ytsMovie, err := j.ytsClient.GetMovieByIMDbID(ctx, tmdbMovie.IMDbID)
 	if err != nil {
 		return fmt.Errorf("get yts movie: %w", err)
 	}
