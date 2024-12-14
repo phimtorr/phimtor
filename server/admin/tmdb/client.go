@@ -38,6 +38,23 @@ func (c Client) GetMovieDetails(_ context.Context, movieID int) (*tmdb.MovieDeta
 	return c.client.GetMovieDetails(movieID, c.defaultOptions)
 }
 
+func (c Client) GetMovieDetailsByIMDbID(_ context.Context, imdbID string) (*tmdb.MovieDetails, error) {
+	findByIDResp, err := c.client.GetFindByID(imdbID, map[string]string{
+		"external_source": "imdb_id",
+	})
+	if err != nil {
+		return nil, fmt.Errorf("get find by id: %w", err)
+	}
+
+	if len(findByIDResp.MovieResults) == 0 {
+		return nil, fmt.Errorf("no movie found")
+	}
+
+	movieID := findByIDResp.MovieResults[0].ID
+
+	return c.GetMovieDetails(context.Background(), int(movieID))
+}
+
 func (c Client) GetTVSeriesDetails(ctx context.Context, tvID int) (*tmdb.TVDetails, []*tmdb.TVSeasonDetails, error) {
 	tvDetails, err := c.client.GetTVDetails(tvID, c.defaultOptions)
 	if err != nil {
