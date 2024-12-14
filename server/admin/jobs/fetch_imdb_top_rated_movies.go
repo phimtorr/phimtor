@@ -6,28 +6,11 @@ import (
 	"errors"
 	"fmt"
 
-	tmdb "github.com/cyruzin/golang-tmdb"
 	"github.com/rs/zerolog/log"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 
-	"github.com/phimtorr/phimtor/server/admin/yts"
 	"github.com/phimtorr/phimtor/server/repository/dbmodels"
 )
-
-type TMDBClient interface {
-	ListTopRatedMovies(ctx context.Context, page int) (*tmdb.MovieTopRated, error)
-	GetMovieDetails(_ context.Context, movieID int) (*tmdb.MovieDetails, error)
-}
-
-type YTSClient interface {
-	GetMovieByIMDbID(ctx context.Context, imdbID string) (yts.Movie, error)
-}
-
-type Repository interface {
-	UpdateMovie(ctx context.Context, movie *tmdb.MovieDetails) error
-	UpdateYTSMovie(ctx context.Context, videoID int64, movie yts.Movie) error
-	SyncMovie(ctx context.Context, movieID int64) error
-}
 
 type FetchIMDBTopRatedMoviesJob struct {
 	tmdbClient TMDBClient
