@@ -53,7 +53,9 @@ func runFetchNewMoviesFromYTS(
 		return fmt.Errorf("get featured movies from YTS: %w", err)
 	}
 
-	for _, movie := range featuredMovies {
+	// reverse the list so that we process the latest movies first
+	for i := len(featuredMovies) - 1; i >= 0; i-- {
+		movie := featuredMovies[i]
 		if err := processFeaturedMovie(ctx, tmdbClient, ytsClient, repo, db, movie); err != nil {
 			log.Ctx(ctx).Error().Err(err).Msg("Failed to process featured movie")
 		}
