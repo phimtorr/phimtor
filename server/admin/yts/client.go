@@ -46,7 +46,7 @@ func NewClientWithHTTPClient(baseURL string, httpClient *http.Client) *Client {
 	}
 }
 
-func (c *Client) GetMovie(ctx context.Context, imdbID string) (Movie, error) {
+func (c *Client) GetMovieByIMDbID(ctx context.Context, imdbID string) (Movie, error) {
 	listMoviesURL, err := url.JoinPath(c.baseURL, "list_movies.json")
 	if err != nil {
 		return Movie{}, fmt.Errorf("join path: %w", err)
@@ -93,4 +93,43 @@ func (c *Client) GetMovie(ctx context.Context, imdbID string) (Movie, error) {
 	}
 
 	return movie, nil
+}
+
+func (c *Client) GetMovieByID(ctx context.Context, id int64) (Movie, error) {
+	listMoviesURL, err := url.JoinPath(c.baseURL, "movie_details.json")
+	if err != nil {
+		return Movie{}, fmt.Errorf("join path: %w", err)
+	}
+
+	listMoviesURL = listMoviesURL + "?movie_id=" + fmt.Sprintf("%d", id)
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, listMoviesURL, nil)
+	if err != nil {
+		return Movie{}, err
+	}
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return Movie{}, err
+	}
+	defer resp.Body.Close()
+
+	type response struct {
+		Status        string `json:"status"`
+		StatusMessage string `json:"status_message"`
+		Data          struct {
+			Movie responseMovie `json:"movie"`
+		}
+	}
+
+	var res response
+	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
+		return Movie{}, fmt.Errorf("decode: %w", err)
+	}
+
+	if res.Status != "ok" {
+		return Movie{}, fmt.Errorf("status not ok: %s, message=%s", res.Status, res.StatusMessage)
+	}
+
+	return toMovie(res.Data.Movie)
 }

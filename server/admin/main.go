@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"net/http"
 	"os"
+	"os/signal"
 	"time"
 
 	firebase "firebase.google.com/go/v4"
@@ -30,6 +31,9 @@ func init() {
 func main() {
 	logs.Init()
 
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer cancel()
+
 	firebaseApp := newFirebaseApp()
 	authClient, err := firebaseApp.Auth(context.Background())
 	if err != nil {
@@ -44,7 +48,11 @@ func main() {
 	ytsClient := yts.NewClientFromEnv()
 
 	go func() {
-		jobs.RunSetPremiumForNewUsers(context.Background(), authClient)
+		jobs.RunSetPremiumForNewUsers(ctx, authClient)
+	}()
+
+	go func() {
+		jobs.RunFetchNewMoviesFromYTS(ctx, tmdb.NewClient(), ytsClient, repository.NewTMDBRepository(db), db)
 	}()
 
 	//processJob(db, ytsClient)

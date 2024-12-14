@@ -36,7 +36,7 @@ type TMDBRepository interface {
 }
 
 type YTSClient interface {
-	GetMovie(ctx context.Context, imdbID string) (yts.Movie, error)
+	GetMovieByIMDbID(ctx context.Context, imdbID string) (yts.Movie, error)
 }
 
 type TMDBHandler struct {
